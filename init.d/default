@@ -1,0 +1,22 @@
+{
+    "_type": "bl.krn.Cfg",
+    "args": [],
+    "daemon": false,
+    "debug": false,
+    "dosave": false,
+    "exclude": "",
+    "exec": false,
+    "kernel": false,
+    "level": "debug",
+    "logdir": "",
+    "modules": "irc,rss,ent,shw,udp,usr",
+    "name": "botlib",
+    "options": "",
+    "owner": "",
+    "packages": "",
+    "prompting": false,
+    "shell": true,
+    "txt": "",
+    "version": 2,
+    "workdir": "/var/lib/botlib/"
+}

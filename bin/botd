@@ -1,0 +1,53 @@
+#!/usr/bin/python3 -u
+# BOTLIB - Framework to program bots.
+#
+# 
+
+import os, sys ; sys.path.insert(0, os.getcwd())
+
+import bl
+
+from bl import cfg, k
+from bl.shl import parse_cli
+from bl.trm import execute, reset, save
+
+opts = [
+    ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
+    ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
+    ('-m', '--modules', 'store', str, 'modules to load.', 'modules'),
+    ('-x', '--exec', 'store_true', False, 'execute command.', 'doexec'),
+    ('-o', '--options', "store", str, "options to use.", 'options'),
+    ('-k', '--kernel', "store_true", False, "read from previous kernel config.", 'kernel'),
+    ('-p', '--prompting', "store_false", True, "disable prompting for initial values.", 'prompting'),
+    ('-s', '--save', 'store_true', False, 'save configuration files.', 'dosave'),
+    ('-z', '--shell', 'store_true', False, 'disable shell.', 'shell'),
+    ('-e', '--exclude', 'store', str, 'exclude modules.', 'exclude'),
+    ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
+    ('-a', '--logdir', "store", str, "directory to find the logfiles.", 'logdir'),
+    ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
+]
+
+def daemon():
+    pid = os.fork()
+    if pid != 0:
+        reset()
+        os._exit(0)
+    os.setsid()
+    os.umask(0)
+    si = open("/dev/null", 'r')
+    so = open("/dev/null", 'a+')
+    se = open("/dev/null", 'a+')
+    os.dup2(si.fileno(), sys.stdin.fileno())
+    os.dup2(so.fileno(), sys.stdout.fileno())
+    os.dup2(se.fileno(), sys.stderr.fileno())
+
+def main():
+    parse_cli("botd", __version__, opts)
+    cfg.kernel = True
+    cfg.parsing = False
+    daemon()
+    k.start()
+    k.wait()
+
+execute(main)
+os._exit(0)

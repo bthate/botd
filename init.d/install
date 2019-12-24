@@ -1,0 +1,15 @@
+[ ! -d "/var/log/botd" ] && mkdir /var/log/botd
+[ ! -d "/var/lib/botd" ] && mkdir /var/lib/botd
+[ ! -d "/var/lib/botd/store" ] && mkdir /var/lib/botd/store
+[ ! -d "/var/lib/botd/store/bl.krn.Cfg" ] && mkdir /var/lib/botd/store/bl.krn.Cfg
+[ ! -d "/var/lib/botd/store/bl.krn.Cfg/2019-12-18" ] && mkdir /var/lib/botd/store/bl.krn.Cfg/2019-12-18
+[ ! -d "/var/lib/botd/store/bl.irc.Cfg" ] && mkdir /var/lib/botd/store/bl.irc.Cfg
+[ ! -d "/var/lib/botd/store/bl.irc.Cfg/2019-12-18" ] && mkdir /var/lib/botd/store/bl.irc.Cfg/2019-12-18
+cp init.d/botd.service /etc/systemd/system
+cp init.d/default /var/lib/botd/store/bl.krn.Cfg/2019-12-18/15\:54\:13.868840
+cp init.d/irc.cfg /var/lib/botd/store/bl.irc.Cfg/2019-12-18/15\:54\:13.868840
+#bin/bl -x meet ~bart@127.0.0.1 -d /var/lib/botd -m usr
+systemctl enable botd
+systemctl daemon-reload
+service botd start
+systemctl status botd

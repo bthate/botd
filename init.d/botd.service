@@ -1,0 +1,8 @@
+[Unit]
+Description=botd
+
+[Service]
+ExecStart=/usr/local/bin/botd -k -p -d /var/lib/botd --logdir /var/log/botd -l debug
+
+[Install]
+WantedBy=multi-user.target
