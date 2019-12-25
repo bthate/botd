@@ -7,7 +7,7 @@ workdir = ""
 import logging
 import time
 
-from bl.dbs import Db
+from bl.dbs import Db, last
 from bl.err import EINIT, ENOTXT
 from bl.evt import Event
 from bl.flt import Fleet
@@ -16,7 +16,6 @@ from bl.log import level
 from bl.obj import Object
 from bl.pst import Cfg, Persist
 from bl.shl import enable_history, set_completer, writepid
-from bl.dbs import Db
 from bl.usr import Users
 from bl.utl import get_mods, get_name
 
@@ -59,23 +58,14 @@ class Kernel(Handler, Persist):
         e.wait()
 
     def init(self, modstr):
-        if not modstr:
-            return
-        ok = True
+        mods = []
         for mod in get_mods(self, modstr):
             if "init" not in dir(mod):
                 continue
-            n = get_name(mod)
-            if self.cfg.exclude and n in self.cfg.exclude.split(","):
-                continue
-            try:
-                mod.init()
-            except EINIT as ex:
-                if not self.cfg.doexec and not self.cfg.shell and not self.cfg.kernel:
-                    print(str(ex))
-                    ok = False
-                    break
-        return ok
+            logging.warning("init %s" % mod.__name__)
+            mod.init()
+            mods.append(mod)
+        return mods
 
     def show(self, event):
         for txt in event.result:
@@ -91,7 +81,7 @@ class Kernel(Handler, Persist):
         if self.cfg.owner:
             self.users.oper(cfg.owner)
         if self.cfg.kernel:
-            bl.dbs.last(cfg)
+            last(cfg)
         super().start()
 
     def wait(self):

@@ -81,16 +81,7 @@ def get_mods(h, ms):
     for mn in ms.split(","):
         if not mn:
             continue
-        m = None
-        try:
-            m = h.walk(mn)
-        except ModuleNotFoundError as ex:
-            pass
-        if not m:
-            try:
-                m = h.walk("bl.%s" % mn)
-            except ModuleNotFoundError as ex:
-                pass
+        m = h.walk(mn)
         if m:
             modules.extend(m)
     return modules

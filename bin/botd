@@ -1,5 +1,5 @@
 #!/usr/bin/python3 -u
-# BOTD - python3 IRC channel daemon.
+# BOTLIB - Framework to program bots.
 #
 # 
 
@@ -7,11 +7,17 @@ __version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import bl
+import bl.krn
+import logging
 
-from bl import cfg, k
-from bl.shl import execute, parse_cli
+from bl.csl import Console
+from bl.evt import Event
+from bl.krn import k, workdir
+from bl.log import level, logfiled
+from bl.shl import close_history, enable_history, parse_cli, set_completer
 from bl.trm import reset, save
+from bl.trc import get_exception
+from bl.utl import hd
 
 opts = [
     ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
@@ -29,6 +35,12 @@ opts = [
     ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
 
+class Event(Event):
+
+    def show(self):
+        for txt in self.result:
+            k.fleet.echo(self.channel, txt)
+
 def daemon():
     pid = os.fork()
     if pid != 0:
@@ -43,12 +55,22 @@ def daemon():
     os.dup2(so.fileno(), sys.stdout.fileno())
     os.dup2(se.fileno(), sys.stderr.fileno())
 
+def execute(main):
+    save()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except Exception:
+        logging.error(get_exception())
+    reset()
+    close_history()
+
 def main():
-    parse_cli("botd", __version__, opts)
-    cfg.kernel = True
-    cfg.parsing = False
     daemon()
+    k.cfg.shell = True
     k.start()
+    k.init("botd")
     k.wait()
 
 execute(main)

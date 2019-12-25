@@ -2,19 +2,21 @@
 #
 # clock module providing timers and repeaters 
 
-import bl
 import threading
 import time
 import typing
 
+from bl.evt import Event
+from bl.krn import k
 from bl.obj import Object
-from bl.spc import cfg, db, launch
+from bl.pst import Persist
+from bl.utl import get_name
 
 def __dir__():
     return ("Repeater", "Timer", "Timers")
 
 def dummy():
-    if cfg.verbose:
+    if k.cfg.verbose:
         print("yo!")
 
 default = {
@@ -22,13 +24,13 @@ default = {
           "starttime": 0
          }          
 
-class Timers(bl.pst.Persist):
+class Timers(Persist):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._stopped = False
         self.cfg = bl.pst.Cfg()
-        self.timers = bl.obj.Object()
+        self.timers = Object()
 
     def loop(self):
         while not self._stopped:
@@ -45,8 +47,8 @@ class Timers(bl.pst.Persist):
                 del self.timers[r]
 
     def start(self):
-        for evt in bl.db.all("bl.clk.Timers"):
-            e = bl.evt.Event()
+        for evt in k.db.all("bl.clk.Timers"):
+            e = Event()
             update(e, evt)
             if "done" in e and e.done:
                 continue
@@ -64,12 +66,12 @@ class Timer(Persist):
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__()
         self._func = func
-        self._name = kwargs.get("name", bl.typ.get_name(func))
+        self._name = kwargs.get("name", get_name(func))
         self.sleep = sleep
         self.args = args
         self.kwargs = kwargs
         self.state = Object()
-        update(self.state, default)
+        self.state.update(default)
         self.timer = None
 
     def start(self):
@@ -96,4 +98,4 @@ class Repeater(Timer):
 
     def run(self, *args, **kwargs):
         self._func(*args, **kwargs)
-        return bl.launch(self.start)
+        return k.launch(self.start)

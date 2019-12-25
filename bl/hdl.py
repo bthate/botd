@@ -14,7 +14,7 @@ from bl.obj import Object
 from bl.pst import Register
 from bl.ldr import Loader
 from bl.thr import Launcher
-from bl.typ import get_type
+from bl.typ import get_name, get_type
 
 def __dir__():
     return ("Handler",)
@@ -64,7 +64,7 @@ class Handler(Loader, Launcher):
         return mod
 
     def poll(self):
-        raiseENOTIMPLEMENTED
+        raise ENOTIMPLEMENTED
 
     def put(self, event):
         self._queue.put_nowait(event)
@@ -96,7 +96,7 @@ class Handler(Loader, Launcher):
     def sync(self, other):
         self.handlers.extend(other.handlers)
         self.cmds.update(other.cmds)
-        logging.warning("synced %s" % self)
+        logging.warning("synced %s" % get_name(self))
 
     def walk(self, pkgname):
         mod = self.load_mod(pkgname)

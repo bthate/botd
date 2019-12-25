@@ -11,6 +11,7 @@ import bl.krn
 import logging
 
 from bl.csl import Console
+from bl.err import EINIT
 from bl.evt import Event
 from bl.krn import k, workdir
 from bl.log import level, logfiled
@@ -71,8 +72,14 @@ def main():
     k.cfg.update(cfg)
     bl.krn.workdir = cfg.workdir or wd
     k.cfg.shell = True
+    k.cfg.prompting = True
     k.start()
-    k.init("botd")
+    try:
+        k.init("botd")
+        k.init(k.cfg.modules)
+    except EINIT as ex:
+        print(str(ex))
+        return
     c = Console()
     c.sync(k)
     c.start()

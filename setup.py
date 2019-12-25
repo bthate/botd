@@ -13,7 +13,6 @@ setup(
     description="python3 channel bot daemon.",
     long_description=readme(),
     license='Public Domain',
-    zip_safe=True,
     install_requires=["feedparser"],
     packages=["bl", "botd"],
     scripts=["bin/bot", "bin/botd", "bin/toudp"],

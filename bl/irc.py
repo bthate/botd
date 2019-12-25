@@ -2,7 +2,6 @@
 #
 # 
 
-import bl
 import logging
 import os
 import queue
@@ -14,9 +13,14 @@ import time
 import threading
 import _thread
 
-from bl import Cfg, Event, Object, cfg, dispatch, k, users
+from bl.dbs import last
+from bl.krn import k, dispatch
+from bl.obj import Object
+from bl.pst import Cfg
+from bl.evt import Event
 from bl.bot import Bot
 from bl.err import EINIT
+from bl.utl import locked
 
 def __dir__():
     return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "errored", "noticed", "privmsged")
@@ -38,16 +42,17 @@ default = {
           
 def init():
     bot = IRC()
-    bl.last(cfg)
-    if cfg.prompting:
+    bot.sync(k)
+    last(bot.cfg)
+    if k.cfg.prompting:
         try:
-            server, channel, nick = cfg.args
+            server, channel, nick = k.cfg.args
             bot.cfg.server = server
             bot.cfg.channel = channel
             bot.cfg.nick = nick
             bot.cfg.save()
         except ValueError:
-            raise EINIT("%s <server> <channel> <nick>" % cfg.name)
+            raise EINIT("%s <server> <channel> <nick>" % k.cfg.name)
     bot.start()
     return bot
 
@@ -276,6 +281,14 @@ class IRC(Bot):
             self.state.error = e
         return e
 
+    def input(self):
+        while not self._stopped:
+            try:
+                e = self.poll()
+            except EOFError:
+                break
+            self.put(e)
+
     def joinall(self):
         for channel in self.channels:
             self.command("JOIN", channel)
@@ -323,7 +336,7 @@ class IRC(Bot):
         self.register(privmsged)
         self.register(noticed)
         self.connect()
-        super().start(True, True, True)
+        super().start(True, True)
 
 class DCC(Bot):
 
@@ -400,19 +413,19 @@ def privmsged(handler, event):
     if event.command != "PRIVMSG":
         return
     if event.origin != cfg.owner:
-        set(users.userhosts, event.nick, event.origin)
+        k.users.userhosts.set(event.nick, event.origin)
     if event.txt.startswith("DCC CHAT"):
-        if not users.allowed(event.origin, "USER"):
+        if not k.users.allowed(event.origin, "USER"):
             return
         try:
             dcc = DCC()
             dcc.encoding = "utf-8"
-            bl.k.launch(dcc.connect, event)
+            k.launch(dcc.connect, event)
             return
         except ConnectionRefusedError:
             return
     if event.txt and event.txt[0] == handler.cc:
-        if not users.allowed(event.origin, "USER"):
+        if not k.users.allowed(event.origin, "USER"):
             logging.error("deny %s" % event.origin)
             return
         k.put(event)

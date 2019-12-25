@@ -4,7 +4,8 @@
 
 import sys
 
-from bl.
+from bl.hdl import Handler
+from bl.krn import k, dispatch
 from bl.pst import Cfg
 
 def __dir__():
@@ -53,9 +54,11 @@ class Bot(Handler):
         else:
             self.raw(txt)
 
-    def start(self, handler=True, input=False, output=False):
+    def start(self, input=False, output=False):
         self.register(dispatch)
-        super().start(handler)
+        super().start()
         if output:
             self.launch(self.output)
-        bl.fleet.add(self)
+        if input:
+            self.launch(self.input)
+        k.fleet.add(self)
