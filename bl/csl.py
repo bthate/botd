@@ -40,7 +40,7 @@ class Console(Handler, Persist):
                 e = self.poll()
             except EOFError:
                 break
-            self.put(e)
+            dispatch(self, e)
             e.wait()
 
     def raw(self, txt):
@@ -54,5 +54,5 @@ class Console(Handler, Persist):
  
     def start(self):
         self.register(dispatch)
-        super().start()
+        super().start(False)
         self.launch(self.input)

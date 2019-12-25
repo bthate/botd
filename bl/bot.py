@@ -32,6 +32,14 @@ class Bot(Handler):
         for channel in self.channels:
             self.say(channel, txt)
 
+    def input(self):
+        while not self._stopped:
+            try:
+                e = self.poll()
+            except EOFError:
+                break
+            self.put(e)
+
     def output(self):
         self._outputed = True
         while not self._stopped:
@@ -54,11 +62,9 @@ class Bot(Handler):
         else:
             self.raw(txt)
 
-    def start(self, input=False, output=False):
-        self.register(dispatch)
-        super().start()
+    def start(self, handler=True, input=False, output=False):
+        super().start(handler)
         if output:
             self.launch(self.output)
         if input:
             self.launch(self.input)
-        k.fleet.add(self)

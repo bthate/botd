@@ -72,6 +72,10 @@ class Event(Event):
         self.orig = ""
         self.target = ""
 
+    def show(self):
+        for txt in self.result:
+            k.fleet.echo(self.orig, self.channel, txt)
+
 class DEvent(Event):
 
     def __init__(self):
@@ -87,6 +91,10 @@ class DEvent(Event):
 
     def reply(self, txt):
         self.raw(txt)
+
+    def show(self):
+        for txt in self.result:
+            k.fleet.echo(self.orig, self.channel, txt)
 
 class TextWrap(textwrap.TextWrapper):
 
@@ -336,7 +344,7 @@ class IRC(Bot):
         self.register(privmsged)
         self.register(noticed)
         self.connect()
-        super().start(True, True)
+        super().start(True, True, True)
 
 class DCC(Bot):
 
@@ -366,7 +374,7 @@ class DCC(Bot):
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((addr, port))
-        s.send(bytes('Welcome to %s %s !!\n' % (cfg.name.upper(), event.nick), "utf-8"))
+        s.send(bytes('Welcome to %s %s !!\n' % (k.cfg.name.upper(), event.nick), "utf-8"))
         s.setblocking(True)
         os.set_inheritable(s.fileno(), os.O_RDWR)
         self._sock = s
@@ -406,19 +414,20 @@ def noticed(handler, event):
     if event.command != "NOTICE":
         return
     if event.txt.startswith("VERSION"):
-        txt = "\001VERSION %s %s - %s\001" % (cfg.name, __version__, cfg.description)
+        txt = "\001VERSION %s %s - %s\001" % (k.cfg.name, k.cfg.version, k.cfg.description)
         handler.command("NOTICE", event.channel, txt)
 
 def privmsged(handler, event):
     if event.command != "PRIVMSG":
         return
-    if event.origin != cfg.owner:
+    if event.origin != k.cfg.owner:
         k.users.userhosts.set(event.nick, event.origin)
     if event.txt.startswith("DCC CHAT"):
         if not k.users.allowed(event.origin, "USER"):
             return
         try:
             dcc = DCC()
+            dcc.sync(k)
             dcc.encoding = "utf-8"
             k.launch(dcc.connect, event)
             return

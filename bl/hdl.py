@@ -58,7 +58,7 @@ class Handler(Loader, Launcher):
         self._ready.set()
 
     def load_mod(self, mn, force=True):
-        logging.warning("load %s" % mn)
+        logging.warning("load %s into %s" % (mn, get_name(self)))
         mod = super().load_mod(mn, force=force)
         self.scan(mod)
         return mod
@@ -86,8 +86,9 @@ class Handler(Loader, Launcher):
                     self.classes.append(t)
                     self.names[t.split(".")[-1].lower()] = str(t)
                 
-    def start(self):
-        self.launch(self.handler)
+    def start(self, handler=True):
+        if handler:
+            self.launch(self.handler)
 
     def stop(self):
         self._stopped = True
@@ -96,7 +97,7 @@ class Handler(Loader, Launcher):
     def sync(self, other):
         self.handlers.extend(other.handlers)
         self.cmds.update(other.cmds)
-        logging.warning("synced %s" % get_name(self))
+        logging.warning("synced %s to %s" % (get_name(other), get_name(self)))
 
     def walk(self, pkgname):
         mod = self.load_mod(pkgname)

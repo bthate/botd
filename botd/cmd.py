@@ -1,4 +1,4 @@
-# BOTLIB - Framework to program bots.
+# BOTD - python3 IRC channel daemon.
 #
 # basic commands. 
 
@@ -90,6 +90,7 @@ def up(event):
 
 def v(event):
     res = []
+    res.append("%s %s" % (k.cfg.name.upper(), k.cfg.version))
     for name, mod in k.table.items():
         if not mod:
             continue

@@ -2,8 +2,9 @@
 #
 # user management.
 
-import bl
+import logging
 
+from bl.dbs import Db
 from bl.obj import Object
 from bl.pst import Persist
 
@@ -17,7 +18,7 @@ class User(Persist):
         self.user = ""
         self.perms = []
 
-class Users(Persist):
+class Users(Db):
 
     cache = Object()
     userhosts = Object()
@@ -27,6 +28,7 @@ class Users(Persist):
         user = self.get_user(origin)
         if user:
             if perm in user.perms:
+                logging.warning("allowed %s %s" % (origin, perm))
                 return True
         return False
 
@@ -40,9 +42,8 @@ class Users(Persist):
                 pass
 
     def get_users(self, origin=""):
-        from bl.spc import db
         s = {"user": origin}
-        return db.all("bl.usr.User", s)
+        return self.all("bl.usr.User", s)
 
     def get_user(self, origin):
         u =  list(self.get_users())
@@ -66,7 +67,7 @@ class Users(Persist):
         user = User()
         user.user = origin
         user.perms = ["OPER", "USER"]
-        set(Users.cache, origin, user)
+        Users.cache.set(origin, user)
         return user
 
     def perm(self, origin, permission):
