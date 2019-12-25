@@ -2,7 +2,6 @@
 #
 # kernel tables. 
 
-__version__ = 1
 workdir = ""
 
 import logging

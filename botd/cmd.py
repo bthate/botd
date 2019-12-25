@@ -6,7 +6,7 @@ import os
 import time
 import threading
 
-from bl.krn import k, workdir, __version__
+from bl.krn import k, workdir
 from bl.obj import Object
 from bl.tms import elapsed
 from bl.typ import get_type
@@ -76,7 +76,7 @@ def thr(event):
         if o.get("sleep", None):
             up = o.sleep - int(time.time() - o.state.latest)
         else:
-            up = int(time.time() - bl.state.starttime)
+            up = int(time.time() - k.state.starttime)
         result.append((up, thr.getName(), o))
     nr = -1
     for up, thrname, o in sorted(result, key=lambda x: x[0]):
@@ -86,17 +86,16 @@ def thr(event):
             event.reply(res)
 
 def up(event):
-    event.reply(elapsed(time.time() - bl.state.starttime))
+    event.reply(elapsed(time.time() - k.state.starttime))
 
 def v(event):
-        res = []
-        res.append("BOTLIB %s" % __version__)
-        for name, mod in k.table.items():
-            if not mod:
-                continue
-            ver = getattr(mod, "__version__", None)
-            if ver:
-                txt = "%s %s" % (name, ver)
-                res.append(txt.upper())
-        if res:
-            event.reply(" | ".join(res))
+    res = []
+    for name, mod in k.table.items():
+        if not mod:
+            continue
+        ver = getattr(mod, "__version__", None)
+        if ver:
+            txt = "%s %s" % (name, ver)
+            res.append(txt.upper())
+    if res:
+        event.reply(" | ".join(res))

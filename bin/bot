@@ -10,12 +10,14 @@ import logging
 
 from bl.csl import Console
 from bl.evt import Event
-from bl.krn import k, workdir, __version__
+from bl.krn import k, workdir
 from bl.log import level, logfiled
 from bl.shl import close_history, enable_history, parse_cli, set_completer
 from bl.trm import reset, save
 from bl.trc import get_exception
 from bl.utl import hd
+
+from botd import __version__
 
 opts = [
     ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
