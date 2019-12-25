@@ -344,6 +344,7 @@ class IRC(Bot):
         self.register(privmsged)
         self.register(noticed)
         self.connect()
+        k.add(self)
         super().start(True, True, True)
 
 class DCC(Bot):
@@ -400,6 +401,7 @@ class DCC(Bot):
         self.raw(txt)
 
     def start(self):
+        k.add(self)
         super().start(False, True, False)
 
 def errored(handler, event):

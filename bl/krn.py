@@ -67,11 +67,19 @@ class Kernel(Handler, Persist):
             mods.append(mod)
         return mods
 
+    def input(self):
+        while not self._stopped:
+            try:
+                e = self.poll()
+            except EOFError:
+                break
+            self.put(e)
+
     def show(self, event):
         for txt in event.result:
             self.fleet.echo(event.channel, txt)
 
-    def start(self):
+    def start(self, handler=True, input=False, output=False):
         if self._started:
             return
         level(self.cfg.level, self.cfg.logdir)
@@ -82,8 +90,10 @@ class Kernel(Handler, Persist):
             self.users.oper(cfg.owner)
         if self.cfg.kernel:
             last(cfg)
-        super().start()
-
+        super().start(handler)
+        if input:
+            self.launch(self.input)
+            
     def wait(self):
         while not self._stopped:
             time.sleep(1.0)
