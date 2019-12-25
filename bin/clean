@@ -1,0 +1,5 @@
+# BOTLIB - Framework to program bots.
+#
+# 
+
+rm -fR testdata runbotd runbotd.tar.gz init.d/*~  build dist botd.egg-info *~  bin/*~ bl/*~ bl/__pycache__ botd/*~ botd/__pycache__ tests/*~ tests/__pycache__

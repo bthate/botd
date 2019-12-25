@@ -9,6 +9,13 @@ import random
 import time
 import urllib
 
+from bl.clk import Repeater
+from bl.obj import Cfg, Default, Object
+from bl.flt import Fleet
+from bl.pst import Persist
+from bl.dbs import Db
+from bl.utl import get_tinyurl, get_url, strip_html, unescape
+
 try:
     import feedparser
     gotparser = True
@@ -22,30 +29,30 @@ def init():
     fetcher.start()
     return fetcher
 
-class Cfg(bl.Cfg):
+class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
         self.display_list = ["title", "link"]
         self.dosave = True
 
-class Feed(bl.Default):
+class Feed(Default):
 
     pass
 
-class Rss(bl.Persist):
+class Rss(Persist):
 
     def __init__(self):
         super().__init__()
         self.rss = ""
 
-class Seen(bl.Persist):
+class Seen(Persist):
 
     def __init__(self):
         super().__init__()
         self.urls = []
 
-class Fetcher(bl.Persist):
+class Fetcher(Persist):
 
     def __init__(self):
         super().__init__()
@@ -54,8 +61,6 @@ class Fetcher(bl.Persist):
         self._thrs = []
 
     def display(self, o):
-        if bl.cfg.debug:
-            return 0
         result = ""
         try:
             dl = o.display_list
@@ -64,22 +69,20 @@ class Fetcher(bl.Persist):
         if not dl:
             dl = self.cfg.display_list
         for key in dl:
-            data = bl.get(o, key, None)
+            data = o.get(key, None)
             if key == "link":
-                datatmp = bl.utl.get_tinyurl(data)
+                datatmp = get_tinyurl(data)
                 if datatmp:
                     data = datatmp[0]
             if data:
                 data = data.replace("\n", " ")
-                data = bl.utl.strip_html(data.rstrip())
-                data = bl.utl.unescape(data)
+                data = strip_html(data.rstrip())
+                data = unescape(data)
                 result += data.rstrip()
                 result += " - "
         return result[:-2].rstrip()
 
     def fetch(self, obj):
-        if bl.cfg.debug:
-            return 0
         counter = 0
         objs = []
         if not obj.rss:
@@ -88,8 +91,8 @@ class Fetcher(bl.Persist):
             if not o:
                 continue
             feed = Feed()
-            bl.update(feed, o)
-            bl.update(feed, obj)
+            feed.update(o)
+            feed.update(obj)
             u = urllib.parse.urlparse(feed.link)
             url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
             if url in self.seen.urls:
@@ -108,7 +111,7 @@ class Fetcher(bl.Persist):
                     feed.save()
         self.seen.save()
         for o in objs:
-            bl.fleet.announce(self.display(o))
+            fleet.announce(self.display(o))
         return counter
 
     def join(self):
@@ -118,30 +121,29 @@ class Fetcher(bl.Persist):
     def run(self):
         res = []
         thrs = []
-        for o in bl.db.all("bl.rss.Rss"):
-            thrs.append(bl.launch(self.fetch, o))
+        for o in db.all("bl.rss.Rss"):
+            thrs.append(k.launch(self.fetch, o))
         for thr in thrs:
             res.append(thr.join())
         return res
 
     def start(self, repeat=True):
-        bl.last(self.cfg)
-        bl.last(self.seen)
+        self.cfg.last()
+        self.seen.last()
         if repeat:
-            repeater = bl.clk.Repeater(600, self.run)
+            repeater = Repeater(600, self.run)
             repeater.start()
             return repeater
 
     def stop(self):
         self.seen.save()
 
+db = Db()
 fetcher = Fetcher()
+fleet = Fleet()
 
 def get_feed(url):
-    result = ""
-    if bl.cfg.debug:
-        return [bl.Object(), bl.Object()]
-    result = bl.utl.get_url(url).data
+    result = get_url(url).data
     if gotparser:
         result = feedparser.parse(result)
         if "entries" in result:
@@ -153,14 +155,14 @@ def get_feed(url):
 def file_time(timestamp):
     return str(datetime.datetime.fromtimestamp(timestamp)).replace(" ", os.sep) + "." + str(random.randint(111111, 999999))
 
-def del(event):
+def delrss(event):
     if not event.args:
-        event.reply("delete <match>")
+        event.reply("del <match>")
         return
     selector = {"rss": event.args[0]}
     nr = 0
     got = []
-    for rss in bl.db.find("bl.rss.Rss", selector):
+    for rss in db.find("bl.rss.Rss", selector):
         nr += 1
         rss._deleted = True
         got.append(rss)
@@ -174,7 +176,7 @@ def dpl(event):
         return
     nr = 0
     setter = {"display_list": event.args[1]}
-    for o in bl.db.find("bl.rss.Rss", {"rss": event.args[0]}):
+    for o in db.find("bl.rss.Rss", {"rss": event.args[0]}):
         nr += 1
         bl.edit(o, setter)
         o.save()
@@ -186,19 +188,19 @@ def feed(event):
         match = event.args[0]
     nr = 0
     diff = time.time() - bl.tms.to_time(bl.tms.day())
-    res = list(bl.db.find("bl.rss.Feed", {"link": match}, delta=-diff))
+    res = list(db.find("bl.rss.Feed", {"link": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s - %s" % (nr, o.title, o.summary, o.updated or o.published or "nodate", o.link))
         nr += 1
     if nr:
         return
-    res = list(bl.db.find("bl.rss.Feed", {"title": match}, delta=-diff))
+    res = list(db.find("bl.rss.Feed", {"title": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
         nr += 1
-    res = list(bl.db.find("bl.rss.Feed", {"summary": match}, delta=-diff))
+    res = list(db.find("bl.rss.Feed", {"summary": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
@@ -213,7 +215,7 @@ def ftc(event):
 def rss(event):
     if not event.rest or "http" not in event.rest:
         nr = 0
-        res = list(bl.db.find("bl.rss.Rss", {"rss": ""}))
+        res = list(db.find("bl.rss.Rss", {"rss": ""}))
         if res:
             for o in res:
                 event.reply("%s %s" % (nr, o.rss))

@@ -112,7 +112,7 @@ def get_name(o):
     return n
 
 def get_tinyurl(url):
-    if bl.cfg.debug:
+    if cfg.debug:
         return url
     postarray = [
         ('submit', 'submit'),
@@ -150,7 +150,7 @@ def kill(thrname):
             task.stop()
 
 def fnlast(otype):
-    fns = list(bl.dbs.names(otype))
+    fns = list(names(otype))
     if fns:
         return fns[-1]
 
@@ -191,8 +191,8 @@ def touch(fname):
         pass
 
 def useragent():
-    from ob import k
-    return 'Mozilla/5.0 (X11; Linux x86_64) %s +http://bitbucket.org/bthate/%s)' % (k.cfg.name.upper(), k.cfg.name.lower())
+    from bl import cfg
+    return 'Mozilla/5.0 (X11; Linux x86_64) %s +http://git@github.com/bthate/%s)' % (cfg.name.upper(), cfg.name.lower())
 
 def unescape(text):
     import html

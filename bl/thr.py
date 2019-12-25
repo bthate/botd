@@ -8,6 +8,9 @@ import queue
 import threading
 import types
 
+from bl.trc import get_exception
+from bl.utl import get_name
+
 def __dir__():
     return ("Task", "Launcher")
 
@@ -32,7 +35,7 @@ class Thr(threading.Thread):
         try:
             self._result = func(*args)
         except Exception as ex:
-            logging.error(bl.trc.get_exception())
+            logging.error(get_exception())
 
     def join(self, timeout=None):
         super().join(timeout)
@@ -51,7 +54,7 @@ class Launcher:
         try:
             name = kwargs.get("name", args[0].name or args[0].txt)
         except (AttributeError, IndexError):
-            name = bl.utl.get_name(func)
+            name = get_name(func)
         t = Thr(func, *args, name=name)
         t.start()
         return t

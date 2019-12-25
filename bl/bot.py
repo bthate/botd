@@ -3,12 +3,14 @@
 # bot base class 
 
 import sys
-import bl
+
+from bl.
+from bl.pst import Cfg
 
 def __dir__():
     return ('Bot', 'Cfg')
 
-class Cfg(bl.Cfg):
+class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
@@ -17,7 +19,7 @@ class Cfg(bl.Cfg):
         self.port = 0
         self.server = ""
 
-class Bot(bl.hdl.Handler):
+class Bot(Handler):
 
     def __init__(self):
         super().__init__()
@@ -28,6 +30,13 @@ class Bot(bl.hdl.Handler):
     def announce(self, txt):
         for channel in self.channels:
             self.say(channel, txt)
+
+    def output(self):
+        self._outputed = True
+        while not self._stopped:
+            channel, txt, type = self._outqueue.get()
+            if self.verbose:
+                print(txt)
 
     def poll(self):
         pass
@@ -45,6 +54,8 @@ class Bot(bl.hdl.Handler):
             self.raw(txt)
 
     def start(self, handler=True, input=False, output=False):
-        self.register(bl.dpt.dispatch)
-        super().start(handler, input, output)
+        self.register(dispatch)
+        super().start(handler)
+        if output:
+            self.launch(self.output)
         bl.fleet.add(self)

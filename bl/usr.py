@@ -4,20 +4,23 @@
 
 import bl
 
-def __dir__():
-    return ("User", "Users", "meet")
+from bl.obj import Object
+from bl.pst import Persist
 
-class User(bl.Persist):
+def __dir__():
+    return ("User", "Users")
+
+class User(Persist):
 
     def __init__(self):
         super().__init__()
         self.user = ""
         self.perms = []
 
-class Users(bl.Persist):
+class Users(Persist):
 
-    cache = bl.Object()
-    userhosts = bl.Object()
+    cache = Object()
+    userhosts = Object()
 
     def allowed(self, origin, perm):
         perm = perm.upper()
@@ -37,8 +40,9 @@ class Users(bl.Persist):
                 pass
 
     def get_users(self, origin=""):
+        from bl.spc import db
         s = {"user": origin}
-        return bl.db.all("bl.usr.User", s)
+        return db.all("bl.usr.User", s)
 
     def get_user(self, origin):
         u =  list(self.get_users())
@@ -62,13 +66,13 @@ class Users(bl.Persist):
         user = User()
         user.user = origin
         user.perms = ["OPER", "USER"]
-        bl.set(Users.cache, origin, user)
+        set(Users.cache, origin, user)
         return user
 
     def perm(self, origin, permission):
         user = self.get_user(origin)
         if not user:
-            raise bl.err.ENOUSER(origin)
+            raise ENOUSER(origin)
         if permission.upper() not in user.perms:
             user.perms.append(permission.upper())
             user.save()

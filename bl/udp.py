@@ -6,6 +6,8 @@ import bl
 import socket
 import time
 
+from bl import Cfg, Persist, db, fleet, launch
+
 def __dir__():
     return ("UDP", "Cfg", "init") 
 
@@ -14,7 +16,7 @@ def init():
     server.start()
     return server
 
-class Cfg(bl.Cfg):
+class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
@@ -25,7 +27,7 @@ class Cfg(bl.Cfg):
         self.server = self.host
         self.owner = ""
 
-class UDP(bl.Persist):
+class UDP(Persist):
 
     def __init__(self):
         super().__init__()
@@ -76,5 +78,5 @@ class UDP(bl.Persist):
         self._sock.sendto(bytes("bla", "utf-8"), (self.cfg.host, self.cfg.port))
 
     def start(self):
-        self.cfg = bl.db.last("bl.udp.Cfg") or Cfg()
-        bl.launch(self.server)
+        self.cfg = db.last("bl.udp.Cfg") or Cfg()
+        launch(self.server)

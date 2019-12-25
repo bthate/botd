@@ -14,6 +14,10 @@ import time
 import threading
 import _thread
 
+from bl import Cfg, Event, Object, cfg, dispatch, k, users
+from bl.bot import Bot
+from bl.err import EINIT
+
 def __dir__():
     return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "errored", "noticed", "privmsged")
 
@@ -22,36 +26,36 @@ lock = _thread.allocate_lock()
 default = {
            "blocking": False,
            "channel": "",
-           "nick": "botlib",
+           "nick": "botd",
            "ipv6": False,
            "port": 6667,
            "server": "",
            "sleep": 5.0,
            "ssl": False,
-           "realname": "botlib",
-           "username": "botlib",
+           "realname": "botd",
+           "username": "botd",
           }
           
 def init():
     bot = IRC()
-    bl.last(bot.cfg)
-    if bl.cfg.prompting:
+    bl.last(cfg)
+    if cfg.prompting:
         try:
-            server, channel, nick = bl.cfg.args
+            server, channel, nick = cfg.args
             bot.cfg.server = server
             bot.cfg.channel = channel
             bot.cfg.nick = nick
             bot.cfg.save()
         except ValueError:
-            raise bl.err.EINIT("%s <server> <channel> <nick>" % bl.cfg.name)
+            raise EINIT("%s <server> <channel> <nick>" % cfg.name)
     bot.start()
     return bot
 
-class Cfg(bl.Cfg):
+class Cfg(Cfg):
 
     pass
 
-class Event(bl.Event):
+class Event(Event):
 
     def __init__(self):
         super().__init__()
@@ -63,7 +67,7 @@ class Event(bl.Event):
         self.orig = ""
         self.target = ""
 
-class DEvent(bl.Event):
+class DEvent(Event):
 
     def __init__(self):
         super().__init__()
@@ -90,7 +94,7 @@ class TextWrap(textwrap.TextWrapper):
         self.tabsize = 4
         self.width = 480
 
-class IRC(bl.Bot):
+class IRC(Bot):
 
     def __init__(self):
         super().__init__()
@@ -102,7 +106,7 @@ class IRC(bl.Bot):
         self.cc = "!"
         self.cfg = Cfg(default)
         self.channels = []
-        self.state = bl.Object()
+        self.state = Object()
         self.state.error = ""
         self.state.last = 0
         self.state.lastline = ""
@@ -191,7 +195,7 @@ class IRC(bl.Bot):
         o.rest = " ".join(o.args)
         return o
 
-    @bl.locked(lock)
+    @locked(lock)
     def _say(self, channel, txt, mtype="chat"):
         wrapper = TextWrap()
         for line in txt.split("\n"):
@@ -279,7 +283,7 @@ class IRC(bl.Bot):
     def logon(self, server, nick):
         self._connected.wait()
         self.raw("NICK %s" % nick)
-        self.raw("USER %s %s %s :%s" % (self.cfg.username or "obi", server, server, self.cfg.realname or "obi"))
+        self.raw("USER %s %s %s :%s" % (self.cfg.username or "botd", server, server, self.cfg.realname or "botd"))
 
     def output(self):
         self._outputed = True
@@ -290,7 +294,6 @@ class IRC(bl.Bot):
                     if (time.time() - self.state.last) < 3.0:
                         time.sleep(1.0 * (self.state.nrsend % 10))
                 self._say(channel, txt, type)
-
 
     def raw(self, txt):
         txt = txt.rstrip()
@@ -315,14 +318,14 @@ class IRC(bl.Bot):
             return
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
-        self.register(bl.dispatch)
+        self.register(dispatch)
         self.register(errored)
         self.register(privmsged)
         self.register(noticed)
         self.connect()
         super().start(True, True, True)
 
-class DCC(bl.Bot):
+class DCC(Bot):
 
     def __init__(self):
         super().__init__()
@@ -350,7 +353,7 @@ class DCC(bl.Bot):
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((addr, port))
-        s.send(bytes('Welcome to %s %s !!\n' % (bl.cfg.name.upper(), event.nick), "utf-8"))
+        s.send(bytes('Welcome to %s %s !!\n' % (cfg.name.upper(), event.nick), "utf-8"))
         s.setblocking(True)
         os.set_inheritable(s.fileno(), os.O_RDWR)
         self._sock = s
@@ -369,7 +372,7 @@ class DCC(bl.Bot):
         e.channel = self.origin
         e.orig = repr(self)
         e.origin = self.origin or "root@dcc"
-        bl.k.handle(e)
+        k.handle(e)
         return e
 
     def say(self, channel, txt, type="chat"):
@@ -390,16 +393,16 @@ def noticed(handler, event):
     if event.command != "NOTICE":
         return
     if event.txt.startswith("VERSION"):
-        txt = "\001VERSION %s %s - %s\001" % (bl.cfg.name, __version__, bl.cfg.description)
+        txt = "\001VERSION %s %s - %s\001" % (cfg.name, __version__, cfg.description)
         handler.command("NOTICE", event.channel, txt)
 
 def privmsged(handler, event):
     if event.command != "PRIVMSG":
         return
-    if event.origin != bl.cfg.owner:
-        bl.obj.set(bl.k.users.userhosts, event.nick, event.origin)
+    if event.origin != cfg.owner:
+        set(users.userhosts, event.nick, event.origin)
     if event.txt.startswith("DCC CHAT"):
-        if not bl.k.users.allowed(event.origin, "USER"):
+        if not users.allowed(event.origin, "USER"):
             return
         try:
             dcc = DCC()
@@ -409,7 +412,7 @@ def privmsged(handler, event):
         except ConnectionRefusedError:
             return
     if event.txt and event.txt[0] == handler.cc:
-        if not bl.k.users.allowed(event.origin, "USER"):
+        if not users.allowed(event.origin, "USER"):
             logging.error("deny %s" % event.origin)
             return
-        bl.k.put(event)
+        k.put(event)

@@ -6,12 +6,17 @@ import bl
 import time
 import threading
 
+from bl.obj import Object
+from bl.pst import Persist
+from bl.err import ENOTXT
+from bl.gnr import format
+
 def __dir__():
-    return ("Command", "Event", "Token", "aliases")
+    return ("Command", "Event", "Object", "Token", "aliases")
 
 aliases = {}
 
-class Token(bl.Object):
+class Token(Object):
 
     def __init__(self):
         super().__init__()
@@ -51,7 +56,8 @@ class Token(bl.Object):
         except ValueError:
             pass
         if nr == 1:
-            self.match = bl.get(bl.k.names, word, word)
+            from bl.krn import k
+            self.match = k.names.get(word, word)
             self.arg = word
             return
         if "http" in word:
@@ -83,7 +89,7 @@ class Token(bl.Object):
             self.selector = word
             self.value = None
 
-class Command(bl.Persist):
+class Command(Persist):
 
     def __init__(self):
         super().__init__()
@@ -117,7 +123,7 @@ class Command(bl.Persist):
         spl = txt.split()
         if spl and spl[0] in aliases:
             cmd = spl[0]
-            v = bl.get(aliases, cmd, None)
+            v = aliases.get(cmd, None)
             if v:
                 spl[0] = v
         return " ".join(spl)
@@ -126,7 +132,7 @@ class Command(bl.Persist):
         if not txt:
             txt = self.txt 
         if not txt:
-            raise bl.err.ENOTXT
+            raise ENOTXT
         self.txt = txt
         txt = txt.replace("\u0001", "")
         txt = txt.replace("\001", "")
@@ -136,7 +142,7 @@ class Command(bl.Persist):
         nr = -1
         self.args = []
         self.dkeys = []
-        self.options = options or self.options or bl.cfg.options
+        self.options = options or self.options
         words = txt.split()
         tokens = []
         nr = -1
@@ -235,9 +241,9 @@ class Event(Command):
         if "f" in self.options:
             full = True
         if not full and self.dkeys:
-            txt += " " + bl.obj.format(o, self.dkeys, full)
+            txt += " " + format(o, self.dkeys, full)
         else:
-            txt += " " + bl.obj.format(o, full=full)
+            txt += " " + format(o, full=full)
         if "t" in self.options:
             try: 
                 txt += " %s" % bl.tms.days(o.__path__)
@@ -251,5 +257,4 @@ class Event(Command):
         self.result.append(txt)
 
     def show(self):
-        for line in self.result:
-            bl.fleet.echo(self.orig, self.channel, line, self.type)
+        raise ENOTIMPLEMENTED

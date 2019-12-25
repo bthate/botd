@@ -2,12 +2,12 @@
 #
 # 
 
-import bl
+from bl.pst import Persist
 
 def __dir__():
     return ("Fleet",)
 
-class Fleet(bl.Persist):
+class Fleet(Persist):
 
     def __init__(self):
         super().__init__()

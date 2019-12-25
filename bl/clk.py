@@ -1,17 +1,20 @@
 # BOTLIB - Framework to program bots.
 #
-# clock module providin timers and repeaters 
+# clock module providing timers and repeaters 
 
+import bl
 import threading
 import time
 import typing
-import bl
+
+from bl.obj import Object
+from bl.spc import cfg, db, launch
 
 def __dir__():
     return ("Repeater", "Timer", "Timers")
 
 def dummy():
-    if bl.cfg.verbose:
+    if cfg.verbose:
         print("yo!")
 
 default = {
@@ -24,7 +27,7 @@ class Timers(bl.pst.Persist):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._stopped = False
-        self.cfg = bl.cfg.Cfg(default)
+        self.cfg = bl.pst.Cfg()
         self.timers = bl.obj.Object()
 
     def loop(self):
@@ -44,19 +47,19 @@ class Timers(bl.pst.Persist):
     def start(self):
         for evt in bl.db.all("bl.clk.Timers"):
             e = bl.evt.Event()
-            bl.obj.update(e, evt)
+            update(e, evt)
             if "done" in e and e.done:
                 continue
             if "time" not in e:
                 continue
             if time.time() < int(e.time):
                 self.timers[e.time] = e
-        return bl.launch(self.loop)
+        return bl.krn.launch(self.loop)
 
     def stop(self):
         self._stopped = True
 
-class Timer(bl.pst.Persist):
+class Timer(Persist):
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__()
@@ -65,8 +68,8 @@ class Timer(bl.pst.Persist):
         self.sleep = sleep
         self.args = args
         self.kwargs = kwargs
-        self.state = bl.Object()
-        bl.obj.update(self.state, default)
+        self.state = Object()
+        update(self.state, default)
         self.timer = None
 
     def start(self):
@@ -83,7 +86,7 @@ class Timer(bl.pst.Persist):
 
     def run(self, *args, **kwargs) -> None:
         self.state.latest = time.time()
-        bl.launch(self._func, *args, **kwargs)
+        launch(self._func, *args, **kwargs)
 
     def exit(self):
         if self.timer:

@@ -7,6 +7,9 @@ import logging
 import logging.handlers
 import os
 
+from bl.krn import workdir
+from bl.utl import cdir, touch
+
 logfiled = ""
 
 class DumpHandler(logging.StreamHandler):
@@ -16,17 +19,19 @@ class DumpHandler(logging.StreamHandler):
     def emit(self, record):
         pass
 
+
+
 def level(loglevel="", logdir="", logfile="", nostream=False):
     global logfiled
     if not loglevel:
         loglevel = "error"
     if not logfile:
-        logfile = "botlib.log"
-    logdir = logdir or os.path.join(bl.workdir, "logs")
+        logfile = "botd.log"
+    logdir = logdir or os.path.join(workdir, "logs")
     logfile = logfiled = os.path.join(logdir, logfile)
     if not os.path.exists(logfile):
-        bl.utl.cdir(logfile)
-        bl.utl.touch(logfile)
+        cdir(logfile)
+        touch(logfile)
     datefmt = '%H:%M:%S'
     format_time = "%(asctime)-8s %(message)-70s"
     format_plain = "%(message)-0s"

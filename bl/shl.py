@@ -4,15 +4,15 @@
 
 import argparse
 import atexit
-import bl
 import logging
 import optparse
 import os
 import readline
 import time
 
-from bl import Cfg, cfg, default
+from bl.krn import workdir
 from bl.log import level, logfiled
+from bl.pst import Cfg
 from bl.trm import reset, save
 from bl.utl import cdir, hd, touch
 from bl.trc import get_exception
@@ -26,13 +26,13 @@ def __dir__():
 
 def close_history():
     global HISTFILE
-    assert bl.workdir
-    if not HISTFILE:
-        HISTFILE = os.path.join(bl.workdir, "history")
-    if not os.path.isfile(HISTFILE):
-        cdir(HISTFILE)
-        touch(HISTFILE)
-    readline.write_history_file(HISTFILE)
+    if workdir:
+        if not HISTFILE:
+            HISTFILE = os.path.join(workdir, "history")
+        if not os.path.isfile(HISTFILE):
+            cdir(HISTFILE)
+            touch(HISTFILE)
+        readline.write_history_file(HISTFILE)
 
 def complete(text, state):
     matches = []
@@ -47,12 +47,12 @@ def complete(text, state):
 
 def enable_history():
     global HISTFILE
-    assert bl.workdir
-    HISTFILE = os.path.abspath(os.path.join(bl.workdir, "history"))
-    if not os.path.exists(HISTFILE):
-        touch(HISTFILE)
-    else:
-        readline.read_history_file(HISTFILE)
+    if workdir:
+        HISTFILE = os.path.abspath(os.path.join(workdir, "history"))
+        if not os.path.exists(HISTFILE):
+            touch(HISTFILE)
+        else:
+            readline.read_history_file(HISTFILE)
     atexit.register(close_history)
 
 def execute(main):
@@ -82,7 +82,8 @@ def make_opts(ns, options, **kwargs):
     parser.parse_known_args(namespace=ns)
   
 def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error"):
-    cfg = Cfg(default)
+    from bl.krn import k
+    cfg = Cfg()
     make_opts(cfg, opts)
     cfg.debug = False
     cfg.name = name
@@ -90,15 +91,13 @@ def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error"):
     cfg.workdir = cfg.workdir or wd or hd(".%s" % cfg.name)
     cfg.logdir = cfg.logdir or os.path.join(cfg.workdir, "logs")
     cfg.txt = " ".join(cfg.args)
+    k.cfg.update(cfg)
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
-    bl.workdir = cfg.workdir
-    level(cfg.level or loglevel, cfg.logdir)
-    bl.update(bl.cfg, cfg)
-    logging.warning("%s started (%s) at %s" % (cfg.name.upper(), cfg.level or loglevel, time.ctime(time.time())))
-    logging.warning("logging at %s" % logfiled)
-    return bl.cfg
+    level(cfg.level, cfg.logdir)
+    logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
+    return cfg
 
 def set_completer(commands):
     global cmds
@@ -108,7 +107,8 @@ def set_completer(commands):
     atexit.register(lambda: readline.set_completer(None))
 
 def writepid():
-    path = os.path.join(cfg.workdir, "botlib.pid")
+    assert workdir
+    path = os.path.join(workdir, "botlib.pid")
     f = open(path, 'w')
     f.write(str(os.getpid()))
     f.flush()

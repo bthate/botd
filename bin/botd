@@ -1,15 +1,17 @@
 #!/usr/bin/python3 -u
-# BOTLIB - Framework to program bots.
+# BOTD - python3 IRC channel daemon.
 #
 # 
+
+__version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 import bl
 
 from bl import cfg, k
-from bl.shl import parse_cli
-from bl.trm import execute, reset, save
+from bl.shl import execute, parse_cli
+from bl.trm import reset, save
 
 opts = [
     ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
