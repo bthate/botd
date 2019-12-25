@@ -13,8 +13,6 @@ from bl import cfg, k
 from bl.shl import execute, parse_cli
 from bl.trm import reset, save
 
-from botd import __version__
-
 opts = [
     ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),

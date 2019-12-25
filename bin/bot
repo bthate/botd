@@ -3,6 +3,8 @@
 #
 # 
 
+__version__ = 1
+
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 import bl.krn
@@ -16,8 +18,6 @@ from bl.shl import close_history, enable_history, parse_cli, set_completer
 from bl.trm import reset, save
 from bl.trc import get_exception
 from bl.utl import hd
-
-from botd import __version__
 
 opts = [
     ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
