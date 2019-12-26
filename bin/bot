@@ -75,7 +75,7 @@ def main():
     k.cfg.prompting = True
     k.start()
     try:
-        k.init("botd")
+        k.load_mod("botd.cmd")
         k.init(k.cfg.modules)
     except EINIT as ex:
         print(str(ex))

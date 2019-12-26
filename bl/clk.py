@@ -9,27 +9,25 @@ import typing
 from bl.evt import Event
 from bl.krn import k
 from bl.obj import Object
-from bl.pst import Persist
+from bl.pst import Cfg, Persist
 from bl.utl import get_name
 
 def __dir__():
     return ("Repeater", "Timer", "Timers")
 
-def dummy():
-    if k.cfg.verbose:
-        print("yo!")
+class Cfg(Cfg):
 
-default = {
-          "latest": 0,
-          "starttime": 0
-         }          
+    def __init__(self):
+        super().__init__()
+        self.latest =  0
+        self.starttime =  0
 
 class Timers(Persist):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._stopped = False
-        self.cfg = bl.pst.Cfg()
+        self.cfg = Cfg()
         self.timers = Object()
 
     def loop(self):
@@ -71,7 +69,6 @@ class Timer(Persist):
         self.args = args
         self.kwargs = kwargs
         self.state = Object()
-        self.state.update(default)
         self.timer = None
 
     def start(self):

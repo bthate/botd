@@ -27,7 +27,7 @@ class Fleet(Persist):
 
     def echo(self, bid, channel, txt, mtype="chat"):
         b = self.get_bot(bid)
-        if b and b.verbose:
+        if b:
             b.say(channel, txt, mtype)
 
     def get_bot(self, bid):

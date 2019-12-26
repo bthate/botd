@@ -10,6 +10,7 @@ import time
 import urllib
 
 from bl.clk import Repeater
+from bl.krn import k
 from bl.obj import Cfg, Default, Object
 from bl.flt import Fleet
 from bl.pst import Persist
@@ -26,6 +27,7 @@ def __dir__():
     return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"display", "feed", "fetch", "init", "rss")
 
 def init():
+    fetcher = Fetcher()
     fetcher.start()
     return fetcher
 
@@ -36,7 +38,7 @@ class Cfg(Cfg):
         self.display_list = ["title", "link"]
         self.dosave = True
 
-class Feed(Default):
+class Feed(Persist):
 
     pass
 
@@ -111,7 +113,7 @@ class Fetcher(Persist):
                     feed.save()
         self.seen.save()
         for o in objs:
-            fleet.announce(self.display(o))
+            k.fleet.announce(self.display(o))
         return counter
 
     def join(self):
@@ -121,7 +123,7 @@ class Fetcher(Persist):
     def run(self):
         res = []
         thrs = []
-        for o in db.all("bl.rss.Rss"):
+        for o in k.db.all("botd.rss.Rss"):
             thrs.append(k.launch(self.fetch, o))
         for thr in thrs:
             res.append(thr.join())
@@ -138,10 +140,6 @@ class Fetcher(Persist):
     def stop(self):
         self.seen.save()
 
-db = Db()
-fetcher = Fetcher()
-fleet = Fleet()
-
 def get_feed(url):
     result = get_url(url).data
     if gotparser:
@@ -155,14 +153,14 @@ def get_feed(url):
 def file_time(timestamp):
     return str(datetime.datetime.fromtimestamp(timestamp)).replace(" ", os.sep) + "." + str(random.randint(111111, 999999))
 
-def delrss(event):
+def delete(event):
     if not event.args:
-        event.reply("del <match>")
+        event.reply("delete <match>")
         return
     selector = {"rss": event.args[0]}
     nr = 0
     got = []
-    for rss in db.find("bl.rss.Rss", selector):
+    for rss in k.db.find("botd.rss.Rss", selector):
         nr += 1
         rss._deleted = True
         got.append(rss)
@@ -170,13 +168,13 @@ def delrss(event):
         rss.save()
     event.reply("ok %s" % nr)
 
-def dpl(event):
+def display(event):
     if len(event.args) < 2:
         event.reply("display <feed> key1,key2,etc.")
         return
     nr = 0
     setter = {"display_list": event.args[1]}
-    for o in db.find("bl.rss.Rss", {"rss": event.args[0]}):
+    for o in k.db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
         bl.edit(o, setter)
         o.save()
@@ -188,19 +186,19 @@ def feed(event):
         match = event.args[0]
     nr = 0
     diff = time.time() - bl.tms.to_time(bl.tms.day())
-    res = list(db.find("bl.rss.Feed", {"link": match}, delta=-diff))
+    res = list(k.db.find("botd.rss.Feed", {"link": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s - %s" % (nr, o.title, o.summary, o.updated or o.published or "nodate", o.link))
         nr += 1
     if nr:
         return
-    res = list(db.find("bl.rss.Feed", {"title": match}, delta=-diff))
+    res = list(k.db.find("botd.rss.Feed", {"title": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
         nr += 1
-    res = list(db.find("bl.rss.Feed", {"summary": match}, delta=-diff))
+    res = list(k.db.find("botd.rss.Feed", {"summary": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
@@ -208,14 +206,15 @@ def feed(event):
     if not nr:
         event.reply("no results found")
  
-def ftc(event):
+def fetch(event):
+    fetcher = Fetcher()
     res = fetcher.run()
     event.reply("fetched %s" % ",".join([str(x) for x in res]))
 
 def rss(event):
     if not event.rest or "http" not in event.rest:
         nr = 0
-        res = list(db.find("bl.rss.Rss", {"rss": ""}))
+        res = list(k.db.find("botd.rss.Rss", {"rss": ""}))
         if res:
             for o in res:
                 event.reply("%s %s" % (nr, o.rss))

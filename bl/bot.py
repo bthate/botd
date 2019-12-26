@@ -6,7 +6,7 @@ import sys
 
 from bl.hdl import Handler
 from bl.krn import k, dispatch
-from bl.pst import Cfg
+from bl.pst import Cfg, Persist
 
 def __dir__():
     return ('Bot', 'Cfg')
@@ -20,13 +20,13 @@ class Cfg(Cfg):
         self.port = 0
         self.server = ""
 
-class Bot(Handler):
+class Bot(Handler, Persist):
 
     def __init__(self):
         super().__init__()
         self.cfg = Cfg()
         self.channels = []
-        self.verbose = False
+        self.verbose = True
         
     def announce(self, txt):
         for channel in self.channels:
@@ -44,8 +44,7 @@ class Bot(Handler):
         self._outputed = True
         while not self._stopped:
             channel, txt, type = self._outqueue.get()
-            if self.verbose:
-                print(txt)
+            self.raw(txt)
 
     def poll(self):
         pass
@@ -63,6 +62,8 @@ class Bot(Handler):
             self.raw(txt)
 
     def start(self, handler=True, input=False, output=False):
+        k.add(self)
+        self.register(dispatch)
         super().start(handler)
         if output:
             self.launch(self.output)

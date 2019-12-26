@@ -103,8 +103,6 @@ def get_name(o):
     return n
 
 def get_tinyurl(url):
-    if cfg.debug:
-        return url
     postarray = [
         ('submit', 'submit'),
         ('url', url),
@@ -182,8 +180,8 @@ def touch(fname):
         pass
 
 def useragent():
-    from bl import cfg
-    return 'Mozilla/5.0 (X11; Linux x86_64) %s +http://git@github.com/bthate/%s)' % (cfg.name.upper(), cfg.name.lower())
+    from bl.krn import k
+    return 'Mozilla/5.0 (X11; Linux x86_64) %s +http://git@github.com/bthate/%s)' % (k.cfg.name.upper(), k.cfg.name.lower())
 
 def unescape(text):
     import html

@@ -339,7 +339,6 @@ class IRC(Bot):
             return
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
-        self.register(dispatch)
         self.register(errored)
         self.register(privmsged)
         self.register(noticed)
@@ -394,14 +393,13 @@ class DCC(Bot):
         e.channel = self.origin
         e.orig = repr(self)
         e.origin = self.origin or "root@dcc"
-        k.handle(e)
+        self.handle(e)
         return e
 
     def say(self, channel, txt, type="chat"):
         self.raw(txt)
 
     def start(self):
-        k.add(self)
         super().start(False, True, False)
 
 def errored(handler, event):

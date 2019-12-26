@@ -28,7 +28,6 @@ class Users(Db):
         user = self.get_user(origin)
         if user:
             if perm in user.perms:
-                logging.warning("allowed %s %s" % (origin, perm))
                 return True
         return False
 
