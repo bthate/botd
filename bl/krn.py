@@ -17,6 +17,12 @@ from bl.pst import Cfg, Persist
 from bl.shl import enable_history, set_completer, writepid
 from bl.utl import get_mods, get_name
 
+class Event(Event):
+
+    def show(self):
+        for txt in self.result:
+            print(txt)
+
 class Kernel(Handler, Persist):
 
     db = Db()
@@ -36,17 +42,13 @@ class Kernel(Handler, Persist):
         if not txt:
             return
         self.cfg.prompting = False
-        c = Console()
-        c.sync(self)
-        c.start()
         e = Event()
         e.txt = txt
         e.options = self.cfg.options
-        e.orig = repr(c)
+        e.orig = repr(self)
         e.origin = origin or "root@shell"
         self.register(dispatch)
         self.prompt = False
-        self.add(c)
         self.handle(e)
         e.wait()
 

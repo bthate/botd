@@ -5,19 +5,21 @@
 
 __version__ = 1
 
-import os, sys ; sys.path.insert(0, os.getcwd())
+import os, sys
+sys.path.insert(0, os.getcwd())
 
-import bl.krn
 import logging
+import bl.pst
 
-from bl.csl import Console
-from bl.evt import Event
-from bl.krn import k, workdir
-from bl.log import level, logfiled
-from bl.shl import close_history, enable_history, parse_cli, set_completer
+from bl.krn import Kernel
+from bl.log import level
 from bl.trm import reset, save
 from bl.trc import get_exception
 from bl.utl import hd
+
+bl.pst.workdir = "/var/lib/botd"
+
+k = Kernel()
 
 opts = [
     ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
@@ -34,12 +36,6 @@ opts = [
     ('-a', '--logdir', "store", str, "directory to find the logfiles.", 'logdir'),
     ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
-
-class Event(Event):
-
-    def show(self):
-        for txt in self.result:
-            k.fleet.echo(self.channel, txt)
 
 def daemon():
     pid = os.fork()
@@ -64,11 +60,10 @@ def execute(main):
     except Exception:
         logging.error(get_exception())
     reset()
-    close_history()
 
 def main():
     daemon()
-    k.cfg.shell = True
+    level("debug", "/var/log/botd")
     k.start()
     k.init("botd")
     k.wait()

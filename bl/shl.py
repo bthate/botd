@@ -9,9 +9,10 @@ import optparse
 import os
 import readline
 import time
+import bl.pst
 
 from bl.log import level, logfiled
-from bl.pst import Cfg, workdir
+from bl.pst import Cfg
 from bl.trm import reset, save
 from bl.utl import cdir, hd, touch
 from bl.trc import get_exception
@@ -25,9 +26,9 @@ def __dir__():
 
 def close_history():
     global HISTFILE
-    if workdir:
+    if bl.pst.workdir:
         if not HISTFILE:
-            HISTFILE = os.path.join(workdir, "history")
+            HISTFILE = os.path.join(bl.pst.workdir, "history")
         if not os.path.isfile(HISTFILE):
             cdir(HISTFILE)
             touch(HISTFILE)
@@ -46,8 +47,8 @@ def complete(text, state):
 
 def enable_history():
     global HISTFILE
-    if workdir:
-        HISTFILE = os.path.abspath(os.path.join(workdir, "history"))
+    if bl.pst.workdir:
+        HISTFILE = os.path.abspath(os.path.join(bl.pst.workdir, "history"))
         if not os.path.exists(HISTFILE):
             touch(HISTFILE)
         else:
@@ -89,11 +90,13 @@ def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error"):
     cfg.workdir = cfg.workdir or wd or hd(".%s" % cfg.name)
     cfg.logdir = cfg.logdir or os.path.join(cfg.workdir, "logs")
     cfg.txt = " ".join(cfg.args)
+    bl.pst.workdir = cfg.workdir
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
     level(cfg.level, cfg.logdir)
     logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
+    logging.debug(cfg)
     return cfg
 
 def set_completer(commands):
@@ -104,8 +107,8 @@ def set_completer(commands):
     atexit.register(lambda: readline.set_completer(None))
 
 def writepid():
-    assert workdir
-    path = os.path.join(workdir, "botlib.pid")
+    assert bl.pst.workdir
+    path = os.path.join(bl.pst.workdir, "botlib.pid")
     f = open(path, 'w')
     f.write(str(os.getpid()))
     f.flush()
