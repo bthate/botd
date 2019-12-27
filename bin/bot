@@ -75,13 +75,7 @@ def main():
     k.cfg.prompting = True
     k.start()
     try:
-        k.load_mod("botd.cmd")
-        n = ""
-        for mn in k.cfg.modules.split(","):
-            if not mn:
-                continue
-            n += "botd.%s," % mn
-        k.init(n[:-1])
+        k.init(k.cfg.modules)
     except EINIT as ex:
         print(str(ex))
         return

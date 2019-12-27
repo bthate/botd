@@ -4,6 +4,7 @@
 
 import sys
 
+from bl.evt import Event
 from bl.hdl import Handler
 from bl.krn import dispatch
 from bl.pst import Cfg, Persist
@@ -23,6 +24,12 @@ class Cfg(Cfg):
         self.nick = ""
         self.port = 0
         self.server = ""
+
+class Event(Event):
+
+    def show(self):
+        for txt in self.result:
+            fleet.echo(self.orig, self.channel, txt)
 
 class Bot(Handler, Persist):
 

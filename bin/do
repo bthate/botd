@@ -3,8 +3,8 @@
 #
 # 
 
-
-import os; import sys; sys.path.insert(0, os.getcwd())
+import os; import sys
+sys.path.insert(0, os.getcwd())
 sys.path.insert(0, os.getcwd() + os.sep + "..")
 
 for x in os.popen("bin/clean").readlines():
@@ -135,6 +135,11 @@ except:
 
 try:
     shutil.rmtree("%s/__pycache__" % installdir)
+except:
+    pass
+
+try:
+    shutil.copytree("extra", installdir + os.sep + "extra")
 except:
     pass
 
