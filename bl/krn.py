@@ -17,6 +17,22 @@ from bl.pst import Cfg, Persist
 from bl.shl import enable_history, set_completer, writepid
 from bl.utl import get_mods, get_name
 
+default = {
+           "dosave": False,
+           "doexec": False,
+           "exclude": "",
+           "kernel": False,
+           "level": "",
+           "logdir": "",
+           "modules": "",
+           "options": "",
+           "owner": "",
+           "prompting": True,
+           "shell": False,
+           "verbose": False,
+           "workdir": ""
+          }
+
 class Event(Event):
 
     def show(self):
@@ -26,7 +42,7 @@ class Event(Event):
 class Kernel(Handler, Persist):
 
     db = Db()
-    cfg = Cfg()
+    cfg = Cfg(default)
     state = Object()
 
     def __init__(self, cfg={}, **kwargs):

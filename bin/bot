@@ -5,14 +5,14 @@
 
 __version__ = 1
 
-import os, sys ; sys.path.insert(0, os.getcwd())
+import os
+import logging
+import sys
 
 import bl.krn
-import logging
 
 from bl.csl import Console
 from bl.err import EINIT
-from bl.evt import Event
 from bl.krn import Kernel, workdir
 from bl.log import level, logfiled
 from bl.shl import close_history, enable_history, parse_cli, set_completer
@@ -35,12 +35,6 @@ opts = [
     ('-a', '--logdir', "store", str, "directory to find the logfiles.", 'logdir'),
     ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
-
-class Event(Event):
-
-    def show(self):
-        for txt in self.result:
-            k.fleet.echo(self.channel, txt)
 
 def daemon():
     pid = os.fork()
@@ -73,7 +67,7 @@ def v(event):
 def main():
     cfg = parse_cli("bot", __version__, opts, wd=hd(".botd"))
     logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
-    k = Kernel(cfg)
+    k = Kernel()
     k.cmds.register("v", v)
     try:
         k.init(cfg.modules)
@@ -87,6 +81,8 @@ def main():
             k.walk(cfg.modules)
         k.cmd(cfg.txt)
         return
+    if not k.cfg.shell:
+        k.cfg.shell = True
     if k.cfg.shell:
         c = Console()
         c.sync(k)
@@ -95,7 +91,7 @@ def main():
         enable_history()
     else:
         k.start()
-    k.wait()
+        k.wait()
 
 execute(main)
 os._exit(0)
