@@ -1,39 +1,35 @@
 #!/usr/bin/python3 -u
 # BOTD - python3 IRC channel daemon.
 #
-# bot daemon.
+# 
 
 __version__ = 1
 
-import os, sys
-sys.path.insert(0, os.getcwd())
+import os, sys ; sys.path.insert(0, os.getcwd())
 
+import grp
+import os
 import logging
-import bl.pst
+import pwd
+import sys
+import bl.krn
+import bl.tbl
 
-from bl.krn import Kernel
-from bl.log import level
-from bl.shl import parse_cli
+from bl.csl import Console
+from bl.err import EINIT
+from bl.krn import Kernel, workdir
+from bl.log import level, logfiled
+from bl.shl import close_history, enable_history, execute, parse_cli, set_completer
 from bl.trm import reset, save
 from bl.trc import get_exception
 from bl.utl import hd
 
-k = Kernel()
-
 opts = [
-    ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, 'modules to load.', 'modules'),
-    ('-x', '--exec', 'store_true', False, 'execute command.', 'doexec'),
     ('-o', '--options', "store", str, "options to use.", 'options'),
-    ('-k', '--kernel', "store_true", False, "read from previous kernel config.", 'kernel'),
-    ('-p', '--prompting', "store_false", True, "disable prompting for initial values.", 'prompting'),
-    ('-s', '--save', 'store_true', False, 'save configuration files.', 'dosave'),
-    ('-z', '--shell', 'store_true', False, 'disable shell.', 'shell'),
-    ('-e', '--exclude', 'store', str, 'exclude modules.', 'exclude'),
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "directory to find the logfiles.", 'logdir'),
-    ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
 
 def daemon():
@@ -50,34 +46,19 @@ def daemon():
     os.dup2(so.fileno(), sys.stdout.fileno())
     os.dup2(se.fileno(), sys.stderr.fileno())
 
-def execute(main):
-    save()
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("")
-    except Exception:
-        logging.error(get_exception())
-    reset()
-
-cfg = parse_cli("botd", __version__, opts)
-
-def config(event):
-    event.reply(cfg)
-
 def main():
-    daemon()
-    cfg.shell = True
-    cfg.level = "debug"
-    level(cfg.level, cfg.logdir or hd(os.path.join(".botd", "logs")))
+    cfg = parse_cli("botd", __version__, opts, wd="/var/lib/botd")
+    cfg.kernel = True
+    level("debug")
     logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
-    logging.debug(cfg)
-    k.init(cfg.modules)
+    daemon()
+    k = Kernel(cfg)
     k.start()
-    k.cmds.register("cfg", config)
-    logging.warning("%s waiting at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
     k.wait()
-    logging.warning("%s stopped at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
 
-execute(main)
+try:
+    execute(main)
+except PermissionError:
+    print("you need to run botd as root")
+
 os._exit(0)

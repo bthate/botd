@@ -5,9 +5,11 @@
 
 __version__ = 1
 
-from bl.krn import Kernel
-from bl.shl import execute, parse_cli
+import os, sys; sys.path.insert(0, os.getcwd())
 
+from bl.krn import Kernel
+from bl.log import level
+from bl.shl import execute, parse_cli
 
 opts = [
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
@@ -15,20 +17,16 @@ opts = [
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
 ]
 
-cfg = parse_cli("botctl", __version__, opts)
-
-def config(event):
-    event.reply(cfg)
-
-def v(event):
-    event.reply("BOTD %s" % __version__)
+k = Kernel()
 
 def main():
-    cfg.workdir = cfg.workdir or os.path.abspath("/var/lib/botd")
-    cfg.logdir = cfg.logdir or os.path.abspath("/var/log/botd")
-    k = Kernel()
-    k.cmds.register("cfg", config)
-    k.cmds.register("v", v)
-    k.cmd(cfg.txt)
-     
-execute(main)
+    parse_cli("botctl", __version__, opts, kernel=k)
+    level(k.cfg.level)
+    k.cmd(k.cfg.txt)
+
+try:     
+    execute(main)
+except PermissionError:
+    print("you need to run botctl as root")
+    
+os._exit(0)

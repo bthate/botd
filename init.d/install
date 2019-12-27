@@ -1,3 +1,4 @@
+adduser --group botd --disabled-login --gecos BOTD --home /var/lib/botd
 [ ! -d "/var/log/botd" ] && mkdir /var/log/botd
 [ ! -d "/var/lib/botd" ] && mkdir /var/lib/botd
 [ ! -d "/var/lib/botd/store" ] && mkdir /var/lib/botd/store

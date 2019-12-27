@@ -61,6 +61,8 @@ def execute(main):
         main()
     except KeyboardInterrupt:
         print("")
+    except PermissionError:
+        pass
     except Exception:
         logging.error(get_exception())
     reset()
@@ -81,7 +83,7 @@ def make_opts(ns, options, **kwargs):
     parser.add_argument('args', nargs='*')
     parser.parse_known_args(namespace=ns)
   
-def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error"):
+def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error", kernel=None):
     cfg = Cfg()
     make_opts(cfg, opts)
     cfg.debug = False
@@ -91,10 +93,11 @@ def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error"):
     cfg.logdir = cfg.logdir or os.path.join(cfg.workdir, "logs")
     cfg.txt = " ".join(cfg.args)
     bl.pst.workdir = cfg.workdir
+    if kernel:
+        kernel.cfg.update(cfg)
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
-    level(cfg.level, cfg.logdir)
     return cfg
 
 def set_completer(commands):

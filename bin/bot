@@ -37,20 +37,6 @@ opts = [
     ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
 
-def daemon():
-    pid = os.fork()
-    if pid != 0:
-        reset()
-        os._exit(0)
-    os.setsid()
-    os.umask(0)
-    si = open("/dev/null", 'r')
-    so = open("/dev/null", 'a+')
-    se = open("/dev/null", 'a+')
-    os.dup2(si.fileno(), sys.stdin.fileno())
-    os.dup2(so.fileno(), sys.stdout.fileno())
-    os.dup2(se.fileno(), sys.stderr.fileno())
-
 def execute(main):
     save()
     try:
@@ -62,32 +48,15 @@ def execute(main):
     reset()
     close_history()
 
-def v(event):
-    event.reply("BOT %s" % __version__)
-
 def main():
     cfg = parse_cli("bot", __version__, opts, wd=hd(".botd"))
-    logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
     k = Kernel(cfg)
-    k.cmds.register("v", v)
-    try:
-        k.init(cfg.modules)
-    except ModuleNotFoundError as ex:
-        print(str(ex))
-    except EINIT as ex:
-        print(str(ex))
-        return
-    if cfg.doexec:
-        k.cmd(cfg.txt)
-        return
-    if k.cfg.shell:
-        c = Console()
-        c.start()
-        set_completer(k.cmds)
-        enable_history()
-        k.start()
-        k.wait()
-    logging.warning("%s stopped at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
+    c = Console()
+    c.start()
+    set_completer(k.cmds)
+    enable_history()
+    k.start()
+    k.wait()
 
 execute(main)
 os._exit(0)
