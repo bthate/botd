@@ -29,7 +29,7 @@ opts = [
     ('-k', '--kernel', "store_true", False, "read from previous kernel config.", 'kernel'),
     ('-p', '--prompting', "store_false", True, "disable prompting for initial values.", 'prompting'),
     ('-s', '--save', 'store_true', False, 'save configuration files.', 'dosave'),
-    ('-z', '--shell', 'store_false', True, 'disable shell.', 'shell'),
+    ('-z', '--shell', 'store_true', False, 'disable shell.', 'shell'),
     ('-e', '--exclude', 'store', str, 'exclude modules.', 'exclude'),
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "directory to find the logfiles.", 'logdir'),
@@ -81,18 +81,14 @@ def main():
             k.walk(cfg.modules)
         k.cmd(cfg.txt)
         return
-    if not k.cfg.shell:
-        k.cfg.shell = True
+    k.start()
     if k.cfg.shell:
         c = Console()
         c.sync(k)
         c.start()
         set_completer(k.cmds)
         enable_history()
-    else:
-        print("yo!")
-        k.start()
-        k.wait()
+    k.wait()
 
 execute(main)
 os._exit(0)
