@@ -8,13 +8,20 @@ import json
 import time
 import bl.tbl
 
+if not getattr(bl.tbl, "classes", None):
+    bl.tbl.classes = []
+if not getattr(bl.tbl, "names", None):
+    bl.tbl.names = {}
+if not getattr(bl.tbl, "modules", None):
+    bl.tbl.modules = {}
+
 from bl.krn import Kernel
 
 k = Kernel()
 k.walk("bl")
 k.walk("botd")
 print(txt)
-print("classes = %s" % bl.table.classes)
-print("names = %s" % bl.table.names)
-print("modules = %s" % bl.table.modules)
+print("classes = %s" % bl.tbl.classes)
+print("names = %s" % bl.tbl.names)
+print("modules = %s" % bl.tbl.modules)
 sys.exit()

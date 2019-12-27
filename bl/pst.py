@@ -25,6 +25,7 @@ class Persist(Object):
         lpath = os.path.join(workdir, "store", path)
         if not os.path.exists(lpath):
             cdir(lpath)
+        logging.debug("load %s" % path)
         with open(lpath, "r") as ofile:
             try:
                 val = json.load(ofile, object_hook=hooked)

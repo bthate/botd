@@ -3,6 +3,7 @@
 # console code.
 
 import sys
+import threading
 
 from bl.krn import dispatch
 from bl.evt import Event
@@ -22,12 +23,14 @@ class Console(Handler, Persist):
 
     def __init__(self):
         super().__init__()
+        self._connected = threading.Event()
         self.verbose = True
         
     def announce(self, txt):
         self.raw(txt)
 
     def poll(self):
+        self._connected.wait()
         e = Event()
         e.orig = repr(self)
         e.origin = "root@shell"
@@ -56,3 +59,4 @@ class Console(Handler, Persist):
         self.register(dispatch)
         super().start(False)
         self.launch(self.input)
+        self._connected.set()

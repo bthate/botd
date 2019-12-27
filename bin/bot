@@ -5,6 +5,8 @@
 
 __version__ = 1
 
+import os, sys ; sys.path.insert(0, os.getcwd())
+
 import os
 import logging
 import sys
@@ -48,9 +50,11 @@ def execute(main):
     reset()
     close_history()
 
+k = Kernel()
+
 def main():
-    cfg = parse_cli("bot", __version__, opts, wd=hd(".botd"))
-    k = Kernel(cfg)
+    parse_cli("bot", __version__, opts, wd=hd(".botd"), kernel=k)
+    level(k.cfg.level)
     c = Console()
     c.start()
     set_completer(k.cmds)

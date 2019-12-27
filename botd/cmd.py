@@ -105,3 +105,6 @@ def u(event):
     for o in db.all("botd.usr.User"):
         res += "%s," % o.user
     event.reply(res)
+
+def v(event):
+    event.reply("BOTD %s" % __version__)
