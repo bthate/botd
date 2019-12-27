@@ -11,8 +11,7 @@ setup(
 R E A D M E
 
 
-BOTLIB is a library to program bots and BOTD is a IRC channel bot daemon using
-the BOTLIB library. BOTD contains no copyright or LICENSE (not does BOTLIB).
+BOTD is a python3 IRC channel daemon and contains no copyright or LICENSE.
 
 
 I N S T A L L
@@ -27,7 +26,7 @@ untar, cd into the directory and run:
  > ./bin/bot -m rss,entry,show localhost \#dunkbots bot
 
 to have it connect to irc, join the channel and do nothing, users have to be !meet <nick> before they can give commands.
-BOTLIB does it self not depend, you might need to install feedparser yourself to have rss working.
+BOTD does it self not depend, you might need to install feedparser yourself to have rss working.
 
 you can also download with pip3 and install globally.
 
@@ -65,7 +64,7 @@ if you want to have the daemon started at boot, run:
 
  > sudo init.d/install
 
-this will install an botd service and starts BOTLIB on boot.
+this will install an botd service and starts BOTD on boot.
 
 
 R S S
@@ -120,7 +119,7 @@ you can also use the full userhost as a argument to meet:
 M O D U L E S
 
 
-BOTLIB contains the following modules:
+BOTD contains the following modules:
 
 ::
 
@@ -138,6 +137,7 @@ BOTLIB contains the following modules:
  bl.obj			- objects.
  bl.pst			- persitence.
  bl.shl			- shell.
+ bl.tbl			- dispatch tables.
  bl.tms			- time related.
  bl.trm			- terminal code.
  bl.thr			- threads.

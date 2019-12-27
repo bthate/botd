@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-# BOTLIB - Framework to program bots.
+# BOTD - python3 IRC channel daemon.
 #
-# 
+# run unittests.
 
 __version__ = 1
 
