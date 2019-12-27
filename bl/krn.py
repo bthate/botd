@@ -86,9 +86,8 @@ class Kernel(Handler, Persist):
             self.launch(self.input)
             
     def wait(self):
-        if self.cfg.shell:
-            while not self._stopped:
-                time.sleep(1.0)
+        while not self._stopped:
+            time.sleep(1.0)
 
 def dispatch(handler, event):
     try:

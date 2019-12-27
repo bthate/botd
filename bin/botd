@@ -66,8 +66,9 @@ def config(event):
     event.reply(cfg)
 
 def main():
-    cfg.level = "debug"
     daemon()
+    cfg.shell = True
+    cfg.level = "debug"
     level(cfg.level, cfg.logdir or hd(os.path.join(".botd", "logs")))
     logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
     logging.debug(cfg)
