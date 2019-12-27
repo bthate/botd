@@ -47,10 +47,10 @@ def daemon():
     os.dup2(se.fileno(), sys.stderr.fileno())
 
 def main():
-    cfg = parse_cli("botd", __version__, opts, wd="/var/lib/botd")
+    cfg = parse_cli("botd", __version__, opts)
     cfg.kernel = True
     level("debug")
-    logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
+    logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, "debug"))
     daemon()
     k = Kernel(cfg)
     k.start()

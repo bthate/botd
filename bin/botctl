@@ -10,6 +10,7 @@ import os, sys; sys.path.insert(0, os.getcwd())
 from bl.krn import Kernel
 from bl.log import level
 from bl.shl import execute, parse_cli
+from bl.utl import hd
 
 opts = [
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
@@ -17,11 +18,10 @@ opts = [
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
 ]
 
-k = Kernel()
-
 def main():
-    parse_cli("botctl", __version__, opts, kernel=k)
-    level(k.cfg.level)
+    k = Kernel()
+    parse_cli("botctl", __version__, opts, wd=hd(".botd"), kernel=k)
+    level(k.cfg.level, k.cfg.logdir)
     k.cmd(k.cfg.txt)
 
 try:     

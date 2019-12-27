@@ -98,6 +98,7 @@ def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error", k
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
+    logging.debug("BOTD started at %s (%s)" % (cfg.workdir, time.ctime(time.time())))
     return cfg
 
 def set_completer(commands):

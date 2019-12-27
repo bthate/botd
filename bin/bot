@@ -59,7 +59,8 @@ def main():
     c.start()
     set_completer(k.cmds)
     enable_history()
-    k.start()
+    if k.cfg.dosave:
+        k.save()
     k.wait()
 
 execute(main)

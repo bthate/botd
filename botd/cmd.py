@@ -32,7 +32,7 @@ def cfg(event):
     if not event.args:
         event.reply(k.cfg)
         return
-    l = db.last("botd.%s.Cfg" % event.args[0])
+    l = db.last("%s.Cfg" % event.args[0])
     if not l:
         event.reply("no %s found." % event.args[0])
         return
