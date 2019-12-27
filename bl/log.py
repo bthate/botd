@@ -2,12 +2,12 @@
 #
 # logging.
 
-import bl
 import logging
 import logging.handlers
 import os
 
-from bl.pst import workdir
+import bl.pst
+
 from bl.utl import cdir, touch
 
 logfiled = ""
@@ -19,15 +19,13 @@ class DumpHandler(logging.StreamHandler):
     def emit(self, record):
         pass
 
-
-
 def level(loglevel="", logdir="", logfile="", nostream=False):
     global logfiled
     if not loglevel:
         loglevel = "error"
     if not logfile:
         logfile = "botd.log"
-    logdir = logdir or os.path.join(workdir, "logs")
+    logdir = logdir or os.path.join(bl.pst.workdir, "logs")
     logfile = logfiled = os.path.join(logdir, logfile)
     if not os.path.exists(logfile):
         cdir(logfile)
