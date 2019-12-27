@@ -2,4 +2,4 @@
 #
 # 
 
-rm -fR testdata runbotd runbotd.tar.gz init.d/*~  build dist botd.egg-info *~  bin/*~ extra/*~ extra/__pycache__ bl/*~ bl/__pycache__ botd/*~ botd/__pycache__ tests/*~ tests/__pycache__
+rm -fR __pycache__ testdata runbotd runbotd.tar.gz init.d/*~  build dist botd.egg-info *~  bin/*~ extra/*~ extra/__pycache__ bl/*~ bl/__pycache__ botd/*~ botd/__pycache__ tests/*~ tests/__pycache__
