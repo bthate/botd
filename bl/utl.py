@@ -1,6 +1,6 @@
-# BOTLIB - Framework to program bots.
+# BOTD - python3 IRC channel daemon.
 #
-# 
+# utility functions.
 
 import bl
 import json
@@ -180,7 +180,7 @@ def touch(fname):
         pass
 
 def useragent():
-    return 'Mozilla/5.0 (X11; Linux x86_64) BOTLIB +http://git@github.com/bthate/botlib)'
+    return 'Mozilla/5.0 (X11; Linux x86_64) BOTD +http://git@github.com/bthate/botd)'
 
 def unescape(text):
     import html

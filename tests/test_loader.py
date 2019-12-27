@@ -1,4 +1,6 @@
-""" loader tests. """
+# BOTD - python3 IRC channel daemon.
+#
+# loader tests.
 
 import bl
 import os

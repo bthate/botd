@@ -1,4 +1,6 @@
-""" configuration tests """
+# BOTD - python3 IRC channel daemon.
+#
+# configuration tests
 
 import unittest
 

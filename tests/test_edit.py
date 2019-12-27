@@ -1,4 +1,6 @@
-""" edit command tests. """
+# BOTD - python3 IRC channel daemon.
+#
+# edit tests.
 
 import json
 import logging
@@ -11,15 +13,12 @@ from ob.pst import Persist
 
 class Log(Persist):
 
-    """ check class attribute edit as well. """
-
     def __init__(self):
         self.txt = "bla"
 
 l = Log()
 
 def edit(obj, setter):
-    """ edit an objects with the setters key/value. """
     if not setter:
         setter = {}
     count = 0

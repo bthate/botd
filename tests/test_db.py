@@ -1,4 +1,6 @@
-""" database tests """
+# BOTD - python3 IRC channel daemon.
+#
+# database tests.
 
 import unittest
 

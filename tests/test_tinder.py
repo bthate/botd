@@ -1,6 +1,6 @@
-# BOTLIB - Framework to program bots.
+# BOTD - python3 IRC channel daemon.
 #
-# 
+# tinder tests.
 
 import logging
 import os

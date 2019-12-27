@@ -1,12 +1,16 @@
+# BOTD - python3 IRC channel daemon.
+#
+# kernel tests.
+
 import logging
-import ob
 import os
 import unittest
 
-from ob import k
-from ob.krn import Cfg
+from bl.krn import Cfg
 
 class Test_Kernel(unittest.TestCase):
 
+    k = Kernel()
+
     def test_kernel(self):
-        self.assertEqual(type(k.cfg), Cfg)
+        self.assertEqual(type(self.k.cfg), Cfg)

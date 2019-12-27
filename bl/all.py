@@ -1,4 +1,4 @@
-# BOTLIB - Framework to program bots.
+# BOTD - python3 IRC channel daemon.
 #
 # include all modules.
 
@@ -19,3 +19,4 @@ import bl.typ
 import bl.tms
 import bl.trm
 import bl.clk
+import bl.tbl

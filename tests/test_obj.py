@@ -1,4 +1,6 @@
-""" object unittests. """
+# BOTD - python3 IRC channel daemon.
+#
+# object tests.
 
 import os
 import time

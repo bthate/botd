@@ -1,9 +1,13 @@
 #!/usr/bin/python3
+# BOTD - python3 IRC channel daemon.
+#
+# control the bot daemon.
 
 __version__ = 1
 
 from bl.krn import Kernel
 from bl.shl import execute, parse_cli
+
 
 opts = [
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),

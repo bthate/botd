@@ -1,3 +1,7 @@
+# BOTD - python3 IRC channel daemon.
+#
+# fuzzer tests.
+
 import logging
 import random
 import unittest
