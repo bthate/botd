@@ -180,8 +180,7 @@ def touch(fname):
         pass
 
 def useragent():
-    from bl.krn import k
-    return 'Mozilla/5.0 (X11; Linux x86_64) %s +http://git@github.com/bthate/%s)' % (k.cfg.name.upper(), k.cfg.name.lower())
+    return 'Mozilla/5.0 (X11; Linux x86_64) BOTLIB +http://git@github.com/bthate/botlib)'
 
 def unescape(text):
     import html

@@ -98,8 +98,6 @@ class Kernel(Handler, Persist):
         while not self._stopped:
             time.sleep(1.0)
 
-k = Kernel()
-
 def dispatch(handler, event):
     try:
         event.parse(event.txt)
@@ -113,5 +111,3 @@ def dispatch(handler, event):
         event.show()
     event.ready()
 
-def launch(func, *args):
-    return k.launch(func, *args)

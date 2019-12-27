@@ -6,6 +6,7 @@ import bl.krn
 import datetime
 import json
 import json.decoder
+import logging
 import os
 import _thread
 
@@ -47,7 +48,8 @@ class Persist(Object):
                 stime = str(datetime.datetime.now()).replace(" ", os.sep)
             path = os.path.join(self._type, stime)
         opath = os.path.join(bl.krn.workdir, "store", path)
-        bl.utl.cdir(opath)
+        cdir(opath)
+        logging.warning("save %s" % path)
         with open(opath, "w") as ofile:
             json.dump(self, ofile, default=bl.obj.default, indent=4, sort_keys=True)
         self.__path__ = path

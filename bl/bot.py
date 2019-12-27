@@ -5,7 +5,7 @@
 import sys
 
 from bl.hdl import Handler
-from bl.krn import k, dispatch
+from bl.krn import dispatch
 from bl.pst import Cfg, Persist
 
 def __dir__():
@@ -62,7 +62,6 @@ class Bot(Handler, Persist):
             self.raw(txt)
 
     def start(self, handler=True, input=False, output=False):
-        k.add(self)
         self.register(dispatch)
         super().start(handler)
         if output:

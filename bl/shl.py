@@ -82,7 +82,6 @@ def make_opts(ns, options, **kwargs):
     parser.parse_known_args(namespace=ns)
   
 def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error"):
-    from bl.krn import k
     cfg = Cfg()
     make_opts(cfg, opts)
     cfg.debug = False
@@ -91,7 +90,6 @@ def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error"):
     cfg.workdir = cfg.workdir or wd or hd(".%s" % cfg.name)
     cfg.logdir = cfg.logdir or os.path.join(cfg.workdir, "logs")
     cfg.txt = " ".join(cfg.args)
-    k.cfg.update(cfg)
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)

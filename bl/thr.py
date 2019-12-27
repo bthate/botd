@@ -63,3 +63,7 @@ class Launcher:
         while not self._stopped:
             t = self._queue.get()
             t.start()
+
+def launch(func, *args):
+    l = Launcher()
+    return l.launch(func, *args)
