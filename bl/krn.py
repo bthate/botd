@@ -59,7 +59,7 @@ class Kernel(Handler, Persist):
             if "init" not in dir(mod):
                 continue
             logging.warning("init %s" % mod.__name__)
-            mod.init()
+            mod.init(self.cfg)
             mods.append(mod)
         return mods
 

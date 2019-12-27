@@ -18,7 +18,7 @@ def __dir__():
 fleet = Fleet()
 db = Db()
 
-def init():
+def init(cfg):
     server = UDP()
     server.start()
     return server
@@ -45,7 +45,6 @@ class UDP(Persist):
         self._sock.setblocking(1)
         self._starttime = time.time()
         self.cfg = Cfg()
-        self.verbose = bl.cfg.verbose
         
     def output(self, txt, addr=None):
         if not self.verbose:

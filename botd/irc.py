@@ -21,12 +21,11 @@ from bl.pst import Cfg
 from bl.evt import Event
 from bl.bot import Bot
 from bl.err import EINIT
+from bl.usr import Users
 from bl.utl import locked
 
 def __dir__():
     return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "errored", "noticed", "privmsged")
-
-lock = _thread.allocate_lock()
 
 default = {
            "blocking": False,
@@ -41,20 +40,22 @@ default = {
            "username": "botd",
           }
 
+lock = _thread.allocate_lock()
 fleet = Fleet()
+users = Users()
           
-def init():
+def init(cfg):
     bot = IRC()
     last(bot.cfg)
-    if k.cfg.prompting:
+    if cfg.prompting:
         try:
-            server, channel, nick = k.cfg.args
+            server, channel, nick = cfg.args
             bot.cfg.server = server
             bot.cfg.channel = channel
             bot.cfg.nick = nick
             bot.cfg.save()
         except ValueError:
-            raise EINIT("%s <server> <channel> <nick>" % k.cfg.name)
+            raise EINIT("%s <server> <channel> <nick>" % cfg.name)
     bot.start()
     return bot
 
@@ -375,7 +376,7 @@ class DCC(Bot):
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((addr, port))
-        s.send(bytes('Welcome to %s %s !!\n' % (k.cfg.name.upper(), event.nick), "utf-8"))
+        s.send(bytes('Welcome to BOTD %s !!\n' % event.nick, "utf-8"))
         s.setblocking(True)
         os.set_inheritable(s.fileno(), os.O_RDWR)
         self._sock = s
@@ -415,27 +416,27 @@ def noticed(handler, event):
     if event.command != "NOTICE":
         return
     if event.txt.startswith("VERSION"):
-        txt = "\001VERSION %s %s - %s\001" % (k.cfg.name, k.cfg.version, k.cfg.description)
+        from __main__ import __version__
+        txt = "\001VERSION %s %s - %s\001" % ("BOTD", __version__, "python3 IRC channel daemon")
         handler.command("NOTICE", event.channel, txt)
 
 def privmsged(handler, event):
     if event.command != "PRIVMSG":
         return
-    if event.origin != k.cfg.owner:
-        k.users.userhosts.set(event.nick, event.origin)
+    users.userhosts.set(event.nick, event.origin)
     if event.txt.startswith("DCC CHAT"):
-        if not k.users.allowed(event.origin, "USER"):
+        if not users.allowed(event.origin, "USER"):
             return
         try:
             dcc = DCC()
             dcc.sync(k)
             dcc.encoding = "utf-8"
-            k.launch(dcc.connect, event)
+            launch(dcc.connect, event)
             return
         except ConnectionRefusedError:
             return
     if event.txt and event.txt[0] == handler.cc:
-        if not k.users.allowed(event.origin, "USER"):
+        if not users.allowed(event.origin, "USER"):
             logging.error("deny %s" % event.origin)
             return
-        k.put(event)
+        handler.put(event)

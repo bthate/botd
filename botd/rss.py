@@ -16,6 +16,7 @@ from bl.flt import Fleet
 from bl.pst import Persist
 from bl.thr import launch
 from bl.utl import get_tinyurl, get_url, strip_html, unescape
+
 try:
     import feedparser
     gotparser = True
@@ -28,7 +29,7 @@ def __dir__():
 db = Db()
 fleet = Fleet()
 
-def init():
+def init(cfg):
     fetcher.start()
     return fetcher
 
