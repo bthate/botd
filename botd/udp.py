@@ -8,9 +8,10 @@ import time
 
 from bl.dbs import Db
 from bl.pst import Cfg, Persist
-from bl.flt import Fleet
 from bl.thr import launch
 from bl.utl import get_name
+
+from botd.flt import Fleet
 
 def __dir__():
     return ("UDP", "Cfg", "init") 

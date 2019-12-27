@@ -10,13 +10,11 @@ import time
 from bl.dbs import Db, last
 from bl.err import EINIT, ENOTXT
 from bl.evt import Event
-from bl.flt import Fleet
 from bl.hdl import Handler
 from bl.log import level
 from bl.obj import Object
 from bl.pst import Cfg, Persist
 from bl.shl import enable_history, set_completer, writepid
-from bl.usr import Users
 from bl.utl import get_mods, get_name
 
 class Kernel(Handler, Persist):
@@ -24,7 +22,6 @@ class Kernel(Handler, Persist):
     db = Db()
     cfg = Cfg()
     state = Object()
-    users = Users()
 
     def __init__(self, cfg={}, **kwargs):
         super().__init__()
@@ -82,6 +79,7 @@ class Kernel(Handler, Persist):
             self.users.oper(cfg.owner)
         if self.cfg.kernel:
             last(cfg)
+        self.register(dispatch)
         super().start(handler)
         if input:
             self.launch(self.input)
@@ -102,4 +100,3 @@ def dispatch(handler, event):
         event._func(event)
         event.show()
     event.ready()
-

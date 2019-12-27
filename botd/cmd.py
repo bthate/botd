@@ -9,14 +9,15 @@ import sys
 import time
 import threading
 
+import bl.pst
 from bl.dbs import Db
-from bl.flt import Fleet
 from bl.hdl import Handler
-from bl.pst import workdir
 from bl.obj import Object
 from bl.tms import elapsed
 from bl.typ import get_type
-from bl.usr import Users
+
+from botd.flt import Fleet
+from botd.usr import Users
 
 db = Db()
 fleet = Fleet()
@@ -55,7 +56,7 @@ def flt(event):
     event.reply([get_type(x) for x in fleet.bots])
 
 def ls(event):
-    event.reply("|".join(os.listdir(os.path.join(workdir, "store"))))
+    event.reply("|".join(os.listdir(os.path.join(bl.pst.workdir, "store"))))
 
 def meet(event):
     if not event.args:

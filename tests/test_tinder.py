@@ -2,7 +2,6 @@
 #
 # 
 
-import bl
 import logging
 import os
 import random
@@ -10,21 +9,32 @@ import sys
 import time
 import unittest
 
-class Param(bl.Object):
+from bl.evt import Event
+from bl.krn import Kernel
+from bl.obj import Object
+from bl.utl import consume
+
+from botd.usr import Users
+
+k = Kernel()
+k.start()
+users = Users()
+
+class Param(Object):
 
     pass
 
-bl.k.users.oper("test@shell")
-e = bl.evt.Event()
-e.parse("-o %s" % bl.k.cfg.options)
+users.oper("test@shell")
+e = Event()
+e.parse("-o %s" % k.cfg.options)
 
 param = Param()
-param.ed = ["%s txt==yo channel=#mekker" % x for x in bl.k.names]
-param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in bl.k.names])
-param.find = ["%s txt==yo -f" % x for x in bl.k.names] + ["email txt==gif", ]
-param.load = bl.k.table.keys()
+param.ed = ["%s txt==yo channel=#mekker" % x for x in k.names]
+param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
+param.find = ["%s txt==yo -f" % x for x in k.names] + ["email txt==gif", ]
+param.load = k.table.keys()
 param.log = ["yo!",]
-param.rm = ["%s txt==yo" % x for x in bl.k.names]
+param.rm = ["%s txt==yo" % x for x in k.names]
 param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
 #param.mbox = ["~/evidence/25-1-2013",]
 
@@ -33,13 +43,13 @@ class Test_Tinder(unittest.TestCase):
     def test_tinder(self):
         thrs = []
         for x in range(e.index or 1):
-            thrs.append(bl.k.launch(tests, bl.k))
+            thrs.append(k.launch(tests, k))
         for thr in thrs:
             thr.join()
 
     def test_tinder2(self):
         for x in range(e.index or 1):
-            tests(bl.k)
+            tests(k)
         
 def tests(b):
     events = []
@@ -49,17 +59,17 @@ def tests(b):
         if cmd in ["fetch", "exit", "reboot", "reconnect", "test"]:
             continue
         events.extend(do_cmd(b, cmd))
-    bl.utl.consume(events)
+    consume(events)
 
 def do_cmd(b, cmd):
-    exs = bl.get(param, cmd, ["test1", "test2"])
+    exs = param.get(cmd, ["test1", "test2"])
     e = list(exs)
     random.shuffle(e)
     events = []
     for ex in e:
-        e = bl.evt.Event()
+        e = Event()
         e.origin = "test@shell"
         e.txt = cmd + " " + ex
-        b.put(e)
+        k.put(e)
         events.append(e)
     return events

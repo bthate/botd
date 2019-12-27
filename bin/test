@@ -7,11 +7,23 @@ __version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import bl
+import bl.pst
+import botd.cmd
 import logging
 import shutil
 import time
 import unittest
+
+from bl.krn import Kernel
+from bl.log import level
+from bl.shl import parse_cli
+from bl.tms import elapsed
+from bl.trc import get_exception
+from bl.trm import save, reset
+from bl.typ import get_cls
+from bl.utl import cdir
+
+from botd.usr import Users
 
 opts = [
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
@@ -22,41 +34,54 @@ opts = [
 ]
 
 
+k = Kernel()
+users = Users()
+
 def initialize():
-    bl.utl.cdir("testdata")
-    bl.k.users.oper("test@shell")
-    bl.k.cfg.prompt = False
-    bl.k.walk("bl")
-    bl.k.start()
-    for c in bl.k.classes:
+    cdir("testdata")
+    users.oper("test@shell")
+    k.cfg.prompt = False
+    k.walk("botd")
+    k.start()
+    for c in k.classes:
         try:
-            o = bl.typ.get_cls(c)()
+            o = get_cls(c)()
             o.txt = "yo!"
             o.save()
-        except TypeError as ex:
+        except (AttributeError, TypeError) as ex:
             pass
+
+def execute(main):
+    save()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except Exception:
+        logging.error(get_exception())
+    reset()
 
 def main():
     try:
         shutil.rmtree("testdata")
     except:
         pass
-    bl.shl.parse_cli("test", 1, opts, wd="testdata")
-    bl.workdir = "testdata"
-    bl.log.level("debug")
+    parse_cli("test", 1, opts, wd="testdata")
+    bl.pst.workdir = "testdata"
+    level("debug")
     initialize()
-    bl.k.cfg.exclude = "mdl,rss"
-    bl.k.cfg.debug = True
-    bl.log.level(bl.k.cfg.level)
+    k.cfg.exclude = "mdl,rss"
+    k.cfg.debug = True
+    level(k.cfg.level)
     test_path = os.getcwd() + os.sep + "tests"
     p = ""
-    if bl.k.cfg.args:
-        p = "test_%s*" % bl.k.cfg.args[0]
+    if k.cfg.args:
+        p = "test_%s*" % k.cfg.args[0]
     if not p:
         p = "test_*"
     suite = unittest.loader.TestLoader().discover(test_path, pattern=p)
     unittest.TextTestRunner(verbosity=3).run(suite)
    
-bl.shl.execute(main)
-print(bl.tms.elapsed(time.time() - bl.k.state.starttime))
+execute(main)
+print(elapsed(time.time() - botd.cmd.starttime))
 os._exit(0)

@@ -2,10 +2,10 @@
 #
 # databases. 
 
-import bl.krn
 import os
 import time
 import _thread
+import bl.pst
 
 from bl.err import ENOFILE
 from bl.gnr import search

@@ -4,10 +4,11 @@
 
 import sys
 
-from bl.flt import Fleet
 from bl.hdl import Handler
 from bl.krn import dispatch
 from bl.pst import Cfg, Persist
+
+from botd.flt import Fleet
 
 def __dir__():
     return ('Bot', 'Cfg')

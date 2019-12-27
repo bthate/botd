@@ -5,10 +5,12 @@
 import importlib
 import typing
 
+from bl.pst import Persist
+
 def __dir__():
     return ("Loader",)
 
-class Loader(object):
+class Loader(Persist):
 
     def __init__(self):
         super().__init__()

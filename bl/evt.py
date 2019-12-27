@@ -6,6 +6,7 @@ import bl
 import time
 import threading
 
+from bl.err import ENOTIMPLEMENTED
 from bl.obj import Object
 from bl.hdl import Handler
 from bl.pst import Persist
@@ -258,4 +259,5 @@ class Event(Command):
         self.result.append(txt)
 
     def show(self):
-        raise ENOTIMPLEMENTED
+        for txt in self.result:
+            print(txt)

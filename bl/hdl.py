@@ -51,6 +51,7 @@ class Handler(Loader, Launcher):
     def handle(self, e):
         for h in self.handlers:
             h(self, e)
+        e.ready()
 
     def handler(self):
         while not self._stopped:
