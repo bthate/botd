@@ -66,6 +66,8 @@ def v(event):
 
 def main():
     cfg = parse_cli("bot", __version__, opts, wd=hd(".botd"))
+    print(cfg)
+    print(not cfg)
     logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
     k = Kernel(cfg)
     k.cmds.register("v", v)
@@ -88,7 +90,7 @@ def main():
         c.start()
         set_completer(k.cmds)
         enable_history()
-    k.wait()
+        k.wait()
 
 execute(main)
 os._exit(0)

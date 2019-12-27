@@ -22,6 +22,12 @@ class Object:
     def __len__(self):
         return len(self.__dict__)
 
+    def __not__(self):
+        for k in self:
+            if self.get(k, None):
+                return True
+        return False
+
     def __str__(self):
         return json.dumps(self, default=default, indent=4, sort_keys=True)
 

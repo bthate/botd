@@ -11,10 +11,10 @@ import _thread
 
 from bl.err import EINIT
 from bl.evt import Event
-from bl.krn import dispatch
+from bl.krn import Kernel,dispatch
 from bl.obj import Object
 from bl.pst import Cfg, Persist
-
+from bl.thr import launch
 from botd.bot import Bot, Event
 from botd.flt import Fleet
 from botd.usr import Users
@@ -22,12 +22,14 @@ from botd.usr import Users
 def __dir__():
     return ("XMPP", "Event", "Cfg", "init", "stripped")
 
+k = Kernel()
 fleet = Fleet()
 users = Users()
 
 def init(cfg):
     bot = XMPP()
-    bot.cfg.last()
+    bot.cfg.prompting = True
+    #bot.cfg.last()
     if cfg.prompting:
         try:
             bot.cfg.user = cfg.args[0]
@@ -179,6 +181,8 @@ class XMPP(Bot):
 
     def start(self):
         fleet.add(self)
+        assert self.cfg.user
+        assert self.cfg.password
         ok = self.connect(self.cfg.user, self.cfg.password)
         if ok:
             if self.cfg.channel:
