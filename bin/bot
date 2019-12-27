@@ -29,7 +29,7 @@ opts = [
     ('-k', '--kernel', "store_true", False, "read from previous kernel config.", 'kernel'),
     ('-p', '--prompting', "store_false", True, "disable prompting for initial values.", 'prompting'),
     ('-s', '--save', 'store_true', False, 'save configuration files.', 'dosave'),
-    ('-z', '--shell', 'store_true', False, 'disable shell.', 'shell'),
+    ('-z', '--shell', 'store_false', True, 'disable shell.', 'shell'),
     ('-e', '--exclude', 'store', str, 'exclude modules.', 'exclude'),
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "directory to find the logfiles.", 'logdir'),
@@ -67,7 +67,7 @@ def v(event):
 def main():
     cfg = parse_cli("bot", __version__, opts, wd=hd(".botd"))
     logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
-    k = Kernel()
+    k = Kernel(cfg)
     k.cmds.register("v", v)
     try:
         k.init(cfg.modules)
@@ -90,6 +90,7 @@ def main():
         set_completer(k.cmds)
         enable_history()
     else:
+        print("yo!")
         k.start()
         k.wait()
 
