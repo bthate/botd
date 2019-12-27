@@ -50,6 +50,7 @@ class Launcher:
         self._stopped = False
 
     def launch(self, func, *args, **kwargs):
+        logging.warning("launch %s" % get_name(func))
         name = ""
         try:
             name = kwargs.get("name", args[0].name or args[0].txt)

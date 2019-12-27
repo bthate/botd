@@ -13,14 +13,15 @@ import time
 import threading
 import _thread
 
+from bl.bot import Bot
 from bl.dbs import last
-from bl.krn import dispatch
+from bl.err import EINIT
+from bl.evt import Event
 from bl.flt import Fleet
+from bl.krn import dispatch
 from bl.obj import Object
 from bl.pst import Cfg
-from bl.evt import Event
-from bl.bot import Bot
-from bl.err import EINIT
+from bl.thr import launch
 from bl.usr import Users
 from bl.utl import locked
 
@@ -429,7 +430,6 @@ def privmsged(handler, event):
             return
         try:
             dcc = DCC()
-            dcc.sync(k)
             dcc.encoding = "utf-8"
             launch(dcc.connect, event)
             return
