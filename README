@@ -118,10 +118,8 @@ BOTLIB contains the following modules:
  bl.all			- contains all sub modules
  bl.bot			- base bot.
  bl.clk			- clock functions.
- bl.cfg			- config related stuff.
  bl.csl			- console.
  bl.dbs			- database.
- bl.dft			- defaults.			
  bl.dpt			- dispatch
  bl.err			- errors.
  bl.flt			- list of bots.
@@ -133,8 +131,6 @@ BOTLIB contains the following modules:
  bl.log			- logging.
  bl.obj			- objects.
  bl.pst			- persitence.
- bl.rgt		        - register.
- bl.rss			- RSS feeds to channel.
  bl.shl			- shell.
  bl.shw			- show runtime status.
  bl.tms			- time related.
