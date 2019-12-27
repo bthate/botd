@@ -1,21 +1,19 @@
 #!/usr/bin/python3 
 
+txt = """# BOTD - python3 IRC channel daemon\n#\n#\n"""
+
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 import json
 import time
+import bl.table
 
-from bl.hdl import Handler
-from bl.shl import parse_cli
-
-import bl.tables
-
-bl.shl.parse_cli("obot")
-hdl = Handler()
-hdl.walk("bl")
-hdl.walk("botd")
-
-print("classes = %s" % json.dumps(bl.tables.classes, indent=4))
-print("names = %s" % json.dumps(bl.tables.names, indent=4))
-print("modules = %s" % json.dumps(bl.tables.modules, indent=4))
+from bl.krn import Kernel
+k = Kernel()
+k.walk("bl")
+k.walk("botd")
+print(txt)
+print("classes = %s" % bl.table.classes)
+print("names = %s" % bl.table.names)
+print("modules = %s" % bl.table.modules)
 sys.exit()

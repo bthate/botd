@@ -2,16 +2,16 @@
 #
 # 
 
-import bl
 import time
 import threading
 
-from bl.err import ENOTIMPLEMENTED
+from bl.err import ENOTIMPLEMENTED, ENOTXT
+from bl.gnr import format
 from bl.obj import Object
 from bl.hdl import Handler
 from bl.pst import Persist
-from bl.err import ENOTXT
-from bl.gnr import format
+from bl.table import names
+from bl.tms import parse_date, to_day
 
 def __dir__():
     return ("Command", "Event", "Object", "Token", "aliases")
@@ -59,7 +59,7 @@ class Token(Object):
         except ValueError:
             pass
         if nr == 1:
-            self.match = h.names.get(word, word)
+            self.match = names.get(word, word)
             self.arg = word
             return
         if "http" in word:
@@ -181,9 +181,9 @@ class Command(Persist):
             if token.setter:
                 self.setter[token.setter] = token.value
             if token.up:
-                self.delta = bl.tms.parse_date(token.up)
+                self.delta = parse_date(token.up)
             elif token.down:
-                self.delta = bl.tms.parse_date(token.down)
+                self.delta = parse_date(token.down)
             if not self.noignore and token.ignore:
                 self.ignore = token.ignore
                 continue
@@ -200,7 +200,7 @@ class Command(Persist):
         self.start = time.time() + self.delta
         self.stop = time.time()
         self.rest = " ".join(self.args)
-        self.time = bl.tms.to_day(self.rest)
+        self.time = to_day(self.rest)
 
     def ready(self):
         self._ready.set()

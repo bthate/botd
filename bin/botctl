@@ -17,16 +17,14 @@ def config(event):
     event.reply(cfg)
 
 def v(event):
-    import __main__
-    event.reply("BOTD %s" % __main__.__version__)
+    event.reply("BOTD %s" % __version__)
 
 def main():
     cfg.workdir = cfg.workdir or os.path.abspath("/var/lib/botd")
-    cfg.logdir = cfg.workdir or os.path.abspath("/var/log/botd")
+    cfg.logdir = cfg.logdir or os.path.abspath("/var/log/botd")
     k = Kernel()
     k.cmds.register("cfg", config)
     k.cmds.register("v", v)
-    k.walk(cfg.modules)
     k.cmd(cfg.txt)
      
 execute(main)
