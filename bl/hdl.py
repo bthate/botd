@@ -102,6 +102,8 @@ class Handler(Loader, Launcher):
         logging.warning("synced %s to %s" % (get_name(other), get_name(self)))
 
     def walk(self, pkgname):
+        if not pkgname:
+             return
         mod = self.load_mod(pkgname)
         mods = [mod,]
         try:

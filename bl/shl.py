@@ -95,8 +95,6 @@ def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error"):
     if not os.path.exists(sp):
         cdir(sp)
     level(cfg.level, cfg.logdir)
-    logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
-    logging.debug(cfg)
     return cfg
 
 def set_completer(commands):

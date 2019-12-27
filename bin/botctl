@@ -1,0 +1,31 @@
+#!/usr/bin/python3
+
+__version__ = 1
+
+from bl.krn import Kernel
+from bl.shl import execute, parse_cli
+
+opts = [
+    ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
+    ('-o', '--options', "store", str, "options to use.", 'options'),
+    ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
+]
+
+cfg = parse_cli("botctl", __version__, opts)
+
+def config(event):
+    event.reply(cfg)
+
+def v(event):
+    import __main__
+    event.reply("BOTD %s" % __main__.__version__)
+
+def main():
+    cfg.workdir = cfg.workdir or os.path.abspath("/var/lib/botd")
+    cfg.logdir = cfg.workdir or os.path.abspath("/var/log/botd")
+    k = Kernel()
+    k.cmds.register("cfg", config)
+    k.walk(cfg.modules)
+    k.cmd(cfg.txt)
+     
+execute(main)

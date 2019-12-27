@@ -418,8 +418,7 @@ def noticed(handler, event):
     if event.command != "NOTICE":
         return
     if event.txt.startswith("VERSION"):
-        from __main__ import __version__
-        txt = "\001VERSION %s %s - %s\001" % ("BOTD", __version__, "python3 IRC channel daemon")
+        txt = "\001VERSION %s %s - %s\001" % ("BOTD", "1", "python3 IRC channel daemon")
         handler.command("NOTICE", event.channel, txt)
 
 def privmsged(handler, event):

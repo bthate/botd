@@ -73,16 +73,15 @@ class Kernel(Handler, Persist):
     def start(self, handler=True, input=False, output=False):
         if self._started:
             return
-        level(self.cfg.level, self.cfg.logdir)
         self._started = True
         self.state.started = False
         self.state.starttime = time.time()
         if self.cfg.owner:
             self.users.oper(cfg.owner)
         if self.cfg.kernel:
-            last(cfg)
-        self.register(dispatch)
+            self.cfg.last()
         super().start(handler)
+        self.register(dispatch)
         if input:
             self.launch(self.input)
             

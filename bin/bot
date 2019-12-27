@@ -69,8 +69,9 @@ def execute(main):
 
 def main():
     cfg = parse_cli("bot", __version__, opts, wd=hd(".botd"))
+    logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
     k = Kernel(cfg)
-    k.walk("botd")
+    k.walk("botd.cmd")
     try:
         k.init(k.cfg.modules)
     except EINIT as ex:
@@ -89,7 +90,7 @@ def main():
         enable_history()
     else:
         k.start()
-    k.wait()
+        k.wait()
 
 execute(main)
 os._exit(0)

@@ -13,11 +13,10 @@ import bl.pst
 
 from bl.krn import Kernel
 from bl.log import level
+from bl.shl import parse_cli
 from bl.trm import reset, save
 from bl.trc import get_exception
 from bl.utl import hd
-
-bl.pst.workdir = "/var/lib/botd"
 
 k = Kernel()
 
@@ -61,12 +60,23 @@ def execute(main):
         logging.error(get_exception())
     reset()
 
+cfg = parse_cli("botd", __version__, opts)
+
+def config(event):
+    event.reply(cfg)
+
 def main():
+    cfg.level = "debug"
     daemon()
-    level("debug", "/var/log/botd")
+    level(cfg.level, cfg.logdir or hd(os.path.join(".botd", "logs")))
+    logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
+    logging.debug(cfg)
+    k.init(cfg.modules)
     k.start()
-    k.init("botd")
+    k.cmds.register("cfg", config)
+    logging.warning("%s waiting at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
     k.wait()
+    logging.warning("%s stopped at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
 
 execute(main)
 os._exit(0)

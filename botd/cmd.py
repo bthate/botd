@@ -44,10 +44,10 @@ def cfg(event):
     l.save()
     event.reply("ok")
 
-def cmd(event):
+def cmds(event):
     event.reply("|".join(sorted(handler.cmds)))
 
-def flt(event):
+def fleet(event):
     try:
         event.reply(str(fleet.bots[event.index-1]))
         return
@@ -97,7 +97,3 @@ def ps(event):
 
 def up(event):
     event.reply(elapsed(time.time() - starttime))
-
-def v(event):
-    import __main__
-    event.reply("BOTD %s" % __main__.__version__)
