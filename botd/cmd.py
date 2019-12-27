@@ -8,8 +8,8 @@ import os
 import sys
 import time
 import threading
-
 import bl.pst
+import bl.tbl
 from bl.dbs import Db
 from bl.krn import Kernel
 from bl.hdl import Handler
@@ -46,7 +46,7 @@ def cfg(event):
     event.reply("ok")
 
 def cmds(event):
-    event.reply("|".join(sorted(handler.cmds)))
+    event.reply("|".join(sorted(bl.tbl.modules)))
 
 def fleet(event):
     try:

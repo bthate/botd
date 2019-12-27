@@ -6,9 +6,10 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 
 import json
 import time
-import bl.table
+import bl.tbl
 
 from bl.krn import Kernel
+
 k = Kernel()
 k.walk("bl")
 k.walk("botd")

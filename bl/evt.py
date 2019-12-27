@@ -10,7 +10,7 @@ from bl.gnr import format
 from bl.obj import Object
 from bl.hdl import Handler
 from bl.pst import Persist
-from bl.table import names
+from bl.tbl import names
 from bl.tms import parse_date, to_day
 
 def __dir__():

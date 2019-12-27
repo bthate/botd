@@ -10,7 +10,7 @@ import logging
 import sys
 
 import bl.krn
-import bl.table
+import bl.tbl
 
 from bl.csl import Console
 from bl.err import EINIT
@@ -82,13 +82,12 @@ def main():
         return
     if k.cfg.shell:
         c = Console()
-        c.sync(k)
         c.start()
         set_completer(k.cmds)
         enable_history()
-        print(bl.table.modules)
         k.start()
         k.wait()
+    logging.warning("%s stopped at %s (%s)" % (cfg.name.upper(), cfg.workdir, cfg.level))
 
 execute(main)
 os._exit(0)

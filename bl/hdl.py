@@ -8,7 +8,7 @@ import pkgutil
 import queue
 import time
 import threading
-import bl.table
+import bl.tbl
 
 from bl.err import ENOTIMPLEMENTED
 from bl.obj import Object
@@ -44,7 +44,7 @@ class Handler(Loader, Launcher):
     def get_cmd(self, cn):
         cmd = self.cmds.get(cn, None)
         if not cmd:
-            mn = bl.table.modules.get(cn, None)
+            mn = bl.tbl.modules.get(cn, None)
             if mn:
                 self.load_mod(mn)
             cmd = self.cmds.get(cn, None)
@@ -85,13 +85,13 @@ class Handler(Loader, Launcher):
             if "event" in o.__code__.co_varnames:
                 if o.__code__.co_argcount == 1 and key not in self.cmds:
                     self.cmds.register(key, o)
-                    bl.table.modules[key] = o.__module__
+                    bl.tbl.modules[key] = o.__module__
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, Object):
                 t = get_type(o)
-                if t not in bl.table.classes:
-                    bl.table.classes.append(t)
-                    bl.table.names[t.split(".")[-1].lower()] = str(t)
+                if t not in bl.tbl.classes:
+                    bl.tbl.classes.append(t)
+                    bl.tbl.names[t.split(".")[-1].lower()] = str(t)
                 
     def start(self, handler=True):
         if handler:

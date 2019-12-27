@@ -27,7 +27,7 @@ default = {
            "modules": "",
            "options": "",
            "owner": "",
-           "prompting": True,
+           "prompting": False,
            "shell": False,
            "verbose": False,
            "workdir": ""
