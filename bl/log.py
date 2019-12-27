@@ -7,7 +7,7 @@ import logging
 import logging.handlers
 import os
 
-from bl.krn import workdir
+from bl.pst import workdir
 from bl.utl import cdir, touch
 
 logfiled = ""

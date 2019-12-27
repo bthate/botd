@@ -99,14 +99,14 @@ def hook(fn):
     return o
 
 def names(name, delta=None):
-    assert bl.krn.workdir
-    p = os.path.join(bl.krn.workdir, "store", name) + os.sep
+    assert bl.pst.workdir
+    p = os.path.join(bl.pst.workdir, "store", name) + os.sep
     res = []
     now = time.time()
     past = now + delta
     for rootdir, dirs, files in os.walk(p, topdown=True):
         for fn in files:
-            fnn = os.path.join(rootdir, fn).split(os.path.join(bl.krn.workdir, "store"))[-1]
+            fnn = os.path.join(rootdir, fn).split(os.path.join(bl.pst.workdir, "store"))[-1]
             if delta:
                 if fntime(fnn) < past:
                     continue

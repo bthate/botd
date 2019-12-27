@@ -10,9 +10,8 @@ import os
 import readline
 import time
 
-from bl.krn import workdir
 from bl.log import level, logfiled
-from bl.pst import Cfg
+from bl.pst import Cfg, workdir
 from bl.trm import reset, save
 from bl.utl import cdir, hd, touch
 from bl.trc import get_exception

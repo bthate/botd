@@ -9,9 +9,7 @@ def __dir__():
 
 class Fleet(Persist):
 
-    def __init__(self):
-        super().__init__()
-        self.bots = []
+    bots = []
 
     def __iter__(self):
         return iter(self.bots)

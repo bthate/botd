@@ -1,0 +1,21 @@
+#!/usr/bin/python3 
+
+import os, sys ; sys.path.insert(0, os.getcwd())
+
+import json
+import time
+
+from bl.hdl import Handler
+from bl.shl import parse_cli
+
+import bl.tables
+
+bl.shl.parse_cli("obot")
+hdl = Handler()
+hdl.walk("bl")
+hdl.walk("botd")
+
+print("classes = %s" % json.dumps(bl.tables.classes, indent=4))
+print("names = %s" % json.dumps(bl.tables.names, indent=4))
+print("modules = %s" % json.dumps(bl.tables.modules, indent=4))
+sys.exit()

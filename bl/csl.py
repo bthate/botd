@@ -6,11 +6,14 @@ import sys
 
 from bl.krn import dispatch
 from bl.evt import Event
+from bl.flt import Fleet
 from bl.hdl import Handler
 from bl.pst import Persist
 
 def __dir__():
     return ("Console",)
+
+fleet = Fleet()
 
 class Event(Event):
 
@@ -53,6 +56,7 @@ class Console(Handler, Persist):
         self.raw(txt)
  
     def start(self):
+        fleet.add(self)
         self.register(dispatch)
         super().start(False)
         self.launch(self.input)

@@ -14,7 +14,8 @@ import threading
 import _thread
 
 from bl.dbs import last
-from bl.krn import k, dispatch
+from bl.krn import dispatch
+from bl.flt import Fleet
 from bl.obj import Object
 from bl.pst import Cfg
 from bl.evt import Event
@@ -39,10 +40,11 @@ default = {
            "realname": "botd",
            "username": "botd",
           }
+
+fleet = Fleet()
           
 def init():
     bot = IRC()
-    bot.sync(k)
     last(bot.cfg)
     if k.cfg.prompting:
         try:
@@ -74,7 +76,7 @@ class Event(Event):
 
     def show(self):
         for txt in self.result:
-            k.fleet.echo(self.orig, self.channel, txt)
+            fleet.echo(self.orig, self.channel, txt)
 
 class DEvent(Event):
 
@@ -94,7 +96,7 @@ class DEvent(Event):
 
     def show(self):
         for txt in self.result:
-            k.fleet.echo(self.orig, self.channel, txt)
+            fleet.echo(self.orig, self.channel, txt)
 
 class TextWrap(textwrap.TextWrapper):
 
@@ -343,7 +345,6 @@ class IRC(Bot):
         self.register(privmsged)
         self.register(noticed)
         self.connect()
-        k.add(self)
         super().start(True, True, True)
 
 class DCC(Bot):

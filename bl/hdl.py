@@ -20,6 +20,11 @@ def __dir__():
     return ("Handler",)
 
 class Handler(Loader, Launcher):
+
+    classes = []
+    cmds = Register()
+    modules = {}
+    names = {}
     
     def __init__(self):
         super().__init__()
@@ -30,11 +35,7 @@ class Handler(Loader, Launcher):
         self._stopped = False
         self._threaded = True
         self._type = get_type(self)
-        self.classes = []
-        self.cmds = Register()
         self.handlers = []
-        self.modules = {}
-        self.names = {}
         self.sleep = False
         self.state = Object()
         self.state.last = time.time()

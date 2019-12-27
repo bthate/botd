@@ -4,12 +4,15 @@
 
 import sys
 
+from bl.flt import Fleet
 from bl.hdl import Handler
 from bl.krn import dispatch
 from bl.pst import Cfg, Persist
 
 def __dir__():
     return ('Bot', 'Cfg')
+
+fleet = Fleet()
 
 class Cfg(Cfg):
 
@@ -62,6 +65,7 @@ class Bot(Handler, Persist):
             self.raw(txt)
 
     def start(self, handler=True, input=False, output=False):
+        fleet.add(self)
         self.register(dispatch)
         super().start(handler)
         if output:

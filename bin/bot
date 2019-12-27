@@ -13,7 +13,7 @@ import logging
 from bl.csl import Console
 from bl.err import EINIT
 from bl.evt import Event
-from bl.krn import k, workdir
+from bl.krn import Kernel, workdir
 from bl.log import level, logfiled
 from bl.shl import close_history, enable_history, parse_cli, set_completer
 from bl.trm import reset, save
@@ -69,8 +69,8 @@ def execute(main):
 
 def main():
     cfg = parse_cli("bot", __version__, opts, wd=hd(".botd"))
-    k.cfg.update(cfg)
-    bl.krn.workdir = cfg.workdir or wd
+    k = Kernel(cfg)
+    bl.pst.workdir = cfg.workdir or wd
     k.cfg.shell = True
     k.cfg.prompting = True
     k.start()

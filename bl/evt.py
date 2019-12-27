@@ -7,6 +7,7 @@ import time
 import threading
 
 from bl.obj import Object
+from bl.hdl import Handler
 from bl.pst import Persist
 from bl.err import ENOTXT
 from bl.gnr import format
@@ -15,6 +16,7 @@ def __dir__():
     return ("Command", "Event", "Object", "Token", "aliases")
 
 aliases = {}
+h = Handler()
 
 class Token(Object):
 
@@ -56,8 +58,7 @@ class Token(Object):
         except ValueError:
             pass
         if nr == 1:
-            from bl.krn import k
-            self.match = k.names.get(word, word)
+            self.match = h.names.get(word, word)
             self.arg = word
             return
         if "http" in word:

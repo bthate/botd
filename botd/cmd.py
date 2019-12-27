@@ -2,51 +2,60 @@
 #
 # basic commands. 
 
+__version__ = 1
+
 import os
+import sys
 import time
 import threading
 
-from bl.krn import k, workdir
+from bl.dbs import Db
+from bl.flt import Fleet
+from bl.hdl import Handler
+from bl.pst import workdir
 from bl.obj import Object
 from bl.tms import elapsed
 from bl.typ import get_type
+from bl.usr import Users
+
+db = Db()
+fleet = Fleet()
+handler = Handler()
+starttime = time.time()
+users = Users()
 
 def cfg(event):
-    if not event.args:
-        event.reply(k.cfg)
-        return
     if len(event.args) >= 1:
         cn = "bl.%s.Cfg" % event.args[0]
-        l = k.db.last(cn)
-        if not l:
-            event.reply("no %s config found." % event.args[0])
-            return
-        if len(event.args) == 1:
-            event.reply(l)
-            return
-        if len(event.args) == 2:
-            event.reply(l.get(event.args[1]))
-            return
-        l.set(event.args[0], event.args[1])
-        l.save()
-        event.reply("ok")
+    else:
+        cn = "bl.krn.Cfg"
+    l = db.last(cn)
+    if not l:
+        event.reply("no %s found." % cn)
+        return
+    if len(event.args) == 1:
+        event.reply(l)
+        return
+    if len(event.args) == 2:
+        event.reply(l.get(event.args[1]))
+        return
+    l.set(event.args[0], event.args[1])
+    l.save()
+    event.reply("ok")
 
 def cmd(event):
-    event.reply("|".join(sorted(k.cmds)))
+    event.reply("|".join(sorted(handler.cmds)))
 
 def flt(event):
     try:
-        event.reply(str(k.fleet.bots[event.index-1]))
+        event.reply(str(fleet.bots[event.index-1]))
         return
     except (TypeError, ValueError, IndexError):
         pass
-    event.reply([get_type(x) for x in k.fleet.bots])
-
-def knl(event):
-    event.reply(str(k))
+    event.reply([get_type(x) for x in fleet.bots])
 
 def ls(event):
-    event.reply("|".join(os.listdir(os.path.join(k.cfg.workdir, "store"))))
+    event.reply("|".join(os.listdir(os.path.join(workdir, "store"))))
 
 def meet(event):
     if not event.args:
@@ -57,8 +66,8 @@ def meet(event):
     except ValueError:
         event.reply("meet origin [permissions]")
         return
-    origin = k.users.userhosts.get(origin, origin)
-    u = k.users.meet(origin, perms)
+    origin = users.userhosts.get(origin, origin)
+    u = users.meet(origin, perms)
     event.reply("added %s" % u.user)
 
 def pid(event):
@@ -76,7 +85,7 @@ def thr(event):
         if o.get("sleep", None):
             up = o.sleep - int(time.time() - o.state.latest)
         else:
-            up = int(time.time() - k.state.starttime)
+            up = int(time.time() - starttime)
         result.append((up, thr.getName(), o))
     nr = -1
     for up, thrname, o in sorted(result, key=lambda x: x[0]):
@@ -86,17 +95,8 @@ def thr(event):
             event.reply(res)
 
 def up(event):
-    event.reply(elapsed(time.time() - k.state.starttime))
+    event.reply(elapsed(time.time() - starttime))
 
 def v(event):
-    res = []
-    res.append("%s %s" % (k.cfg.name.upper(), k.cfg.version))
-    for name, mod in k.table.items():
-        if not mod:
-            continue
-        ver = getattr(mod, "__version__", None)
-        if ver:
-            txt = "%s %s" % (name, ver)
-            res.append(txt.upper())
-    if res:
-        event.reply(" | ".join(res))
+    import __main__
+    event.reply("BOTD %s" % __main__.__version__)

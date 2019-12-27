@@ -23,7 +23,6 @@ class Kernel(Handler, Persist):
 
     db = Db()
     cfg = Cfg()
-    fleet = Fleet()
     state = Object()
     users = Users()
 
@@ -35,9 +34,6 @@ class Kernel(Handler, Persist):
         self.verbose = True
         self.cfg.update(cfg)
         self.cfg.update(kwargs)
-
-    def add(self, bot):
-        self.fleet.add(bot)
 
     def cmd(self, txt, origin=""):
         if not txt:
@@ -74,10 +70,6 @@ class Kernel(Handler, Persist):
             except EOFError:
                 break
             self.put(e)
-
-    def show(self, event):
-        for txt in event.result:
-            self.fleet.echo(event.channel, txt)
 
     def start(self, handler=True, input=False, output=False):
         if self._started:

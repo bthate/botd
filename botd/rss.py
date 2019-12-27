@@ -10,13 +10,12 @@ import time
 import urllib
 
 from bl.clk import Repeater
-from bl.krn import k
+from bl.dbs import Db
 from bl.obj import Cfg, Default, Object
 from bl.flt import Fleet
 from bl.pst import Persist
-from bl.dbs import Db
+from bl.thr import launch
 from bl.utl import get_tinyurl, get_url, strip_html, unescape
-
 try:
     import feedparser
     gotparser = True
@@ -26,8 +25,10 @@ except ModuleNotFoundError:
 def __dir__():
     return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"display", "feed", "fetch", "init", "rss")
 
+db = Db()
+fleet = Fleet()
+
 def init():
-    fetcher = Fetcher()
     fetcher.start()
     return fetcher
 
@@ -113,7 +114,7 @@ class Fetcher(Persist):
                     feed.save()
         self.seen.save()
         for o in objs:
-            k.fleet.announce(self.display(o))
+            fleet.announce(self.display(o))
         return counter
 
     def join(self):
@@ -123,8 +124,8 @@ class Fetcher(Persist):
     def run(self):
         res = []
         thrs = []
-        for o in k.db.all("botd.rss.Rss"):
-            thrs.append(k.launch(self.fetch, o))
+        for o in db.all("botd.rss.Rss"):
+            thrs.append(launch(self.fetch, o))
         for thr in thrs:
             res.append(thr.join())
         return res
@@ -140,6 +141,8 @@ class Fetcher(Persist):
     def stop(self):
         self.seen.save()
 
+fetcher = Fetcher()
+
 def get_feed(url):
     result = get_url(url).data
     if gotparser:
@@ -148,7 +151,7 @@ def get_feed(url):
             for entry in result["entries"]:
                 yield entry
     else:
-        return [bl.Object(), bl.Object()]
+        return [Object(), Object()]
     
 def file_time(timestamp):
     return str(datetime.datetime.fromtimestamp(timestamp)).replace(" ", os.sep) + "." + str(random.randint(111111, 999999))
@@ -160,7 +163,7 @@ def delete(event):
     selector = {"rss": event.args[0]}
     nr = 0
     got = []
-    for rss in k.db.find("botd.rss.Rss", selector):
+    for rss in db.find("botd.rss.Rss", selector):
         nr += 1
         rss._deleted = True
         got.append(rss)
@@ -174,7 +177,7 @@ def display(event):
         return
     nr = 0
     setter = {"display_list": event.args[1]}
-    for o in k.db.find("botd.rss.Rss", {"rss": event.args[0]}):
+    for o in db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
         bl.edit(o, setter)
         o.save()
@@ -186,19 +189,19 @@ def feed(event):
         match = event.args[0]
     nr = 0
     diff = time.time() - bl.tms.to_time(bl.tms.day())
-    res = list(k.db.find("botd.rss.Feed", {"link": match}, delta=-diff))
+    res = list(db.find("botd.rss.Feed", {"link": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s - %s" % (nr, o.title, o.summary, o.updated or o.published or "nodate", o.link))
         nr += 1
     if nr:
         return
-    res = list(k.db.find("botd.rss.Feed", {"title": match}, delta=-diff))
+    res = list(db.find("botd.rss.Feed", {"title": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
         nr += 1
-    res = list(k.db.find("botd.rss.Feed", {"summary": match}, delta=-diff))
+    res = list(db.find("botd.rss.Feed", {"summary": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
@@ -207,14 +210,13 @@ def feed(event):
         event.reply("no results found")
  
 def fetch(event):
-    fetcher = Fetcher()
     res = fetcher.run()
     event.reply("fetched %s" % ",".join([str(x) for x in res]))
 
 def rss(event):
     if not event.rest or "http" not in event.rest:
         nr = 0
-        res = list(k.db.find("botd.rss.Rss", {"rss": ""}))
+        res = list(db.find("botd.rss.Rss", {"rss": ""}))
         if res:
             for o in res:
                 event.reply("%s %s" % (nr, o.rss))

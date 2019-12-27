@@ -2,7 +2,6 @@
 #
 # persistence.
 
-import bl.krn
 import datetime
 import json
 import json.decoder
@@ -10,19 +9,20 @@ import logging
 import os
 import _thread
 
-from bl.obj import Object
+from bl.obj import Object, default
 from bl.typ import get_cls, get_type
 from bl.utl import cdir, locked
 
 lock = _thread.allocate_lock()
+workdir = ""
 
 class Persist(Object):
 
     @locked(lock)
     def load(self, path):
         assert path
-        assert bl.krn.workdir
-        lpath = os.path.join(bl.krn.workdir, "store", path)
+        assert workdir
+        lpath = os.path.join(workdir, "store", path)
         if not os.path.exists(lpath):
             cdir(lpath)
         with open(lpath, "r") as ofile:
@@ -36,7 +36,7 @@ class Persist(Object):
 
     @locked(lock)
     def save(self, path="", stime=None):
-        assert bl.krn.workdir
+        assert workdir
         self._type = get_type(self)
         if not path:
             try:
@@ -47,11 +47,11 @@ class Persist(Object):
             if not stime:
                 stime = str(datetime.datetime.now()).replace(" ", os.sep)
             path = os.path.join(self._type, stime)
-        opath = os.path.join(bl.krn.workdir, "store", path)
+        opath = os.path.join(workdir, "store", path)
         cdir(opath)
         logging.warning("save %s" % path)
         with open(opath, "w") as ofile:
-            json.dump(self, ofile, default=bl.obj.default, indent=4, sort_keys=True)
+            json.dump(self, ofile, default=default, indent=4, sort_keys=True)
         self.__path__ = path
         return path
 

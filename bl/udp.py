@@ -6,10 +6,17 @@ import bl
 import socket
 import time
 
-from bl import Cfg, Persist, db, fleet, launch
+from bl.dbs import Db
+from bl.pst import Cfg, Persist
+from bl.flt import Fleet
+from bl.thr import launch
+from bl.utl import get_name
 
 def __dir__():
     return ("UDP", "Cfg", "init") 
+
+fleet = Fleet()
+db = Db()
 
 def init():
     server = UDP()
@@ -49,14 +56,11 @@ class UDP(Persist):
             return
         text = text.replace("\00", "")
         if passwd == self.cfg.password:
-            for b in bl.fleet.bots:
-                if "DCC" in bl.utl.get_name(b):
+            for b in fleet.bots:
+                if "DCC" in get_name(b):
                     b.announce(text)
 
     def server(self, host="", port=""):
-        if bl.cfg.debug:
-            logging.error("debugging enabled")
-            return
         c = self.cfg
         try:
             self._sock.bind((host or c.host, port or c.port))

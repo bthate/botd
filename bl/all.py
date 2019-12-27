@@ -13,7 +13,6 @@ import bl.bot
 import bl.dbs
 import bl.flt
 import bl.usr
-import bl.spc
 import bl.csl
 import bl.err
 import bl.log
@@ -24,5 +23,4 @@ import bl.irc
 import bl.tms
 import bl.trm
 import bl.udp
-import bl.cmd
 import bl.clk

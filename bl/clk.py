@@ -6,14 +6,17 @@ import threading
 import time
 import typing
 
+from bl.dbs import Db
 from bl.evt import Event
-from bl.krn import k
 from bl.obj import Object
 from bl.pst import Cfg, Persist
+from bl.thr import launch
 from bl.utl import get_name
 
 def __dir__():
     return ("Repeater", "Timer", "Timers")
+
+db = Db()
 
 class Cfg(Cfg):
 
@@ -45,7 +48,7 @@ class Timers(Persist):
                 del self.timers[r]
 
     def start(self):
-        for evt in k.db.all("bl.clk.Timers"):
+        for evt in db.all("bl.clk.Timers"):
             e = Event()
             update(e, evt)
             if "done" in e and e.done:
@@ -95,4 +98,4 @@ class Repeater(Timer):
 
     def run(self, *args, **kwargs):
         self._func(*args, **kwargs)
-        return k.launch(self.start)
+        return launch(self.start)

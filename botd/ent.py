@@ -6,8 +6,10 @@ import os
 import time
 import threading
 
-from bl.krn import k
+from bl.dbs import Db
 from bl.pst import Persist
+
+db = Db()
 
 class Log(Persist):
 
@@ -26,7 +28,7 @@ def log(event):
         nr = 0
         if not event.dkeys:
             event.dkeys.append("txt")
-        for o in k.db.find("botd.ent.Log", event.selector or {"txt": ""}):
+        for o in db.find("botd.ent.Log", event.selector or {"txt": ""}):
             event.display(o, "%s" % str(nr))
             nr += 1
         return
@@ -40,7 +42,7 @@ def todo(event):
         nr = 0
         if "txt" not in event.dkeys:
             event.dkeys.append("txt")
-        for o in k.db.find("botd.ent.Todo", event.selector or {"txt": ""}):
+        for o in db.find("botd.ent.Todo", event.selector or {"txt": ""}):
             event.display(o, "%s" % str(nr))
             nr += 1
         return
