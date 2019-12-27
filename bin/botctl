@@ -25,6 +25,7 @@ def main():
     cfg.logdir = cfg.workdir or os.path.abspath("/var/log/botd")
     k = Kernel()
     k.cmds.register("cfg", config)
+    k.cmds.register("v", v)
     k.walk(cfg.modules)
     k.cmd(cfg.txt)
      

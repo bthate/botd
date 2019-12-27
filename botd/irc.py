@@ -16,7 +16,7 @@ import _thread
 from bl.dbs import last
 from bl.err import EINIT
 from bl.evt import Event
-from bl.krn import dispatch
+from bl.krn import Kernel, dispatch
 from bl.obj import Object
 from bl.pst import Cfg
 from bl.thr import launch
@@ -44,10 +44,12 @@ default = {
 
 lock = _thread.allocate_lock()
 fleet = Fleet()
+k = Kernel()
 users = Users()
           
 def init(cfg):
     bot = IRC()
+    bot.walk("botd")
     last(bot.cfg)
     if cfg.prompting:
         try:
@@ -439,4 +441,4 @@ def privmsged(handler, event):
         if not users.allowed(event.origin, "USER"):
             logging.error("deny %s" % event.origin)
             return
-        handler.put(event)
+        k.put(event)

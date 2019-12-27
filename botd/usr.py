@@ -25,6 +25,8 @@ class Users(Db):
 
     def allowed(self, origin, perm):
         perm = perm.upper()
+        origin = self.userhosts.get(origin, origin)
+        print(origin)
         user = self.get_user(origin)
         if user:
             if perm in user.perms:
@@ -42,7 +44,7 @@ class Users(Db):
 
     def get_users(self, origin=""):
         s = {"user": origin}
-        return self.all("bl.usr.User", s)
+        return self.all("botd.usr.User", s)
 
     def get_user(self, origin):
         u =  list(self.get_users())
@@ -50,15 +52,9 @@ class Users(Db):
             return u[-1]
  
     def meet(self, origin, perms=None):
-        if not perms:
-            perms = []
-        user = self.get_user(origin)
-        if not user:
-            user = User()
+        user = User()
         user.user = origin
-        user.perms = perms + ["USER", ]
-        if perms:
-            user.perms.extend(perms)
+        user.perms = ["USER", ]
         user.save()
         return user
 

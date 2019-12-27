@@ -11,6 +11,7 @@ import threading
 
 import bl.pst
 from bl.dbs import Db
+from bl.krn import Kernel
 from bl.hdl import Handler
 from bl.obj import Object
 from bl.tms import elapsed
@@ -21,18 +22,18 @@ from botd.usr import Users
 
 db = Db()
 fleet = Fleet()
+k = Kernel()
 handler = Handler()
 starttime = time.time()
 users = Users()
 
 def cfg(event):
-    if len(event.args) >= 1:
-        cn = "bl.%s.Cfg" % event.args[0]
-    else:
-        cn = "bl.krn.Cfg"
-    l = db.last(cn)
+    if not event.args:
+        event.reply(k.cfg)
+        return
+    l = db.last("botd.%s.Cfg" % event.args[0])
     if not l:
-        event.reply("no %s found." % cn)
+        event.reply("no %s found." % event.args[0])
         return
     if len(event.args) == 1:
         event.reply(l)
@@ -67,7 +68,7 @@ def meet(event):
     except ValueError:
         event.reply("meet origin [permissions]")
         return
-    origin = users.userhosts.get(origin, origin)
+    origin = Users.userhosts.get(origin, origin)
     u = users.meet(origin, perms)
     event.reply("added %s" % u.user)
 
@@ -97,3 +98,9 @@ def ps(event):
 
 def up(event):
     event.reply(elapsed(time.time() - starttime))
+
+def u(event):
+    res = ""
+    for o in db.all("botd.usr.User"):
+        res += "%s," % o.user
+    event.reply(res)

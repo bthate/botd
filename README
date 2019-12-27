@@ -116,33 +116,34 @@ BOTLIB contains the following modules:
 
 
  bl.all			- contains all sub modules
- bl.bot			- base bot.
  bl.clk			- clock functions.
  bl.csl			- console.
  bl.dbs			- database.
- bl.dpt			- dispatch
  bl.err			- errors.
  bl.flt			- list of bots.
- bl.ent			- entry.
  bl.evt			- event.
  bl.hdl			- handler.
- bl.irc			- IRC.
  bl.ldr			- module loader.
  bl.log			- logging.
  bl.obj			- objects.
  bl.pst			- persitence.
  bl.shl			- shell.
- bl.shw			- show runtime status.
  bl.tms			- time related.
  bl.trm			- terminal code.
  bl.thr			- threads.
  bl.trc			- trace.
  bl.typ			- typing.
- bl.udp			- incoming udp to channel.
- bl.usr			- users.
  bl.utl			- utilities.
 
+::
 
+ botd.cmd		- basic commands
+ botd.bot		- bot base class.
+ botd.ent		- log and todo commands.
+ botd.irc		- IRC bot.
+ botd.udp		- UDP packet to IRC channel relay.
+ botd.usr		- user management.
+ 
 C O D E
 
 
