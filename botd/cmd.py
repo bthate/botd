@@ -74,7 +74,7 @@ def meet(event):
 def pid(event):
     event.reply(str(os.getpid()))
 
-def thr(event):
+def ps(event):
     psformat = "%-8s %-50s"
     result = []
     for thr in sorted(threading.enumerate(), key=lambda x: x.getName()):

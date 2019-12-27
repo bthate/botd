@@ -109,5 +109,5 @@ class Handler(Loader, Launcher):
         except:
             mns = pkgutil.iter_modules([mod.__file__,], mod.__name__+".")
         for n in mns:
-            mods.append(self.load_mod(n[1], force=False))
+            mods.append(self.load_mod(n[1], force=True))
         return mods
