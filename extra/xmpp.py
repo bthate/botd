@@ -135,6 +135,19 @@ class XMPP(Bot):
         self.client.ssl_version = ssl.PROTOCOL_SSLv23
         self.client.use_ipv6 = self.cfg.ipv6
 
+    def _say(self, channel, txt, mtype="normal"):
+        try:
+            sleekxmpp.jid.JID(channel)
+        except sleekxmpp.jid.InvalidJID:
+            return
+        if self.cfg.user in channel:
+            return
+        if channel in self.rooms:
+            mtype = "groupchat"
+        if mtype == "groupchat":
+            channel = stripped(channel)
+        self.client.send_message(channel, str(txt), mtype)
+
     def _start(self, data):
         try:
             self.client.send_presence()
@@ -188,7 +201,7 @@ class XMPP(Bot):
         m.channel = m.origin
         if self.cfg.user == m.user:
             return
-        k.put(m)
+        self.put(m)
 
     def presence(self, data):
         o = Event()
@@ -225,17 +238,7 @@ class XMPP(Bot):
                 self.channels.remove(o.user)
 
     def say(self, channel, txt, mtype="chat"):
-        try:
-            sleekxmpp.jid.JID(channel)
-        except sleekxmpp.jid.InvalidJID:
-            return
-        if self.cfg.user in channel:
-            return
-        if channel in self.rooms:
-            mtype = "groupchat"
-        if mtype == "groupchat":
-            channel = stripped(channel)
-        self.client.send_message(channel, str(txt), mtype)
+        self._outqueue.put((channel, txt, mtype))
 
     def sleek(self):
         self.client.process(block=True)
@@ -246,6 +249,7 @@ class XMPP(Bot):
         super().stop()
 
     def start(self):
+        super().start(output=True)
         assert self.cfg.user
         assert self.cfg.password
         ok = self.connect(self.cfg.user, self.cfg.password)
