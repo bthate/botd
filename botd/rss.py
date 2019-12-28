@@ -11,6 +11,7 @@ import urllib
 
 from bl.clk import Repeater
 from bl.dbs import Db
+from bl.gnr import edit
 from bl.obj import Cfg, Default, Object
 from bl.pst import Persist
 from bl.thr import launch
@@ -181,7 +182,7 @@ def display(event):
     setter = {"display_list": event.args[1]}
     for o in db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
-        bl.edit(o, setter)
+        edit(o, setter)
         o.save()
     event.reply("ok %s" % nr)
 
