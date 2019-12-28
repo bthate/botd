@@ -13,7 +13,7 @@ from bl.evt import Event
 from bl.hdl import Handler
 from bl.log import level
 from bl.obj import Object
-from bl.pst import Cfg, Persist
+from bl.pst import Cfg, Persist, Register
 from bl.shl import enable_history, set_completer, writepid
 from bl.utl import get_mods, get_name
 
@@ -41,8 +41,10 @@ class Event(Event):
 
 class Kernel(Handler, Persist):
 
+    cmds = Register()
     db = Db()
     cfg = Cfg(default)
+    handlers = {}
     state = Object()
 
     def __init__(self, cfg={}, **kwargs):
@@ -64,7 +66,7 @@ class Kernel(Handler, Persist):
         e.orig = repr(self)
         e.origin = origin or "root@shell"
         self.prompt = False
-        self.handle(e)
+        self.dispatch(e)
         e.wait()
 
     def init(self, modstr):

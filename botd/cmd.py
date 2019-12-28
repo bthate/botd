@@ -30,7 +30,7 @@ starttime = time.time()
 users = Users()
 
 def cfg(event):
-    event.reply(k.cfg)
+    event.reply(str(k.cfg))
 
 def ed(event):
     if not event.args:
@@ -60,7 +60,7 @@ def fleet(event):
         return
     except (TypeError, ValueError, IndexError):
         pass
-    event.reply([get_type(x) for x in bots.bots])
+    event.reply(str([get_type(x) for x in bots.bots]))
 
 def ls(event):
     event.reply("|".join(os.listdir(os.path.join(bl.pst.workdir, "store"))))

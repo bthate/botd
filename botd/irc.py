@@ -42,7 +42,7 @@ default = {
            "username": "botd",
           }
 
-lock = _thread.allocate_lock()
+saylock = _thread.allocate_lock()
 fleet = Fleet()
 k = Kernel()
 users = Users()
@@ -221,13 +221,15 @@ class IRC(Bot):
         o.rest = " ".join(o.args)
         return o
 
-    @locked(lock)
+    @locked(saylock)
     def _say(self, channel, txt, mtype="chat"):
         wrapper = TextWrap()
-        for line in txt.split("\n"):
-            for t in wrapper.wrap(line):
-                self.command("PRIVMSG", channel, t)
-                time.sleep(self.cfg.sleep)
+        txt = txt.replace("\n", "")
+        for t in wrapper.wrap(txt):
+            self.command("PRIVMSG", channel, t)
+            if (time.time() - self.state.last) < 3.0:
+                time.sleep(3.0)
+            self.state.last = time.time()
 
     def _some(self, use_ssl=False, encoding="utf-8"):
         if use_ssl:
@@ -279,7 +281,6 @@ class IRC(Bot):
         if not event._func:
             event._func = getattr(self, event.command, None)
         if event._func:
-            print(event._func)
             event._func(event)
             event.show()
         event.ready()
@@ -311,6 +312,7 @@ class IRC(Bot):
             if not users.allowed(event.origin, "USER"):
                 logging.error("deny %s" % event.origin)
                 return
+            event.txt = event.txt[1:]
             k.put(event)
 
     def poll(self):
@@ -364,9 +366,6 @@ class IRC(Bot):
         while not self._stopped:
             channel, txt, type = self._outqueue.get()
             if txt:
-                if self.sleep:
-                    if (time.time() - self.state.last) < 3.0:
-                        time.sleep(1.0 * (self.state.nrsend % 10))
                 self._say(channel, txt, type)
 
     def raw(self, txt):
@@ -383,8 +382,6 @@ class IRC(Bot):
         self.state.nrsend += 1
 
     def say(self, channel, txt, mtype="chat"):
-        if (time.time() - self.state.last) < 3.0:
-            time.sleep(self.cfg.sleep * (self.state.nrsend % 10))
         self._outqueue.put((channel, txt, mtype))
 
     def start(self):

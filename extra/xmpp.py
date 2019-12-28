@@ -197,6 +197,7 @@ class XMPP(Bot):
         m.channel = m.origin
         if self.cfg.user == m.user:
             return
+        print(k)
         k.put(m)
 
     def presence(self, data):
@@ -255,7 +256,6 @@ class XMPP(Bot):
         super().stop()
 
     def start(self):
-        fleet.add(self)
         assert self.cfg.user
         assert self.cfg.password
         ok = self.connect(self.cfg.user, self.cfg.password)

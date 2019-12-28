@@ -22,7 +22,6 @@ def __dir__():
     return ("Handler",)
 
 class Handler(Loader, Launcher):
-
     
     def __init__(self):
         super().__init__()
@@ -40,9 +39,6 @@ class Handler(Loader, Launcher):
         self.state.last = time.time()
         self.state.nrsend = 0
         self.verbose = True
-        self.classes = bl.tbl.classes
-        self.modules = bl.tbl.modules
-        self.names = bl.tbl.names
 
     def dispatch(self, event):
         event.parse(event.txt)
