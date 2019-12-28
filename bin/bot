@@ -53,8 +53,9 @@ def execute(main):
 
 def main():
     cfg = parse_cli("bot", __version__, opts, wd=hd(".botd"))
+    level(cfg.level)
     k = Kernel(cfg)
-    level(k.cfg.level)
+    k.load_mod("botd.cmd")
     k.start()
     try:
         k.init(k.cfg.modules)
@@ -62,8 +63,9 @@ def main():
         print(ex)
         return
     c = Console()
+    c.sync(k)
     c.start()
-    set_completer(k.cmds)
+    set_completer(c.cmds)
     enable_history()
     if k.cfg.dosave:
         k.save()

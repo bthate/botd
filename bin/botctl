@@ -7,6 +7,7 @@ __version__ = 1
 
 import os, sys; sys.path.insert(0, os.getcwd())
 
+from bl.csl import Console
 from bl.krn import Kernel
 from bl.log import level
 from bl.shl import execute, parse_cli
@@ -20,12 +21,11 @@ opts = [
 ]
 
 def main():
-    k = Kernel()
-    parse_cli("botctl", __version__, opts, wd=hd(".botd"), kernel=k)
-    level(k.cfg.level, k.cfg.logdir)
-    if k.cfg.dosave:
-        k.cfg.save()
-    k.cmd(k.cfg.txt)
+    cfg = parse_cli("botctl", __version__, opts, wd=hd(".botd"))
+    level(cfg.level)
+    c = Console()
+    c.load_mod("botd.cmd")
+    c.cmd(cfg.txt)
 
 try:     
     execute(main)

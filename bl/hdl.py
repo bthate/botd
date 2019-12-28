@@ -25,6 +25,7 @@ class Handler(Loader, Launcher):
     
     def __init__(self):
         super().__init__()
+        self._autoload = False
         self._queue = queue.Queue()
         self._started = False
         self._stopped = False
@@ -41,11 +42,12 @@ class Handler(Loader, Launcher):
         event.ready()
 
     def get_cmd(self, cn):
-        mn = bl.tbl.modules.get(cn, None)
-        if not mn:
-            return
-        if mn not in self.table:
-            self.load_mod(mn)
+        if self._autoload:
+            mn = bl.tbl.modules.get(cn, None)
+            if not mn:
+                return
+            if mn not in self.table:
+                self.load_mod(mn)
         return self.cmds.get(cn, None)
 
     def handler(self):
@@ -89,6 +91,9 @@ class Handler(Loader, Launcher):
     def stop(self):
         self._stopped = True
         self._queue.put(None)
+
+    def sync(self, other):
+        self.cmds.update(other.cmds)
 
     def walk(self, pkgname):
         if not pkgname:

@@ -13,7 +13,7 @@ import bl.tbl
 
 from bl.dbs import Db
 from bl.krn import Kernel
-from bl.gnr import edit
+from bl.gnr import edit, keys
 from bl.hdl import Handler
 from bl.obj import Object
 from bl.tms import elapsed
@@ -22,11 +22,11 @@ from bl.typ import get_type
 from botd.flt import Fleet
 from botd.usr import Users
 
+starttime = time.time()
+
 db = Db()
 bots = Fleet()
 k = Kernel()
-handler = Handler()
-starttime = time.time()
 users = Users()
 
 def cfg(event):
@@ -52,7 +52,7 @@ def ed(event):
     event.reply("ok")
 
 def cmds(event):
-    event.reply("|".join(sorted(bl.tbl.modules)))
+    event.reply("|".join(sorted(k.cmds)))
 
 def fleet(event):
     try:

@@ -8,6 +8,7 @@ import threading
 from bl.err import ENOTXT
 from bl.evt import Event
 from bl.hdl import Handler
+from bl.krn import Kernel
 from bl.pst import Persist
 
 def __dir__():
@@ -29,17 +30,15 @@ class Console(Handler, Persist):
     def announce(self, txt):
         self.raw(txt)
 
-    def dispatch(self, event):
-        try:
-            event.parse(event.txt)
-        except ENOTXT:
-            event.ready()
+    def cmd(self, txt, origin=""):
+        if not txt:
             return
-        event._func = self.get_cmd(event.chk)
-        if event._func:
-            event._func(event)
-            event.show()
-        event.ready()
+        e = Event()
+        e.txt = txt
+        e.orig = repr(self)
+        e.origin = origin or "root@shell"
+        self.dispatch(e)
+        e.wait()
 
     def poll(self):
         self._connected.wait()
@@ -47,6 +46,7 @@ class Console(Handler, Persist):
         e.orig = repr(self)
         e.origin = "root@shell"
         e.txt = input("> ")
+        self.dispatch(e)
         return e
 
     def input(self):
@@ -55,7 +55,6 @@ class Console(Handler, Persist):
                 e = self.poll()
             except EOFError:
                 break
-            self.put(e)
             e.wait()
 
     def raw(self, txt):
@@ -66,6 +65,5 @@ class Console(Handler, Persist):
         self.raw(txt)
  
     def start(self):
-        super().start()
         self.launch(self.input)
         self._connected.set()

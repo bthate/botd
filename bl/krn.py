@@ -4,17 +4,21 @@
 
 workdir = ""
 
+import inspect
 import logging
 import time
+import bl.tbl
 
 from bl.dbs import Db, last
 from bl.err import EINIT, ENOTXT
 from bl.evt import Event
 from bl.hdl import Handler
+from bl.ldr import Loader
 from bl.log import level
 from bl.obj import Object
 from bl.pst import Cfg, Persist, Register
 from bl.shl import enable_history, set_completer, writepid
+from bl.typ import get_type
 from bl.utl import get_mods, get_name
 
 default = {
@@ -39,20 +43,15 @@ class Event(Event):
         for txt in self.result:
             print(txt)
 
-class Kernel(Handler, Persist):
+class Kernel(Loader, Persist):
 
-    cmds = Register()
-    db = Db()
     cfg = Cfg(default)
-    handlers = {}
-    state = Object()
-
+    cmds = Register()
+    
     def __init__(self, cfg={}, **kwargs):
         super().__init__()
-        self._outputed = False
         self._started = False
-        self.prompt = True
-        self.verbose = True
+        self._stopped = False
         self.cfg.update(cfg)
         self.cfg.update(kwargs)
 
@@ -65,7 +64,6 @@ class Kernel(Handler, Persist):
         e.options = self.cfg.options
         e.orig = repr(self)
         e.origin = origin or "root@shell"
-        self.prompt = False
         self.dispatch(e)
         e.wait()
 
@@ -79,19 +77,34 @@ class Kernel(Handler, Persist):
             mods.append(mod)
         return mods
 
+    def load_mod(self, mn, force=True):
+        logging.warning("load %s into %s" % (mn, get_name(self)))
+        mod = super().load_mod(mn, force=force)
+        self.scan(mod)
+        return mod
+
+    def scan(self, mod):
+        for key, o in inspect.getmembers(mod, inspect.isfunction):
+            if "event" in o.__code__.co_varnames:
+                if o.__code__.co_argcount == 1 and key not in self.cmds:
+                    self.cmds.register(key, o)
+                    bl.tbl.modules[key] = o.__module__
+        for key, o in inspect.getmembers(mod, inspect.isclass):
+            if issubclass(o, Object):
+                t = get_type(o)
+                if t not in bl.tbl.classes:
+                    bl.tbl.classes.append(t)
+                    bl.tbl.names[t.split(".")[-1].lower()] = str(t)
+
     def start(self):
         if self._started:
             return
         self._started = True
-        self.state.started = False
-        self.state.starttime = time.time()
         if self.cfg.owner:
             self.users.oper(cfg.owner)
         if self.cfg.kernel:
             self.cfg.last()
-        super().start()
             
     def wait(self):
         while not self._stopped:
             time.sleep(1.0)
-
