@@ -106,6 +106,7 @@ class Kernel(Handler, Persist):
             time.sleep(1.0)
 
 def dispatch(handler, event):
+    print(handler, event)
     try:
         event.parse(event.txt)
     except ENOTXT:

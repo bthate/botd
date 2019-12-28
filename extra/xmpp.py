@@ -74,7 +74,6 @@ class Event(Event):
         self.txt = ""
 
     def show(self):
-        print(self)
         for txt in self.result:
             fleet.echo(self.orig, self.channel, txt)
 
@@ -174,7 +173,6 @@ class XMPP(Bot):
                 return
         txt = data["body"]
         m = Event()
-        m.parse(txt)
         m.txt = txt
         m.jid = origin
         m.orig = repr(self)
@@ -188,8 +186,7 @@ class XMPP(Bot):
         m.channel = m.origin
         if self.cfg.user == m.user:
             return
-        print(m)
-        k.put(m)
+        self.put(m)
 
     def presenced(self, data):
         o = Event()
@@ -247,6 +244,8 @@ class XMPP(Bot):
         super().stop()
 
     def start(self):
+        self.register(dispatch_xmpp)
+        super().start()
         fleet.add(self)
         assert self.cfg.user
         assert self.cfg.password
@@ -262,3 +261,17 @@ def stripped(jid):
         return str(jid).split("/")[0]
     except (IndexError, ValueError):
         return str(jid)
+
+def dispatch_xmpp(handler, event):
+    try:
+        event.parse(event.txt)
+    except ENOTXT:
+        event.ready()
+        return
+    event._func = handler.get_cmd(event.chk)
+    if event._func:
+        event._calledfrom = str(event._func)
+        event._func(event)
+        event.show()
+    print(event)
+    event.ready()

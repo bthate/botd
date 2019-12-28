@@ -193,7 +193,7 @@ you can contact me on IRC/freenode/#dunkbots.
     
     """,
     license='Public Domain',
-    install_requires=["feedparser"],
+    install_requires=["feedparser", "dnspython" ,"pyasn1_modules==0.1.5", "pyasn1==0.3.6", "sleekxmpp==1.3.1"],
     packages=["bl", "botd"],
     scripts=["bin/bot", "bin/botd", "bin/botctl", "bin/toudp"],
     classifiers=['Development Status :: 3 - Alpha',

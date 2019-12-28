@@ -24,6 +24,7 @@ def __dir__():
 class Handler(Loader, Launcher):
 
     cmds = Register()
+    handlers = []
     
     def __init__(self):
         super().__init__()
@@ -34,7 +35,6 @@ class Handler(Loader, Launcher):
         self._stopped = False
         self._threaded = True
         self._type = get_type(self)
-        self.handlers = []
         self.sleep = False
         self.state = Object()
         self.state.last = time.time()
@@ -42,12 +42,15 @@ class Handler(Loader, Launcher):
         self.verbose = True
 
     def get_cmd(self, cn):
-        cmd = self.cmds.get(cn, None)
+        print(cn)
+        cmd = Handler.cmds.get(cn, None)
         if not cmd:
             mn = bl.tbl.modules.get(cn, None)
+            print(mn)
             if mn:
-                self.load_mod(mn)
-            cmd = self.cmds.get(cn, None)
+                mod = self.load_mod(mn)
+                print(mod)
+            cmd = Handler.cmds.get(cn, None)
         return cmd
 
     def get_handler(self, cmd):
