@@ -63,10 +63,18 @@ class Kernel(Handler, Persist):
         e.options = self.cfg.options
         e.orig = repr(self)
         e.origin = origin or "root@shell"
-        self.register(dispatch)
         self.prompt = False
         self.handle(e)
         e.wait()
+
+    def dispatch(self, event):
+        event.parse(event.txt)
+        event._func = self.get_cmd(event.chk)
+        if event._func:
+            logging.warning(event._func)
+            event._func(event)
+            event.show()
+        event.ready()
 
     def init(self, modstr):
         mods = []
@@ -97,7 +105,6 @@ class Kernel(Handler, Persist):
         if self.cfg.kernel:
             self.cfg.last()
         super().start(handler)
-        self.register(dispatch)
         if input:
             self.launch(self.input)
             
@@ -105,16 +112,3 @@ class Kernel(Handler, Persist):
         while not self._stopped:
             time.sleep(1.0)
 
-def dispatch(handler, event):
-    print(handler, event)
-    try:
-        event.parse(event.txt)
-    except ENOTXT:
-        event.ready()
-        return
-    event._func = handler.get_cmd(event.chk)
-    if event._func:
-        event._calledfrom = str(event._func)
-        event._func(event)
-        event.show()
-    event.ready()

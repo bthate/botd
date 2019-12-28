@@ -6,7 +6,6 @@ import sys
 
 from bl.evt import Event
 from bl.hdl import Handler
-from bl.krn import dispatch
 from bl.pst import Cfg, Persist
 
 from botd.flt import Fleet
@@ -43,6 +42,14 @@ class Bot(Handler, Persist):
         for channel in self.channels:
             self.say(channel, txt)
 
+    def dispatch(self, event):
+        event.parse(event.txt)
+        event._func = self.get_cmd(event.chk)
+        if event._func:
+            event._func(event)
+            event.show()
+        event.ready()
+
     def input(self):
         while not self._stopped:
             try:
@@ -74,8 +81,8 @@ class Bot(Handler, Persist):
 
     def start(self, handler=True, input=False, output=False):
         fleet.add(self)
-        self.register(dispatch)
-        super().start(handler)
+        if handler:
+            super().start(handler)
         if output:
             self.launch(self.output)
         if input:

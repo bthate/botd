@@ -5,7 +5,7 @@
 import sys
 import threading
 
-from bl.krn import dispatch
+from bl.err import ENOTXT
 from bl.evt import Event
 from bl.hdl import Handler
 from bl.pst import Persist
@@ -29,6 +29,18 @@ class Console(Handler, Persist):
     def announce(self, txt):
         self.raw(txt)
 
+    def dispatch(self, event):
+        try:
+            event.parse(event.txt)
+        except ENOTXT:
+            event.ready()
+            return
+        event._func = self.get_cmd(event.chk)
+        if event._func:
+            event._func(event)
+            event.show()
+        event.ready()
+
     def poll(self):
         self._connected.wait()
         e = Event()
@@ -43,7 +55,7 @@ class Console(Handler, Persist):
                 e = self.poll()
             except EOFError:
                 break
-            dispatch(self, e)
+            self.dispatch(e)
             e.wait()
 
     def raw(self, txt):
@@ -56,7 +68,6 @@ class Console(Handler, Persist):
         self.raw(txt)
  
     def start(self):
-        self.register(dispatch)
-        super().start(False)
+        super().start()
         self.launch(self.input)
         self._connected.set()

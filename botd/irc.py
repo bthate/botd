@@ -16,7 +16,7 @@ import _thread
 from bl.dbs import last
 from bl.err import EINIT
 from bl.evt import Event
-from bl.krn import Kernel, dispatch
+from bl.krn import Kernel
 from bl.obj import Object
 from bl.pst import Cfg
 from bl.thr import launch
@@ -49,17 +49,23 @@ users = Users()
           
 def init(cfg):
     bot = IRC()
-    bot.walk("botd")
     last(bot.cfg)
-    if cfg.prompting:
+    cfg.prompting = True
+    if not cfg.nick:
+        cfg.nick = "botd"
+    if cfg.prompting and (not bot.cfg.channel or not bot.cfg.server):
         try:
             server, channel, nick = cfg.args
-            bot.cfg.server = server
-            bot.cfg.channel = channel
-            bot.cfg.nick = nick
-            bot.cfg.save()
         except ValueError:
-            raise EINIT("%s <server> <channel> <nick>" % cfg.name)
+            try:
+                server, channel = cfg.args
+                nick = "botd"
+            except ValueError:
+                raise EINIT("%s <server> <channel> <nick>" % cfg.name)
+        bot.cfg.server = server
+        bot.cfg.channel = channel
+        bot.cfg.nick = nick
+        bot.cfg.save()
     bot.start()
     return bot
 
@@ -267,6 +273,46 @@ class IRC(Bot):
             nr += 1
         self.logon(self.cfg.server, self.cfg.nick)
 
+    def dispatch(self, event):
+        event.parse(event.txt)
+        event._func = self.get_cmd(event.chk)
+        if not event._func:
+            event._func = getattr(self, event.command, None)
+        if event._func:
+            print(event._func)
+            event._func(event)
+            event.show()
+        event.ready()
+
+    def ERROR(self, event):
+        self.state.error = event
+        self._connected.clear()
+        time.sleep(self.state.nrconnect * self.cfg.sleep)
+        self.connect()
+
+    def NOTICE(self, event):
+        if event.txt.startswith("VERSION"):
+            txt = "\001VERSION %s %s - %s\001" % ("BOTD", "1", "python3 IRC channel daemon")
+            self.command("NOTICE", event.channel, txt)
+
+    def PRIVMSG(self, event):
+        users.userhosts.set(event.nick, event.origin)
+        if event.txt.startswith("DCC CHAT"):
+            if not users.allowed(event.origin, "USER"):
+                return
+            try:
+                dcc = DCC()
+                dcc.encoding = "utf-8"
+                launch(dcc.connect, event)
+                return
+            except ConnectionRefusedError:
+                return
+        if event.txt and event.txt[0] == self.cc:
+            if not users.allowed(event.origin, "USER"):
+                logging.error("deny %s" % event.origin)
+                return
+            k.put(event)
+
     def poll(self):
         self._connected.wait()
         if not self._buffer:
@@ -342,13 +388,8 @@ class IRC(Bot):
         self._outqueue.put((channel, txt, mtype))
 
     def start(self):
-        if not self.cfg.server:
-            return
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
-        self.register(errored)
-        self.register(privmsged)
-        self.register(noticed)
         self.connect()
         super().start(True, True, True)
 
@@ -399,7 +440,7 @@ class DCC(Bot):
         e.channel = self.origin
         e.orig = repr(self)
         e.origin = self.origin or "root@dcc"
-        self.handle(e)
+        self.dispatch(e)
         return e
 
     def say(self, channel, txt, type="chat"):
@@ -408,37 +449,3 @@ class DCC(Bot):
     def start(self):
         super().start(False, True, False)
 
-def errored(handler, event):
-    if event.command != "ERROR":
-        return
-    handler.state.error = event
-    handler._connected.clear()
-    time.sleep(handler.state.nrconnect * handler.cfg.sleep)
-    handler.connect()
-
-def noticed(handler, event):
-    if event.command != "NOTICE":
-        return
-    if event.txt.startswith("VERSION"):
-        txt = "\001VERSION %s %s - %s\001" % ("BOTD", "1", "python3 IRC channel daemon")
-        handler.command("NOTICE", event.channel, txt)
-
-def privmsged(handler, event):
-    if event.command != "PRIVMSG":
-        return
-    users.userhosts.set(event.nick, event.origin)
-    if event.txt.startswith("DCC CHAT"):
-        if not users.allowed(event.origin, "USER"):
-            return
-        try:
-            dcc = DCC()
-            dcc.encoding = "utf-8"
-            launch(dcc.connect, event)
-            return
-        except ConnectionRefusedError:
-            return
-    if event.txt and event.txt[0] == handler.cc:
-        if not users.allowed(event.origin, "USER"):
-            logging.error("deny %s" % event.origin)
-            return
-        k.put(event)

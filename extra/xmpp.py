@@ -11,7 +11,7 @@ import _thread
 
 from bl.err import EINIT
 from bl.evt import Event
-from bl.krn import Kernel,dispatch
+from bl.krn import Kernel
 from bl.obj import Object
 from bl.pst import Cfg, Persist
 from bl.thr import launch
@@ -29,12 +29,12 @@ users = Users()
 def init(cfg):
     bot = XMPP()
     cfg.prompting = True
-    #bot.cfg.last()
-    if cfg.prompting:
+    bot.cfg.last()
+    print(bot.cfg)
+    if cfg.prompting and (not bot.cfg.user or not bot.cfg.password):
         try:
             bot.cfg.user = cfg.args[0]
-            if cfg.prompting or not bot.cfg.password:
-                bot.cfg.password = getpass.getpass()
+            bot.cfg.password = getpass.getpass()
             bot.cfg.save()
         except (ValueError, IndexError):
             sys.stdout.write("%s <JID>" % cfg.name)
@@ -153,6 +153,15 @@ class XMPP(Bot):
         self._connect(user, password)
         return True
 
+    def dispatch(self, event):
+        event.parse(event.txt)
+        event._func = self.get_cmd(event.chk)
+        if event._func:
+            event._func(event)
+            event.show()
+        event.ready()
+
+
     def handled(self, data):
         print(data)
 
@@ -186,7 +195,7 @@ class XMPP(Bot):
         m.channel = m.origin
         if self.cfg.user == m.user:
             return
-        self.put(m)
+        k.put(m)
 
     def presenced(self, data):
         o = Event()
@@ -244,7 +253,6 @@ class XMPP(Bot):
         super().stop()
 
     def start(self):
-        self.register(dispatch_xmpp)
         super().start()
         fleet.add(self)
         assert self.cfg.user
@@ -261,17 +269,3 @@ def stripped(jid):
         return str(jid).split("/")[0]
     except (IndexError, ValueError):
         return str(jid)
-
-def dispatch_xmpp(handler, event):
-    try:
-        event.parse(event.txt)
-    except ENOTXT:
-        event.ready()
-        return
-    event._func = handler.get_cmd(event.chk)
-    if event._func:
-        event._calledfrom = str(event._func)
-        event._func(event)
-        event.show()
-    print(event)
-    event.ready()

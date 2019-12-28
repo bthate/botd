@@ -41,30 +41,29 @@ class Handler(Loader, Launcher):
         self.state.nrsend = 0
         self.verbose = True
 
+    def dispatch(self, event):
+        event.parse(event.txt)
+        event._func = self.get_cmd(event.chk)
+        if event._func:
+            event._func(event)
+            event.show()
+        event.ready()
+
     def get_cmd(self, cn):
-        print(cn)
-        cmd = Handler.cmds.get(cn, None)
-        if not cmd:
-            mn = bl.tbl.modules.get(cn, None)
-            print(mn)
-            if mn:
-                mod = self.load_mod(mn)
-                print(mod)
-            cmd = Handler.cmds.get(cn, None)
-        return cmd
+        mn = bl.tbl.modules.get(cn, None)
+        if not mn:
+            return
+        if mn not in self.table:
+            self.load_mod(mn)
+        return Handler.cmds.get(cn, None)
 
     def get_handler(self, cmd):
         return self.handler.get(cmd, None)
 
-    def handle(self, e):
-        for h in self.handlers:
-            h(self, e)
-        e.ready()
-
     def handler(self):
         while not self._stopped:
             e = self._queue.get()
-            e._thrs.append(self.launch(self.handle, e))
+            self.dispatch(e)
         self._ready.set()
 
     def load_mod(self, mn, force=True):
@@ -78,10 +77,6 @@ class Handler(Loader, Launcher):
 
     def put(self, event):
         self._queue.put_nowait(event)
-
-    def register(self, handler):
-        if handler not in self.handlers:
-            self.handlers.append(handler)
 
     def scan(self, mod):
         for key, o in inspect.getmembers(mod, inspect.isfunction):
@@ -103,11 +98,6 @@ class Handler(Loader, Launcher):
     def stop(self):
         self._stopped = True
         self._queue.put(None)
-
-    def sync(self, other):
-        self.handlers.extend(other.handlers)
-        self.cmds.update(other.cmds)
-        logging.warning("synced %s to %s" % (get_name(other), get_name(self)))
 
     def walk(self, pkgname):
         if not pkgname:
