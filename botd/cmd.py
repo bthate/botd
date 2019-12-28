@@ -23,7 +23,7 @@ from botd.flt import Fleet
 from botd.usr import Users
 
 db = Db()
-fleet = Fleet()
+bots = Fleet()
 k = Kernel()
 handler = Handler()
 starttime = time.time()
@@ -48,21 +48,21 @@ def ed(event):
     l.save()
     event.reply("ok")
 
-def cmd(event):
+def cmds(event):
     event.reply("|".join(sorted(bl.tbl.modules)))
 
-def fl(event):
+def fleet(event):
     try:
-        event.reply(str(fleet.bots[event.index-1]))
+        event.reply(str(bots.bots[event.index-1]))
         return
     except (TypeError, ValueError, IndexError):
         pass
-    event.reply([get_type(x) for x in fleet.bots])
+    event.reply([get_type(x) for x in bots.bots])
 
 def ls(event):
     event.reply("|".join(os.listdir(os.path.join(bl.pst.workdir, "store"))))
 
-def m(event):
+def meet(event):
     if not event.args:
         event.reply("meet origin [permissions]")
         return
@@ -102,7 +102,7 @@ def ps(event):
 def up(event):
     event.reply(elapsed(time.time() - starttime))
 
-def u(event):
+def users(event):
     res = ""
     for o in db.all("botd.usr.User"):
         res += "%s," % o.user

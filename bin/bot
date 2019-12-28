@@ -55,12 +55,19 @@ k = Kernel()
 def main():
     parse_cli("bot", __version__, opts, wd=hd(".botd"), kernel=k)
     level(k.cfg.level)
+    try:
+        k.init(k.cfg.modules)
+    except EINIT as ex:
+        print(ex)
+        return
     c = Console()
     c.start()
     set_completer(k.cmds)
     enable_history()
     if k.cfg.dosave:
         k.save()
+    if k.cfg.modules:
+        k.start()
     k.wait()
 
 execute(main)

@@ -28,7 +28,7 @@ users = Users()
 
 def init(cfg):
     bot = XMPP()
-    bot.cfg.prompting = True
+    cfg.prompting = True
     #bot.cfg.last()
     if cfg.prompting:
         try:
@@ -72,6 +72,11 @@ class Event(Event):
         self.server = ""
         self.mtype = ""
         self.txt = ""
+
+    def show(self):
+        print(self)
+        for txt in self.result:
+            fleet.echo(self.orig, self.channel, txt)
 
 class XMPP(Bot):
 
@@ -132,7 +137,6 @@ class XMPP(Bot):
         self.client.ssl_version = ssl.PROTOCOL_SSLv23
         self.client.use_ipv6 = self.cfg.ipv6
 
-
     def _start(self, data):
         try:
             self.client.send_presence()
@@ -150,6 +154,9 @@ class XMPP(Bot):
         self._connect(user, password)
         return True
 
+    def handled(self, data):
+        print(data)
+
     def join(self, room, nick="obot"):
         if room not in self.rooms:
             self.rooms.append(room)
@@ -157,41 +164,6 @@ class XMPP(Bot):
         self.client.plugin['xep_0045'].joinMUC(room,
                                                nick,
                                                wait=True)
-
-    def say(self, channel, txt, mtype="chat"):
-        try:
-            sleekxmpp.jid.JID(channel)
-        except sleekxmpp.jid.InvalidJID:
-            return
-        if self.cfg.user in channel:
-            return
-        if channel in self.rooms:
-            mtype = "groupchat"
-        if mtype == "groupchat":
-            channel = stripped(channel)
-        self.client.send_message(channel, str(txt), mtype)
-
-    def sleek(self):
-        self.client.process(block=True)
-
-    def stop(self):
-        if "client" in self and self.client:
-            self.client.disconnect()
-        super().stop()
-
-    def start(self):
-        fleet.add(self)
-        assert self.cfg.user
-        assert self.cfg.password
-        ok = self.connect(self.cfg.user, self.cfg.password)
-        if ok:
-            if self.cfg.channel:
-                self.join(self.cfg.channel, self.cfg.nick)
-        launch(self.sleek)
-        return self
-
-    def handled(self, data):
-        print(data)
 
     def messaged(self, data):
         if '<delay xmlns="urn:xmpp:delay"' in str(data):
@@ -216,6 +188,7 @@ class XMPP(Bot):
         m.channel = m.origin
         if self.cfg.user == m.user:
             return
+        print(m)
         k.put(m)
 
     def presenced(self, data):
@@ -251,6 +224,38 @@ class XMPP(Bot):
         elif o.mtype == "unavailable":
             if o.user in self.channels:
                 self.channels.remove(o.user)
+
+    def say(self, channel, txt, mtype="chat"):
+        try:
+            sleekxmpp.jid.JID(channel)
+        except sleekxmpp.jid.InvalidJID:
+            return
+        if self.cfg.user in channel:
+            return
+        if channel in self.rooms:
+            mtype = "groupchat"
+        if mtype == "groupchat":
+            channel = stripped(channel)
+        self.client.send_message(channel, str(txt), mtype)
+
+    def sleek(self):
+        self.client.process(block=True)
+
+    def stop(self):
+        if "client" in self and self.client:
+            self.client.disconnect()
+        super().stop()
+
+    def start(self):
+        fleet.add(self)
+        assert self.cfg.user
+        assert self.cfg.password
+        ok = self.connect(self.cfg.user, self.cfg.password)
+        if ok:
+            if self.cfg.channel:
+                self.join(self.cfg.channel, self.cfg.nick)
+        launch(self.sleek)
+        return self
 
 def stripped(jid):
     try:
