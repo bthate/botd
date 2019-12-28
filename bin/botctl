@@ -16,12 +16,15 @@ opts = [
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
     ('-o', '--options', "store", str, "options to use.", 'options'),
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
+    ('-s', '--save', 'store_true', False, 'save kernel config.', 'dosave')
 ]
 
 def main():
     k = Kernel()
     parse_cli("botctl", __version__, opts, wd=hd(".botd"), kernel=k)
     level(k.cfg.level, k.cfg.logdir)
+    if k.cfg.dosave:
+        k.cfg.save()
     k.cmd(k.cfg.txt)
 
 try:     

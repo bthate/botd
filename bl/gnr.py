@@ -22,11 +22,11 @@ def edit(o, setter):
         if "," in value:
             value = value.split(",")
         if value in ["True", "true"]:
-            set(o, key, True)
+            o.set(key, True)
         elif value in ["False", "false"]:
-            set(o, key, False)
+            o.set(key, False)
         else:
-            set(o, key, value)
+            o.set(key, value)
     return count
 
 def eq(o1, o2):

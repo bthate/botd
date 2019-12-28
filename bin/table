@@ -8,6 +8,9 @@ import json
 import time
 import bl.tbl
 
+from bl.log import level
+level("error")
+
 if not getattr(bl.tbl, "classes", None):
     bl.tbl.classes = []
 if not getattr(bl.tbl, "names", None):

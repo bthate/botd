@@ -13,6 +13,7 @@ import bl.tbl
 
 from bl.dbs import Db
 from bl.krn import Kernel
+from bl.gnr import edit
 from bl.hdl import Handler
 from bl.obj import Object
 from bl.tms import elapsed
@@ -28,11 +29,11 @@ handler = Handler()
 starttime = time.time()
 users = Users()
 
-def cfg(event):
+def ed(event):
     if not event.args:
-        event.reply(k.cfg)
+        ls(event)
         return
-    l = db.last("%s.Cfg" % event.args[0])
+    l = db.last(event.args[0])
     if not l:
         event.reply("no %s found." % event.args[0])
         return
@@ -42,14 +43,15 @@ def cfg(event):
     if len(event.args) == 2:
         event.reply(l.get(event.args[1]))
         return
-    l.set(event.args[0], event.args[1])
+    setter = {event.args[1]: event.args[2]}
+    edit(l, setter)
     l.save()
     event.reply("ok")
 
-def cmds(event):
+def cmd(event):
     event.reply("|".join(sorted(bl.tbl.modules)))
 
-def fleet(event):
+def fl(event):
     try:
         event.reply(str(fleet.bots[event.index-1]))
         return
@@ -60,7 +62,7 @@ def fleet(event):
 def ls(event):
     event.reply("|".join(os.listdir(os.path.join(bl.pst.workdir, "store"))))
 
-def meet(event):
+def m(event):
     if not event.args:
         event.reply("meet origin [permissions]")
         return
