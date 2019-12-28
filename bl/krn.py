@@ -67,15 +67,6 @@ class Kernel(Handler, Persist):
         self.handle(e)
         e.wait()
 
-    def dispatch(self, event):
-        event.parse(event.txt)
-        event._func = self.get_cmd(event.chk)
-        if event._func:
-            logging.warning(event._func)
-            event._func(event)
-            event.show()
-        event.ready()
-
     def init(self, modstr):
         mods = []
         for mod in get_mods(self, modstr):

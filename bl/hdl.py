@@ -23,8 +23,6 @@ def __dir__():
 
 class Handler(Loader, Launcher):
 
-    cmds = Register()
-    handlers = []
     
     def __init__(self):
         super().__init__()
@@ -35,11 +33,16 @@ class Handler(Loader, Launcher):
         self._stopped = False
         self._threaded = True
         self._type = get_type(self)
+        self.cmds = Register()
+        self.handlers = []
         self.sleep = False
         self.state = Object()
         self.state.last = time.time()
         self.state.nrsend = 0
         self.verbose = True
+        self.classes = bl.tbl.classes
+        self.modules = bl.tbl.modules
+        self.names = bl.tbl.names
 
     def dispatch(self, event):
         event.parse(event.txt)
@@ -55,7 +58,7 @@ class Handler(Loader, Launcher):
             return
         if mn not in self.table:
             self.load_mod(mn)
-        return Handler.cmds.get(cn, None)
+        return self.cmds.get(cn, None)
 
     def get_handler(self, cmd):
         return self.handler.get(cmd, None)

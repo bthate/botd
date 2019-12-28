@@ -29,6 +29,9 @@ handler = Handler()
 starttime = time.time()
 users = Users()
 
+def cfg(event):
+    event.reply(k.cfg)
+
 def ed(event):
     if not event.args:
         ls(event)

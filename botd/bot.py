@@ -42,14 +42,6 @@ class Bot(Handler, Persist):
         for channel in self.channels:
             self.say(channel, txt)
 
-    def dispatch(self, event):
-        event.parse(event.txt)
-        event._func = self.get_cmd(event.chk)
-        if event._func:
-            event._func(event)
-            event.show()
-        event.ready()
-
     def input(self):
         while not self._stopped:
             try:

@@ -113,25 +113,25 @@ class XMPP(Bot):
                                                       sasl_mech=None)
         self.client._error = Object()
         self.client.register_plugin(u'xep_0045')
-        self.client.add_event_handler('errored', self.handled)
-        self.client.add_event_handler('failed_auth', self.handled)
-        self.client.add_event_handler("message", self.messaged)
-        self.client.add_event_handler("iq", self.handled)
-        self.client.add_event_handler('presence', self.presenced)
-        self.client.add_event_handler('presence_dnd', self.presenced)
-        self.client.add_event_handler('presence_xa', self.presenced)
-        self.client.add_event_handler('presence_available', self.presenced)
-        self.client.add_event_handler('presence_chat', self.presenced)
-        self.client.add_event_handler('presence_away', self.presenced)
-        self.client.add_event_handler('presence_unavailable', self.presenced)
-        self.client.add_event_handler('presence_subscribe', self.presenced)
-        self.client.add_event_handler('presence_subscribed', self.presenced)
-        self.client.add_event_handler('presence_unsubscribe', self.presenced)
-        self.client.add_event_handler('presence_unsubscribed', self.presenced)
+        self.client.add_event_handler('errored', self.error)
+        self.client.add_event_handler('failed_auth', self.handle)
+        self.client.add_event_handler("message", self.message)
+        self.client.add_event_handler("iq", self.handle)
+        self.client.add_event_handler('presence', self.presence)
+        self.client.add_event_handler('presence_dnd', self.presence)
+        self.client.add_event_handler('presence_xa', self.presence)
+        self.client.add_event_handler('presence_available', self.presence)
+        self.client.add_event_handler('presence_chat', self.presence)
+        self.client.add_event_handler('presence_away', self.presence)
+        self.client.add_event_handler('presence_unavailable', self.presence)
+        self.client.add_event_handler('presence_subscribe', self.presence)
+        self.client.add_event_handler('presence_subscribed', self.presence)
+        self.client.add_event_handler('presence_unsubscribe', self.presence)
+        self.client.add_event_handler('presence_unsubscribed', self.presence)
         self.client.add_event_handler("session_bind", self._bind)
         self.client.add_event_handler("session_start", self._start)
-        self.client.add_event_handler("ssl_invalid_cert", self.handled)
-        self.client.exception = self.handled
+        self.client.add_event_handler("ssl_invalid_cert", self.handle)
+        self.client.exception = self.handle
         self.client.reconnect_max_attempts = 3
         self.client.ssl_version = ssl.PROTOCOL_SSLv23
         self.client.use_ipv6 = self.cfg.ipv6
@@ -161,8 +161,10 @@ class XMPP(Bot):
             event.show()
         event.ready()
 
+    def error(self, data):
+        print(data)
 
-    def handled(self, data):
+    def handle(self, data):
         print(data)
 
     def join(self, room, nick="obot"):
@@ -173,7 +175,7 @@ class XMPP(Bot):
                                                nick,
                                                wait=True)
 
-    def messaged(self, data):
+    def message(self, data):
         if '<delay xmlns="urn:xmpp:delay"' in str(data):
             return
         origin = str(data["from"])
@@ -182,7 +184,7 @@ class XMPP(Bot):
                 return
         txt = data["body"]
         m = Event()
-        m.txt = txt
+        m.parse(txt)
         m.jid = origin
         m.orig = repr(self)
         m.origin = origin
@@ -197,7 +199,7 @@ class XMPP(Bot):
             return
         k.put(m)
 
-    def presenced(self, data):
+    def presence(self, data):
         o = Event()
         o.mtype = data["type"]
         o.orig = repr(self)
@@ -253,7 +255,6 @@ class XMPP(Bot):
         super().stop()
 
     def start(self):
-        super().start()
         fleet.add(self)
         assert self.cfg.user
         assert self.cfg.password
