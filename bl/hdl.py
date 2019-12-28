@@ -25,20 +25,12 @@ class Handler(Loader, Launcher):
     
     def __init__(self):
         super().__init__()
-        self._outputed = False
-        self._outqueue = queue.Queue()
         self._queue = queue.Queue()
-        self._ready = threading.Event()
+        self._started = False
         self._stopped = False
         self._threaded = True
         self._type = get_type(self)
         self.cmds = Register()
-        self.handlers = []
-        self.sleep = False
-        self.state = Object()
-        self.state.last = time.time()
-        self.state.nrsend = 0
-        self.verbose = True
 
     def dispatch(self, event):
         event.parse(event.txt)
@@ -56,14 +48,14 @@ class Handler(Loader, Launcher):
             self.load_mod(mn)
         return self.cmds.get(cn, None)
 
-    def get_handler(self, cmd):
-        return self.handler.get(cmd, None)
-
     def handler(self):
+        logging.warning("starting %s" % get_name(self))
         while not self._stopped:
             e = self._queue.get()
-            self.dispatch(e)
-        self._ready.set()
+            if self._threaded:
+                e._thrs.append(self.launch(self.dispatch, e))
+            else:
+                self.dispatch(e)
 
     def load_mod(self, mn, force=True):
         logging.warning("load %s into %s" % (mn, get_name(self)))
@@ -90,9 +82,9 @@ class Handler(Loader, Launcher):
                     bl.tbl.classes.append(t)
                     bl.tbl.names[t.split(".")[-1].lower()] = str(t)
                 
-    def start(self, handler=True):
-        if handler:
-            self.launch(self.handler)
+    def start(self):
+        self._started = True
+        self.launch(self.handler)
 
     def stop(self):
         self._stopped = True

@@ -24,7 +24,7 @@ class Console(Handler, Persist):
     def __init__(self):
         super().__init__()
         self._connected = threading.Event()
-        self.verbose = True
+        self._threaded = False
         
     def announce(self, txt):
         self.raw(txt)
@@ -55,12 +55,10 @@ class Console(Handler, Persist):
                 e = self.poll()
             except EOFError:
                 break
-            self.dispatch(e)
+            self.put(e)
             e.wait()
 
     def raw(self, txt):
-        if not self.verbose or not txt:
-            return
         sys.stdout.write(str(txt) + "\n")
         sys.stdout.flush()
 

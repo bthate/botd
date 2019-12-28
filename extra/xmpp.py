@@ -30,7 +30,6 @@ def init(cfg):
     bot = XMPP()
     cfg.prompting = True
     bot.cfg.last()
-    print(bot.cfg)
     if cfg.prompting and (not bot.cfg.user or not bot.cfg.password):
         try:
             bot.cfg.user = cfg.args[0]
@@ -153,14 +152,6 @@ class XMPP(Bot):
         self._connect(user, password)
         return True
 
-    def dispatch(self, event):
-        event.parse(event.txt)
-        event._func = self.get_cmd(event.chk)
-        if event._func:
-            event._func(event)
-            event.show()
-        event.ready()
-
     def error(self, data):
         print(data)
 
@@ -184,7 +175,7 @@ class XMPP(Bot):
                 return
         txt = data["body"]
         m = Event()
-        m.parse(txt)
+        m.txt = txt
         m.jid = origin
         m.orig = repr(self)
         m.origin = origin
@@ -197,7 +188,6 @@ class XMPP(Bot):
         m.channel = m.origin
         if self.cfg.user == m.user:
             return
-        print(k)
         k.put(m)
 
     def presence(self, data):

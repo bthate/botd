@@ -79,15 +79,7 @@ class Kernel(Handler, Persist):
             mods.append(mod)
         return mods
 
-    def input(self):
-        while not self._stopped:
-            try:
-                e = self.poll()
-            except EOFError:
-                break
-            self.put(e)
-
-    def start(self, handler=True, input=False, output=False):
+    def start(self):
         if self._started:
             return
         self._started = True
@@ -97,9 +89,7 @@ class Kernel(Handler, Persist):
             self.users.oper(cfg.owner)
         if self.cfg.kernel:
             self.cfg.last()
-        super().start(handler)
-        if input:
-            self.launch(self.input)
+        super().start()
             
     def wait(self):
         while not self._stopped:

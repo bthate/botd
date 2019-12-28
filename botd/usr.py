@@ -26,7 +26,6 @@ class Users(Db):
     def allowed(self, origin, perm):
         perm = perm.upper()
         origin = self.userhosts.get(origin, origin)
-        print(origin)
         user = self.get_user(origin)
         if user:
             if perm in user.perms:

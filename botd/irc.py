@@ -13,7 +13,6 @@ import time
 import threading
 import _thread
 
-from bl.dbs import last
 from bl.err import EINIT
 from bl.evt import Event
 from bl.krn import Kernel
@@ -49,7 +48,7 @@ users = Users()
           
 def init(cfg):
     bot = IRC()
-    last(bot.cfg)
+    bot.cfg.last()
     cfg.prompting = True
     if not cfg.nick:
         cfg.nick = "botd"
@@ -107,7 +106,7 @@ class DEvent(Event):
 
     def show(self):
         for txt in self.result:
-            fleet.echo(self.orig, self.channel, txt)
+            self._fsock.write(txt)
 
 class TextWrap(textwrap.TextWrapper):
 
@@ -344,14 +343,6 @@ class IRC(Bot):
             self.state.error = e
         return e
 
-    def input(self):
-        while not self._stopped:
-            try:
-                e = self.poll()
-            except EOFError:
-                break
-            self.put(e)
-
     def joinall(self):
         for channel in self.channels:
             self.command("JOIN", channel)
@@ -388,7 +379,7 @@ class IRC(Bot):
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
         self.connect()
-        super().start(True, True, True)
+        super().start(True, True)
 
 class DCC(Bot):
 
@@ -425,7 +416,7 @@ class DCC(Bot):
         self._fsock = self._sock.makefile("rw")
         self.origin = event.origin
         self._connected.set()
-        self.start()
+        super().start(True)
 
     def poll(self):
         self._connected.wait()
@@ -437,12 +428,7 @@ class DCC(Bot):
         e.channel = self.origin
         e.orig = repr(self)
         e.origin = self.origin or "root@dcc"
-        self.dispatch(e)
         return e
 
     def say(self, channel, txt, type="chat"):
         self.raw(txt)
-
-    def start(self):
-        super().start(False, True, False)
-
