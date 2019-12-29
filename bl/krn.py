@@ -39,6 +39,8 @@ class Cfg(Cfg):
 class Event(Event):
 
     def show(self):
+        if "verbose" in self and not self.verbose:
+            return
         for txt in self.result:
             print(txt)
 
@@ -105,7 +107,7 @@ class Kernel(Loader, Persist):
         return mods
 
     def start(self, cfg=None):
-        if cfg and cfg.kernel:
+        if cfg and "kernel" in cfg and cfg.kernel:
             self.cfg.last()
         if cfg:
             self.cfg.update(cfg)

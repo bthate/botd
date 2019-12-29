@@ -40,7 +40,11 @@ def cfg(event):
     event.reply("using %s" % cn)
     l = db.last(cn)
     if not l:     
-        cls = get_cls(cn)
+        try:
+            cls = get_cls(cn)
+        except ModuleNotFoundError:
+            event.reply("no %s found" % cn)
+            return
         l = cls()
         l.save()
         event.reply("created a %s file" % cn)
@@ -62,12 +66,17 @@ def ed(event):
     if not event.args:
         ls(event)
         return
-    l = db.last(event.args[0])
+    cn = event.args[0]
+    l = db.last(cn)
     if not l:
-        cls = get_cls(event.args[0])
+        try:
+            cls = get_cls(cn)
+        except ModuleNotFoundError:
+            event.reply("no %s found" % cn)
+            return
         l = cls()
         l.save()
-        event.reply("created a %s file" % event.args[0])
+        event.reply("created a %s file" % cn)
     if len(event.args) == 1:
         event.reply(l)
         return

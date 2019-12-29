@@ -83,6 +83,7 @@ class Test_Cmnds(unittest.TestCase):
 
     def test_run(self):
         event = Event()
+        event.verbose = k.cfg.verbose
         event.origin = "root@shell"
         event.txt = ""
         thrs = []
@@ -94,6 +95,7 @@ class Test_Cmnds(unittest.TestCase):
     def test_func(self):
         event = Event()
         event.origin = "root@shell"
+        event.verbose = k.cfg.verbose
         event.txt = ""
         thrs = []
         nrloops = 10
@@ -105,6 +107,7 @@ class Test_Cmnds(unittest.TestCase):
         event = Event()
         event.origin = "root@shell"
         event.txt = ""
+        event.verbose = k.cfg.verbose
         thrs = []
         nrloops = 10
         for x in range(nrloops):
@@ -125,6 +128,7 @@ def cmndrun(event):
                if "event" in func.__code__.co_varnames:
                    e = Event()
                    e._func = func
+                   e.verbose = k.cfg.verbose
                    e.origin = "root@shell"
                    e.server = "localhost"
                    e.btype = "cli"

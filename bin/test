@@ -30,7 +30,7 @@ opts = [
     ('-m', '--modules', 'store', str, 'modules to load.', 'modules'),
     ('-o', '--options', "store", str, "options to use.", 'options'),
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
-    ('-v', '--verbose', 'store_false', True, 'enable verbose mode.', 'verbose')
+    ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
 
 
@@ -66,7 +66,7 @@ def main():
         shutil.rmtree("testdata")
     except:
         pass
-    cfg= parse_cli(opts)
+    cfg = parse_cli(opts)
     bl.pst.workdir = "testdata"
     level("debug")
     initialize(cfg)

@@ -92,7 +92,8 @@ def parse_cli(opts=[]):
     cfg.changed = not (not cfg)
     cfg.txt = " ".join(cfg.args)
     cfg.workdir = cfg.workdir or hd(".botd")
-    cfg.name = cfg.name or "botd"
+    if "name" not in cfg:
+        cfg.name = "botd"
     bl.pst.workdir = cfg.workdir
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):

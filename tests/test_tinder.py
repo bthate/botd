@@ -27,6 +27,7 @@ class Param(Object):
 
 users.oper("test@shell")
 e = Event()
+e.verbose = k.cfg.verbose
 e.parse("-o %s" % k.cfg.options)
 
 param = Param()
