@@ -9,7 +9,6 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 
 import logging
 
-from bl.err import EINIT
 from bl.krn import Kernel
 from bl.shl import execute
 
@@ -22,11 +21,8 @@ opts = [
     ('-k', '--kernel', "store_true", False, "read from previous kernel config.", 'kernel'),
     ('-p', '--prompting', "store_false", True, "disable prompting for initial values.", 'prompting'),
     ('-s', '--save', 'store_true', False, 'save configuration files.', 'dosave'),
-    ('-z', '--shell', 'store_true', False, 'disable shell.', 'shell'),
-    ('-e', '--exclude', 'store', str, 'exclude modules.', 'exclude'),
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "directory to find the logfiles.", 'logdir'),
-    ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
 
 def main():

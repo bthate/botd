@@ -49,10 +49,9 @@ users = Users()
 def init(cfg):
     bot = IRC()
     bot.cfg.last()
-    cfg.prompting = True
     if not cfg.nick:
         cfg.nick = "botd"
-    if cfg.prompting and (not bot.cfg.channel or not bot.cfg.server):
+    if cfg.prompting or (not bot.cfg.channel and not bot.cfg.server):
         try:
             server, channel, nick = cfg.args
         except ValueError:

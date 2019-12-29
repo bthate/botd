@@ -40,7 +40,7 @@ class Event(Event):
 
 class Kernel(Loader, Persist):
 
-    cfg = Cfg(default)
+    cfg = Cfg()
     
     def __init__(self, name="botd", version=1, opts={}, **kwargs):
         super().__init__()
