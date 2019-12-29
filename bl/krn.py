@@ -9,6 +9,7 @@ import logging
 import time
 import bl.tbl
 
+from bl.csl import Console
 from bl.dbs import Db, last
 from bl.err import EINIT, ENOTXT
 from bl.evt import Event
@@ -17,9 +18,9 @@ from bl.ldr import Loader
 from bl.log import level
 from bl.obj import Object
 from bl.pst import Cfg, Persist, Register
-from bl.shl import enable_history, set_completer, writepid
+from bl.shl import enable_history, parse_cli, set_completer, writepid
 from bl.typ import get_type
-from bl.utl import get_mods, get_name
+from bl.utl import get_mods, get_name, hd
 
 default = {
            "dosave": False,
@@ -46,30 +47,41 @@ class Event(Event):
 class Kernel(Loader, Persist):
 
     cfg = Cfg(default)
-    cmds = Register()
     
-    def __init__(self, cfg={}, **kwargs):
+    def __init__(self, name="botd", version=1, opts={}, **kwargs):
         super().__init__()
+        self._autoload = False
         self._started = False
         self._stopped = False
-        self.cfg.update(cfg)
-        self.cfg.update(kwargs)
+        self.cfg.name = name
+        self.cfg.version = version
+        self.opts = opts
 
-    def cmd(self, txt, origin=""):
-        if not txt:
+    def dispatch(self, event):
+        try:
+            event.parse(event.txt)
+        except ENOTXT:
+            event.ready()
             return
-        self.cfg.prompting = False
-        e = Event()
-        e.txt = txt
-        e.options = self.cfg.options
-        e.orig = repr(self)
-        e.origin = origin or "root@shell"
-        self.dispatch(e)
-        e.wait()
+        event._func = self.get_cmd(event.chk)
+        if event._func:
+            event._func(event)
+            event.show()
+        event.ready()
 
+    def get_mods(self, ms):
+        modules = []
+        for mn in ms.split(","):
+            if not mn:
+                continue
+            m = self.walk(mn)
+            if m:
+                modules.extend(m)
+        return modules
+        
     def init(self, modstr):
         mods = []
-        for mod in get_mods(self, modstr):
+        for mod in self.get_mods(modstr):
             if "init" not in dir(mod):
                 continue
             logging.warning("init %s" % mod.__name__)
@@ -77,34 +89,15 @@ class Kernel(Loader, Persist):
             mods.append(mod)
         return mods
 
-    def load_mod(self, mn, force=True):
-        logging.warning("load %s into %s" % (mn, get_name(self)))
-        mod = super().load_mod(mn, force=force)
-        self.scan(mod)
-        return mod
-
-    def scan(self, mod):
-        for key, o in inspect.getmembers(mod, inspect.isfunction):
-            if "event" in o.__code__.co_varnames:
-                if o.__code__.co_argcount == 1 and key not in self.cmds:
-                    self.cmds.register(key, o)
-                    bl.tbl.modules[key] = o.__module__
-        for key, o in inspect.getmembers(mod, inspect.isclass):
-            if issubclass(o, Object):
-                t = get_type(o)
-                if t not in bl.tbl.classes:
-                    bl.tbl.classes.append(t)
-                    bl.tbl.names[t.split(".")[-1].lower()] = str(t)
-
-    def start(self):
-        if self._started:
-            return
-        self._started = True
-        if self.cfg.owner:
-            self.users.oper(cfg.owner)
-        if self.cfg.kernel:
-            self.cfg.last()
-            
+    def start(self, name="", version=1, opts={}, shell=True):
+        cfg = parse_cli(self.cfg.name, self.cfg.version, self.opts, wd=hd(".%s" % self.cfg.name))
+        self.cfg.update(cfg)
+        level(cfg.level)
+        if shell or cfg.shell:
+             c = Console(self)
+             c.start()
+             
     def wait(self):
         while not self._stopped:
             time.sleep(1.0)
+

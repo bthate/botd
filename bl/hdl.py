@@ -41,15 +41,6 @@ class Handler(Loader, Launcher):
             event.show()
         event.ready()
 
-    def get_cmd(self, cn):
-        if self._autoload:
-            mn = bl.tbl.modules.get(cn, None)
-            if not mn:
-                return
-            if mn not in self.table:
-                self.load_mod(mn)
-        return self.cmds.get(cn, None)
-
     def handler(self):
         logging.warning("starting %s" % get_name(self))
         while not self._stopped:

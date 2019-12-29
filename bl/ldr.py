@@ -9,7 +9,9 @@ import pkgutil
 import typing
 import bl.tbl
 
+from bl.obj import Object
 from bl.pst import Persist, Register
+from bl.typ import get_type
 from bl.utl import get_name
 
 def __dir__():
@@ -22,6 +24,15 @@ class Loader(Persist):
 
     def direct(self, name: str):
         return importlib.import_module(name)
+
+    def get_cmd(self, cn):
+        if self._autoload:
+            mn = bl.tbl.modules.get(cn, None)
+            if not mn:
+                return
+            if mn not in self.table:
+                self.load_mod(mn)
+        return self.cmds.get(cn, None)
 
     def load_mod(self, name, mod=None, force=False):
         logging.warning("load %s into %s" % (name, get_name(self)))

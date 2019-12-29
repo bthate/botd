@@ -52,23 +52,14 @@ def execute(main):
 
 
 def main():
-    cfg = parse_cli("bot", __version__, opts, wd=hd(".botd"))
-    level(cfg.level)
-    k = Kernel(cfg)
-    k.load_mod("botd.cmd")
+    k = Kernel("botd", __version__, opts)
     k.start()
+    k.load_mod("botd.cmd")
     try:
         k.init(k.cfg.modules)
     except EINIT as ex:
         print(ex)
         return
-    c = Console()
-    c.sync(k)
-    c.start()
-    set_completer(c.cmds)
-    enable_history()
-    if k.cfg.dosave:
-        k.save()
     k.wait()
 
 execute(main)
