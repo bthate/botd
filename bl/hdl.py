@@ -14,14 +14,14 @@ from bl.err import ENOTIMPLEMENTED
 from bl.obj import Object
 from bl.pst import Register
 from bl.ldr import Loader
-from bl.thr import Launcher
+from bl.thr import launch
 from bl.typ import get_name, get_type
 from bl.utl import get_mods
 
 def __dir__():
     return ("Handler",)
 
-class Handler(Loader, Launcher):
+class Handler(Loader):
     
     def __init__(self):
         super().__init__()
@@ -46,7 +46,7 @@ class Handler(Loader, Launcher):
         while not self._stopped:
             e = self._queue.get()
             if self._threaded:
-                e._thrs.append(self.launch(self.dispatch, e))
+                e._thrs.append(launch(self.dispatch, e))
             else:
                 self.dispatch(e)
 
@@ -58,7 +58,7 @@ class Handler(Loader, Launcher):
 
     def start(self):
         self._started = True
-        self.launch(self.handler)
+        launch(self.handler)
 
     def stop(self):
         self._stopped = True

@@ -30,20 +30,20 @@ opts = [
     ('-m', '--modules', 'store', str, 'modules to load.', 'modules'),
     ('-o', '--options', "store", str, "options to use.", 'options'),
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
-    ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
+    ('-v', '--verbose', 'store_false', True, 'enable verbose mode.', 'verbose')
 ]
 
 
 k = Kernel()
 users = Users()
 
-def initialize():
+def initialize(cfg):
     cdir("testdata")
     users.oper("test@shell")
     k.cfg.prompt = False
     k.walk("botd")
-    k.start()
-    for c in k.classes:
+    k.start(cfg)
+    for c in bl.tbl.classes:
         try:
             o = get_cls(c)()
             o.txt = "yo!"
@@ -66,10 +66,10 @@ def main():
         shutil.rmtree("testdata")
     except:
         pass
-    parse_cli("test", 1, opts, wd="testdata")
+    cfg= parse_cli(opts)
     bl.pst.workdir = "testdata"
     level("debug")
-    initialize()
+    initialize(cfg)
     k.cfg.exclude = "mdl,rss"
     k.cfg.debug = True
     level(k.cfg.level)

@@ -16,6 +16,7 @@ opts = [
     ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, 'modules to load.', 'modules'),
+    ('-n', '--name', 'store', str, 'program name', 'name'),
     ('-x', '--exec', 'store_true', False, 'execute command.', 'doexec'),
     ('-o', '--options', "store", str, "options to use.", 'options'),
     ('-k', '--kernel', "store_true", False, "read from previous kernel config.", 'kernel'),
@@ -23,13 +24,14 @@ opts = [
     ('-s', '--save', 'store_true', False, 'save configuration files.', 'dosave'),
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "directory to find the logfiles.", 'logdir'),
+    ('-z', '--shell', 'store_false', True, 'disable shell', 'shell'),
 ]
 
 def main():
-    cfg = parse_cli("botd", __version__, opts)
+    cfg = parse_cli(opts)
     k = Kernel()
-    k.start(cfg)
     k.load_mod("botd.cmd")
+    k.start(cfg)
     k.wait()
 
 execute(main)

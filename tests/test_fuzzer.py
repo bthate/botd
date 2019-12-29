@@ -5,6 +5,7 @@
 import logging
 import random
 import unittest
+import bl.tbl
 
 from bl.krn import Kernel
 from bl.typ import get_cls
@@ -21,12 +22,12 @@ users.oper("test@shell")
 class Test_Fuzzer(unittest.TestCase):
 
     def test_fuzzer1(self):
-        for key in k.modules:
-            for n in k.names:
-                t = k.names[n]
+        for key in bl.tbl.modules:
+            for n in bl.tbl.names:
+                t = bl.tbl.names[n]
                 try:
                     e = get_cls(t)()
-                    e.txt = key + " " + random.choice(list(k.names))
+                    e.txt = key + " " + random.choice(list(bl.tbl.names))
                     e.parse(e.txt)
                     e.orig = repr(b)
                     e.origin = "test@shell"

@@ -8,7 +8,7 @@ import sys
 from bl.evt import Event
 from bl.hdl import Handler
 from bl.pst import Cfg, Persist
-
+from bl.thr import launch
 from botd.flt import Fleet
 
 def __dir__():
@@ -80,6 +80,6 @@ class Bot(Handler, Persist):
         fleet.add(self)
         super().start()
         if output:
-            self.launch(self.output)
+            launch(self.output)
         if input:
-            self.launch(self.input)
+            launch(self.input)

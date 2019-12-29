@@ -59,16 +59,18 @@ class Persist(Object):
 class Default(Persist):
 
     def __getattr__(self, k):
-        if not k in self:
+        try:
+            return self.__getattribute__(k)
+        except:
             self.set(k, "")
-        return self.get(k)
+            return self.__getattribute__(k)
 
 class Cfg(Default):
 
-    def __init__(self, cfg=None):
+    def __init__(self, cfg={}, **kwargs):
         super().__init__()
-        if cfg:
-            self.update(cfg)
+        self.update(cfg)
+        self.update(kwargs)
 
 class Register(Persist):
 

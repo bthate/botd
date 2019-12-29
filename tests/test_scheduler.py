@@ -8,6 +8,7 @@ from bl.evt import Event
 from bl.krn import Kernel
 
 k = Kernel()
+k.load_mod("botd.cmd")
 k.start()
 
 class Test_Scheduler(unittest.TestCase):
@@ -16,6 +17,7 @@ class Test_Scheduler(unittest.TestCase):
         e = Event()
         e.origin = "root@shell"
         e.txt = "v"
-        k.put(e)
+        e.verbose = k.cfg.verbose
+        k.dispatch(e)
         e.wait()
         self.assertTrue(e.result and "BOTD" in e.result[0])

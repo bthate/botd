@@ -30,6 +30,9 @@ k = Kernel()
 users = Users()
 
 def cfg(event):
+    if "IRC" in event.orig:
+        event.reply("this command might flood, use a DCC connection.")
+        return
     if not event.args:
         event.reply(str(k.cfg))
         return
@@ -53,6 +56,9 @@ def cfg(event):
     event.reply("ok")
 
 def ed(event):
+    if "IRC" in event.orig:
+        event.reply("this command might flood, use a DCC connection.")
+        return
     if not event.args:
         ls(event)
         return
@@ -77,6 +83,9 @@ def cmds(event):
     event.reply("|".join(sorted(bl.tbl.modules)))
 
 def fleet(event):
+    if "IRC" in event.orig:
+        event.reply("this command might flood, use a DCC connection.")
+        return
     try:
         event.reply(str(bots.bots[event.index-1]))
         return
@@ -104,6 +113,9 @@ def pid(event):
     event.reply(str(os.getpid()))
 
 def ps(event):
+    if "IRC" in event.orig:
+        event.reply("this command might flood, use a DCC connection.")
+        return
     psformat = "%-8s %-50s"
     result = []
     for thr in sorted(threading.enumerate(), key=lambda x: x.getName()):
@@ -127,7 +139,10 @@ def ps(event):
 def up(event):
     event.reply(elapsed(time.time() - starttime))
 
-def users(event):
+def u(event):
+    if "IRC" in event.orig:
+        event.reply("this command might flood, use a DCC connection.")
+        return
     res = ""
     for o in db.all("botd.usr.User"):
         res += "%s," % o.user

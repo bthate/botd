@@ -6,10 +6,12 @@ import random
 import time
 import types
 import unittest
+import bl.tbl
 
 from bl.evt import Event
 from bl.krn import Kernel
 from bl.obj import Object
+from bl.thr import launch
 
 k = Kernel()
 
@@ -86,7 +88,7 @@ class Test_Cmnds(unittest.TestCase):
         thrs = []
         nrloops = 10
         for x in range(nrloops):
-            thr = k.launch(testcmnds, event)
+            thr = launch(testcmnds, event)
             thr.join()
 
     def test_func(self):
@@ -96,7 +98,7 @@ class Test_Cmnds(unittest.TestCase):
         thrs = []
         nrloops = 10
         for x in range(nrloops):
-            thr = k.launch(functest, event)
+            thr = launch(functest, event)
             thr.join()
 
     def test_cmnd(self):
@@ -106,12 +108,12 @@ class Test_Cmnds(unittest.TestCase):
         thrs = []
         nrloops = 10
         for x in range(nrloops):
-            thr = k.launch(cmndrun, event)
+            thr = launch(cmndrun, event)
             thr.join()
 
     
 def cmndrun(event):
-    for name in sorted(k.modules.values()):
+    for name in sorted(bl.tbl.modules.values()):
         if name in ["botd.rss",]:
             continue
         mod = k.load_mod(name)
@@ -126,10 +128,10 @@ def cmndrun(event):
                    e.origin = "root@shell"
                    e.server = "localhost"
                    e.btype = "cli"
-                   k.put(e)
+                   k.dispatch(e)
 
 def functest(event):
-    for name in sorted(k.modules.values()):
+    for name in sorted(bl.tbl.modules.values()):
         if name in ["botd.rss"]:
             continue
         mod = k.load_mod(name)
@@ -169,7 +171,7 @@ def testcmnds(event):
         cmnd = examples.get(cmnd, cmnd)
         e.txt = "%s %s" % (cmnd, name)
         e.origin = "root@shell"
-        k.put(e)
+        k.dispatch(e)
 
 exclude = ["exit", "loglevel", "reboot", "real_reboot", "fetcher", "synchronize", "init", "shutdown", "wrongxml","mbox", "testcmnds", "runkernel", "functest", "cmndrun"]
 outtxt = u"Đíť ìš éèñ ëņċøďıńğŧęŝţ· .. にほんごがはなせません .. ₀0⁰₁1¹₂2²₃3³₄4⁴₅5⁵₆6⁶₇7⁷₈8⁸₉9⁹ .. ▁▂▃▄▅▆▇▉▇▆▅▄▃▂▁ .. .. uǝʌoqǝʇsɹǝpuo pɐdı ǝɾ ʇpnoɥ ǝɾ"

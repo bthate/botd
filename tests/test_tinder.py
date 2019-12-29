@@ -8,12 +8,13 @@ import random
 import sys
 import time
 import unittest
+import bl.tbl
 
 from bl.evt import Event
 from bl.krn import Kernel
 from bl.obj import Object
 from bl.utl import consume
-
+from bl.thr import launch
 from botd.usr import Users
 
 k = Kernel()
@@ -29,12 +30,12 @@ e = Event()
 e.parse("-o %s" % k.cfg.options)
 
 param = Param()
-param.ed = ["%s txt==yo channel=#mekker" % x for x in k.names]
-param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
-param.find = ["%s txt==yo -f" % x for x in k.names] + ["email txt==gif", ]
+param.ed = ["%s txt==yo channel=#mekker" % x for x in bl.tbl.names]
+param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in bl.tbl.names])
+param.find = ["%s txt==yo -f" % x for x in bl.tbl.names] + ["email txt==gif", ]
 param.load = k.table.keys()
 param.log = ["yo!",]
-param.rm = ["%s txt==yo" % x for x in k.names]
+param.rm = ["%s txt==yo" % x for x in bl.tbl.names]
 param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
 #param.mbox = ["~/evidence/25-1-2013",]
 
@@ -43,7 +44,7 @@ class Test_Tinder(unittest.TestCase):
     def test_tinder(self):
         thrs = []
         for x in range(e.index or 1):
-            thrs.append(k.launch(tests, k))
+            thrs.append(launch(tests, k))
         for thr in thrs:
             thr.join()
 

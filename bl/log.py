@@ -59,12 +59,15 @@ def level(loglevel="", logdir="", logfile="", nostream=False):
             handler.setLevel(loglevel)
             logger.addHandler(handler)
         except ValueError:
-            logging.warn("worng level %s" % loglevel)
-            loglevel = "error"
+            logging.warn("wrong level %s" % loglevel)
+            loglevel = "ERROR"
     formatter2 = logging.Formatter(format_time, datefmt)
     filehandler = logging.handlers.TimedRotatingFileHandler(logfile, 'midnight')
     filehandler.propagate = False
     filehandler.setFormatter(formatter2)
-    filehandler.setLevel(loglevel)
+    try:
+        filehandler.setLevel(loglevel)
+    except ValueError:
+        pass
     logger.addHandler(filehandler)
     return logger

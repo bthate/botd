@@ -9,6 +9,7 @@ from bl.err import ENOTXT
 from bl.evt import Event
 from bl.hdl import Handler
 from bl.pst import Persist
+from bl.thr import launch
 
 def __dir__():
     return ("Console",)
@@ -21,11 +22,10 @@ class Event(Event):
 
 class Console(Handler, Persist):
 
-    def __init__(self, target=None):
+    def __init__(self):
         super().__init__()
         self._connected = threading.Event()
         self._threaded = False
-        self.target = target or self
                 
     def announce(self, txt):
         self.raw(txt)
@@ -37,7 +37,7 @@ class Console(Handler, Persist):
         e.txt = txt
         e.orig = repr(self)
         e.origin = origin or "root@shell"
-        self.target.dispatch(e)
+        self.dispatch(e)
         e.wait()
 
     def poll(self):
@@ -54,9 +54,11 @@ class Console(Handler, Persist):
                 e = self.poll()
             except EOFError:
                 break
-            self.target.dispatch(e)
-
-            e.wait()
+            try:
+                self.dispatch(e)
+                e.wait()
+            except ENOTXT:
+                continue
 
     def raw(self, txt):
         sys.stdout.write(str(txt) + "\n")
@@ -66,5 +68,5 @@ class Console(Handler, Persist):
         self.raw(txt)
  
     def start(self):
-        self.launch(self.input)
+        launch(self.input)
         self._connected.set()

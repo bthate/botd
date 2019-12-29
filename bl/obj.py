@@ -22,7 +22,7 @@ class Object:
     def __len__(self):
         return len(self.__dict__)
 
-    def __not__(self):
+    def __bool__(self):
         for k in self:
             if self.get(k, None):
                 return True

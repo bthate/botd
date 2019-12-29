@@ -20,6 +20,6 @@ class Test_Ed(unittest.TestCase):
     def test_ed1(self):
         e = Event()
         e.parse("ed log txt==bla txt=mekker")
-        self.k.put(e)
+        self.k.dispatch(e)
         e.wait()
         self.assertEqual(e.result, [])

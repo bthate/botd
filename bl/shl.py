@@ -85,24 +85,19 @@ def make_opts(ns, options, **kwargs):
             parser.add_argument(opt[0], opt[1], action=opt[2], default=opt[3], help=opt[4], dest=opt[5])
     parser.add_argument('args', nargs='*')
     parser.parse_known_args(namespace=ns)
-  
-def parse_cli(name="", version=None, opts=[], wd=None, loglevel="error", logdir=""):
+
+def parse_cli(opts=[]):
     cfg = Cfg()
     make_opts(cfg, opts)
-    cfg.debug = False
-    cfg.name = name or "botd"
-    cfg.version = version or __version__
-    cfg.workdir = wd or hd(".botd")
-    if logdir:
-        cfg.logdir = logdir
-    if cfg.args:
-        cfg.txt = " ".join(cfg.args)
+    cfg.changed = not (not cfg)
+    cfg.txt = " ".join(cfg.args)
+    cfg.workdir = cfg.workdir or hd(".botd")
+    cfg.name = cfg.name or "botd"
     bl.pst.workdir = cfg.workdir
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
-    logging.debug("%s started at %s (%s)" % (cfg.name, time.ctime(time.time()), cfg.workdir))
-    print(cfg)
+    level(cfg.level or "error")
     return cfg
 
 def set_completer(commands):

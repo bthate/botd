@@ -231,6 +231,7 @@ class Event(Command):
         self.txt = txt
         if self.txt:
             self.chk = self.txt.split()[0]
+        self.verbose = True
 
     def display(self, o, txt=""):
         if "k" in self.options:
@@ -259,5 +260,7 @@ class Event(Command):
         self.result.append(txt)
 
     def show(self):
+        if not self.verbose:
+            return
         for txt in self.result:
             print(txt)

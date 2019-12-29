@@ -19,8 +19,9 @@ def __dir__():
 
 class Loader(Persist):
 
-    cmds = Register()
-    table = {}
+    def __init__(self):
+        self.cmds = Register()
+        self.table = {}
 
     def direct(self, name: str):
         return importlib.import_module(name)
@@ -73,14 +74,3 @@ class Loader(Persist):
         for n in mns:
             mods.append(self.load_mod(n[1], force=True))
         return mods
-
-class LocalLoader(Loader):
-
-    def __init__(self):
-        super().__init__()
-        self.cmds = Register()
-        self.table = {}
-    
-    def sync(self, other):
-        self.cmds.update(other.cmds)
-    

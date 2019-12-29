@@ -6,6 +6,7 @@ import inspect
 import logging
 import sys
 import time
+import bl.pst
 
 from bl.csl import Console
 from bl.err import EINIT, ENOTXT
@@ -20,18 +21,19 @@ class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
-        self.dosave = False
-        self.doexec = False
+        self.dosave = None
+        self.doexec = None
         self.exclude = ""
-        self.kernel =  False
+        self.kernel = None
         self.level =  ""
         self.logdir = ""
         self.modules = ""
+        self.name = ""
         self.options = ""
         self.owner = ""
-        self.prompting = False
-        self.shell = False
-        self.verbose = False
+        self.prompting = None
+        self.shell = None
+        self.verbose = None
         self.workdir = ""
 
 class Event(Event):
@@ -49,7 +51,7 @@ class Kernel(Loader, Persist):
         self._autoload = False
         self._started = False
         self._stopped = False
-
+        
     def cmd(self, txt, origin=""):
         if not txt:
             return
@@ -100,30 +102,32 @@ class Kernel(Loader, Persist):
             mods.append(mod)
         return mods
 
-    def start(self, cfg):
-        print(self.cfg)
-        if cfg.kernel:
+    def start(self, cfg=None):
+        if cfg and cfg.kernel:
             self.cfg.last()
-        print(self.cfg)
-        self.cfg.update(cfg, skip=True)
-        print(self.cfg)
-        level(cfg.level)
+        if cfg:
+            self.cfg.update(cfg, skip=True)
+        if not self.cfg.name:
+            self.cfg.name = "botd"
+        logging.debug("%s started in %s at %s (%s)" % (self.cfg.name.upper(), self.cfg.workdir, time.ctime(time.time()), self.cfg.level))
         try:
-            self.init(cfg.modules)
+            self.init(self.cfg.modules)
         except EINIT as ex:
             self._stopped = True
             print(ex)
             return
-        if cfg.dosave:
+        if self.cfg.dosave:
             self.cfg.save()
         if self.cfg.shell:
-            c = Console(self)
+            c = Console()
+            c.sync(self)
             c.start()
             set_completer(self.cmds)
             enable_history()
             writepid()
 
     def wait(self):
+        if not self.cfg.shell and not self.cfg.daemon:
+            return
         while not self._stopped:
             time.sleep(1.0)
-

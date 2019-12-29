@@ -10,9 +10,11 @@ import random
 import time
 import types
 import unittest
+import bl.tbl
 
 from bl.evt import Event
 from bl.krn import Kernel
+from bl.thr import launch
 
 k = Kernel()
 
@@ -25,7 +27,7 @@ class Test_Func(unittest.TestCase):
         thrs = []
         nrloops = 10
         for x in range(nrloops):
-            thr = k.launch(functest, x)
+            thr = launch(functest, x)
             thr.join()
 
 def randomarg(name):
@@ -33,7 +35,7 @@ def randomarg(name):
     return types.new_class(t)()
     
 def functest(nr):
-    names = sorted(k.modules.values())
+    names = sorted(bl.tbl.modules.values())
     for x in range(nr):
         random.shuffle(names)
         for name in names:

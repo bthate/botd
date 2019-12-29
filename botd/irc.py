@@ -118,7 +118,7 @@ class TextWrap(textwrap.TextWrapper):
 
 class IRC(Bot):
 
-    def __init__(self, cfg={}):
+    def __init__(self):
         super().__init__()
         self._buffer = []
         self._connected = threading.Event()
@@ -126,7 +126,7 @@ class IRC(Bot):
         self._fsock = None
         self._threaded = False
         self.cc = "!"
-        self.cfg = Cfg(cfg)
+        self.cfg = Cfg()
         self.channels = []
         self.state = Object()
         self.state.error = ""
