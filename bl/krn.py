@@ -114,7 +114,7 @@ class Kernel(Loader, Persist):
         if shell:
             c = Console(self)
             c.start()
-            set_completer(k.cmds)
+            set_completer(self.cmds)
             enable_history()
             writepid()
 
