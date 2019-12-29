@@ -28,19 +28,6 @@ from botd.usr import Users
 def __dir__():
     return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "errored", "noticed", "privmsged")
 
-default = {
-           "blocking": False,
-           "channel": "",
-           "nick": "botd",
-           "ipv6": False,
-           "port": 6667,
-           "server": "",
-           "sleep": 5.0,
-           "ssl": False,
-           "realname": "botd",
-           "username": "botd",
-          }
-
 saylock = _thread.allocate_lock()
 fleet = Fleet()
 k = Kernel()
@@ -69,7 +56,18 @@ def init(cfg):
 
 class Cfg(Cfg):
 
-    pass
+    def __init__(self):
+        super().__init__()
+        self.blocking = False
+        self.channel = ""
+        self.nick = "botd"
+        self.ipv6 = False
+        self.port = 6667
+        self.server = ""
+        self.sleep = 5.0
+        self.ssl = False
+        self.realname = "botd"
+        self.username = "botd"
 
 class Event(Event):
 
@@ -120,7 +118,7 @@ class TextWrap(textwrap.TextWrapper):
 
 class IRC(Bot):
 
-    def __init__(self):
+    def __init__(self, cfg={}):
         super().__init__()
         self._buffer = []
         self._connected = threading.Event()
@@ -128,7 +126,7 @@ class IRC(Bot):
         self._fsock = None
         self._threaded = False
         self.cc = "!"
-        self.cfg = Cfg(default)
+        self.cfg = Cfg(cfg)
         self.channels = []
         self.state = Object()
         self.state.error = ""

@@ -17,7 +17,7 @@ from bl.gnr import edit, keys
 from bl.hdl import Handler
 from bl.obj import Object
 from bl.tms import elapsed
-from bl.typ import get_type
+from bl.typ import get_cls, get_type
 
 from botd.flt import Fleet
 from botd.usr import Users
@@ -30,7 +30,27 @@ k = Kernel()
 users = Users()
 
 def cfg(event):
-    event.reply(str(k.cfg))
+    if not event.args:
+        event.reply(str(k.cfg))
+        return
+    cn = "botd.%s.Cfg" % event.args[0]
+    event.reply("using %s" % cn)
+    l = db.last(cn)
+    if not l:     
+        cls = get_cls(cn)
+        l = cls()
+        l.save()
+        event.reply("created a %s file" % cn)
+    if len(event.args) == 1:
+        event.reply(l)
+        return
+    if len(event.args) == 2:
+        event.reply(l.get(event.args[1]))
+        return
+    setter = {event.args[1]: event.args[2]}
+    edit(l, setter)
+    l.save()
+    event.reply("ok")
 
 def ed(event):
     if not event.args:
@@ -38,8 +58,10 @@ def ed(event):
         return
     l = db.last(event.args[0])
     if not l:
-        event.reply("no %s found." % event.args[0])
-        return
+        cls = get_cls(event.args[0])
+        l = cls()
+        l.save()
+        event.reply("created a %s file" % event.args[0])
     if len(event.args) == 1:
         event.reply(l)
         return
