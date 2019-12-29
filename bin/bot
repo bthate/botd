@@ -29,6 +29,7 @@ opts = [
 
 def main():
     cfg = parse_cli(opts)
+    print(cfg)
     k = Kernel()
     k.load_mod("botd.cmd")
     k.start(cfg)

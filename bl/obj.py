@@ -5,7 +5,6 @@
 import bl
 import json
 
-from bl.gnr import default
 from bl.typ import get_type
 
 class Object:
@@ -67,21 +66,11 @@ class Object:
 class Default(Object):
 
     def __getattr__(self, k):
-        if not k in self:
+        try:
+            return super().__getattribute__(k)
+        except KeyError:
             self.set(k, "")
-        return self.get(k)
-
-class Cfg(Object):
-
-    def __init__(self, cfg=None):
-        super().__init__()
-        if cfg:
-            update(self, cfg)
-
-class Register(Object):
-
-    def register(self, k, v):
-        self.set(k, v)
+            return super().__getattribute__(k)
 
 def default(o):
     if isinstance(o, Object):

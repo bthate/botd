@@ -21,19 +21,19 @@ class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
-        self.dosave = None
-        self.doexec = None
+        self.dosave = False
+        self.doexec = False
         self.exclude = ""
-        self.kernel = None
+        self.kernel = False
         self.level =  ""
         self.logdir = ""
         self.modules = ""
         self.name = ""
         self.options = ""
         self.owner = ""
-        self.prompting = None
-        self.shell = None
-        self.verbose = None
+        self.prompting = False
+        self.shell = False
+        self.verbose = False
         self.workdir = ""
 
 class Event(Event):
@@ -75,6 +75,8 @@ class Kernel(Loader, Persist):
         event.ready()
 
     def get_mods(self, ms):
+        if not ms:
+            return []
         modules = []
         for mn in ms.split(","):
             if not mn:
@@ -106,7 +108,7 @@ class Kernel(Loader, Persist):
         if cfg and cfg.kernel:
             self.cfg.last()
         if cfg:
-            self.cfg.update(cfg, skip=True)
+            self.cfg.update(cfg)
         if not self.cfg.name:
             self.cfg.name = "botd"
         logging.debug("%s started in %s at %s (%s)" % (self.cfg.name.upper(), self.cfg.workdir, time.ctime(time.time()), self.cfg.level))

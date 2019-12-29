@@ -89,6 +89,7 @@ def make_opts(ns, options, **kwargs):
 def parse_cli(opts=[]):
     cfg = Cfg()
     make_opts(cfg, opts)
+    print(cfg)
     cfg.changed = not (not cfg)
     cfg.txt = " ".join(cfg.args)
     cfg.workdir = cfg.workdir or hd(".botd")

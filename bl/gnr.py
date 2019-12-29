@@ -2,17 +2,6 @@
 #
 # generic functions
 
-def default(o):
-    if isinstance(o, Object):
-        return vars(o)
-    if isinstance(o, dict):
-        return o.items()
-    if isinstance(o, list):
-        return iter(o)
-    if type(o) in [str, True, False, int, float]:
-        return o
-    return repr(o)
-
 def edit(o, setter):
     if not setter:
         setter = {}
