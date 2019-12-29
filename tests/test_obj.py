@@ -15,6 +15,10 @@ class Test_Object(unittest.TestCase):
         with self.failUnlessRaises(AttributeError):
             o.blabla
 
+    def test_iter(self):
+        o = Object()
+        self.assertTrue("bla" not in o)
+
     def test_construct(self):
         o = Object()
         self.assertEqual(type(o), Object)

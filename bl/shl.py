@@ -12,8 +12,9 @@ import time
 import bl.pst
 
 from bl.err import EINIT
+from bl.krn import Cfg
 from bl.log import level, logfiled
-from bl.pst import Cfg
+from bl.obj import Default, Object
 from bl.trm import reset, save
 from bl.utl import cdir, hd, touch
 from bl.trc import get_exception
@@ -87,20 +88,19 @@ def make_opts(ns, options, **kwargs):
     parser.parse_known_args(namespace=ns)
 
 def parse_cli(opts=[]):
-    cfg = Cfg()
+    cfg = Object()
     make_opts(cfg, opts)
     cfg.changed = not (not cfg)
     cfg.txt = " ".join(cfg.args)
     cfg.workdir = cfg.workdir or hd(".botd")
-    if "name" not in cfg:
-        cfg.name = "botd"
+    cfg.name = cfg.name or "botd"
     bl.pst.workdir = cfg.workdir
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
     level(cfg.level or "error")
     logging.debug("%s started in %s at %s (%s)" % (cfg.name.upper(), cfg.workdir, time.ctime(time.time()), cfg.level))
-    return cfg
+    return Cfg(cfg)
 
 def set_completer(commands):
     global cmds

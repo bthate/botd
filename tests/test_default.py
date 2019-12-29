@@ -4,28 +4,33 @@
 
 import unittest
 
-from bl.pst import Cfg
+from bl.obj import Default
 
-class O(object):
+class O(Default):
 
     def bla(self):
         return "yo!"
 
-class Test_Cfg(unittest.TestCase):
+class Test_Default(unittest.TestCase):
 
-    def test_normal(self):
+    def test_defaultiter(self):
+        d = Default()
+        d.bla = "mekker"
+        self.assertTrue("bla" in d)
+
+    def test_default1(self):
         o = O()
         o.bla = "bla"
         with self.assertRaises(TypeError) as x:
             res = o.bla()
 
-    def test_last1(self):
-        cfg = Cfg()
+    def test_defaultattribute(self):
+        cfg = Default()
         cfg.last = "bla"
         self.assertEqual(cfg.last, "bla")
 
-    def test_last3(self):
-        cfg = Cfg()
+    def test_defaultattribute2(self):
+        cfg = Default()
         cfg.last = "bla"
         with self.assertRaises(TypeError) as x:
             l = cfg.last()

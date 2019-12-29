@@ -63,6 +63,14 @@ class Object:
                continue
             self.set(key, val)
 
+class Default(Object):
+
+    def __getattr__(self, k):
+        if k in self:
+            return self.__dict_[k]
+        self.__dict__[k] = ""
+        return self.__dict__[k]
+
 def default(o):
     if isinstance(o, Object):
         return vars(o)

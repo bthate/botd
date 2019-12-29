@@ -9,7 +9,7 @@ import logging
 import os
 import _thread
 
-from bl.obj import Object, default
+from bl.obj import Default, Object, default
 from bl.typ import get_cls, get_type
 from bl.utl import cdir, locked
 
@@ -56,7 +56,7 @@ class Persist(Object):
         self.__path__ = path
         return path
 
-class Cfg(Persist):
+class Cfg(Default, Persist):
 
     def __init__(self, cfg={}, **kwargs):
         super().__init__()

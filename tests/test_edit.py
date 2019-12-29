@@ -4,12 +4,12 @@
 
 import json
 import logging
-import ob
 import os
 import unittest
 
-from ob.evt import Event
-from ob.pst import Persist
+from bl.evt import Event
+from bl.gnr import edit
+from bl.pst import Persist
 
 class Log(Persist):
 
@@ -17,22 +17,6 @@ class Log(Persist):
         self.txt = "bla"
 
 l = Log()
-
-def edit(obj, setter):
-    if not setter:
-        setter = {}
-    count = 0
-    for key, value in setter.items():
-        count += 1
-        if "," in value:
-            value = value.split(",")
-        if value in ["True", "true"]:
-            ob.set(obj, key, True)
-        elif value in ["False", "false"]:
-            ob.set(obj, key, False)
-        else:
-            ob.set(obj, key, value)
-    return count
 
 class Test_Edit(unittest.TestCase):
 

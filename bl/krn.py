@@ -32,7 +32,6 @@ class Cfg(Cfg):
         self.options = ""
         self.owner = ""
         self.prompting = False
-        self.shell = False
         self.verbose = False
         self.workdir = ""
 
