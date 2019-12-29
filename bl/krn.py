@@ -57,6 +57,16 @@ class Kernel(Loader, Persist):
         self.cfg.version = version
         self.opts = opts
 
+    def cmd(self, txt, origin=""):
+        if not txt:
+            return
+        e = Event()
+        e.txt = txt
+        e.orig = repr(self)
+        e.origin = origin or "root@shell"
+        self.dispatch(e)
+        e.wait()
+
     def dispatch(self, event):
         try:
             event.parse(event.txt)
@@ -89,13 +99,19 @@ class Kernel(Loader, Persist):
             mods.append(mod)
         return mods
 
-    def start(self, name="", version=1, opts={}, shell=True):
+    def start(self, shell=True):
         cfg = parse_cli(self.cfg.name, self.cfg.version, self.opts, wd=hd(".%s" % self.cfg.name))
         self.cfg.update(cfg)
         level(cfg.level)
-        if shell or cfg.shell:
-             c = Console(self)
-             c.start()
+        try:
+            self.init(cfg.modules)
+        except EINIT as ex:
+            self._stopped = True
+            print(ex)
+            return
+        if shell:
+            c = Console(self)
+            c.start()
              
     def wait(self):
         while not self._stopped:

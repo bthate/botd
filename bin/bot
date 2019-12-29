@@ -7,21 +7,11 @@ __version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import os
 import logging
-import sys
 
-import bl.krn
-import bl.tbl
-
-from bl.csl import Console
 from bl.err import EINIT
-from bl.krn import Kernel, workdir
-from bl.log import level, logfiled
-from bl.shl import close_history, enable_history, parse_cli, set_completer
-from bl.trm import reset, save
-from bl.trc import get_exception
-from bl.utl import hd
+from bl.krn import Kernel
+from bl.shl import execute
 
 opts = [
     ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
@@ -39,27 +29,10 @@ opts = [
     ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
 
-def execute(main):
-    save()
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("")
-    except Exception:
-        logging.error(get_exception())
-    reset()
-    close_history()
-
-
 def main():
     k = Kernel("botd", __version__, opts)
     k.start()
     k.load_mod("botd.cmd")
-    try:
-        k.init(k.cfg.modules)
-    except EINIT as ex:
-        print(ex)
-        return
     k.wait()
 
 execute(main)

@@ -22,15 +22,12 @@ opts = [
 ]
 
 def main():
-    cfg = parse_cli("botctl", __version__, opts, wd=hd(".botd"))
-    level(cfg.level)
-    k = Kernel(cfg)
+    k = Kernel("botctl", __version__, opts, wd=hd(".botd"))
+    k.start(False)
     k.load_mod("botd.cmd")
-    k.init(cfg.modules)
-    c = Console()
-    c.sync(k)
-    c.cmd(cfg.txt)
-
+    k.init(k.cfg.modules)
+    k.cmd(k.cfg.txt)
+ 
 try:     
     execute(main)
 except PermissionError:

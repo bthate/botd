@@ -312,7 +312,7 @@ class IRC(Bot):
                 logging.error("deny %s" % event.origin)
                 return
             event.txt = event.txt[1:]
-            k.put(event)
+            k.dispatch(event)
 
     def poll(self):
         self._connected.wait()

@@ -11,6 +11,7 @@ import readline
 import time
 import bl.pst
 
+from bl.err import EINIT
 from bl.log import level, logfiled
 from bl.pst import Cfg
 from bl.trm import reset, save
@@ -61,6 +62,8 @@ def execute(main):
         main()
     except KeyboardInterrupt:
         print("")
+    except EINIT:
+        pass
     except PermissionError:
         pass
     except Exception:
