@@ -2,25 +2,19 @@
 #
 # kernel tables. 
 
-workdir = ""
-
 import inspect
 import logging
+import sys
 import time
-import bl.tbl
 
 from bl.csl import Console
-from bl.dbs import Db, last
 from bl.err import EINIT, ENOTXT
 from bl.evt import Event
-from bl.hdl import Handler
 from bl.ldr import Loader
 from bl.log import level
-from bl.obj import Object
-from bl.pst import Cfg, Persist, Register
+from bl.pst import Cfg, Persist
 from bl.shl import enable_history, parse_cli, set_completer, writepid
-from bl.typ import get_type
-from bl.utl import get_mods, get_name, hd
+from bl.utl import hd
 
 default = {
            "dosave": False,
@@ -84,7 +78,15 @@ class Kernel(Loader, Persist):
         for mn in ms.split(","):
             if not mn:
                 continue
-            m = self.walk(mn)
+            try:
+                m = self.walk("botd.%s" % mn)
+            except ModuleNotFoundError:
+                try:
+                    m = self.walk(mn)
+                except ModuleNotFoundError as ex:
+                    if mn in str(ex):
+                        continue
+                    raise
             if m:
                 modules.extend(m)
         return modules
@@ -112,7 +114,10 @@ class Kernel(Loader, Persist):
         if shell:
             c = Console(self)
             c.start()
-             
+            set_completer(k.cmds)
+            enable_history()
+            writepid()
+
     def wait(self):
         while not self._stopped:
             time.sleep(1.0)

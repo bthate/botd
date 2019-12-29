@@ -25,7 +25,6 @@ def main():
     k = Kernel("botctl", __version__, opts, wd=hd(".botd"))
     k.start(False)
     k.load_mod("botd.cmd")
-    k.init(k.cfg.modules)
     k.cmd(k.cfg.txt)
  
 try:     
