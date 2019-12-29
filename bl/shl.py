@@ -89,7 +89,6 @@ def make_opts(ns, options, **kwargs):
 def parse_cli(opts=[]):
     cfg = Cfg()
     make_opts(cfg, opts)
-    print(cfg)
     cfg.changed = not (not cfg)
     cfg.txt = " ".join(cfg.args)
     cfg.workdir = cfg.workdir or hd(".botd")
@@ -99,6 +98,7 @@ def parse_cli(opts=[]):
     if not os.path.exists(sp):
         cdir(sp)
     level(cfg.level or "error")
+    logging.debug("%s started in %s at %s (%s)" % (cfg.name.upper(), cfg.workdir, time.ctime(time.time()), cfg.level))
     return cfg
 
 def set_completer(commands):

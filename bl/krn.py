@@ -111,7 +111,6 @@ class Kernel(Loader, Persist):
             self.cfg.update(cfg)
         if not self.cfg.name:
             self.cfg.name = "botd"
-        logging.debug("%s started in %s at %s (%s)" % (self.cfg.name.upper(), self.cfg.workdir, time.ctime(time.time()), self.cfg.level))
         try:
             self.init(self.cfg.modules)
         except EINIT as ex:
@@ -121,9 +120,6 @@ class Kernel(Loader, Persist):
         if self.cfg.dosave:
             self.cfg.save()
         if self.cfg.shell:
-            c = Console()
-            c.sync(self)
-            c.start()
             set_completer(self.cmds)
             enable_history()
             writepid()

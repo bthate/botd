@@ -66,11 +66,11 @@ class Object:
 class Default(Object):
 
     def __getattr__(self, k):
-        try:
-            return super().__getattribute__(k)
-        except KeyError:
+        if k in self:
+             return self.__dict__[k]
+        else:
             self.set(k, "")
-            return super().__getattribute__(k)
+        return self.__getattribute__(k)
 
 def default(o):
     if isinstance(o, Object):

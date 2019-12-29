@@ -56,7 +56,7 @@ class Persist(Object):
         self.__path__ = path
         return path
 
-class Cfg(Persist, Default):
+class Cfg(Default, Persist):
 
     def __init__(self, cfg={}, **kwargs):
         super().__init__()

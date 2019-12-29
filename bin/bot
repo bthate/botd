@@ -9,6 +9,7 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 
 import logging
 
+from bl.csl import Console
 from bl.krn import Kernel
 from bl.shl import execute, parse_cli
 
@@ -17,7 +18,6 @@ opts = [
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, 'modules to load.', 'modules'),
     ('-n', '--name', 'store', str, 'program name', 'name'),
-    ('-x', '--exec', 'store_true', False, 'execute command.', 'doexec'),
     ('-o', '--options', "store", str, "options to use.", 'options'),
     ('-k', '--kernel', "store_true", False, "read from previous kernel config.", 'kernel'),
     ('-p', '--prompting', "store_false", True, "disable prompting for initial values.", 'prompting'),
@@ -29,10 +29,13 @@ opts = [
 
 def main():
     cfg = parse_cli(opts)
-    print(cfg)
     k = Kernel()
-    k.load_mod("botd.cmd")
     k.start(cfg)
+    k.load_mod("botd.cmd")
+    if k.cfg.shell:
+        c = Console()
+        c.sync(k)
+        c.start()
     k.wait()
 
 execute(main)

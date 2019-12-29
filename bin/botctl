@@ -16,15 +16,17 @@ from bl.utl import hd
 opts = [
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
     ('-m', '--modules', "store", str, "modules to load.", 'modules'),
+    ('-n', '--name', "store", str, "program name", 'name'),
     ('-o', '--options', "store", str, "options to use.", 'options'),
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
     ('-s', '--save', 'store_true', False, 'save kernel config.', 'dosave')
 ]
 
 def main():
-    k = Kernel("botctl", __version__, opts, wd=hd(".botd"))
-    k.start(False)
+    cfg = parse_cli(opts)
+    k = Kernel()
     k.load_mod("botd.cmd")
+    k.start(cfg)
     k.cmd(k.cfg.txt)
  
 try:     

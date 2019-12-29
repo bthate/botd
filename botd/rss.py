@@ -12,8 +12,8 @@ import urllib
 from bl.clk import Repeater
 from bl.dbs import Db
 from bl.gnr import edit
-from bl.obj import Cfg, Default, Object
-from bl.pst import Persist
+from bl.obj import Default, Object
+from bl.pst import Cfg, Persist
 from bl.thr import launch
 from bl.utl import get_tinyurl, get_url, strip_html, unescape
 
