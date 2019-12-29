@@ -21,8 +21,7 @@ if not getattr(bl.tbl, "modules", None):
 from bl.krn import Kernel
 
 k = Kernel()
-k.walk("bl")
-k.walk("botd")
+k.load_mod("botd.cmd")
 print(txt)
 print("classes = %s" % bl.tbl.classes)
 print("names = %s" % bl.tbl.names)

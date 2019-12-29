@@ -83,7 +83,7 @@ def get_mods(h, ms):
             continue
         m = h.walk(mn)
         if m:
-            modules.extend(m)
+            modules.append(m)
     return modules
 
 def get_name(o):

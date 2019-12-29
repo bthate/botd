@@ -16,7 +16,7 @@ from bl.pst import Register
 from bl.ldr import Loader
 from bl.thr import Launcher
 from bl.typ import get_name, get_type
-
+from bl.utl import get_mods
 
 def __dir__():
     return ("Handler",)
@@ -59,31 +59,12 @@ class Handler(Loader, Launcher):
             else:
                 self.dispatch(e)
 
-    def load_mod(self, mn, force=True):
-        logging.warning("load %s into %s" % (mn, get_name(self)))
-        mod = super().load_mod(mn, force=force)
-        self.scan(mod)
-        return mod
-
     def poll(self):
         raise ENOTIMPLEMENTED
 
     def put(self, event):
         self._queue.put_nowait(event)
 
-    def scan(self, mod):
-        for key, o in inspect.getmembers(mod, inspect.isfunction):
-            if "event" in o.__code__.co_varnames:
-                if o.__code__.co_argcount == 1 and key not in self.cmds:
-                    self.cmds.register(key, o)
-                    bl.tbl.modules[key] = o.__module__
-        for key, o in inspect.getmembers(mod, inspect.isclass):
-            if issubclass(o, Object):
-                t = get_type(o)
-                if t not in bl.tbl.classes:
-                    bl.tbl.classes.append(t)
-                    bl.tbl.names[t.split(".")[-1].lower()] = str(t)
-                
     def start(self):
         self._started = True
         self.launch(self.handler)
@@ -94,16 +75,3 @@ class Handler(Loader, Launcher):
 
     def sync(self, other):
         self.cmds.update(other.cmds)
-
-    def walk(self, pkgname):
-        if not pkgname:
-             return
-        mod = self.load_mod(pkgname)
-        mods = [mod,]
-        try:
-            mns = pkgutil.iter_modules(mod.__path__, mod.__name__+".")
-        except:
-            mns = pkgutil.iter_modules([mod.__file__,], mod.__name__+".")
-        for n in mns:
-            mods.append(self.load_mod(n[1], force=True))
-        return mods

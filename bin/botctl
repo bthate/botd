@@ -15,6 +15,7 @@ from bl.utl import hd
 
 opts = [
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
+    ('-m', '--modules', "store", str, "modules to load.", 'modules'),
     ('-o', '--options', "store", str, "options to use.", 'options'),
     ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
     ('-s', '--save', 'store_true', False, 'save kernel config.', 'dosave')
@@ -23,8 +24,11 @@ opts = [
 def main():
     cfg = parse_cli("botctl", __version__, opts, wd=hd(".botd"))
     level(cfg.level)
+    k = Kernel(cfg)
+    k.load_mod("botd.cmd")
+    k.init(cfg.modules)
     c = Console()
-    c.load_mod("botd.cmd")
+    c.sync(k)
     c.cmd(cfg.txt)
 
 try:     

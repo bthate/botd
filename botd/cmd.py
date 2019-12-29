@@ -52,7 +52,7 @@ def ed(event):
     event.reply("ok")
 
 def cmds(event):
-    event.reply("|".join(sorted(k.cmds)))
+    event.reply("|".join(sorted(bl.tbl.modules)))
 
 def fleet(event):
     try:
