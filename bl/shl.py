@@ -86,20 +86,23 @@ def make_opts(ns, options, **kwargs):
     parser.add_argument('args', nargs='*')
     parser.parse_known_args(namespace=ns)
   
-def parse_cli(name="botlib", version=None, opts=[], wd=None, loglevel="error", logdir=""):
+def parse_cli(name="", version=None, opts=[], wd=None, loglevel="error", logdir=""):
     cfg = Cfg()
     make_opts(cfg, opts)
     cfg.debug = False
-    cfg.name = name
-    cfg.version = version
-    cfg.workdir = cfg.workdir or wd or hd(".%s" % cfg.name)
-    cfg.logdir = cfg.logdir or logdir or os.path.join(cfg.workdir, "logs")
-    cfg.txt = " ".join(cfg.args)
+    cfg.name = name or "botd"
+    cfg.version = version or __version__
+    cfg.workdir = wd or hd(".botd")
+    if logdir:
+        cfg.logdir = logdir
+    if cfg.args:
+        cfg.txt = " ".join(cfg.args)
     bl.pst.workdir = cfg.workdir
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
     logging.debug("%s started at %s (%s)" % (cfg.name, time.ctime(time.time()), cfg.workdir))
+    print(cfg)
     return cfg
 
 def set_completer(commands):

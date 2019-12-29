@@ -10,7 +10,7 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 import logging
 
 from bl.krn import Kernel
-from bl.shl import execute
+from bl.shl import execute, parse_cli
 
 opts = [
     ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
@@ -26,8 +26,9 @@ opts = [
 ]
 
 def main():
-    k = Kernel("botd", __version__, opts)
-    k.start()
+    cfg = parse_cli("botd", __version__, opts)
+    k = Kernel()
+    k.start(cfg)
     k.load_mod("botd.cmd")
     k.wait()
 

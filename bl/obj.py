@@ -46,7 +46,7 @@ class Object:
     def last(o, skip=True):
         from bl.dbs import Db
         db = Db()
-        val = db.last(str(str(bl.typ.get_type(o))))
+        val = db.last(str(bl.typ.get_type(o)))
         if val:
             o.update(val)
             o.__path__ = val.__path__

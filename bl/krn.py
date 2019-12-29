@@ -16,21 +16,23 @@ from bl.pst import Cfg, Persist
 from bl.shl import enable_history, parse_cli, set_completer, writepid
 from bl.utl import hd
 
-default = {
-           "dosave": False,
-           "doexec": False,
-           "exclude": "",
-           "kernel": False,
-           "level": "",
-           "logdir": "",
-           "modules": "",
-           "options": "",
-           "owner": "",
-           "prompting": False,
-           "shell": False,
-           "verbose": False,
-           "workdir": ""
-          }
+class Cfg(Cfg):
+
+    def __init__(self):
+        super().__init__()
+        self.dosave = False
+        self.doexec = False
+        self.exclude = ""
+        self.kernel =  False
+        self.level =  ""
+        self.logdir = ""
+        self.modules = ""
+        self.options = ""
+        self.owner = ""
+        self.prompting = False
+        self.shell = False
+        self.verbose = False
+        self.workdir = ""
 
 class Event(Event):
 
@@ -42,14 +44,11 @@ class Kernel(Loader, Persist):
 
     cfg = Cfg()
     
-    def __init__(self, name="botd", version=1, opts={}, **kwargs):
+    def __init__(self):
         super().__init__()
         self._autoload = False
         self._started = False
         self._stopped = False
-        self.cfg.name = name
-        self.cfg.version = version
-        self.opts = opts
 
     def cmd(self, txt, origin=""):
         if not txt:
@@ -101,9 +100,13 @@ class Kernel(Loader, Persist):
             mods.append(mod)
         return mods
 
-    def start(self, shell=True):
-        cfg = parse_cli(self.cfg.name, self.cfg.version, self.opts, wd=hd(".%s" % self.cfg.name))
-        self.cfg.update(cfg)
+    def start(self, cfg):
+        print(self.cfg)
+        if cfg.kernel:
+            self.cfg.last()
+        print(self.cfg)
+        self.cfg.update(cfg, skip=True)
+        print(self.cfg)
         level(cfg.level)
         try:
             self.init(cfg.modules)
@@ -111,7 +114,9 @@ class Kernel(Loader, Persist):
             self._stopped = True
             print(ex)
             return
-        if shell:
+        if cfg.dosave:
+            self.cfg.save()
+        if self.cfg.shell:
             c = Console(self)
             c.start()
             set_completer(self.cmds)
