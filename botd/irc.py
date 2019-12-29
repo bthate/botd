@@ -275,12 +275,9 @@ class IRC(Bot):
 
     def dispatch(self, event):
         event.parse(event.txt)
-        event._func = self.get_cmd(event.chk)
-        if not event._func:
-            event._func = getattr(self, event.command, None)
+        event._func = getattr(self, event.command, None)
         if event._func:
             event._func(event)
-            event.show()
         event.ready()
 
     def ERROR(self, event):
