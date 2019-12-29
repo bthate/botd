@@ -424,6 +424,7 @@ class DCC(Bot):
         e.channel = self.origin
         e.orig = repr(self)
         e.origin = self.origin or "root@dcc"
+        k.dispatch(e)
         return e
 
     def say(self, channel, txt, type="chat"):
