@@ -4,18 +4,18 @@
 
 __version__ = 1
 
+import bl
+import bl.tbl
 import os
 import sys
 import time
 import threading
-import bl.pst
-import bl.tbl
 
+from bl import Object
 from bl.dbs import Db
 from bl.krn import Kernel
 from bl.gnr import edit, keys
 from bl.hdl import Handler
-from bl.obj import Object
 from bl.tms import elapsed
 from bl.typ import get_cls, get_type
 
@@ -103,7 +103,7 @@ def fleet(event):
     event.reply(str([get_type(x) for x in bots.bots]))
 
 def ls(event):
-    event.reply("|".join(os.listdir(os.path.join(bl.pst.workdir, "store"))))
+    event.reply("|".join(os.listdir(os.path.join(bl.workdir, "store"))))
 
 def meet(event):
     if not event.args:

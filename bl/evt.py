@@ -5,11 +5,10 @@
 import time
 import threading
 
+from bl import Object
 from bl.err import ENOTIMPLEMENTED, ENOTXT
 from bl.gnr import format
-from bl.obj import Object
 from bl.hdl import Handler
-from bl.pst import Persist
 from bl.tbl import names
 from bl.tms import parse_date, to_day
 
@@ -91,7 +90,7 @@ class Token(Object):
             self.selector = word
             self.value = None
 
-class Command(Persist):
+class Command(Object):
 
     def __init__(self):
         super().__init__()

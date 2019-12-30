@@ -10,9 +10,8 @@ import time
 import threading
 import bl.tbl
 
+from bl import Object, Register
 from bl.err import ENOTIMPLEMENTED
-from bl.obj import Object
-from bl.pst import Register
 from bl.ldr import Loader
 from bl.thr import launch
 from bl.typ import get_name, get_type

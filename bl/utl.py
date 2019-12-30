@@ -6,6 +6,7 @@ import bl
 import json
 import html
 import html.parser
+import logging
 import os
 import random
 import re
@@ -117,6 +118,7 @@ def get_tinyurl(url):
             return i.groups()
 
 def get_url(*args):
+    logging.debug("GET %s" % args[0])
     url = urlunparse(urllib.parse.urlparse(args[0]))
     req = Request(url, headers={"User-Agent": useragent()})
     resp = urlopen(req)

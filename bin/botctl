@@ -23,9 +23,9 @@ opts = [
 ]
 
 def main():
-    cfg = parse_cli(opts)
+    cfg = parse_cli("botctl", __version__, opts)
     k = Kernel()
-    k.load_mod("botd.cmd")
+    k.walk("botd.cmd")
     k.start(cfg)
     k.cmd(k.cfg.txt)
  

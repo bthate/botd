@@ -2,12 +2,12 @@
 #
 # list of bots. 
 
-from bl.pst import Persist
+from bl import Object
 
 def __dir__():
     return ("Fleet",)
 
-class Fleet(Persist):
+class Fleet(Object):
 
     bots = []
 

@@ -5,10 +5,10 @@
 import sys
 import threading
 
+from bl import Object
 from bl.err import ENOTXT
 from bl.evt import Event
 from bl.hdl import Handler
-from bl.pst import Persist
 from bl.thr import launch
 
 def __dir__():
@@ -20,7 +20,7 @@ class Event(Event):
         for txt in self.result:
             print(txt)
 
-class Console(Handler, Persist):
+class Console(Handler):
 
     def __init__(self):
         super().__init__()

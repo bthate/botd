@@ -2,14 +2,14 @@
 #
 # databases. 
 
+import bl
 import os
 import time
 import _thread
-import bl.pst
 
+from bl import Object
 from bl.err import ENOFILE
 from bl.gnr import search
-from bl.pst import Persist
 from bl.tms import fntime
 from bl.typ import get_cls
 from bl.utl import locked
@@ -19,7 +19,7 @@ def __dir__():
 
 lock = _thread.allocate_lock()
 
-class Db(Persist):
+class Db(Object):
 
     def all(self, otype, selector=None, index=None, delta=0):
         if not selector:
@@ -99,14 +99,14 @@ def hook(fn):
     return o
 
 def names(name, delta=None):
-    assert bl.pst.workdir
-    p = os.path.join(bl.pst.workdir, "store", name) + os.sep
+    assert bl.workdir
+    p = os.path.join(bl.workdir, "store", name) + os.sep
     res = []
     now = time.time()
     past = now + delta
     for rootdir, dirs, files in os.walk(p, topdown=True):
         for fn in files:
-            fnn = os.path.join(rootdir, fn).split(os.path.join(bl.pst.workdir, "store"))[-1]
+            fnn = os.path.join(rootdir, fn).split(os.path.join(bl.workdir, "store"))[-1]
             if delta:
                 if fntime(fnn) < past:
                     continue

@@ -18,7 +18,7 @@ from bl.thr import launch
 from botd.usr import Users
 
 k = Kernel()
-k.load_mod("botd.cmd")
+k.walk("botd.cmd")
 k.start()
 users = Users()
 
@@ -32,10 +32,10 @@ e.verbose = k.cfg.verbose
 e.parse("-o %s" % k.cfg.options)
 
 param = Param()
-param.cfg = ["%s txt==yo channel=#mekker" % x for x in bl.tbl.names]
-param.cfg.extend(["%s txt==yo test=a,b,c,d" % x for x in bl.tbl.names])
-param.ed = ["%s txt==yo channel=#mekker" % x for x in bl.tbl.names]
-param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in bl.tbl.names])
+param.cfg = ["%s txt==yo channel=#mekker" % x for x in bl.tbl.classes]
+param.cfg.extend(["%s txt==yo test=a,b,c,d" % x for x in bl.tbl.classes])
+param.ed = ["%s txt==yo channel=#mekker" % x for x in bl.tbl.classes]
+param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in bl.tbl.classes])
 param.find = ["%s txt==yo -f" % x for x in bl.tbl.names] + ["email txt==gif", ]
 param.load = k.table.keys()
 param.log = ["yo!",]

@@ -4,14 +4,13 @@
 
 import logging
 
+from bl import Object
 from bl.dbs import Db
-from bl.obj import Object
-from bl.pst import Persist
 
 def __dir__():
     return ("User", "Users")
 
-class User(Persist):
+class User(Object):
 
     def __init__(self):
         super().__init__()

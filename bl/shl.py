@@ -2,6 +2,7 @@
 #
 # shell related code.
 
+import bl
 import argparse
 import atexit
 import logging
@@ -9,12 +10,11 @@ import optparse
 import os
 import readline
 import time
-import bl.pst
 
+from bl import Default, Object
 from bl.err import EINIT
 from bl.krn import Cfg, __version__
 from bl.log import level, logfiled
-from bl.obj import Default, Object
 from bl.trm import reset, save
 from bl.utl import cdir, hd, touch
 from bl.trc import get_exception
@@ -28,9 +28,9 @@ def __dir__():
 
 def close_history():
     global HISTFILE
-    if bl.pst.workdir:
+    if bl.workdir:
         if not HISTFILE:
-            HISTFILE = os.path.join(bl.pst.workdir, "history")
+            HISTFILE = os.path.join(bl.workdir, "history")
         if not os.path.isfile(HISTFILE):
             cdir(HISTFILE)
             touch(HISTFILE)
@@ -49,8 +49,8 @@ def complete(text, state):
 
 def enable_history():
     global HISTFILE
-    if bl.pst.workdir:
-        HISTFILE = os.path.abspath(os.path.join(bl.pst.workdir, "history"))
+    if bl.workdir:
+        HISTFILE = os.path.abspath(os.path.join(bl.workdir, "history"))
         if not os.path.exists(HISTFILE):
             touch(HISTFILE)
         else:
@@ -96,7 +96,7 @@ def parse_cli(name, version=None, opts=[]):
     cfg.workdir = cfg.workdir or hd(".botd")
     cfg.name = name or "botd"
     cfg.version = version or __version__
-    bl.pst.workdir = cfg.workdir
+    bl.workdir = cfg.workdir
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
@@ -112,8 +112,8 @@ def set_completer(commands):
     atexit.register(lambda: readline.set_completer(None))
 
 def writepid():
-    assert bl.pst.workdir
-    path = os.path.join(bl.pst.workdir, "botlib.pid")
+    assert bl.workdir
+    path = os.path.join(bl.workdir, "botlib.pid")
     f = open(path, 'w')
     f.write(str(os.getpid()))
     f.flush()

@@ -8,14 +8,13 @@ import inspect
 import logging
 import sys
 import time
-import bl.pst
 
+from bl import Cfg
 from bl.csl import Console
 from bl.err import EINIT, ENOTXT
 from bl.evt import Event
 from bl.ldr import Loader
 from bl.log import level
-from bl.pst import Cfg, Persist
 from bl.shl import enable_history, parse_cli, set_completer, writepid
 from bl.utl import hd
 
@@ -45,7 +44,7 @@ class Event(Event):
         for txt in self.result:
             print(txt)
 
-class Kernel(Loader, Persist):
+class Kernel(Loader):
 
     cfg = Cfg()
     
