@@ -18,6 +18,7 @@ from bl.thr import launch
 from botd.usr import Users
 
 k = Kernel()
+k.load_mod("botd.cmd")
 k.start()
 users = Users()
 
@@ -31,6 +32,8 @@ e.verbose = k.cfg.verbose
 e.parse("-o %s" % k.cfg.options)
 
 param = Param()
+param.cfg = ["%s txt==yo channel=#mekker" % x for x in bl.tbl.names]
+param.cfg.extend(["%s txt==yo test=a,b,c,d" % x for x in bl.tbl.names])
 param.ed = ["%s txt==yo channel=#mekker" % x for x in bl.tbl.names]
 param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in bl.tbl.names])
 param.find = ["%s txt==yo -f" % x for x in bl.tbl.names] + ["email txt==gif", ]
@@ -61,7 +64,6 @@ def tests(b):
         if cmd in ["fetch", "exit", "reboot", "reconnect", "test"]:
             continue
         events.extend(do_cmd(b, cmd))
-    print(events)
     consume(events)
 
 def do_cmd(b, cmd):

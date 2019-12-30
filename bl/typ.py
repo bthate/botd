@@ -6,7 +6,10 @@ import importlib
 import types
 
 def get_cls(name):
-    modname, clsname = name.rsplit(".", 1)
+    try:
+        modname, clsname = name.rsplit(".", 1)
+    except ValueError:
+        return importlib.import_module(name)
     mod = importlib.import_module(modname)
     return getattr(mod, clsname)
 
