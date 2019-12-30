@@ -14,14 +14,13 @@ import threading
 import _thread
 
 from bl import Cfg, Object
+from bl.bot import Bot
 from bl.err import EINIT
 from bl.evt import Event
+from bl.flt import Fleet
 from bl.krn import Kernel
 from bl.thr import launch
 from bl.utl import locked
-
-from botd.bot import Bot
-from botd.flt import Fleet
 from botd.usr import Users
 
 def __dir__():

@@ -14,13 +14,12 @@ import threading
 from bl import Object
 from bl.dbs import Db
 from bl.krn import Kernel
+from bl.flt import Fleet
 from bl.gnr import edit, keys
 from bl.hdl import Handler
 from bl.tms import elapsed
 from bl.typ import get_cls, get_type
-
-from botd.flt import Fleet
-from botd.usr import Users
+from bl.usr import Users
 
 starttime = time.time()
 

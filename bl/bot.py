@@ -7,9 +7,9 @@ import sys
 
 from bl import Cfg
 from bl.evt import Event
+from bl.flt import Fleet
 from bl.hdl import Handler
 from bl.thr import launch
-from botd.flt import Fleet
 
 def __dir__():
     return ('Bot', 'Cfg')

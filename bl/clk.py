@@ -52,7 +52,7 @@ class Timers(Object):
     def start(self):
         for evt in db.all("bl.clk.Timers"):
             e = Event()
-            e.updateevt)
+            e.update(evt)
             if "done" in e and e.done:
                 continue
             if "time" not in e:
@@ -77,7 +77,7 @@ class Timer(Object):
 
     def start(self, func=echo, sleep=300.0, name=""):
         if not name:
-            name = get_name(self._func))
+            name = get_name(self._func)
         self._name = name
         timer = threading.Timer(self.sleep, self.run, self.args, self.kwargs)
         timer.setName(self._name)

@@ -9,14 +9,14 @@ import sys
 import threading
 import _thread
 
+from bl.bot import Bot, Event
 from bl.obj import Cfg, Object
 from bl.err import EINIT
 from bl.evt import Event
+from bl.flt import Fleet
 from bl.krn import Kernel
 from bl.thr import launch
-from botd.bot import Bot, Event
-from botd.flt import Fleet
-from botd.usr import Users
+from bl.usr import Users
 
 def __dir__():
     return ("XMPP", "Event", "Cfg", "init", "stripped")
