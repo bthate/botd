@@ -52,14 +52,14 @@ class Timers(Object):
     def start(self):
         for evt in db.all("bl.clk.Timers"):
             e = Event()
-            update(e, evt)
+            e.updateevt)
             if "done" in e and e.done:
                 continue
             if "time" not in e:
                 continue
             if time.time() < int(e.time):
                 self.timers[e.time] = e
-        return bl.krn.launch(self.loop)
+        return launch(self.loop)
 
     def stop(self):
         self._stopped = True
@@ -69,14 +69,16 @@ class Timer(Object):
     def __init__(self, *args, **kwargs):
         super().__init__()
         self._func = None
-        self._name = kwargs.get("name", get_name(func))
         self.sleep = None
         self.args = args
         self.kwargs = kwargs
         self.state = Object()
         self.timer = None
 
-    def start(self, func=echo, sleep=300.0):
+    def start(self, func=echo, sleep=300.0, name=""):
+        if not name:
+            name = get_name(self._func))
+        self._name = name
         timer = threading.Timer(self.sleep, self.run, self.args, self.kwargs)
         timer.setName(self._name)
         timer.sleep = sleep

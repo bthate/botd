@@ -8,7 +8,7 @@ from bl.evt import Event
 from bl.krn import Kernel
 
 k = Kernel()
-k.load_mod("botd.cmd")
+k.walk("botd.cmd")
 k.start()
 
 class Test_Scheduler(unittest.TestCase):
