@@ -13,7 +13,7 @@ import time
 import threading
 import _thread
 
-from bl import Cfg, Object
+from bl import Cfg, Object, Register
 from bl.bot import Bot
 from bl.err import EINIT
 from bl.evt import Event
@@ -33,11 +33,12 @@ users = Users()
           
 def init(k):
     kernel.sync(k)
+    kernel.walk("botd.cmd")
     bot = IRC()
     bot.cfg.last()
     if not k.cfg.nick:
         k.cfg.nick = "botd"
-    if k.cfg.prompting or (not bot.cfg.channel and not bot.cfg.server):
+    if k.cfg.prompting and (not bot.cfg.channel and not bot.cfg.server):
         try:
             server, channel, nick = k.cfg.args
         except ValueError:
@@ -127,6 +128,7 @@ class IRC(Bot):
         self.cc = "!"
         self.cfg = Cfg()
         self.channels = []
+        self.cmds = Register()
         self.state = Object()
         self.state.error = ""
         self.state.last = 0

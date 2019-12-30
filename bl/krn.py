@@ -107,14 +107,17 @@ class Kernel(Loader):
         return bots
 
     def start(self, cfg=None):
-        if cfg and "kernel" in cfg and cfg.kernel:
+        if cfg.kernel:
             self.cfg.last()
+            print(self.cfg)
         if cfg:
             self.cfg.update(cfg)
         if not self.cfg.name:
             self.cfg.name = "botd"
         try:
-            self.init(self.cfg.modules)
+            bots = self.init(self.cfg.modules)
+            for b in bots:
+                logging.warning("init %s" % get_name(b))
         except EINIT as ex:
             self._stopped = True
             print(ex)

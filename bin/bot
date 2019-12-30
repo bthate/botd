@@ -33,7 +33,7 @@ def main():
     k.start(cfg)
     if k.cfg.shell:
         c = Console()
-        c.sync(k)
+        c.walk("botd.cmd")
         c.start()
     k.wait()
 
