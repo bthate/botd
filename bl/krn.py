@@ -2,6 +2,8 @@
 #
 # kernel tables. 
 
+__version__ = 1
+
 import inspect
 import logging
 import sys

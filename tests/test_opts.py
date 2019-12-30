@@ -26,8 +26,6 @@ class Test_Opts(unittest.TestCase):
 
     def test_options1(self):
         cfg = Object()
-        print(cfg)
         make_opts(cfg, opts)
-        print(cfg)
         self.assertTrue(cfg.shell)
 

@@ -10,7 +10,7 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 import logging
 
 from bl.csl import Console
-from bl.krn import Kernel
+from bl.krn import Kernel, __version__
 from bl.shl import execute, parse_cli
 
 opts = [
@@ -28,7 +28,7 @@ opts = [
 ]
 
 def main():
-    cfg = parse_cli(opts)
+    cfg = parse_cli("botd", __version__, opts)
     k = Kernel()
     k.start(cfg)
     k.load_mod("botd.cmd")

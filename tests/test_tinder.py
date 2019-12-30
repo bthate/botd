@@ -61,6 +61,7 @@ def tests(b):
         if cmd in ["fetch", "exit", "reboot", "reconnect", "test"]:
             continue
         events.extend(do_cmd(b, cmd))
+    print(events)
     consume(events)
 
 def do_cmd(b, cmd):
@@ -72,6 +73,7 @@ def do_cmd(b, cmd):
         e = Event()
         e.origin = "test@shell"
         e.txt = cmd + " " + ex
-        k.put(e)
+        e.verbose = k.cfg.verbose
+        k.dispatch(e)
         events.append(e)
     return events
