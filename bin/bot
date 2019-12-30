@@ -31,7 +31,6 @@ def main():
     cfg = parse_cli("botd", __version__, opts)
     k = Kernel()
     k.start(cfg)
-    k.walk("botd.cmd")
     if k.cfg.shell:
         c = Console()
         c.sync(k)

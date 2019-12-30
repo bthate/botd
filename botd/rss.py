@@ -29,7 +29,7 @@ def __dir__():
 db = Db()
 fleet = Fleet()
 
-def init(cfg):
+def init(kernel):
     fetcher.start()
     return fetcher
 

@@ -29,6 +29,7 @@ class Users(Db):
         if user:
             if perm in user.perms:
                 return True
+        logging.warn("denied %s" % origin)
         return False
 
     def delete(self, origin, perm):
@@ -42,7 +43,7 @@ class Users(Db):
 
     def get_users(self, origin=""):
         s = {"user": origin}
-        return self.all("botd.usr.User", s)
+        return self.all("bl.usr.User", s)
 
     def get_user(self, origin):
         u =  list(self.get_users())

@@ -16,7 +16,7 @@ from bl.evt import Event
 from bl.ldr import Loader
 from bl.log import level
 from bl.shl import enable_history, parse_cli, set_completer, writepid
-from bl.utl import hd
+from bl.utl import get_name, hd
 
 class Cfg(Cfg):
 
@@ -85,7 +85,7 @@ class Kernel(Loader):
                 continue
             try:
                 m = self.walk("botd.%s" % mn)
-            except ModuleNotFoundError:
+            except ModuleNotFoundError as ex:
                 try:
                     m = self.walk(mn)
                 except ModuleNotFoundError as ex:
@@ -97,14 +97,14 @@ class Kernel(Loader):
         return modules
         
     def init(self, modstr):
-        mods = []
+        bots = []
         for mod in self.get_mods(modstr):
             if "init" not in dir(mod):
                 continue
             logging.warning("init %s" % mod.__name__)
-            mod.init(self.cfg)
-            mods.append(mod)
-        return mods
+            bot = mod.init(self)
+            bots.append(bot)
+        return bots
 
     def start(self, cfg=None):
         if cfg and "kernel" in cfg and cfg.kernel:

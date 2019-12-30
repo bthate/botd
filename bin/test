@@ -21,9 +21,9 @@ from bl.tms import elapsed
 from bl.trc import get_exception
 from bl.trm import save, reset
 from bl.typ import get_cls
+from bl.usr import Users
 from bl.utl import cdir
 
-from botd.usr import Users
 
 opts = [
     ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),

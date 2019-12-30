@@ -69,8 +69,8 @@ def execute(main):
         pass
     except Exception:
         logging.error(get_exception())
-    reset()
-    close_history()
+    finally:
+        reset()
 
 def get_completer():
     return readline.get_completer()

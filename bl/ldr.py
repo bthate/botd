@@ -57,7 +57,7 @@ class Loader(Object):
                     bl.tbl.classes.append(t)
                     bl.tbl.names[t.split(".")[-1].lower()] = str(t)
         if added:
-            logging.warning("cmds %s" % ",".join(added))
+            logging.warning("found %s" % ",".join(added))
 
     def sync(self, other):
         self.cmds.update(other.cmds)

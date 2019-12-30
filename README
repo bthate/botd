@@ -117,6 +117,7 @@ BOTD contains the following modules:
 
  bl			- bot library.
  bl.all			- contains all sub modules
+ bl.bot		- bot base class.
  bl.clk			- clock functions.
  bl.csl			- console.
  bl.dbs			- database.
@@ -134,16 +135,15 @@ BOTD contains the following modules:
  bl.thr			- threads.
  bl.trc			- trace.
  bl.typ			- typing.
+ bl.usr		- user management.
  bl.utl			- utilities.
 
 ::
 
  botd.cmd		- basic commands
- botd.bot		- bot base class.
  botd.ent		- log and todo commands.
  botd.irc		- IRC bot.
  botd.udp		- UDP packet to IRC channel relay.
- botd.usr		- user management.
  
 C O D E
 

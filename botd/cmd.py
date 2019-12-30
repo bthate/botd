@@ -152,7 +152,7 @@ def u(event):
         event.reply("this command might flood, use a DCC connection.")
         return
     res = ""
-    for o in db.all("botd.usr.User"):
+    for o in db.all("bl.usr.User"):
         res += "%s," % o.user
     event.reply(res)
 

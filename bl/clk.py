@@ -69,17 +69,17 @@ class Timer(Object):
     def __init__(self, *args, **kwargs):
         super().__init__()
         self._func = None
-        self.sleep = None
+        self._sleep = None
         self.args = args
         self.kwargs = kwargs
         self.state = Object()
         self.timer = None
 
-    def start(self, func=echo, sleep=300.0, name=""):
+    def start(self, sleep, func, name=""):
         if not name:
-            name = get_name(self._func)
+            name = get_name(func)
         self._name = name
-        timer = threading.Timer(self.sleep, self.run, self.args, self.kwargs)
+        timer = threading.Timer(self._sleep, self.run, self.args, self.kwargs)
         timer.setName(self._name)
         timer.sleep = sleep
         timer.state = self.state

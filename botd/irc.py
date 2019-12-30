@@ -21,30 +21,31 @@ from bl.flt import Fleet
 from bl.krn import Kernel
 from bl.thr import launch
 from bl.utl import locked
-from botd.usr import Users
+from bl.usr import Users
 
 def __dir__():
     return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "errored", "noticed", "privmsged")
 
 saylock = _thread.allocate_lock()
 fleet = Fleet()
-k = Kernel()
+kernel = Kernel()
 users = Users()
           
-def init(cfg):
+def init(k):
+    kernel.sync(k)
     bot = IRC()
     bot.cfg.last()
-    if not cfg.nick:
-        cfg.nick = "botd"
-    if cfg.prompting or (not bot.cfg.channel and not bot.cfg.server):
+    if not k.cfg.nick:
+        k.cfg.nick = "botd"
+    if k.cfg.prompting or (not bot.cfg.channel and not bot.cfg.server):
         try:
-            server, channel, nick = cfg.args
+            server, channel, nick = k.cfg.args
         except ValueError:
             try:
-                server, channel = cfg.args
+                server, channel = k.cfg.args
                 nick = "botd"
             except ValueError:
-                raise EINIT("%s <server> <channel> <nick>" % cfg.name)
+                raise EINIT("%s <server> <channel> <nick>" % k.cfg.name)
         bot.cfg.server = server
         bot.cfg.channel = channel
         bot.cfg.nick = nick
@@ -304,7 +305,7 @@ class IRC(Bot):
                 logging.error("deny %s" % event.origin)
                 return
             event.txt = event.txt[1:]
-            k.dispatch(event)
+            kernel.dispatch(event)
 
     def poll(self):
         self._connected.wait()
@@ -420,7 +421,7 @@ class DCC(Bot):
         e.channel = self.origin
         e.orig = repr(self)
         e.origin = self.origin or "root@dcc"
-        k.dispatch(e)
+        kernel.dispatch(e)
         return e
 
     def say(self, channel, txt, type="chat"):

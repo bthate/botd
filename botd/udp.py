@@ -18,7 +18,7 @@ def __dir__():
 fleet = Fleet()
 db = Db()
 
-def init(cfg):
+def init(kernel):
     server = UDP()
     server.start()
     return server
