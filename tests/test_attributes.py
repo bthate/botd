@@ -2,7 +2,7 @@
 #
 # tests attributes on Objects
 
-from bl.obj import Object
+from bl import Object
 
 import unittest
 import time

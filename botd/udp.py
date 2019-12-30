@@ -6,8 +6,8 @@ import bl
 import socket
 import time
 
+from bl import Cfg, Object
 from bl.dbs import Db
-from bl.pst import Cfg, Persist
 from bl.thr import launch
 from bl.utl import get_name
 
@@ -35,7 +35,7 @@ class Cfg(Cfg):
         self.server = self.host
         self.owner = ""
 
-class UDP(Persist):
+class UDP(Object):
 
     def __init__(self):
         super().__init__()

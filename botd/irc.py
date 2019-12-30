@@ -13,11 +13,10 @@ import time
 import threading
 import _thread
 
+from bl import Cfg, Object
 from bl.err import EINIT
 from bl.evt import Event
 from bl.krn import Kernel
-from bl.obj import Object
-from bl.pst import Cfg
 from bl.thr import launch
 from bl.utl import locked
 

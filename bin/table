@@ -11,17 +11,15 @@ import bl.tbl
 from bl.log import level
 level("error")
 
-if not getattr(bl.tbl, "classes", None):
-    bl.tbl.classes = []
-if not getattr(bl.tbl, "names", None):
-    bl.tbl.names = {}
-if not getattr(bl.tbl, "modules", None):
-    bl.tbl.modules = {}
+bl.tbl.classes = []
+bl.tbl.names = {}
+bl.tbl.modules = {}
 
 from bl.krn import Kernel
 
 k = Kernel()
-k.load_mod("botd.cmd")
+k.walk("bl")
+k.walk("botd")
 print(txt)
 print("classes = %s" % bl.tbl.classes)
 print("names = %s" % bl.tbl.names)

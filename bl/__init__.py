@@ -3,14 +3,19 @@
 # big O Object.
 
 import bl
+import datetime
 import json
+import logging
+import os
+import time
 import _thread
 
 from bl.err import EJSON
 from bl.typ import get_cls, get_type
-from bl.utl import locked
+from bl.utl import cdir, locked
 
 lock = _thread.allocate_lock()
+starttime = time.time()
 workdir = ""
 
 class Object:

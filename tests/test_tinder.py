@@ -10,9 +10,9 @@ import time
 import unittest
 import bl.tbl
 
+from bl import Object
 from bl.evt import Event
 from bl.krn import Kernel
-from bl.obj import Object
 from bl.utl import consume
 from bl.thr import launch
 from botd.usr import Users

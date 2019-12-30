@@ -5,7 +5,7 @@
 import os
 import unittest
 
-from bl.pst import Persist, workdir
+from bl import Object, workdir
 
 class ENOTCOMPAT(Exception):
     pass
@@ -13,20 +13,28 @@ class ENOTCOMPAT(Exception):
 class Test_Core(unittest.TestCase):
 
     def test_load2(self):
-        o = Persist()
+        o = Object()
         o.bla = "mekker"
         p = o.save()
-        oo = Persist().load(p)
+        oo = Object().load(p)
         self.assertEqual(oo.bla, "mekker")
 
     def test_save(self):
-        o = Persist()
+        o = Object()
         p = o.save()
         self.assertTrue(os.path.exists(os.path.join(workdir, "store", p)))
 
     def test_subitem(self):
-        o = Persist()
-        o.test = Persist()
+        o = Object()
+        o.test = Object()
         p = o.save()
-        oo = Persist().load(p)
-        self.assertTrue(type(oo.test), Persist)
+        oo = Object().load(p)
+        self.assertTrue(type(oo.test), Object)
+
+    def test_subitem2(self):
+        o = Object()
+        o.test = Object()
+        o.test.bla = "test"
+        p = o.save()
+        oo = Object().load(p)
+        self.assertTrue(type(oo.test.bla), "test")

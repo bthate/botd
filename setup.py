@@ -124,6 +124,7 @@ BOTD contains the following modules:
 ::
 
 
+ bl			- bot library
  bl.all			- contains all sub modules
  bl.clk			- clock functions.
  bl.csl			- console.
@@ -134,7 +135,6 @@ BOTD contains the following modules:
  bl.hdl			- handler.
  bl.ldr			- module loader.
  bl.log			- logging.
- bl.obj			- objects.
  bl.pst			- persitence.
  bl.shl			- shell.
  bl.tbl			- dispatch tables.

@@ -7,11 +7,11 @@ import logging
 import os
 import unittest
 
+from bl import Object
 from bl.evt import Event
 from bl.gnr import edit
-from bl.pst import Persist
 
-class Log(Persist):
+class Log(Object):
 
     def __init__(self):
         self.txt = "bla"

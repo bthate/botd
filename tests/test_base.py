@@ -4,8 +4,7 @@
 
 import unittest
 
-from bl.obj import Object
-from bl.pst import Persist
+from bl import Object
 
 class Test_Base(unittest.TestCase):
 
@@ -22,11 +21,11 @@ class Test_Base(unittest.TestCase):
         self.assertTrue(not o)
 
     def test_cleanload(self):
-        o = Persist()
+        o = Object()
         o.test = "bla"
         p = o.save()
         o.load(p)
-        self.assertEqual(type(o), Persist)
+        self.assertEqual(type(o), Object)
 
     def test_settingattribute(self):
         o = Object()

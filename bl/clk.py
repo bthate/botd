@@ -6,10 +6,9 @@ import threading
 import time
 import typing
 
+from bl import Cfg, Object
 from bl.dbs import Db
 from bl.evt import Event
-from bl.obj import Object
-from bl.pst import Cfg, Persist
 from bl.thr import launch
 from bl.utl import get_name
 
@@ -25,10 +24,13 @@ class Cfg(Cfg):
         self.latest =  0
         self.starttime =  0
 
-class Timers(Persist):
+def echo():
+    print("yo!")
+
+class Timers(Object):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._stopped = False
         self.cfg = Cfg()
         self.timers = Object()
@@ -62,26 +64,26 @@ class Timers(Persist):
     def stop(self):
         self._stopped = True
 
-class Timer(Persist):
+class Timer(Object):
 
-    def __init__(self, sleep, func, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__()
-        self._func = func
+        self._func = None
         self._name = kwargs.get("name", get_name(func))
-        self.sleep = sleep
+        self.sleep = None
         self.args = args
         self.kwargs = kwargs
         self.state = Object()
         self.timer = None
 
-    def start(self):
+    def start(self, func=echo, sleep=300.0):
         timer = threading.Timer(self.sleep, self.run, self.args, self.kwargs)
         timer.setName(self._name)
-        timer.sleep = self.sleep
+        timer.sleep = sleep
         timer.state = self.state
         timer.state.starttime = time.time()
         timer.state.latest = time.time()
-        timer._func = self._func
+        timer._func = func
         timer.start()
         self.timer = timer
         return timer

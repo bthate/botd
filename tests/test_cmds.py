@@ -8,9 +8,9 @@ import types
 import unittest
 import bl.tbl
 
+from bl import Object
 from bl.evt import Event
 from bl.krn import Kernel
-from bl.obj import Object
 from bl.thr import launch
 
 k = Kernel()

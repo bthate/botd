@@ -6,18 +6,18 @@ import os
 import time
 import threading
 
+from bl import Object
 from bl.dbs import Db
-from bl.pst import Persist
 
 db = Db()
 
-class Log(Persist):
+class Log(Object):
 
     def __init__(self):
         super().__init__()
         self.txt = ""
 
-class Todo(Persist):
+class Todo(Object):
 
     def __init__(self):
         super().__init__()

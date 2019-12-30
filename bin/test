@@ -7,13 +7,13 @@ __version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import bl.pst
-import botd.cmd
+import bl
 import logging
 import shutil
 import time
 import unittest
 
+from bl import Object
 from bl.krn import Kernel
 from bl.log import level
 from bl.shl import parse_cli
@@ -67,7 +67,7 @@ def main():
     except:
         pass
     cfg = parse_cli("test", __version__, opts)
-    bl.pst.workdir = "testdata"
+    bl.workdir = "testdata"
     level("debug")
     initialize(cfg)
     k.cfg.exclude = "mdl,rss"
@@ -83,5 +83,5 @@ def main():
     unittest.TextTestRunner(verbosity=3).run(suite)
    
 execute(main)
-print(elapsed(time.time() - botd.cmd.starttime))
+print(elapsed(time.time() - bl.starttime))
 os._exit(0)

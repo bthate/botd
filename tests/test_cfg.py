@@ -4,7 +4,7 @@
 
 import unittest
 
-from bl.pst import Cfg
+from bl import Cfg
 
 class O(object):
 

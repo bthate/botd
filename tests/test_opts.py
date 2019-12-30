@@ -4,8 +4,8 @@
 
 import unittest
 
+from bl import Default, Object
 from bl.krn import Cfg
-from bl.obj import Default, Object
 from bl.shl import make_opts
 
 opts = [

@@ -9,11 +9,10 @@ import random
 import time
 import urllib
 
+from bl import Cfg, Object
 from bl.clk import Repeater
 from bl.dbs import Db
 from bl.gnr import edit
-from bl.obj import Object
-from bl.pst import Cfg, Persist
 from bl.thr import launch
 from bl.utl import get_tinyurl, get_url, strip_html, unescape
 
@@ -42,23 +41,23 @@ class Cfg(Cfg):
         self.display_list = ["title", "link"]
         self.dosave = True
 
-class Feed(Persist):
+class Feed(Object):
 
     pass
 
-class Rss(Persist):
+class Rss(Object):
 
     def __init__(self):
         super().__init__()
         self.rss = ""
 
-class Seen(Persist):
+class Seen(Object):
 
     def __init__(self):
         super().__init__()
         self.urls = []
 
-class Fetcher(Persist):
+class Fetcher(Object):
 
     def __init__(self):
         super().__init__()
@@ -137,8 +136,8 @@ class Fetcher(Persist):
         self.cfg.last()
         self.seen.last()
         if repeat:
-            repeater = Repeater(600, self.run)
-            repeater.start()
+            repeater = Repeater()
+            repeater.start(600.0, self.run)
             return repeater
 
     def stop(self):

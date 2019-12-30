@@ -5,9 +5,9 @@
 import queue
 import sys
 
+from bl import Cfg
 from bl.evt import Event
 from bl.hdl import Handler
-from bl.pst import Cfg, Persist
 from bl.thr import launch
 from botd.flt import Fleet
 
@@ -31,7 +31,7 @@ class Event(Event):
         for txt in self.result:
             fleet.echo(self.orig, self.channel, txt)
 
-class Bot(Handler, Persist):
+class Bot(Handler):
 
     def __init__(self):
         super().__init__()

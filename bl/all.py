@@ -2,9 +2,8 @@
 #
 # include all modules.
 
+import bl
 import bl.utl
-import bl.obj 
-import bl.pst
 import bl.ldr
 import bl.thr
 import bl.evt

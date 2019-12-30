@@ -9,11 +9,10 @@ import sys
 import threading
 import _thread
 
+from bl.obj import Cfg, Object
 from bl.err import EINIT
 from bl.evt import Event
 from bl.krn import Kernel
-from bl.obj import Object
-from bl.pst import Cfg, Persist
 from bl.thr import launch
 from botd.bot import Bot, Event
 from botd.flt import Fleet
