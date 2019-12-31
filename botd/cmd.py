@@ -16,8 +16,9 @@ from bl.obj import Object
 from bl.dbs import Db
 from bl.flt import Fleet
 from bl.krn import kernels
-from bl.usr import  Users
+from bl.tms import elapsed
 from bl.typ import get_type
+from bl.usr import  Users
 
 starttime = time.time()
 k = kernels.get("0")
@@ -55,49 +56,6 @@ def cfg(event):
 def cmds(event):
     event.reply(",".join(k.cmds))
 
-def ed(event):
-    if "IRC" in event.orig:
-        event.reply("this command might flood, use a DCC connection.")
-        return
-    if not event.args:
-        ls(event)
-        return
-    cn = event.args[0]
-    l = db.last(cn)
-    if not l:
-        try:
-            cls = get_cls(cn)
-        except ModuleNotFoundError:
-            event.reply("no %s found" % cn)
-            return
-        l = cls()
-        l.save()
-        event.reply("created a %s file" % cn)
-    if len(event.args) == 1:
-        event.reply(l)
-        return
-    if len(event.args) == 2:
-        event.reply(l.get(event.args[1]))
-        return
-    setter = {event.args[1]: event.args[2]}
-    edit(l, setter)
-    l.save()
-    event.reply("ok")
-
-def fleet(event):
-    if "IRC" in event.orig:
-        event.reply("this command might flood, use a DCC connection.")
-        return
-    try:
-        event.reply(str(k.fleet.bots[int(event.txt.split()[1])]))
-        return
-    except (TypeError, ValueError, IndexError):
-        pass
-    event.reply(str([get_type(x) for x in k.fleet.bots]))
-
-def ls(event):
-    event.reply("|".join(os.listdir(os.path.join(bl.obj.workdir, "store"))))
-
 def meet(event):
     if not event.args:
         event.reply("meet origin [permissions]")
@@ -110,9 +68,6 @@ def meet(event):
     origin = Users.userhosts.get(origin, origin)
     u = users.meet(origin, perms)
     event.reply("added %s" % u.user)
-
-def pid(event):
-    event.reply(str(os.getpid()))
 
 def ps(event):
     if "IRC" in event.orig:
@@ -146,6 +101,7 @@ def u(event):
         event.reply("this command might flood, use a DCC connection.")
         return
     res = ""
+    db = Db()
     for o in db.all("bl.usr.User"):
         res += "%s," % o.user
     event.reply(res)
