@@ -86,8 +86,6 @@ def make_opts(ns, options, **kwargs):
     parser.parse_known_args(namespace=ns)
 
 def parse_cli(name, version=None, opts=[], **kwargs):
-    from bl.krn import Kernel
-    k = Kernel()
     ns = Object()
     make_opts(ns, opts)
     cfg = Cfg(ns)
@@ -102,7 +100,6 @@ def parse_cli(name, version=None, opts=[], **kwargs):
         bl.utl.cdir(sp)
     bl.log.level(cfg.level or "error")
     logging.debug("%s started in %s at %s (%s)" % (cfg.name.upper(), cfg.workdir, time.ctime(time.time()), cfg.level))
-    k.cfg.update(cfg)
     return cfg
 
 def set_completer(commands):

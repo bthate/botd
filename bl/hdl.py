@@ -51,7 +51,7 @@ class Event(Object):
             val = str(val)
             if key == "text":
                 val = val.replace("\\n", "\n")
-            res.append("%s=%s " % (key, val))
+            res.append(val)
         for val in res:
             txt += "%s%s" % (val.strip(), " ")
         return txt.strip()

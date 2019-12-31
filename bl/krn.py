@@ -16,7 +16,13 @@ from bl.hdl import Event
 from bl.ldr import Loader
 from bl.obj import Cfg, Object, Register
 from bl.shl import enable_history, set_completer, writepid
+from bl.trc import get_exception
 from bl.usr import Users
+from bl.utl import get_name
+
+class Cfg(Cfg):
+
+    pass
 
 class Kernel(Loader):
 
@@ -24,10 +30,12 @@ class Kernel(Loader):
     fleet = Fleet()
     users = Users()
         
-    def __init__(self):
+    def __init__(self, cfg=None, **kwargs):
         super().__init__()
         self._stopped = False
         self._skip = False
+        self.cfg.update(cfg or {})
+        self.cfg.update(kwargs)
         kernels.add(self)
         
     def cmd(self, txt, origin=""):
@@ -41,35 +49,48 @@ class Kernel(Loader):
     def dispatch(self, event):
         if not event.txt:
             return
+        event.parse()
         chk = event.txt.split()[0]
-        event._func = self.get_cmd(chk)
+        try:
+            event._func = self.get_cmd(chk)
+        except Exception as ex:
+            logging.error(get_exception())
+            return
         if event._func:
             event._func(event)
             event.show()
         event.ready()
 
     def init(self, modstr):
-        for mod in self.get_mods(modstr):
-            cmds = self.get_cmds(mod)
-            for cmd in cmds:
-                func = cmds.get(cmd)
-                self.cmds.register(cmd, func)
-            if "init" in dir(mod):
-                logging.warning("init %s" % mod.__name__)
+        mods = self.walk(modstr)
+        for mod in mods:
+            logging.warning("found %s" % mod.__name__)
+            try:
                 mod.init(self)
+            except (AttributeError, ModuleNotFoundError) as ex:
+                if mod.__name__ in str(ex):
+                    continue
+                raise
 
     def register(self, k, v):
         self.cmds.set(k, v)
 
-    def start(self, shell=True):
+    def start(self):
+        c = Cfg(self.cfg)
+        l = self.cfg.last()
+        self.cfg.update(l, True)
+        self.cfg.update(c, True)
         try:
             self.init(self.cfg.modules)
         except bl.err.EINIT as ex:
             print(ex)
             self._skip = True
             return
-        if shell:
+        self.cfg.save()
+        if self.cfg.shell:
             self.init("bl.csl,botd.cmd")
+        else:
+            self._skip = True
 
     def wait(self):
         if self._skip:

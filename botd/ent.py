@@ -22,26 +22,12 @@ class Todo(Object):
         self.txt = ""
 
 def log(event):
-    if not event.args:
-        nr = 0
-        db = Db()
-        for o in db.find("botd.ent.Log", {"txt": ""}):
-            event.display(o, "%s" % str(nr))
-            nr += 1
-        return
     obj = Log()
-    obj.txt = " ".join(event.args)
+    obj.txt = event.rest
     obj.save()
     event.reply("ok")
 
 def todo(event):
-    if not event.rest:
-        nr = 0
-        db = Db()
-        for o in db.find("botd.ent.Todo", {"txt": ""}):
-            event.display(o, "%s" % str(nr))
-            nr += 1
-        return
     obj = Todo()
     obj.txt = event.rest
     obj.save()

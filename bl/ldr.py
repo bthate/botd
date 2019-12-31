@@ -10,11 +10,14 @@ import pkgutil
 import typing
 
 from bl.obj import Object, Register
+from bl.typ import get_type
 
 def __dir__():
     return ("Loader",)
 
 class Loader(Object):
+
+    names = Register()
 
     def __init__(self):
         super().__init__()
@@ -24,8 +27,6 @@ class Loader(Object):
         return importlib.import_module(name)
             
     def get_cmd(self, cn):
-        if not cn:
-            return None
         return self.cmds.get(cn, None)
 
     def get_cmds(self, mod):
@@ -37,14 +38,14 @@ class Loader(Object):
         return cmds
 
     def get_mods(self, ms):
+        mods = []
         for mn in ms.split(","):
              if not mn:
                  continue
-             try:
-                 mod = self.direct(mn)
-             except ModuleNotFoundError:
-                 mod = None
-             yield mod
+             mod = self.direct(mn)
+             if mod:
+                 mods.append(mod)
+        return mods
 
     def get_names(self, mod):
         names = Register()
@@ -54,3 +55,12 @@ class Loader(Object):
                 n = t.split(".")[-1].lower()
                 names.register(n, t)
         return names
+
+    def walk(self, modstr):
+        mods = self.get_mods(modstr)
+        for mod in mods:
+            names = self.get_names(mod)
+            self.names.update(names)
+            cmds = self.get_cmds(mod)
+            self.cmds.update(cmds)
+        return mods

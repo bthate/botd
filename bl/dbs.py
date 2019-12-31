@@ -11,6 +11,7 @@ import bl.obj
 
 from bl.obj import Object
 from bl.gnr import search
+from bl.tms import fntime
 
 def __dir__():
     return ("Db",)
@@ -19,9 +20,7 @@ lock = _thread.allocate_lock()
 
 class Db(Object):
 
-    def all(self, otype, selector=None, index=None, delta=0):
-        if not selector:
-            selector = {}
+    def all(self, otype, selector={}, index=None, delta=0):
         nr = -1
         for fn in names(otype, delta):
             o = hook(fn)
@@ -35,8 +34,6 @@ class Db(Object):
             yield o
 
     def deleted(self, otype, selector={}):
-        if not selector:
-            selector = {}
         nr = -1
         for fn in names(otype):
             o = hook(fn)
@@ -48,8 +45,6 @@ class Db(Object):
             yield o
 
     def find(self, otype, selector={}, index=None, delta=0):
-        if not selector:
-            selector = {}
         nr = -1
         for fn in names(otype, delta):
             o = hook(fn)
@@ -67,9 +62,7 @@ class Db(Object):
             fn = fns[-1]
             return hook(fn)
 
-    def last_all(self, otype, selector=None, index=None, delta=0):
-        if not selector:
-            selector = {}
+    def last_all(self, otype, selector={}, index=None, delta=0):
         res = []
         nr = -1
         for fn in names(otype, delta):
@@ -109,5 +102,4 @@ def names(name, delta=None):
                 if fntime(fnn) < past:
                     continue
             res.append(os.sep.join(fnn.split(os.sep)[1:]))
-    return sorted(res, key=bl.tms.fntime)
-
+    return sorted(res, key=fntime)

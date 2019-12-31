@@ -6,9 +6,9 @@ import threading
 import time
 import typing
 
-from bl import Cfg, Object
 from bl.dbs import Db
-from bl.evt import Event
+from bl.hdl import Event
+from bl.obj import Cfg, Object
 from bl.thr import launch
 from bl.utl import get_name
 

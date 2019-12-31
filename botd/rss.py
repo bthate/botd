@@ -9,13 +9,18 @@ import random
 import time
 import urllib
 
-from bl import Cfg, Object
 from bl.clk import Repeater
 from bl.dbs import Db
 from bl.flt import Fleet
 from bl.gnr import edit
+from bl.obj import Cfg, Object
+from bl.tms import to_time
 from bl.thr import launch
 from bl.utl import get_tinyurl, get_url, strip_html, unescape
+
+from bl.krn import kernels
+
+k = kernels.get("0")
 
 try:
     import feedparser
@@ -25,9 +30,6 @@ except ModuleNotFoundError:
 
 def __dir__():
     return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"display", "feed", "fetch", "init", "rss")
-
-k = kernels.get("0")
-db = Db()
 
 def init(kernel):
     fetcher.start()
@@ -106,7 +108,7 @@ class Fetcher(Object):
             objs.append(feed)
             if self.cfg.dosave:
                 try:
-                    date = file_time(bl.tms.to_time(feed.published))
+                    date = file_time(to_time(feed.published))
                 except:
                     date = False
                 if date:
@@ -181,6 +183,7 @@ def display(event):
     nr = 0
     db = Db()
     setter = {"display_list": event.args[1]}
+    db = Db()
     for o in db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
         edit(o, setter)
@@ -219,7 +222,7 @@ def fetch(event):
     event.reply("fetched %s" % ",".join([str(x) for x in res]))
 
 def rss(event):
-    if not event.rest or "http" not in event.rest:
+    if not event.args or "http" not in event.args[0]:
         nr = 0
         db = Db()
         res = list(db.find("botd.rss.Rss", {"rss": ""}))
@@ -231,6 +234,6 @@ def rss(event):
             event.reply("rss <url>")
         return
     o = Rss()
-    o.rss = event.rest
+    o.rss = event.args[0]
     o.save()
     event.reply("ok 1")

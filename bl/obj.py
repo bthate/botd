@@ -75,13 +75,20 @@ class Object:
         self._path = path
         return self
 
+    def parse(self):
+        if "txt" in self:
+            spl = self.txt.split()
+            self.cmd = spl[0]
+            self.args = spl[1:]
+            self.rest = " ".join(self.args)
+
     @locked(lock)
     def save(self, path="", stime=None):
         assert workdir
         self._type = get_type(self)
         if not path:
             try:
-                path = self.__path__
+                path = self._path
             except AttributeError:
                 pass
         if not path or stime:
@@ -90,7 +97,7 @@ class Object:
             path = os.path.join(self._type, stime)
         opath = os.path.join(workdir, "store", path)
         cdir(opath)
-        logging.warning("save %s" % path)
+        logging.debug("save %s" % path)
         self._path = path
         with open(opath, "w") as ofile:
             json.dump(self, ofile, default=default, indent=4, sort_keys=True)
