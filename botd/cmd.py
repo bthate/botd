@@ -15,14 +15,12 @@ import bl.tms
 from bl.obj import Object
 from bl.dbs import Db
 from bl.flt import Fleet
-from bl.krn import Kernel
+from bl.krn import kernels
 from bl.usr import  Users
+from bl.typ import get_type
 
 starttime = time.time()
-db = Db()
-bots = Fleet()
-k = Kernel()
-users = Users()
+k = kernels.get("0")
 
 def cfg(event):
     if "IRC" in event.orig:
@@ -53,6 +51,9 @@ def cfg(event):
     edit(l, setter)
     l.save()
     event.reply("ok")
+
+def cmds(event):
+    event.reply(",".join(k.cmds))
 
 def ed(event):
     if "IRC" in event.orig:
@@ -88,14 +89,14 @@ def fleet(event):
         event.reply("this command might flood, use a DCC connection.")
         return
     try:
-        event.reply(str(bots.bots[event.index-1]))
+        event.reply(str(k.fleet.bots[int(event.txt.split()[1])]))
         return
     except (TypeError, ValueError, IndexError):
         pass
-    event.reply(str([get_type(x) for x in bots.bots]))
+    event.reply(str([get_type(x) for x in k.fleet.bots]))
 
 def ls(event):
-    event.reply("|".join(os.listdir(os.path.join(bl.workdir, "store"))))
+    event.reply("|".join(os.listdir(os.path.join(bl.obj.workdir, "store"))))
 
 def meet(event):
     if not event.args:

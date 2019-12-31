@@ -10,6 +10,7 @@ import queue
 import time
 import threading
 
+from bl.flt import Fleet
 from bl.ldr import Loader
 from bl.obj import Object, Register
 from bl.thr import launch
@@ -25,9 +26,10 @@ class Event(Object):
         self._verbose = True
         self.args = []
         self.channel = ""
-        self.txt = None
-        self.chk = None
+        self.orig = ""
+        self.origin = ""
         self.result = []
+        self.txt = ""
 
     def display(self, o):
         txt = ""
@@ -52,12 +54,14 @@ class Event(Object):
     def reply(self, txt):
         self.result.append(txt)
 
-    def show(self, bot):
+    def show(self):
         if not self._verbose:
             return
+        from bl.krn import kernels
+        k = kernels.get("0", None)
         for txt in self.result:
-            bot.say(self.channel, txt)
-
+            k.fleet.echo(self.orig, self.channel, txt)
+ 
     def wait(self):
         self._ready.wait()
 
@@ -70,10 +74,13 @@ class Handler(Loader):
         self.cmds = Register()
 
     def dispatch(self, event):
-        event._func = self.get_cmd(event.chk)
+        if not event.txt:
+            return
+        chk = event.txt.split()[0]
+        event._func = self.get_cmd(chk)
         if event._func:
             event._func(event)
-            event.show(self)
+            event.show()
         event.ready()
 
     def handle(self, event):

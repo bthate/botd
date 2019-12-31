@@ -7,10 +7,10 @@ __version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import bl.spc
 import logging
 
-from bl.spc import Kernel, execute, kernels, parse_cli
+from bl.krn import Kernel
+from bl.shl import execute, parse_cli
 
 opts = [
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
@@ -21,14 +21,9 @@ opts = [
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
 ]
 
-k = Kernel()
-
-def cmds(event):
-    event.reply(",".join([x for x in k.cmds]))
-
 def main():
+    k = Kernel()
     parse_cli("botd", __version__, opts)
-    k.register("cmds", cmds)
     k.start()
     k.wait()
 

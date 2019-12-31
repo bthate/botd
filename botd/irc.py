@@ -14,15 +14,20 @@ import time
 import threading
 import _thread
 
-from bl import Bot, Cfg, Object, Register, Event, Fleet, Kernel, Users, launch, locked
+from bl.bot import Bot
+from bl.flt import Fleet
+from bl.krn import kernels
+from bl.hdl import Event
+from bl.obj import Cfg, Object
+from bl.thr import launch
+from bl.usr import Users
+from bl.utl import locked
 
 def __dir__():
     return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "errored", "noticed", "privmsged")
 
 saylock = _thread.allocate_lock()
-fleet = Fleet()
-kernel = Kernel()
-users = Users()
+k = kernels.get("0")
           
 def init(k):
     bot = IRC()
@@ -63,12 +68,10 @@ class Event(Event):
     def __init__(self):
         super().__init__()
         self.arguments = []
-        self.cc = ""
         self.channel = ""
         self.command = ""
         self.nick = ""
-        self.orig = ""
-        self.target = ""
+        self.origin = ""
 
 class DEvent(Event):
 
@@ -111,6 +114,7 @@ class IRC(Bot):
         self.threaded = False
         if self.cfg.channel and self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
+        k.fleet.add(self)
 
     def _connect(self):
         if self.cfg.ipv6:
@@ -140,7 +144,6 @@ class IRC(Bot):
         o = Event()
         o.orig = repr(self)
         o.txt = rawstr
-        o.cc = self.cc
         o.command = ""
         o.arguments = []
         arguments = rawstr.split()
@@ -166,18 +169,17 @@ class IRC(Bot):
                         o.arguments.append(arg)
                     o.txt = " ".join(txtlist)
         else:
-            o.chk = o.command = o.origin
+            o.command = o.origin
             o.origin = self.cfg.server
         try:
             o.nick, o.origin = o.origin.split("!")
         except ValueError:
             o.nick = ""
+        target = ""
         if o.arguments:
-            o.target = o.arguments[-1]
-        else:
-            o.target = ""
-        if o.target.startswith("#"):
-            o.channel = o.target
+            target = o.arguments[-1]
+        if target.startswith("#"):
+            o.channel = target
         else:
             o.channel = o.nick
         if not o.txt:
@@ -186,8 +188,9 @@ class IRC(Bot):
             o.txt = rawstr.split(":", 1)[-1]
         if not o.txt and len(arguments) == 1:
             o.txt = arguments[1]
-        o.args = o.txt.split()
-        o.rest = " ".join(o.args)
+        spl = o.txt.split()
+        if len(spl) > 1:
+            o.args = spl[1:]
         return o
 
     @locked(saylock)
@@ -262,9 +265,9 @@ class IRC(Bot):
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
-        users.userhosts.set(event.nick, event.origin)
+        k.users.userhosts.set(event.nick, event.origin)
         if event.txt.startswith("DCC CHAT"):
-            if not users.allowed(event.origin, "USER"):
+            if not k.users.allowed(event.origin, "USER"):
                 return
             try:
                 dcc = DCC()
@@ -274,13 +277,11 @@ class IRC(Bot):
             except ConnectionRefusedError:
                 return
         if event.txt and event.txt[0] == self.cc:
-            if not users.allowed(event.origin, "USER"):
+            if not k.users.allowed(event.origin, "USER"):
                 logging.error("deny %s" % event.origin)
                 return
             event.txt = event.txt[1:]
-            event.chk = event.txt.split()[0]
-            print(event)
-            kernel.dispatch(event)
+            k.dispatch(event)
 
     def poll(self):
         self._connected.wait()
@@ -394,9 +395,9 @@ class DCC(Bot):
         e._sock = self._sock
         e._fsock = self._fsock
         e.channel = self.origin
-        e.orig = repr(self)
         e.origin = self.origin or "root@dcc"
-        kernel.dispatch(e)
+        e.orig = repr(self)
+        k.dispatch(e)
         return e
 
     def say(self, channel, txt, type="chat"):

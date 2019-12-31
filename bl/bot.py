@@ -6,10 +6,15 @@ import bl
 import queue
 import sys
 
+from bl.krn import kernels
+from bl.obj import Cfg
+
 def __dir__():
     return ('Bot', 'Cfg')
 
-class Cfg(bl.Cfg):
+k = kernels.get("0")
+
+class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
@@ -27,6 +32,7 @@ class Bot(bl.hdl.Handler):
         self.cfg = Cfg()
         self.channels = []
         self.verbose = True
+        k.fleet.add(self)
 
     def _say(self, channel, txt, mtype="normal"):
         self.raw(txt)

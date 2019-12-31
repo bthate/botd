@@ -13,6 +13,7 @@ import time
 import bl
 import bl.log
 import bl.trm
+import bl.utl
 
 from bl.obj import Cfg, Object
 
@@ -25,9 +26,9 @@ def __dir__():
 
 def close_history():
     global HISTFILE
-    if bl.workdir:
+    if bl.obj.workdir:
         if not HISTFILE:
-            HISTFILE = os.path.join(bl.workdir, "history")
+            HISTFILE = os.path.join(bl.obj.workdir, "history")
         if not os.path.isfile(HISTFILE):
             bl.utl.cdir(HISTFILE)
             bl.utl.touch(HISTFILE)
@@ -95,7 +96,7 @@ def parse_cli(name, version=None, opts=[], **kwargs):
     cfg.workdir = cfg.workdir or bl.utl.hd(".%s" % name)
     cfg.name = name 
     cfg.version = version or __version__
-    bl.workdir = cfg.workdir
+    bl.obj.workdir = cfg.workdir
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         bl.utl.cdir(sp)
@@ -112,8 +113,8 @@ def set_completer(commands):
     atexit.register(lambda: readline.set_completer(None))
 
 def writepid():
-    assert bl.workdir
-    path = os.path.join(bl.workdir, "pid")
+    assert bl.obj.workdir
+    path = os.path.join(bl.obj.workdir, "pid")
     f = open(path, 'w')
     f.write(str(os.getpid()))
     f.flush()

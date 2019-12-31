@@ -6,11 +6,16 @@ import bl
 import sys
 import threading
 
+from bl.err import ENOTXT
+from bl.flt import Fleet
+from bl.krn import kernels
 from bl.hdl import Event, Handler
 from bl.thr import launch
 
 def __dir__():
     return ("Console", "init")
+
+k = kernels.get("0", None)
 
 def init(kernel):
     csl = Console()
@@ -28,41 +33,39 @@ class Console(Handler):
         super().__init__()
         self._connected = threading.Event()
         self._threaded = False
-                
+        k.fleet.add(self)
+        
     def announce(self, txt):
         self.raw(txt)
 
     def cmd(self, txt):
-        e = bl.evt.Event()
+        e = Event()
         e.txt = txt
         e.orig = repr(self)
         e.origin = "root@shell"
-        if e.txt:
-            e.chk = e.txt.split()[0]
         self.dispatch(e)
         e.wait()
 
     def poll(self):
         self._connected.wait()
-        e = bl.hdl.Event()
+        e = Event()
         e.origin = "root@shell"
         e.orig = repr(self)
         e.txt = input("> ")
-        if e.txt:
-            e.chk = e.txt.split()[0]
+        if not e.txt:
+            raise ENOTXT 
         return e
 
     def input(self):
         while not self._stopped:
             try:
                 e = self.poll()
+            except ENOTXT:
+                continue
             except EOFError:
                 break
-            try:
-                self.dispatch(e)
-                e.wait()
-            except bl.err.ENOTXT:
-                continue
+            k.dispatch(e)
+            e.wait()
 
     def raw(self, txt):
         sys.stdout.write(str(txt) + "\n")

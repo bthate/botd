@@ -26,8 +26,8 @@ except ModuleNotFoundError:
 def __dir__():
     return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"display", "feed", "fetch", "init", "rss")
 
+k = kernels.get("0")
 db = Db()
-fleet = Fleet()
 
 def init(kernel):
     fetcher.start()
@@ -115,7 +115,7 @@ class Fetcher(Object):
                     feed.save()
         self.seen.save()
         for o in objs:
-            fleet.announce(self.display(o))
+            k.fleet.announce(self.display(o))
         return counter
 
     def join(self):
@@ -125,6 +125,7 @@ class Fetcher(Object):
     def run(self):
         res = []
         thrs = []
+        db = Db()
         for o in db.all("botd.rss.Rss"):
             thrs.append(launch(self.fetch, o))
         for thr in thrs:
@@ -164,6 +165,7 @@ def delete(event):
     selector = {"rss": event.args[0]}
     nr = 0
     got = []
+    db = Db()
     for rss in db.find("botd.rss.Rss", selector):
         nr += 1
         rss._deleted = True
@@ -177,6 +179,7 @@ def display(event):
         event.reply("display <feed> key1,key2,etc.")
         return
     nr = 0
+    db = Db()
     setter = {"display_list": event.args[1]}
     for o in db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
@@ -190,6 +193,7 @@ def feed(event):
         match = event.args[0]
     nr = 0
     diff = time.time() - bl.tms.to_time(bl.tms.day())
+    db = Db()
     res = list(db.find("botd.rss.Feed", {"link": match}, delta=-diff))
     for o in res:
         if match:
@@ -217,6 +221,7 @@ def fetch(event):
 def rss(event):
     if not event.rest or "http" not in event.rest:
         nr = 0
+        db = Db()
         res = list(db.find("botd.rss.Rss", {"rss": ""}))
         if res:
             for o in res:

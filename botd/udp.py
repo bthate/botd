@@ -15,8 +15,7 @@ from bl.utl import get_name
 def __dir__():
     return ("UDP", "Cfg", "init") 
 
-fleet = Fleet()
-db = Db()
+k = kernels.get("0")
 
 def init(kernel):
     server = UDP()
@@ -55,7 +54,7 @@ class UDP(Object):
             return
         text = text.replace("\00", "")
         if passwd == self.cfg.password:
-            for b in fleet.bots:
+            for b in k.fleet.bots:
                 if "DCC" in get_name(b):
                     b.announce(text)
 
@@ -81,5 +80,6 @@ class UDP(Object):
         self._sock.sendto(bytes("bla", "utf-8"), (self.cfg.host, self.cfg.port))
 
     def start(self):
+        db = Db()
         self.cfg = db.last("bl.udp.Cfg") or Cfg()
         launch(self.server)

@@ -4,21 +4,26 @@
 
 __version__ = 1
 
-import bl
 import inspect
 import logging
 import sys
 import time
 
+import bl
+
+from bl.flt import Fleet
 from bl.hdl import Event
 from bl.ldr import Loader
 from bl.obj import Cfg, Object, Register
 from bl.shl import enable_history, set_completer, writepid
+from bl.usr import Users
 
 class Kernel(Loader):
 
     cfg = Cfg()
-    
+    fleet = Fleet()
+    users = Users()
+        
     def __init__(self):
         super().__init__()
         self._stopped = False
@@ -26,13 +31,18 @@ class Kernel(Loader):
         kernels.add(self)
         
     def cmd(self, txt, origin=""):
-        e = bl.evt.Event(txt=txt, origin=origin)
+        e = Event()
+        e.txt = txt
+        e.origin = origin
         e.orig = repr(self)
         self.dispatch(e)
         e.wait()
 
     def dispatch(self, event):
-        event._func = self.get_cmd(event.chk)
+        if not event.txt:
+            return
+        chk = event.txt.split()[0]
+        event._func = self.get_cmd(chk)
         if event._func:
             event._func(event)
             event.show()
@@ -69,12 +79,10 @@ class Kernel(Loader):
 
 class Kernels(Register):
 
-    kl = []
+    nr = 0
 
-    def add(self, k):
-        self.kl.append(k)
-
-    def get_first(self):
-        return self.kl[0]
+    def add(self, kernel):
+        self.register(str(Kernels.nr), kernel)
+        Kernels.nr += 1
 
 kernels = Kernels()

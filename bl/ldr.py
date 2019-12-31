@@ -54,7 +54,3 @@ class Loader(Object):
                 n = t.split(".")[-1].lower()
                 names.register(n, t)
         return names
-
-    def unload(self, modname):
-        if modname in Loader.table:
-            del Loader.table[modname]

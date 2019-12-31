@@ -2,10 +2,12 @@
 #
 # logging.
 
-import bl
 import logging
 import logging.handlers
 import os
+
+import bl
+import bl.obj
 
 from bl.utl import cdir, touch
 
@@ -24,7 +26,7 @@ def level(loglevel="", logdir="", logfile="", nostream=False):
         loglevel = "error"
     if not logfile:
         logfile = "log"
-    logdir = logdir or os.path.join(bl.workdir, "logs")
+    logdir = logdir or os.path.join(bl.obj.workdir, "logs")
     logfile = logfiled = os.path.join(logdir, logfile)
     if not os.path.exists(logfile):
         cdir(logfile)

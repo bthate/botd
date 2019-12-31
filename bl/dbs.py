@@ -2,10 +2,12 @@
 #
 # databases. 
 
-import bl
 import os
 import time
 import _thread
+
+import bl
+import bl.obj
 
 from bl.obj import Object
 from bl.gnr import search
@@ -95,14 +97,14 @@ def hook(fn):
     return o
 
 def names(name, delta=None):
-    assert bl.workdir
-    p = os.path.join(bl.workdir, "store", name) + os.sep
+    assert bl.obj.workdir
+    p = os.path.join(bl.obj.workdir, "store", name) + os.sep
     res = []
     now = time.time()
     past = now + delta
     for rootdir, dirs, files in os.walk(p, topdown=True):
         for fn in files:
-            fnn = os.path.join(rootdir, fn).split(os.path.join(bl.workdir, "store"))[-1]
+            fnn = os.path.join(rootdir, fn).split(os.path.join(bl.obj.workdir, "store"))[-1]
             if delta:
                 if fntime(fnn) < past:
                     continue
