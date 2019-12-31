@@ -2,7 +2,7 @@
 #
 # list of bots. 
 
-from bl import Object
+from bl.obj import Object
 
 def __dir__():
     return ("Fleet",)

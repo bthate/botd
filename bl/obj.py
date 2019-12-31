@@ -128,18 +128,6 @@ class Register(Object):
     def register(self, k, v):
         self.set(k, v)
 
-class Kernels(Register):
-
-    kl = []
-
-    def add(self, k):
-        self.kl.append(k)
-
-    def get_first(self):
-        return self.kl[0]
-
-kernels = Kernels()
-
 def default(o):
     if isinstance(o, Object):
         return vars(o)
@@ -159,25 +147,3 @@ def hooked(d):
         o = Object()
     o.update(d)
     return o
-
-from bl.ldr import Loader
-from bl.hdl import Event
-import bl.thr
-import bl.hdl
-import bl.csl
-from bl.krn import Kernel
-import bl.log
-from bl.shl import execute, parse_cli
-import bl.trm
-import bl.tms
-from bl.thr import launch
-import bl.dbs
-from bl.dbs import Db
-import bl.flt
-from bl.flt import Fleet
-import bl.usr
-from bl.usr import Users
-import bl.bot
-from bl.bot import Bot
-import bl.err
-import bl.prs

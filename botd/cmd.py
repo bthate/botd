@@ -4,13 +4,19 @@
 
 __version__ = 1
 
-import bl
 import os
 import sys
 import time
 import threading
 
-from bl import Object, Db, Fleet, Kernel, Users
+import bl
+import bl.tms
+
+from bl.obj import Object
+from bl.dbs import Db
+from bl.flt import Fleet
+from bl.krn import Kernel
+from bl.usr import  Users
 
 starttime = time.time()
 db = Db()

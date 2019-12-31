@@ -10,15 +10,20 @@ import queue
 import time
 import threading
 
+from bl.ldr import Loader
+from bl.obj import Object, Register
+from bl.thr import launch
+
 def __dir__():
     return ("Handler",)
 
-class Event(bl.Object):
+class Event(Object):
 
     def __init__(self):
         super().__init__()
         self._ready = threading.Event()
         self._verbose = True
+        self.args = []
         self.channel = ""
         self.txt = None
         self.chk = None
@@ -56,13 +61,13 @@ class Event(bl.Object):
     def wait(self):
         self._ready.wait()
 
-class Handler(bl.ldr.Loader):
+class Handler(Loader):
     
     def __init__(self):
         super().__init__()
         self._queue = queue.Queue()
         self._stopped = False
-        self.cmds = bl.Register()
+        self.cmds = Register()
 
     def dispatch(self, event):
         event._func = self.get_cmd(event.chk)
@@ -86,7 +91,7 @@ class Handler(bl.ldr.Loader):
         self._queue.put_nowait(event)
 
     def start(self):
-        bl.thr.launch(self.handler)
+        launch(self.handler)
 
     def stop(self):
         self._stopped = True

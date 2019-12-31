@@ -7,6 +7,7 @@ import os
 import time
 import _thread
 
+from bl.obj import Object
 from bl.gnr import search
 
 def __dir__():
@@ -14,7 +15,7 @@ def __dir__():
 
 lock = _thread.allocate_lock()
 
-class Db(bl.Object):
+class Db(Object):
 
     def all(self, otype, selector=None, index=None, delta=0):
         if not selector:

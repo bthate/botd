@@ -10,17 +10,20 @@ import logging
 import sys
 import time
 
+from bl.hdl import Event
+from bl.ldr import Loader
+from bl.obj import Cfg, Object, Register
 from bl.shl import enable_history, set_completer, writepid
 
-class Kernel(bl.ldr.Loader):
+class Kernel(Loader):
 
-    cfg = bl.Cfg()
+    cfg = Cfg()
     
     def __init__(self):
         super().__init__()
         self._stopped = False
         self._skip = False
-        bl.kernels.add(self)
+        kernels.add(self)
         
     def cmd(self, txt, origin=""):
         e = bl.evt.Event(txt=txt, origin=origin)
@@ -63,3 +66,15 @@ class Kernel(bl.ldr.Loader):
             return
         while not self._stopped:
             time.sleep(1.0)
+
+class Kernels(Register):
+
+    kl = []
+
+    def add(self, k):
+        self.kl.append(k)
+
+    def get_first(self):
+        return self.kl[0]
+
+kernels = Kernels()

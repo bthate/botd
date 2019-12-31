@@ -9,14 +9,16 @@ import logging
 import pkgutil
 import typing
 
+from bl.obj import Object, Register
+
 def __dir__():
     return ("Loader",)
 
-class Loader(bl.Object):
+class Loader(Object):
 
     def __init__(self):
         super().__init__()
-        self.cmds = bl.Register()
+        self.cmds = Register()
 
     def direct(self, name):
         return importlib.import_module(name)
@@ -27,7 +29,7 @@ class Loader(bl.Object):
         return self.cmds.get(cn, None)
 
     def get_cmds(self, mod):
-        cmds = bl.Register()
+        cmds = Register()
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
                 if o.__code__.co_argcount == 1:
@@ -45,7 +47,7 @@ class Loader(bl.Object):
              yield mod
 
     def get_names(self, mod):
-        names = bl.Register()
+        names = Register()
         for key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, Object):
                 t = get_type(o)

@@ -2,7 +2,6 @@
 #
 # shell related code.
 
-import bl
 import argparse
 import atexit
 import logging
@@ -10,6 +9,12 @@ import optparse
 import os
 import readline
 import time
+
+import bl
+import bl.log
+import bl.trm
+
+from bl.obj import Cfg, Object
 
 cmds = []
 
@@ -41,8 +46,8 @@ def complete(text, state):
 
 def enable_history():
     global HISTFILE
-    if bl.workdir:
-        HISTFILE = os.path.abspath(os.path.join(bl.workdir, "history"))
+    if bl.obj.workdir:
+        HISTFILE = os.path.abspath(os.path.join(bl.obj.workdir, "history"))
         if not os.path.exists(HISTFILE):
             touch(HISTFILE)
         else:
@@ -80,10 +85,11 @@ def make_opts(ns, options, **kwargs):
     parser.parse_known_args(namespace=ns)
 
 def parse_cli(name, version=None, opts=[], **kwargs):
-    k = bl.krn.Kernel()
-    ns = bl.Object()
+    from bl.krn import Kernel
+    k = Kernel()
+    ns = Object()
     make_opts(ns, opts)
-    cfg = bl.Cfg(ns)
+    cfg = Cfg(ns)
     cfg.update(kwargs)
     cfg.txt = " ".join(cfg.args)
     cfg.workdir = cfg.workdir or bl.utl.hd(".%s" % name)

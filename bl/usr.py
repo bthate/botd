@@ -4,8 +4,8 @@
 
 import logging
 
-from bl import Object
 from bl.dbs import Db
+from bl.obj import Object
 
 def __dir__():
     return ("User", "Users")

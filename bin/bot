@@ -7,10 +7,10 @@ __version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import bl
+import bl.spc
 import logging
 
-from bl import Kernel, execute, kernels, parse_cli
+from bl.spc import Kernel, execute, kernels, parse_cli
 
 opts = [
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),

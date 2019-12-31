@@ -6,6 +6,9 @@ import bl
 import sys
 import threading
 
+from bl.hdl import Event, Handler
+from bl.thr import launch
+
 def __dir__():
     return ("Console", "init")
 
@@ -15,11 +18,11 @@ def init(kernel):
     csl.start()
     return csl
 
-class Event(bl.hdl.Event):
+class Event(Event):
 
     pass
 
-class Console(bl.hdl.Handler):
+class Console(Handler):
 
     def __init__(self):
         super().__init__()
@@ -69,5 +72,5 @@ class Console(bl.hdl.Handler):
         self.raw(txt)
  
     def start(self):
-        bl.launch(self.input)
+        launch(self.input)
         self._connected.set()
