@@ -41,7 +41,7 @@ class Db(Object):
         for fn in names(otype):
             o = hook(fn)
             nr += 1
-            if selector and not bl.search(o, selector):
+            if selector and not search(o, selector):
                 continue
             if "_deleted" not in o or not o._deleted:
                 continue
@@ -53,7 +53,7 @@ class Db(Object):
         nr = -1
         for fn in names(otype, delta):
             o = hook(fn)
-            if bl.search(o, selector):
+            if search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
                     continue
@@ -74,7 +74,7 @@ class Db(Object):
         nr = -1
         for fn in names(otype, delta):
             o = hook(fn)
-            if selector and bl.gnr.search(o, selector):
+            if selector and search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
                     continue

@@ -14,6 +14,7 @@ from bl.flt import Fleet
 from bl.ldr import Loader
 from bl.obj import Object, Register
 from bl.thr import launch
+from bl.tms import days
 
 def __dir__():
     return ("Handler",)
@@ -26,27 +27,34 @@ class Event(Object):
         self._verbose = True
         self.args = []
         self.channel = ""
+        self.options = ""
         self.orig = ""
         self.origin = ""
         self.result = []
         self.txt = ""
 
-    def display(self, o):
-        txt = ""
-        if "k" in self.options:
-            self.reply("|".join(o))
-        elif "d" in self.options:
-            self.reply(str(o))
-        elif "f" in self.options:
-            full = True
-        elif not full and self.dkeys:
-            txt += " " + bl.gnr.format(o, self.dkeys, full)
-        else:
-            txt += " " + bl.gnr.format(o, full=full)
-        if "t" in self.options and o._path:
-            txt += " %s" % bl.tms.days(o._path)
+    def display(self, o, txt=""):
+        txt = txt[:]
+        txt += " " + "%s %s" % (self.format(o), days(o._path))
         txt = txt.strip()
         self.reply(txt)
+
+    def format(self, o, keys=None):
+        if keys is None:
+            keys = vars(o).keys()
+        res = []
+        txt = ""
+        for key in keys:
+            val = o.get(key, None)
+            if not val:
+                continue
+            val = str(val)
+            if key == "text":
+                val = val.replace("\\n", "\n")
+            res.append("%s=%s " % (key, val))
+        for val in res:
+            txt += "%s%s" % (val.strip(), " ")
+        return txt.strip()
 
     def ready(self):
         self._ready.set()

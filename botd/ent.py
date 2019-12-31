@@ -6,10 +6,8 @@ import os
 import time
 import threading
 
-from bl import Object
+from bl.obj import Object
 from bl.dbs import Db
-
-db = Db()
 
 class Log(Object):
 
@@ -24,25 +22,23 @@ class Todo(Object):
         self.txt = ""
 
 def log(event):
-    if not event.rest:
+    if not event.args:
         nr = 0
-        if not event.dkeys:
-            event.dkeys.append("txt")
-        for o in db.find("botd.ent.Log", event.selector or {"txt": ""}):
+        db = Db()
+        for o in db.find("botd.ent.Log", {"txt": ""}):
             event.display(o, "%s" % str(nr))
             nr += 1
         return
     obj = Log()
-    obj.txt = event.rest
+    obj.txt = " ".join(event.args)
     obj.save()
     event.reply("ok")
 
 def todo(event):
     if not event.rest:
         nr = 0
-        if "txt" not in event.dkeys:
-            event.dkeys.append("txt")
-        for o in db.find("botd.ent.Todo", event.selector or {"txt": ""}):
+        db = Db()
+        for o in db.find("botd.ent.Todo", {"txt": ""}):
             event.display(o, "%s" % str(nr))
             nr += 1
         return
