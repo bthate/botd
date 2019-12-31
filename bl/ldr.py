@@ -22,6 +22,8 @@ class Loader(bl.Object):
         return importlib.import_module(name)
             
     def get_cmd(self, cn):
+        if not cn:
+            return None
         return self.cmds.get(cn, None)
 
     def get_cmds(self, mod):

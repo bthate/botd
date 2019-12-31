@@ -15,11 +15,9 @@ def init(kernel):
     csl.start()
     return csl
 
-class Event(bl.evt.Event):
+class Event(bl.hdl.Event):
 
-    def show(self):
-        for txt in self.result:
-            print(txt)
+    pass
 
 class Console(bl.hdl.Handler):
 
@@ -31,26 +29,31 @@ class Console(bl.hdl.Handler):
     def announce(self, txt):
         self.raw(txt)
 
-    def cmd(self, txt, origin=""):
+    def cmd(self, txt):
         e = bl.evt.Event()
         e.txt = txt
         e.orig = repr(self)
-        e.origin = origin or "root@shell"
+        e.origin = "root@shell"
+        if e.txt:
+            e.chk = e.txt.split()[0]
         self.dispatch(e)
         e.wait()
 
     def poll(self):
         self._connected.wait()
-        e = bl.evt.Event(origin="root@shell")
+        e = bl.hdl.Event()
+        e.origin = "root@shell"
         e.orig = repr(self)
         e.txt = input("> ")
+        if e.txt:
+            e.chk = e.txt.split()[0]
         return e
 
     def input(self):
         while not self._stopped:
             try:
                 e = self.poll()
-            except bl.err.EOFError:
+            except EOFError:
                 break
             try:
                 self.dispatch(e)
@@ -68,4 +71,3 @@ class Console(bl.hdl.Handler):
     def start(self):
         bl.launch(self.input)
         self._connected.set()
-

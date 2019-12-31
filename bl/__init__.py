@@ -161,7 +161,7 @@ def hooked(d):
     return o
 
 from bl.ldr import Loader
-from bl.evt import Event
+from bl.hdl import Event
 import bl.thr
 import bl.hdl
 import bl.csl
@@ -177,3 +177,7 @@ import bl.flt
 from bl.flt import Fleet
 import bl.usr
 from bl.usr import Users
+import bl.bot
+from bl.bot import Bot
+import bl.err
+import bl.prs

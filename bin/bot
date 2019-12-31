@@ -1,7 +1,7 @@
 #!/usr/bin/python3 -u
 # BOTD - python3 IRC channel daemon.
 #
-# 
+# bin/bot 
 
 __version__ = 1
 
@@ -16,6 +16,7 @@ opts = [
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-o', '--options', "store", str, "", "options to use.", 'options'),
+    ('-p', '--prompting', "store_true", bool, "prompt for initial values.", 'prompting'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
 ]
@@ -27,8 +28,8 @@ def cmds(event):
 
 def main():
     parse_cli("botd", __version__, opts)
-    k.start()
     k.register("cmds", cmds)
+    k.start()
     k.wait()
 
 execute(main)

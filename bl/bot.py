@@ -2,21 +2,14 @@
 #
 # bot base class.
 
+import bl
 import queue
 import sys
-
-from bl import Cfg
-from bl.evt import Event
-from bl.flt import Fleet
-from bl.hdl import Handler
-from bl.thr import launch
 
 def __dir__():
     return ('Bot', 'Cfg')
 
-fleet = Fleet()
-
-class Cfg(Cfg):
+class Cfg(bl.Cfg):
 
     def __init__(self):
         super().__init__()
@@ -25,13 +18,13 @@ class Cfg(Cfg):
         self.port = 0
         self.server = ""
 
-class Event(Event):
+class Event(bl.hdl.Event):
 
-    def show(self):
+    def show(self, bot):
         for txt in self.result:
-            fleet.echo(self.orig, self.channel, txt)
+            bot.say(self.channel, txt)
 
-class Bot(Handler):
+class Bot(bl.hdl.Handler):
 
     def __init__(self):
         super().__init__()
@@ -77,9 +70,8 @@ class Bot(Handler):
             self.raw(txt)
 
     def start(self, input=False, output=False):
-        fleet.add(self)
         super().start()
         if output:
-            launch(self.output)
+            bl.thr.launch(self.output)
         if input:
-            launch(self.input)
+            bl.thr.launch(self.input)

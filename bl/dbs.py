@@ -7,6 +7,8 @@ import os
 import time
 import _thread
 
+from bl.gnr import search
+
 def __dir__():
     return ("Db",)
 
@@ -36,7 +38,7 @@ class Db(bl.Object):
         for fn in names(otype):
             o = hook(fn)
             nr += 1
-            if selector and not search(o, selector):
+            if selector and not bl.search(o, selector):
                 continue
             if "_deleted" not in o or not o._deleted:
                 continue
@@ -48,7 +50,7 @@ class Db(bl.Object):
         nr = -1
         for fn in names(otype, delta):
             o = hook(fn)
-            if search(o, selector):
+            if bl.search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
                     continue
@@ -69,7 +71,7 @@ class Db(bl.Object):
         nr = -1
         for fn in names(otype, delta):
             o = hook(fn)
-            if selector and search(o, selector):
+            if selector and bl.gnr.search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
                     continue

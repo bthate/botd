@@ -161,7 +161,7 @@ class Command(bl.Object):
             if token.up:
                 self.delta = bl.tms.parse_date(token.up)
             elif token.down:
-                self.delta = bl.tns.parse_date(token.down)
+                self.delta = bl.tms.parse_date(token.down)
             if not self.noignore and token.ignore:
                 self.ignore = token.ignore
                 continue
@@ -195,53 +195,3 @@ class Command(bl.Object):
         self.ready()
         return self
 
-class Event(Command):
-
-    def __init__(self, txt="", **kwargs):
-        super().__init__()
-        if kwargs:
-            self.update(kwargs)
-        self._calledfrom = None
-        self.channel = ""
-        self.chk = ""
-        self.dolog = False
-        self.type = "chat"
-        self.name = ""
-        self.sep = "\n"
-        self.txt = txt
-        if self.txt:
-            self.chk = self.txt.split()[0]
-        self.verbose = True
-
-    def display(self, o, txt=""):
-        if "k" in self.options:
-            self.reply("|".join(o))
-            return
-        if "d" in self.options:
-            self.reply(str(o))
-            return
-        full = False
-        if "f" in self.options:
-            full = True
-        if not full and self.dkeys:
-            txt += " " + bl.gnr.format(o, self.dkeys, full)
-        else:
-            txt += " " + bl.gnr.format(o, full=full)
-        if "t" in self.options:
-            try: 
-                txt += " %s" % bl.tms.days(o.__path__)
-            except Exception as ex:
-                pass
-        txt = txt.strip()
-        if txt:
-            self.reply(txt)
-
-    def reply(self, txt):
-        self.result.append(txt)
-
-    def show(self, bot):
-        if not self.verbose:
-            return
-        self.orig = repr(bot)
-        for txt in self.result:
-            bot.say(self.channel, txt, self.type)

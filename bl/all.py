@@ -3,6 +3,7 @@
 # include all modules.
 
 import bl
+import bl.prs
 import bl.ldr
 import bl.flt
 import bl.evt

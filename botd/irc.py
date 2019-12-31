@@ -2,6 +2,7 @@
 #
 # IRC bot. 
 
+import bl
 import logging
 import os
 import queue
@@ -13,15 +14,7 @@ import time
 import threading
 import _thread
 
-from bl import Cfg, Object, Register
-from bl.bot import Bot
-from bl.err import EINIT
-from bl.evt import Event
-from bl.flt import Fleet
-from bl.krn import Kernel
-from bl.thr import launch
-from bl.utl import locked
-from bl.usr import Users
+from bl import Bot, Cfg, Object, Register, Event, Fleet, Kernel, Users, launch, locked
 
 def __dir__():
     return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "errored", "noticed", "privmsged")
@@ -33,10 +26,10 @@ users = Users()
           
 def init(k):
     bot = IRC()
-    bot.cfg.last()
+    #l = bot.cfg.last()
     if not k.cfg.nick:
         k.cfg.nick = "botd"
-    if k.cfg.prompting and (not bot.cfg.channel and not bot.cfg.server):
+    if k.cfg.prompting:
         try:
             server, channel, nick = k.cfg.args
         except ValueError:
@@ -44,7 +37,7 @@ def init(k):
                 server, channel = k.cfg.args
                 nick = "botd"
             except ValueError:
-                raise EINIT("%s <server> <channel> <nick>" % k.cfg.name)
+                raise bl.err.EINIT("%s <server> <channel> <nick>" % k.cfg.name)
         bot.cfg.server = server
         bot.cfg.channel = channel
         bot.cfg.nick = nick
@@ -56,7 +49,6 @@ class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
-        self.blocking = False
         self.channel = ""
         self.nick = "botd"
         self.ipv6 = False
@@ -143,11 +135,11 @@ class IRC(Bot):
             oldsock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         else:
             oldsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        oldsock.setblocking(int(self.cfg.blocking or 1))
+        oldsock.setblocking(1)
         oldsock.settimeout(5.0)
         logging.warn("connect %s:%s" % (self.cfg.server, self.cfg.port or 6667))
         oldsock.connect((self.cfg.server, int(self.cfg.port or 6667)))
-        oldsock.setblocking(int(self.cfg.blocking or 1))
+        oldsock.setblocking(1)
         oldsock.settimeout(700.0)
         if self.cfg.ssl:
             self._sock = ssl.wrap_socket(oldsock)
@@ -271,7 +263,7 @@ class IRC(Bot):
         self.logon(self.cfg.server, self.cfg.nick)
 
     def dispatch(self, event):
-        event.parse(event.txt)
+        #event.parse(event.txt)
         event._func = getattr(self, event.command, None)
         if event._func:
             event._func(event)
@@ -305,7 +297,7 @@ class IRC(Bot):
                 logging.error("deny %s" % event.origin)
                 return
             event.txt = event.txt[1:]
-            kernel.dispatch(event)
+            k.dispatch(event)
 
     def poll(self):
         self._connected.wait()
@@ -403,7 +395,7 @@ class DCC(Bot):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((addr, port))
         s.send(bytes('Welcome to BOTD %s !!\n' % event.nick, "utf-8"))
-        s.setblocking(True)
+        s.setblocking(1)
         os.set_inheritable(s.fileno(), os.O_RDWR)
         self._sock = s
         self._fsock = self._sock.makefile("rw")
@@ -421,7 +413,7 @@ class DCC(Bot):
         e.channel = self.origin
         e.orig = repr(self)
         e.origin = self.origin or "root@dcc"
-        kernel.dispatch(e)
+        k.dispatch(e)
         return e
 
     def say(self, channel, txt, type="chat"):
