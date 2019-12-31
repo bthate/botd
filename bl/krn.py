@@ -39,10 +39,14 @@ class Kernel(Loader):
         kernels.add(self)
         
     def cmd(self, txt, origin=""):
+        if not txt:
+            return
+        from bl.csl import Console
+        c = Console()
         e = Event()
         e.txt = txt
         e.origin = origin
-        e.orig = repr(self)
+        e.orig = repr(c)
         self.dispatch(e)
         e.wait()
 

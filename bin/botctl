@@ -1,37 +1,33 @@
-#!/usr/bin/python3
+#!/usr/bin/python3 -u
 # BOTD - python3 IRC channel daemon.
 #
-# control the bot daemon.
+# bin/bot 
 
 __version__ = 1
 
-import os, sys; sys.path.insert(0, os.getcwd())
+import os, sys ; sys.path.insert(0, os.getcwd())
 
-from bl.csl import Console
+import logging
+
 from bl.krn import Kernel
-from bl.log import level
 from bl.shl import execute, parse_cli
-from bl.utl import hd
 
 opts = [
-    ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
-    ('-m', '--modules', "store", str, "modules to load.", 'modules'),
-    ('-n', '--name', "store", str, "program name", 'name'),
-    ('-o', '--options', "store", str, "options to use.", 'options'),
-    ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
-    ('-s', '--save', 'store_true', False, 'save kernel config.', 'dosave')
+    ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-o', '--options', "store", str, "", "options to use.", 'options'),
+    ('-p', '--prompting', "store_true", True, "prompt for initial values.", 'prompting'),
+    ('-s', '--save', "store", str, "", "save cli options to kernel config", 'dosave'),
+    ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
+    ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
+    ('-z', '--shell', "store_false", True, "disable shell", 'shell')
 ]
 
 def main():
-    cfg = parse_cli("botctl", __version__, opts)
-    k = Kernel()
-    k.walk("botd.cmd")
-    k.start(cfg)
-    k.cmd(k.cfg.txt)
- 
-try:     
-    execute(main)
-except PermissionError:
-    print("you need to run botctl as root")
+    cfg = parse_cli("botd", __version__, opts)
+    k = Kernel(cfg)
+    k.init("botd.cmd")
+    k.cmd(" ".join(k.cfg.args))
     
+execute(main)
 os._exit(0)
