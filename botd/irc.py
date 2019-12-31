@@ -21,7 +21,7 @@ def __dir__():
 
 saylock = _thread.allocate_lock()
 fleet = Fleet()
-k = Kernel()
+kernel = Kernel()
 users = Users()
           
 def init(k):
@@ -54,7 +54,6 @@ class Cfg(Cfg):
         self.ipv6 = False
         self.port = 6667
         self.server = ""
-        self.sleep = 5.0
         self.ssl = False
         self.realname = "botd"
         self.username = "botd"
@@ -71,10 +70,6 @@ class Event(Event):
         self.orig = ""
         self.target = ""
 
-    def show(self):
-        for txt in self.result:
-            fleet.echo(self.orig, self.channel, txt)
-
 class DEvent(Event):
 
     def __init__(self):
@@ -82,18 +77,6 @@ class DEvent(Event):
         self._sock = None
         self._fsock = None
         self.channel = ""
-
-    def raw(self, txt):
-        if self._fsock:
-            self._fsock.write(str(txt) + "\n") 
-            self._fsock.flush()
-
-    def reply(self, txt):
-        self.raw(txt)
-
-    def show(self):
-        for txt in self.result:
-            self._fsock.write(txt)
 
 class TextWrap(textwrap.TextWrapper):
 
@@ -118,7 +101,6 @@ class IRC(Bot):
         self.cc = "!"
         self.cfg = Cfg()
         self.channels = []
-        self.cmds = Register()
         self.state = Object()
         self.state.error = ""
         self.state.last = 0
@@ -263,7 +245,6 @@ class IRC(Bot):
         self.logon(self.cfg.server, self.cfg.nick)
 
     def dispatch(self, event):
-        #event.parse(event.txt)
         event._func = getattr(self, event.command, None)
         if event._func:
             event._func(event)
@@ -297,7 +278,9 @@ class IRC(Bot):
                 logging.error("deny %s" % event.origin)
                 return
             event.txt = event.txt[1:]
-            k.dispatch(event)
+            event.chk = event.txt.split()[0]
+            print(event)
+            kernel.dispatch(event)
 
     def poll(self):
         self._connected.wait()
@@ -413,7 +396,7 @@ class DCC(Bot):
         e.channel = self.origin
         e.orig = repr(self)
         e.origin = self.origin or "root@dcc"
-        k.dispatch(e)
+        kernel.dispatch(e)
         return e
 
     def say(self, channel, txt, type="chat"):

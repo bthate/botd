@@ -38,9 +38,11 @@ class Loader(bl.Object):
         for mn in ms.split(","):
              if not mn:
                  continue
-             mod = self.direct(mn)
-             if mod:
-                 yield mod
+             try:
+                 mod = self.direct(mn)
+             except ModuleNotFoundError:
+                 mod = None
+             yield mod
 
     def get_names(self, mod):
         names = bl.Register()

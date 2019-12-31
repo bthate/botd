@@ -18,12 +18,6 @@ class Cfg(bl.Cfg):
         self.port = 0
         self.server = ""
 
-class Event(bl.hdl.Event):
-
-    def show(self, bot):
-        for txt in self.result:
-            bot.say(self.channel, txt)
-
 class Bot(bl.hdl.Handler):
 
     def __init__(self):
