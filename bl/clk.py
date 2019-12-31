@@ -24,9 +24,6 @@ class Cfg(Cfg):
         self.latest =  0
         self.starttime =  0
 
-def echo():
-    print("yo!")
-
 class Timers(Object):
 
     def __init__(self, *args, **kwargs):

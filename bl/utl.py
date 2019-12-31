@@ -77,16 +77,6 @@ def fromfile(f):
         fcntl.flock(f, fcntl.LOCK_UN)
         raise
 
-def get_mods(h, ms):
-    modules = []
-    for mn in ms.split(","):
-        if not mn:
-            continue
-        m = h.walk(mn)
-        if m:
-            modules.extend(m)
-    return modules
-
 def get_name(o):
     t = type(o)
     if t == types.ModuleType:
@@ -182,7 +172,8 @@ def touch(fname):
         pass
 
 def useragent():
-    return 'Mozilla/5.0 (X11; Linux x86_64) BOTD +http://git@github.com/bthate/botd)'
+    k = bl.kernels.get_first()
+    return 'Mozilla/5.0 (X11; Linux x86_64) %s +http://git@github.com/bthate/%s)' % k.cfg.name
 
 def unescape(text):
     import html

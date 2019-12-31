@@ -7,34 +7,28 @@ __version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
+import bl
 import logging
 
-from bl.csl import Console
-from bl.krn import Kernel, __version__
-from bl.shl import execute, parse_cli
+from bl import Kernel, execute, kernels, parse_cli
 
 opts = [
-    ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),
-    ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
-    ('-m', '--modules', 'store', str, 'modules to load.', 'modules'),
-    ('-n', '--name', 'store', str, 'program name', 'name'),
-    ('-o', '--options', "store", str, "options to use.", 'options'),
-    ('-k', '--kernel', "store_true", False, "read from previous kernel config.", 'kernel'),
-    ('-p', '--prompting', "store_false", True, "disable prompting for initial values.", 'prompting'),
-    ('-s', '--save', 'store_true', False, 'save configuration files.', 'dosave'),
-    ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
-    ('-a', '--logdir', "store", str, "directory to find the logfiles.", 'logdir'),
-    ('-z', '--shell', 'store_false', True, 'disable shell', 'shell'),
+    ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-o', '--options', "store", str, "", "options to use.", 'options'),
+    ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
+    ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
 ]
 
+k = Kernel()
+
+def cmds(event):
+    event.reply(",".join([x for x in k.cmds]))
+
 def main():
-    cfg = parse_cli("botd", __version__, opts)
-    k = Kernel()
-    k.start(cfg)
-    if k.cfg.shell:
-        c = Console()
-        c.walk("botd.cmd")
-        c.start()
+    parse_cli("botd", __version__, opts)
+    k.start()
+    k.register("cmds", cmds)
     k.wait()
 
 execute(main)

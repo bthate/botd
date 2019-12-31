@@ -5,24 +5,14 @@
 __version__ = 1
 
 import bl
-import bl.tbl
 import os
 import sys
 import time
 import threading
 
-from bl import Object
-from bl.dbs import Db
-from bl.krn import Kernel
-from bl.flt import Fleet
-from bl.gnr import edit, keys
-from bl.hdl import Handler
-from bl.tms import elapsed
-from bl.typ import get_cls, get_type
-from bl.usr import Users
+from bl import Object, Db, Fleet, Kernel, Users
 
 starttime = time.time()
-
 db = Db()
 bots = Fleet()
 k = Kernel()
@@ -87,9 +77,6 @@ def ed(event):
     l.save()
     event.reply("ok")
 
-def cmds(event):
-    event.reply("|".join(sorted(bl.tbl.modules)))
-
 def fleet(event):
     if "IRC" in event.orig:
         event.reply("this command might flood, use a DCC connection.")
@@ -140,7 +127,7 @@ def ps(event):
     nr = -1
     for up, thrname, o in sorted(result, key=lambda x: x[0]):
         nr += 1
-        res = "%s %s" % (nr, psformat % (elapsed(up), thrname[:60]))
+        res = "%s %s" % (nr, psformat % (bl.tms.elapsed(up), thrname[:60]))
         if res.strip():
             event.reply(res)
 

@@ -11,14 +11,6 @@ import os
 import readline
 import time
 
-from bl import Default, Object
-from bl.err import EINIT
-from bl.krn import Cfg, __version__
-from bl.log import level, logfiled
-from bl.trm import reset, save
-from bl.utl import cdir, hd, touch
-from bl.trc import get_exception
-
 cmds = []
 
 HISTFILE = ""
@@ -32,8 +24,8 @@ def close_history():
         if not HISTFILE:
             HISTFILE = os.path.join(bl.workdir, "history")
         if not os.path.isfile(HISTFILE):
-            cdir(HISTFILE)
-            touch(HISTFILE)
+            bl.utl.cdir(HISTFILE)
+            bl.utl.touch(HISTFILE)
         readline.write_history_file(HISTFILE)
 
 def complete(text, state):
@@ -58,19 +50,19 @@ def enable_history():
     atexit.register(close_history)
 
 def execute(main):
-    save()
+    bl.trm.save()
     try:
         main()
     except KeyboardInterrupt:
         print("")
-    except EINIT:
+    except bl.err.EINIT:
         pass
     except PermissionError:
         pass
     except Exception:
-        logging.error(get_exception())
+        logging.error(bl.utl.get_exception())
     finally:
-        reset()
+        bl.trm.reset()
 
 def get_completer():
     return readline.get_completer()
@@ -81,27 +73,29 @@ def make_opts(ns, options, **kwargs):
         if not opt:
             continue
         if opt[2] == "store":
-            parser.add_argument(opt[0], opt[1], action=opt[2], type=opt[3], help=opt[4], dest=opt[5])
+            parser.add_argument(opt[0], opt[1], action=opt[2], type=opt[3], default=opt[4], help=opt[5], dest=opt[6], const=opt[4], nargs="?")
         else:
             parser.add_argument(opt[0], opt[1], action=opt[2], default=opt[3], help=opt[4], dest=opt[5])
     parser.add_argument('args', nargs='*')
     parser.parse_known_args(namespace=ns)
 
-def parse_cli(name, version=None, opts=[]):
-    ns = Object()
+def parse_cli(name, version=None, opts=[], **kwargs):
+    k = bl.krn.Kernel()
+    ns = bl.Object()
     make_opts(ns, opts)
-    cfg = Cfg(ns)
-    cfg.changed = not (not cfg)
+    cfg = bl.Cfg(ns)
+    cfg.update(kwargs)
     cfg.txt = " ".join(cfg.args)
-    cfg.workdir = cfg.workdir or hd(".botd")
-    cfg.name = name or "botd"
+    cfg.workdir = cfg.workdir or bl.utl.hd(".%s" % name)
+    cfg.name = name 
     cfg.version = version or __version__
     bl.workdir = cfg.workdir
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
-        cdir(sp)
-    level(cfg.level or "error")
+        bl.utl.cdir(sp)
+    bl.log.level(cfg.level or "error")
     logging.debug("%s started in %s at %s (%s)" % (cfg.name.upper(), cfg.workdir, time.ctime(time.time()), cfg.level))
+    k.cfg.update(cfg)
     return cfg
 
 def set_completer(commands):
@@ -113,7 +107,7 @@ def set_completer(commands):
 
 def writepid():
     assert bl.workdir
-    path = os.path.join(bl.workdir, "botlib.pid")
+    path = os.path.join(bl.workdir, "pid")
     f = open(path, 'w')
     f.write(str(os.getpid()))
     f.flush()

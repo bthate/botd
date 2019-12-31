@@ -2,23 +2,14 @@
 #
 # Event base class and command parsing
 
+import bl
 import time
 import threading
 
-from bl import Object
-from bl.err import ENOTIMPLEMENTED, ENOTXT
-from bl.gnr import format
-from bl.hdl import Handler
-from bl.tbl import names
-from bl.tms import parse_date, to_day
-
 def __dir__():
-    return ("Command", "Event", "Object", "Token", "aliases")
+    return ("Command", "Event", "Object", "Token")
 
-aliases = {}
-h = Handler()
-
-class Token(Object):
+class Token(bl.Object):
 
     def __init__(self):
         super().__init__()
@@ -58,7 +49,6 @@ class Token(Object):
         except ValueError:
             pass
         if nr == 1:
-            self.match = names.get(word, word)
             self.arg = word
             return
         if "http" in word:
@@ -90,7 +80,7 @@ class Token(Object):
             self.selector = word
             self.value = None
 
-class Command(Object):
+class Command(bl.Object):
 
     def __init__(self):
         super().__init__()
@@ -119,27 +109,16 @@ class Command(Object):
         self.time = 0
         self.txt = ""
 
-    def aliased(self, txt):
-        global aliases
-        spl = txt.split()
-        if spl and spl[0] in aliases:
-            cmd = spl[0]
-            v = aliases.get(cmd, None)
-            if v:
-                spl[0] = v
-        return " ".join(spl)
-
     def parse(self, txt="", options=""):
         if not txt:
             txt = self.txt 
         if not txt:
-            raise ENOTXT
+            raise bl.err.ENOTXT
         self.txt = txt
         txt = txt.replace("\u0001", "")
         txt = txt.replace("\001", "")
         if txt and self.cc == txt[0]:
             txt = txt[1:]
-        txt = self.aliased(txt)
         nr = -1
         self.args = []
         self.dkeys = []
@@ -180,9 +159,9 @@ class Command(Object):
             if token.setter:
                 self.setter[token.setter] = token.value
             if token.up:
-                self.delta = parse_date(token.up)
+                self.delta = bl.tms.parse_date(token.up)
             elif token.down:
-                self.delta = parse_date(token.down)
+                self.delta = bl.tns.parse_date(token.down)
             if not self.noignore and token.ignore:
                 self.ignore = token.ignore
                 continue
@@ -199,7 +178,7 @@ class Command(Object):
         self.start = time.time() + self.delta
         self.stop = time.time()
         self.rest = " ".join(self.args)
-        self.time = to_day(self.rest)
+        self.time = bl.tms.to_day(self.rest)
 
     def ready(self):
         self._ready.set()
@@ -218,8 +197,10 @@ class Command(Object):
 
 class Event(Command):
 
-    def __init__(self, txt=""):
+    def __init__(self, txt="", **kwargs):
         super().__init__()
+        if kwargs:
+            self.update(kwargs)
         self._calledfrom = None
         self.channel = ""
         self.chk = ""
@@ -243,9 +224,9 @@ class Event(Command):
         if "f" in self.options:
             full = True
         if not full and self.dkeys:
-            txt += " " + format(o, self.dkeys, full)
+            txt += " " + bl.gnr.format(o, self.dkeys, full)
         else:
-            txt += " " + format(o, full=full)
+            txt += " " + bl.gnr.format(o, full=full)
         if "t" in self.options:
             try: 
                 txt += " %s" % bl.tms.days(o.__path__)
@@ -258,8 +239,9 @@ class Event(Command):
     def reply(self, txt):
         self.result.append(txt)
 
-    def show(self):
+    def show(self, bot):
         if not self.verbose:
             return
+        self.orig = repr(bot)
         for txt in self.result:
-            print(txt)
+            bot.say(self.channel, txt, self.type)

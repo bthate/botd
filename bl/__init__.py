@@ -20,7 +20,7 @@ workdir = ""
 
 class Object:
 
-    __slots__ = ("__dict__", "__path__", "_type")
+    __slots__ = ("__dict__", "_path", "_type")
 
     def __init__(self):
         super().__init__()
@@ -53,14 +53,10 @@ class Object:
     def json(self):
         return json.dumps(self, default=default, sort_keys=True)
 
-    def last(o, skip=True):
+    def last(self):
         from bl.dbs import Db
         db = Db()
-        val = db.last(str(get_type(o)))
-        if val:
-            o.update(val)
-            o.__path__ = val.__path__
-            return o.__path__
+        return db.last(str(get_type(self)))
 
     @locked(lock)
     def load(self, path):
@@ -76,7 +72,7 @@ class Object:
             except json.decoder.JSONDecodeError as ex:
                 raise EJSON(str(ex) + " " + lpath)
             self.update(val)
-        self.__path__ = path
+        self._path = path
         return self
 
     @locked(lock)
@@ -95,19 +91,19 @@ class Object:
         opath = os.path.join(workdir, "store", path)
         cdir(opath)
         logging.warning("save %s" % path)
+        self._path = path
         with open(opath, "w") as ofile:
             json.dump(self, ofile, default=default, indent=4, sort_keys=True)
-        self.__path__ = path
         return path
 
     def set(self, key, val):
         setattr(self, key, val)
 
-    def update(self, o, keys=None, skip=False):
+    def update(self, o, skip=False):
+        if not o:
+            return
         for key in o:
             val = o.get(key)
-            if keys and key not in keys:
-                continue
             if skip and not val:
                continue
             self.set(key, val)
@@ -132,6 +128,18 @@ class Register(Object):
     def register(self, k, v):
         self.set(k, v)
 
+class Kernels(Register):
+
+    kl = []
+
+    def add(self, k):
+        self.kl.append(k)
+
+    def get_first(self):
+        return self.kl[0]
+
+kernels = Kernels()
+
 def default(o):
     if isinstance(o, Object):
         return vars(o)
@@ -151,3 +159,21 @@ def hooked(d):
         o = Object()
     o.update(d)
     return o
+
+from bl.ldr import Loader
+from bl.evt import Event
+import bl.thr
+import bl.hdl
+import bl.csl
+from bl.krn import Kernel
+import bl.log
+from bl.shl import execute, parse_cli
+import bl.trm
+import bl.tms
+from bl.thr import launch
+import bl.dbs
+from bl.dbs import Db
+import bl.flt
+from bl.flt import Fleet
+import bl.usr
+from bl.usr import Users

@@ -28,12 +28,10 @@ def __dir__():
 
 saylock = _thread.allocate_lock()
 fleet = Fleet()
-kernel = Kernel()
+k = Kernel()
 users = Users()
           
 def init(k):
-    kernel.sync(k)
-    kernel.walk("botd.cmd")
     bot = IRC()
     bot.cfg.last()
     if not k.cfg.nick:

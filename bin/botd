@@ -13,7 +13,6 @@ import logging
 import pwd
 import sys
 import bl.krn
-import bl.tbl
 
 from bl.csl import Console
 from bl.err import EINIT

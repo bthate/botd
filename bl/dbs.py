@@ -7,19 +7,12 @@ import os
 import time
 import _thread
 
-from bl import Object
-from bl.err import ENOFILE
-from bl.gnr import search
-from bl.tms import fntime
-from bl.typ import get_cls
-from bl.utl import locked
-
 def __dir__():
     return ("Db",)
 
 lock = _thread.allocate_lock()
 
-class Db(Object):
+class Db(bl.Object):
 
     def all(self, otype, selector=None, index=None, delta=0):
         if not selector:
@@ -89,12 +82,12 @@ class Db(Object):
                 return s[-1][-1]
         return None
 
-@locked(lock)
+@bl.utl.locked(lock)
 def hook(fn):
     t = fn.split(os.sep)[0]
     if not t:
         raise ENOFILE(fn)
-    o = get_cls(t)()
+    o = bl.typ.get_cls(t)()
     o.load(fn)
     return o
 
@@ -111,12 +104,5 @@ def names(name, delta=None):
                 if fntime(fnn) < past:
                     continue
             res.append(os.sep.join(fnn.split(os.sep)[1:]))
-    return sorted(res, key=fntime)
+    return sorted(res, key=bl.tms.fntime)
 
-def last(o, skip=True):
-    db = Db()
-    val = db.last(str(str(bl.typ.get_type(o))))
-    if val:
-        o.update(val)
-        o.__path__ = val.__path__
-        return o.__path__
