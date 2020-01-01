@@ -5,7 +5,7 @@
 import os
 import unittest
 
-from bl import Object, workdir
+from bl.obj import Object, workdir
 
 class ENOTCOMPAT(Exception):
     pass

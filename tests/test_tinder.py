@@ -8,14 +8,14 @@ import random
 import sys
 import time
 import unittest
-import bl.tbl
 
-from bl import Object
-from bl.evt import Event
+from bl.obj import Object
+from bl.hdl import Event
 from bl.krn import Kernel
+from bl.gnr import values
 from bl.utl import consume
 from bl.thr import launch
-from botd.usr import Users
+from bl.usr import Users
 
 k = Kernel()
 k.walk("botd.cmd")
@@ -29,17 +29,21 @@ class Param(Object):
 users.oper("test@shell")
 e = Event()
 e.verbose = k.cfg.verbose
-e.parse("-o %s" % k.cfg.options)
+#e.parse("-o %s" % k.cfg.options)
+try:
+    e.index = int(k.cfg.args[0])
+except:
+    e.index = 1
 
 param = Param()
-param.cfg = ["%s txt==yo channel=#mekker" % x for x in bl.tbl.classes]
-param.cfg.extend(["%s txt==yo test=a,b,c,d" % x for x in bl.tbl.classes])
-param.ed = ["%s txt==yo channel=#mekker" % x for x in bl.tbl.classes]
-param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in bl.tbl.classes])
-param.find = ["%s txt==yo -f" % x for x in bl.tbl.names] + ["email txt==gif", ]
-param.load = k.table.keys()
+param.cfg = ["%s txt==yo channel=#mekker" % x for x in k.names]
+param.cfg.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
+param.ed = ["%s txt==yo channel=#mekker" % x for x in k.names]
+param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
+param.find = ["%s txt==yo -f" % x for x in k.names] + ["email txt==gif", ]
+param.load = values(k.names)
 param.log = ["yo!",]
-param.rm = ["%s txt==yo" % x for x in bl.tbl.names]
+param.rm = ["%s txt==yo" % x for x in k.names]
 param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
 #param.mbox = ["~/evidence/25-1-2013",]
 

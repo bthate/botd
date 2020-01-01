@@ -13,7 +13,7 @@ import shutil
 import time
 import unittest
 
-from bl import Object
+from bl.obj import Object, starttime
 from bl.krn import Kernel
 from bl.log import level
 from bl.shl import parse_cli
@@ -26,10 +26,10 @@ from bl.utl import cdir
 
 
 opts = [
-    ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
-    ('-m', '--modules', 'store', str, 'modules to load.', 'modules'),
-    ('-o', '--options', "store", str, "options to use.", 'options'),
-    ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
+    ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-o', '--options', "store", str, "", "options to use.", 'options'),
+    ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
 
@@ -42,8 +42,8 @@ def initialize(cfg):
     users.oper("test@shell")
     k.cfg.prompt = False
     k.walk("botd")
-    k.start(cfg)
-    for c in bl.tbl.classes:
+    k.start()
+    for c in k.names:
         try:
             o = get_cls(c)()
             o.txt = "yo!"
@@ -67,10 +67,9 @@ def main():
     except:
         pass
     cfg = parse_cli("test", __version__, opts)
-    bl.workdir = "testdata"
+    bl.obj.workdir = "testdata"
     level("debug")
     initialize(cfg)
-    k.cfg.exclude = "mdl,rss"
     k.cfg.debug = True
     level(k.cfg.level)
     test_path = os.getcwd() + os.sep + "tests"
@@ -83,5 +82,5 @@ def main():
     unittest.TextTestRunner(verbosity=3).run(suite)
    
 execute(main)
-print(elapsed(time.time() - bl.starttime))
+print(elapsed(time.time() - starttime))
 os._exit(0)

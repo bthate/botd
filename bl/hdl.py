@@ -56,6 +56,17 @@ class Event(Object):
             txt += "%s%s" % (val.strip(), " ")
         return txt.strip()
 
+    def parse(self, txt=""):
+        txt = txt or self.txt
+        if not txt:
+            return
+        spl = self.txt.split()
+        if not spl:
+            return
+        self.cmd = spl[0]
+        self.args = spl[1:]
+        self.rest = " ".join(self.args)
+
     def ready(self):
         self._ready.set()
 

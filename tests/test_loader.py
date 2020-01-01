@@ -14,4 +14,4 @@ class Test_Loader(unittest.TestCase):
         p = l.save()
         ll = bl.ldr.Loader()
         ll.load(p)
-        self.assertTrue("bl.ldr" in ll.table)
+        self.assertTrue("cmds" in ll)

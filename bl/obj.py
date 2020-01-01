@@ -75,13 +75,6 @@ class Object:
         self._path = path
         return self
 
-    def parse(self):
-        if "txt" in self:
-            spl = self.txt.split()
-            self.cmd = spl[0]
-            self.args = spl[1:]
-            self.rest = " ".join(self.args)
-
     @locked(lock)
     def save(self, path="", stime=None):
         assert workdir

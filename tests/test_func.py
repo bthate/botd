@@ -10,10 +10,10 @@ import random
 import time
 import types
 import unittest
-import bl.tbl
 
-from bl.evt import Event
 from bl.krn import Kernel
+from bl.gnr import values
+from bl.hdl import Event
 from bl.thr import launch
 
 k = Kernel()
@@ -35,11 +35,11 @@ def randomarg(name):
     return types.new_class(t)()
     
 def functest(nr):
-    names = sorted(bl.tbl.modules.values())
+    names = sorted(values(k.names))
     for x in range(nr):
         random.shuffle(names)
         for name in names:
-            mod = k.load_mod(name)
+            mod = k.walk(name)
             keys = dir(mod)
             random.shuffle(keys)
             for key in keys:

@@ -4,15 +4,15 @@
 
 import unittest
 
-from bl import Default, Object
+from bl.obj import Default, Object
 from bl.krn import Cfg
 from bl.shl import make_opts
 
 opts = [
-    ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
-    ('-m', '--modules', 'store', str, 'modules to load.', 'modules'),
-    ('-o', '--options', "store", str, "options to use.", 'options'),
-    ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
+    ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-o', '--options', "store", str, "", "options to use.", 'options'),
+    ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose'),
     ('-z', '--shell', 'store_false', True, 'enable shell.', 'shell')
 ]

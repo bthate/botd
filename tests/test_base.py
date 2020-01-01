@@ -4,7 +4,7 @@
 
 import unittest
 
-from bl import Object
+from bl.obj import Object
 
 class Test_Base(unittest.TestCase):
 

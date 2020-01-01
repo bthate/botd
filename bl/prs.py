@@ -2,14 +2,16 @@
 #
 # Event base class and command parsing
 
-import bl
 import time
 import threading
+
+import bl
+import bl.obj
 
 def __dir__():
     return ("Command", "Event", "Object", "Token")
 
-class Token(bl.Object):
+class Token(bl.obj.Object):
 
     def __init__(self):
         super().__init__()
@@ -80,7 +82,7 @@ class Token(bl.Object):
             self.selector = word
             self.value = None
 
-class Command(bl.Object):
+class Command(bl.obj.Object):
 
     def __init__(self):
         super().__init__()

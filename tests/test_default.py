@@ -4,7 +4,7 @@
 
 import unittest
 
-from bl import Default
+from bl.obj import Default
 
 class O(Default):
 

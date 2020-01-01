@@ -4,7 +4,7 @@
 
 import unittest
 
-from bl.evt import Event
+from bl.hdl import Event
 from bl.krn import Kernel
 
 k = Kernel()

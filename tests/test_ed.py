@@ -7,9 +7,8 @@ import logging
 import os
 import unittest
 
-from bl.evt import Event
 from bl.krn import Kernel
-
+from bl.prs import Command
 class Test_Ed(unittest.TestCase):
 
     k = Kernel()
@@ -18,7 +17,7 @@ class Test_Ed(unittest.TestCase):
         self.k.start()
         
     def test_ed1(self):
-        e = Event()
+        e = Command()
         e.parse("ed log txt==bla txt=mekker")
         self.k.dispatch(e)
         e.wait()

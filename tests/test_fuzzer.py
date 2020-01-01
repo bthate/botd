@@ -5,12 +5,11 @@
 import logging
 import random
 import unittest
-import bl.tbl
 
 from bl.krn import Kernel
+from bl.gnr import values
 from bl.typ import get_cls
-
-from botd.usr import Users
+from bl.usr import Users
 
 k = Kernel()
 k.cfg.prompt = False
@@ -23,12 +22,12 @@ users.oper("test@shell")
 class Test_Fuzzer(unittest.TestCase):
 
     def test_fuzzer1(self):
-        for t in bl.tbl.classes:
-            for key in bl.tbl.names:
+        for t in values(k.names):
+            for key in k.names:
                 try:
                     e = get_cls(t)()
                     e.verbose = k.cfg.verbose
-                    e.txt = key + " " + random.choice(list(bl.tbl.names))
+                    e.txt = key + " " + random.choice(list(values(k.names)))
                     e.parse(e.txt)
                     e.orig = repr(k)
                     e.origin = "test@shell"

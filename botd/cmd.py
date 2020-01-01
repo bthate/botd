@@ -17,8 +17,8 @@ from bl.dbs import Db
 from bl.flt import Fleet
 from bl.krn import kernels
 from bl.tms import elapsed
-from bl.typ import get_type
-from bl.usr import  Users
+from bl.typ import get_cls, get_type
+from bl.usr import Users
 
 starttime = time.time()
 k = kernels.get("0")
@@ -32,11 +32,12 @@ def cfg(event):
         return
     cn = "botd.%s.Cfg" % event.args[0]
     event.reply("using %s" % cn)
+    db = Db()
     l = db.last(cn)
     if not l:     
         try:
             cls = get_cls(cn)
-        except ModuleNotFoundError:
+        except (AttributeError, ModuleNotFoundError):
             event.reply("no %s found" % cn)
             return
         l = cls()
@@ -66,7 +67,7 @@ def meet(event):
         event.reply("meet origin [permissions]")
         return
     origin = Users.userhosts.get(origin, origin)
-    u = users.meet(origin, perms)
+    u = k.users.meet(origin, perms)
     event.reply("added %s" % u.user)
 
 def ps(event):

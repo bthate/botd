@@ -6,10 +6,10 @@ import random
 import time
 import types
 import unittest
-import bl.tbl
 
-from bl import Object
-from bl.evt import Event
+from bl.obj import Object
+from bl.gnr import values
+from bl.hdl import Event
 from bl.krn import Kernel
 from bl.thr import launch
 
@@ -116,10 +116,10 @@ class Test_Cmnds(unittest.TestCase):
 
     
 def cmndrun(event):
-    for name in sorted(bl.tbl.modules.values()):
-        if name in ["botd.rss",]:
+    mods = k.get_mods("botd")
+    for mod in mods:
+        if mod.__name__ in ["botd.rss",]:
             continue
-        mod = k.load_mod(name)
         for n in dir(mod):
            if n in exclude:
                continue
@@ -135,10 +135,10 @@ def cmndrun(event):
                    k.dispatch(e)
 
 def functest(event):
-    for name in sorted(bl.tbl.modules.values()):
+    for name in sorted(values(k.names)):
         if name in ["botd.rss"]:
             continue
-        mod = k.load_mod(name)
+        mod = k.walk(name)
         keys = dir(mod)
         random.shuffle(keys)
         for n in keys:
