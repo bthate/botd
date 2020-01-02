@@ -12,7 +12,7 @@ import threading
 import bl
 import bl.tms
 
-from bl.obj import Object
+from bl.obj import Object, edit
 from bl.dbs import Db
 from bl.flt import Fleet
 from bl.krn import kernels
@@ -31,14 +31,13 @@ def cfg(event):
         event.reply(str(k.cfg))
         return
     cn = "botd.%s.Cfg" % event.args[0]
-    event.reply("using %s" % cn)
     db = Db()
     l = db.last(cn)
     if not l:     
         try:
             cls = get_cls(cn)
         except (AttributeError, ModuleNotFoundError):
-            event.reply("no %s found" % cn)
+            event.reply("no %s found." % cn)
             return
         l = cls()
         l.save()

@@ -15,6 +15,7 @@ class Test_Scheduler(unittest.TestCase):
 
     def test_scheduler_put(self):
         e = Event()
+        e.orig = repr(k)
         e.origin = "root@shell"
         e.txt = "v"
         e.verbose = k.cfg.verbose

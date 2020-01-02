@@ -51,7 +51,9 @@ class Users(Db):
             return u[-1]
  
     def meet(self, origin, perms=None):
-        user = User()
+        user = self.get_user(origin)
+        if not user:
+            user = User()
         user.user = origin
         user.perms = ["USER", ]
         user.save()

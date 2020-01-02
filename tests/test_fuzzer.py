@@ -7,7 +7,7 @@ import random
 import unittest
 
 from bl.krn import Kernel
-from bl.gnr import values
+from bl.obj import values
 from bl.typ import get_cls
 from bl.usr import Users
 

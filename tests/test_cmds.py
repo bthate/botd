@@ -7,8 +7,7 @@ import time
 import types
 import unittest
 
-from bl.obj import Object
-from bl.gnr import values
+from bl.obj import Object, values
 from bl.hdl import Event
 from bl.krn import Kernel
 from bl.thr import launch
@@ -83,7 +82,7 @@ class Test_Cmnds(unittest.TestCase):
 
     def test_run(self):
         event = Event()
-        event.verbose = k.cfg.verbose
+        event._verbose = k.cfg.verbose
         event.origin = "root@shell"
         event.txt = ""
         thrs = []
@@ -95,7 +94,7 @@ class Test_Cmnds(unittest.TestCase):
     def test_func(self):
         event = Event()
         event.origin = "root@shell"
-        event.verbose = k.cfg.verbose
+        event._verbose = k.cfg.verbose
         event.txt = ""
         thrs = []
         nrloops = 10
@@ -107,13 +106,12 @@ class Test_Cmnds(unittest.TestCase):
         event = Event()
         event.origin = "root@shell"
         event.txt = ""
-        event.verbose = k.cfg.verbose
+        event._verbose = k.cfg.verbose
         thrs = []
         nrloops = 10
         for x in range(nrloops):
             thr = launch(cmndrun, event)
             thr.join()
-
     
 def cmndrun(event):
     mods = k.get_mods("botd")
@@ -128,14 +126,14 @@ def cmndrun(event):
                if "event" in func.__code__.co_varnames:
                    e = Event()
                    e._func = func
-                   e.verbose = k.cfg.verbose
+                   e._verbose = k.cfg.verbose
                    e.origin = "root@shell"
                    e.server = "localhost"
                    e.btype = "cli"
                    k.dispatch(e)
 
 def functest(event):
-    for name in sorted(values(k.names)):
+    for name in k.get_mn("botd"):
         if name in ["botd.rss"]:
             continue
         mod = k.walk(name)
@@ -170,6 +168,7 @@ def testcmnds(event):
             name = randomarg()
         e = Event()
         e.update(event)
+        e._verbose = k.cfg.verbose
         e.orig = event.orig
         e.server = "localhost"
         cmnd = examples.get(cmnd, cmnd)

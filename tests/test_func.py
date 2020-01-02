@@ -12,7 +12,7 @@ import types
 import unittest
 
 from bl.krn import Kernel
-from bl.gnr import values
+from bl.obj import values
 from bl.hdl import Event
 from bl.thr import launch
 
@@ -35,7 +35,7 @@ def randomarg(name):
     return types.new_class(t)()
     
 def functest(nr):
-    names = sorted(values(k.names))
+    names = k.get_mn("botd")
     for x in range(nr):
         random.shuffle(names)
         for name in names:

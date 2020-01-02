@@ -2,6 +2,7 @@
 #
 # test load/save
 
+import json
 import os
 import unittest
 
@@ -26,10 +27,11 @@ class Test_Core(unittest.TestCase):
 
     def test_subitem(self):
         o = Object()
-        o.test = Object()
+        o.test2 = Object()
         p = o.save()
-        oo = Object().load(p)
-        self.assertTrue(type(oo.test), Object)
+        oo = Object()
+        oo.load(p)
+        self.assertTrue(type(oo.test2), Object)
 
     def test_subitem2(self):
         o = Object()

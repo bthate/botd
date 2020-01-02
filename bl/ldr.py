@@ -7,9 +7,10 @@ import inspect
 import importlib
 import logging
 import pkgutil
+import types
 import typing
 
-from bl.obj import Object, Register
+from bl.obj import Object, Register, xdir
 from bl.typ import get_type
 
 def __dir__():
@@ -18,14 +19,20 @@ def __dir__():
 class Loader(Object):
 
     names = Register()
-
+    
     def __init__(self):
         super().__init__()
         self.cmds = Register()
 
     def direct(self, name):
         return importlib.import_module(name)
-            
+
+    def get_mn(self, pn):
+        names = []
+        for mod in self.get_mods(pn):
+            names.append(mod.__name__)
+        return names
+
     def get_cmd(self, cn):
         return self.cmds.get(cn, None)
 
@@ -34,7 +41,8 @@ class Loader(Object):
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
                 if o.__code__.co_argcount == 1:
-                    cmds.register(key, o)
+                    if key not in cmds:
+                        cmds.register(key, o)
         return cmds
 
     def get_mods(self, ms):
@@ -43,8 +51,9 @@ class Loader(Object):
              if not mn:
                  continue
              mod = self.direct(mn)
-             if mod:
-                 mods.append(mod)
+             mods.append(mod)
+             for key, o in inspect.getmembers(mod, inspect.ismodule):
+                 mods.append(o)
         return mods
 
     def get_names(self, mod):
@@ -53,7 +62,8 @@ class Loader(Object):
             if issubclass(o, Object):
                 t = get_type(o)
                 n = t.split(".")[-1].lower()
-                names.register(n, t)
+                if n not in names:
+                    names.register(n, t)
         return names
 
     def walk(self, modstr):

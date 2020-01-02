@@ -2,14 +2,12 @@
 #
 # types.
 
+import bl
 import importlib
 import types
 
 def get_cls(name):
-    try:
-        modname, clsname = name.rsplit(".", 1)
-    except ValueError:
-        return importlib.import_module(name)
+    modname, clsname = name.rsplit(".", 1)
     mod = importlib.import_module(modname)
     return getattr(mod, clsname)
 

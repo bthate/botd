@@ -12,8 +12,7 @@ import urllib
 from bl.clk import Repeater
 from bl.dbs import Db
 from bl.flt import Fleet
-from bl.gnr import edit
-from bl.obj import Cfg, Object
+from bl.obj import Cfg, Object, edit
 from bl.tms import to_time
 from bl.thr import launch
 from bl.utl import get_tinyurl, get_url, strip_html, unescape

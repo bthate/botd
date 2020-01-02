@@ -5,13 +5,13 @@
 import os
 import time
 import _thread
-
 import bl
-import bl.obj
 
-from bl.obj import Object
-from bl.gnr import search
+from bl.err import ENOFILE
+from bl.obj import Object, search
 from bl.tms import fntime
+from bl.typ import get_cls
+from bl.utl import locked
 
 def __dir__():
     return ("Db",)
@@ -80,12 +80,12 @@ class Db(Object):
                 return s[-1][-1]
         return None
 
-@bl.utl.locked(lock)
+@locked(lock)
 def hook(fn):
     t = fn.split(os.sep)[0]
     if not t:
         raise ENOFILE(fn)
-    o = bl.typ.get_cls(t)()
+    o = get_cls(t)()
     o.load(fn)
     return o
 

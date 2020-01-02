@@ -9,17 +9,17 @@ import sys
 import time
 import unittest
 
-from bl.obj import Object
+from bl.bot import Bot
+from bl.obj import Object, values
 from bl.hdl import Event
 from bl.krn import Kernel
-from bl.gnr import values
 from bl.utl import consume
 from bl.thr import launch
 from bl.usr import Users
 
 k = Kernel()
-k.walk("botd.cmd")
 k.start()
+k.walk("botd")
 users = Users()
 
 class Param(Object):
@@ -31,19 +31,22 @@ e = Event()
 e.verbose = k.cfg.verbose
 #e.parse("-o %s" % k.cfg.options)
 try:
-    e.index = int(k.cfg.args[0])
+    e.index = int(k.cfg.args[1])
 except:
     e.index = 1
 
+bot = Bot()
+
+names = list(k.names)
 param = Param()
-param.cfg = ["%s txt==yo channel=#mekker" % x for x in k.names]
-param.cfg.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
-param.ed = ["%s txt==yo channel=#mekker" % x for x in k.names]
-param.ed.extend(["%s txt==yo test=a,b,c,d" % x for x in k.names])
-param.find = ["%s txt==yo -f" % x for x in k.names] + ["email txt==gif", ]
-param.load = values(k.names)
+param.cfg = ["%s txt==yo channel=#mekker" % random.choice(names)]
+param.cfg.extend(["%s txt==yo test=a,b,c,d" % random.choice(names)])
+param.ed = ["%s txt==yo channel=#mekker" % random.choice(names)]
+param.ed.extend(["%s txt==yo test=a,b,c,d" % random.choice(names)])
+param.find = [random.choice(names)]
 param.log = ["yo!",]
-param.rm = ["%s txt==yo" % x for x in k.names]
+param.rm = ["%s txt==yo" % random.choice(names)]
+param.meet = ["test@shell",]
 param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
 #param.mbox = ["~/evidence/25-1-2013",]
 
@@ -67,19 +70,20 @@ def tests(b):
     for cmd in keys:
         if cmd in ["fetch", "exit", "reboot", "reconnect", "test"]:
             continue
-        events.extend(do_cmd(b, cmd))
+        events.extend(do_cmd(k, cmd))
     consume(events)
 
 def do_cmd(b, cmd):
-    exs = param.get(cmd, ["test1", "test2"])
+    exs = param.get(cmd, [])
     e = list(exs)
     random.shuffle(e)
     events = []
     for ex in e:
         e = Event()
+        e.orig = repr(bot)
         e.origin = "test@shell"
         e.txt = cmd + " " + ex
-        e.verbose = k.cfg.verbose
+        e._verbose = k.cfg.verbose
         k.dispatch(e)
         events.append(e)
     return events

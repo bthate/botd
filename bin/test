@@ -24,7 +24,6 @@ from bl.typ import get_cls
 from bl.usr import Users
 from bl.utl import cdir
 
-
 opts = [
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
@@ -33,13 +32,11 @@ opts = [
     ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
 
-
 k = Kernel()
-users = Users()
 
 def initialize(cfg):
     cdir("testdata")
-    users.oper("test@shell")
+    k.users.oper("test@shell")
     k.cfg.prompt = False
     k.walk("botd")
     k.start()
@@ -68,6 +65,7 @@ def main():
         pass
     cfg = parse_cli("test", __version__, opts)
     bl.obj.workdir = "testdata"
+    k.cfg.update(cfg)
     level("debug")
     initialize(cfg)
     k.cfg.debug = True

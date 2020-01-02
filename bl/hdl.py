@@ -45,6 +45,8 @@ class Event(Object):
         res = []
         txt = ""
         for key in keys:
+            if key == "stamp":
+                continue
             val = o.get(key, None)
             if not val:
                 continue

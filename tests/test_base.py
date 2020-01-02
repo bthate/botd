@@ -2,9 +2,10 @@
 #
 # test Object and Persist
 
+import json
 import unittest
 
-from bl.obj import Object
+from bl.obj import Object, ObjectDecoder, ObjectEncoder, stamp
 
 class Test_Base(unittest.TestCase):
 
@@ -57,3 +58,37 @@ class Test_Base(unittest.TestCase):
         o1.bla3 = 3
         res = sorted(list(o1))
         self.assertEqual(res, ["bla1","bla2","bla3"])
+
+    def test_json1(self):
+        o = Object()
+        d = json.dumps(o, cls=ObjectEncoder)
+        self.assertEqual(d, "{}")
+        
+    def test_json2(self):
+        o = Object()
+        o.test = "bla"
+        d = json.dumps(o, cls=ObjectEncoder)
+        oo = json.loads(d, cls=ObjectDecoder)
+        self.assertEqual(oo.test, "bla")
+
+    def test_jsonempty(self):
+        o = json.loads("", cls=ObjectDecoder)
+        self.assertEqual(type(o), Object)
+        
+    def test_jsonempty2(self):
+        o = json.loads("{}", cls=ObjectDecoder)
+        self.assertEqual(type(o), Object)
+        
+    def test_jsonattribute(self):
+        o = Object()
+        o.test = "bla"
+        dstr = json.dumps(o, cls=ObjectEncoder)
+        o = json.loads(dstr, cls=ObjectDecoder)
+        self.assertEqual(o.test, "bla")
+
+    def test_stamp(self):
+        o = Object()
+        o.test = Object()
+        o.test.test = Object()
+        stamp(o)
+        self.assertTrue(o.test.test.stamp, "ob.obj.Object")

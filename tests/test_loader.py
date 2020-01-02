@@ -15,3 +15,14 @@ class Test_Loader(unittest.TestCase):
         ll = bl.ldr.Loader()
         ll.load(p)
         self.assertTrue("cmds" in ll)
+
+    def test_getmods1(self):
+        l = bl.ldr.Loader()
+        mods = l.get_mods("bl")
+        self.assertTrue("bl.flt" in [x.__name__ for x in mods])
+
+    def test_getmods2(self):
+        l = bl.ldr.Loader()
+        mods = l.get_mods("botd")
+        self.assertTrue("botd.cmd" in [x.__name__ for x in mods])
+           

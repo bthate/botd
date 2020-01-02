@@ -7,8 +7,7 @@ import logging
 import os
 import unittest
 
-from bl.gnr import edit
-from bl.obj import Object
+from bl.obj import Object, edit
 from bl.prs import Command
 from bl.hdl import Event
 

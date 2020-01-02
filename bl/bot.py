@@ -31,7 +31,6 @@ class Bot(bl.hdl.Handler):
         self._outqueue = queue.Queue()
         self.cfg = Cfg()
         self.channels = []
-        self.verbose = True
         k.fleet.add(self)
 
     def _say(self, channel, txt, mtype="normal"):
