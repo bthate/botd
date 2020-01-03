@@ -69,7 +69,9 @@ class Loader(Object):
                          raise ex
              mods.append(mod)
              for key, o in inspect.getmembers(mod, inspect.ismodule):
-                 mods.append(o)
+                 print(key, o)
+                 if mn in str(o):
+                     mods.append(o)
         return mods
 
     def get_names(self, mod):

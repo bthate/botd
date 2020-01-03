@@ -8,6 +8,7 @@ import sys
 
 from bl.krn import kernels
 from bl.obj import Cfg
+from bl.thr import launch
 
 # defines
 
@@ -73,10 +74,10 @@ class Bot(bl.hdl.Handler):
     def start(self, input=False, output=False):
         super().start()
         if output:
-            bl.thr.launch(self.output)
+            launch(self.output)
         if input:
-            bl.thr.launch(self.input)
+            launch(self.input)
 
 # runtime
 
-k = kernels.get("0")
+k = kernels._get("0")

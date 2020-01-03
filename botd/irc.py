@@ -49,6 +49,8 @@ def init(k):
     bot.start()
     return bot
 
+saylock = _thread.allocate_lock()
+
 # classes
 
 class Cfg(Cfg):
@@ -406,5 +408,4 @@ class DCC(Bot):
 
 # runtime
 
-saylock = _thread.allocate_lock()
-k = kernels.get("0")
+k = kernels._get("0")

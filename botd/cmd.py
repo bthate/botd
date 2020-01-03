@@ -28,7 +28,7 @@ def meet(event):
     except ValueError:
         event.reply("meet origin [permissions]")
         return
-    origin = Users.userhosts.get(origin, origin)
+    origin = Users.userhosts._get(origin, origin)
     u = k.users.meet(origin, perms)
     event.reply("added %s" % origin)
 

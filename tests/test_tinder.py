@@ -10,14 +10,14 @@ import time
 import unittest
 
 from bl.bot import Bot
-from bl.obj import Object, values
+from bl.obj import Object
 from bl.hdl import Event
 from bl.krn import Kernel, kernels
 from bl.utl import consume
 from bl.thr import launch
 from bl.usr import Users
 
-k = kernels.get("0")
+k = kernels._get("0")
 users = Users()
 
 class Param(Object):

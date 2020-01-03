@@ -90,13 +90,17 @@ class Db(Object):
 def hook(fn):
     t = fn.split(os.sep)[0]
     if not t:
+        t = fn.split(os.sep)[0][1:]
+    if not t:
         raise ENOFILE(fn)
     o = get_cls(t)()
-    o.load(fn)
+    o._load(fn)
     return o
 
 def names(name, delta=None):
     assert bl.obj.workdir
+    if not name:
+        return []
     p = os.path.join(bl.obj.workdir, "store", name) + os.sep
     res = []
     now = time.time()

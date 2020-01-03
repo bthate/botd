@@ -7,7 +7,7 @@ import time
 import types
 import unittest
 
-from bl.obj import Object, values
+from bl.obj import Object
 from bl.hdl import Event
 from bl.krn import Kernel
 from bl.thr import launch
@@ -167,11 +167,11 @@ def testcmnds(event):
         else:
             name = randomarg()
         e = Event()
-        e.update(event)
+        e._update(event)
         e._verbose = k.cfg.verbose
         e.orig = event.orig
         e.server = "localhost"
-        cmnd = examples.get(cmnd, cmnd)
+        cmnd = examples._get(cmnd, cmnd)
         e.txt = "%s %s" % (cmnd, name)
         e.origin = "root@shell"
         k.dispatch(e)

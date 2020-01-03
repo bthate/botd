@@ -7,7 +7,6 @@ import random
 import unittest
 
 from bl.krn import Kernel
-from bl.obj import values
 from bl.typ import get_cls
 from bl.usr import Users
 
@@ -22,12 +21,12 @@ users.oper("test@shell")
 class Test_Fuzzer(unittest.TestCase):
 
     def test_fuzzer1(self):
-        for t in values(k.names):
+        for t in k.names._values():
             for key in k.names:
                 try:
                     e = get_cls(t)()
                     e.verbose = k.cfg.verbose
-                    e.txt = key + " " + random.choice(list(values(k.names)))
+                    e.txt = key + " " + random.choice(list(k.names._values()))
                     e.parse(e.txt)
                     e.orig = repr(k)
                     e.origin = "test@shell"

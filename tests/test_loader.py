@@ -13,9 +13,9 @@ class Test_Loader(unittest.TestCase):
     def test_loadmod(self):
         l = Loader()
         l.walk("bl.ldr")
-        p = l.save()
+        p = l._save()
         ll = Loader()
-        ll.load(p)
+        ll._load(p)
         self.assertTrue("cmds" in ll)
 
     def test_getmods1(self):
@@ -28,9 +28,12 @@ class Test_Loader(unittest.TestCase):
         mods = l.get_mods("botd")
         self.assertTrue("botd.cmd" in [x.__name__ for x in mods])
 
-    def test_names(self):
+    def test_bl(self):
         l = Loader()
         l.walk("bl")
+        self.assertTrue("bl.obj.Object" in l.names._values())
+
+    def test_botd(self):
+        l = Loader()
         l.walk("botd")
-        print(l.names)
-        self.assertTrue("botd.cmd" in l.names)           
+        self.assertTrue("botd.cmd" in l.names._values())

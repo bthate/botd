@@ -92,10 +92,14 @@ class Object:
         self.reply(txt)
 
     def _edit(self, setter):
+        try:
+            setter = vars(setter)
+        except:
+            pass
         if not setter:
             setter = {}
         count = 0
-        for key, value in setter._items():
+        for key, value in setter.items():
             count += 1
             if "," in value:
                 value = value.split(",")
@@ -183,7 +187,7 @@ class Object:
         res = False
         if not match:
             return res
-        for key, value in match._items():
+        for key, value in match.items():
             val = self._get(key, None)
             if val:
                 if not value:

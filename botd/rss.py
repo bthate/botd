@@ -12,9 +12,10 @@ import urllib
 from bl.clk import Repeater
 from bl.dbs import Db
 from bl.flt import Fleet
-from bl.obj import Cfg, Object, edit
+from bl.obj import Cfg, Object
 from bl.tms import to_time
 from bl.thr import launch
+from bl.tms import to_time, day
 from bl.utl import get_tinyurl, get_url, strip_html, unescape
 
 from bl.krn import kernels
@@ -187,8 +188,8 @@ def display(event):
     db = Db()
     for o in db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
-        edit(o, setter)
-        o.save()
+        o._edit(setter)
+        o._save()
     event.reply("ok %s" % nr)
 
 def feed(event):
@@ -196,7 +197,7 @@ def feed(event):
     if event.args:
         match = event.args[0]
     nr = 0
-    diff = time.time() - bl.tms.to_time(bl.tms.day())
+    diff = time.time() - to_time(day())
     db = Db()
     res = list(db.find("botd.rss.Feed", {"link": match}, delta=-diff))
     for o in res:
@@ -242,4 +243,4 @@ def rss(event):
 # runtime
 
 fetcher = Fetcher()
-k = kernels.get("0")
+k = kernels._get("0")

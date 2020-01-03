@@ -60,14 +60,14 @@ class Users(Db):
             user = User()
         user.user = origin
         user.perms = ["USER", ]
-        user.save()
+        user._save()
         return user
 
     def oper(self, origin):
         user = User()
         user.user = origin
         user.perms = ["OPER", "USER"]
-        Users.cache.set(origin, user)
+        Users.cache._set(origin, user)
         return user
 
     def perm(self, origin, permission):
@@ -76,5 +76,5 @@ class Users(Db):
             raise ENOUSER(origin)
         if permission.upper() not in user.perms:
             user.perms.append(permission.upper())
-            user.save()
+            user._save()
         return user

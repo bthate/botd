@@ -36,4 +36,4 @@ def find(event):
             c += 1
 # runtime
 
-k = kernels.get("0")
+k = kernels._get("0")

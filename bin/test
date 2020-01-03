@@ -44,7 +44,7 @@ def initialize(cfg):
         try:
             o = get_cls(c)()
             o.txt = "yo!"
-            o.save()
+            o._save()
         except (AttributeError, TypeError) as ex:
             pass
 
@@ -65,7 +65,7 @@ def main():
         pass
     cfg = parse_cli("test", __version__, opts)
     bl.obj.workdir = "testdata"
-    k.cfg.update(cfg)
+    k.cfg._update(cfg)
     level("debug")
     initialize(cfg)
     k.cfg.debug = True

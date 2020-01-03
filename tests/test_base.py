@@ -24,8 +24,8 @@ class Test_Base(unittest.TestCase):
     def test_cleanload(self):
         o = Object()
         o.test = "bla"
-        p = o.save()
-        o.load(p)
+        p = o._save()
+        o._load(p)
         self.assertEqual(type(o), Object)
 
     def test_settingattribute(self):
@@ -48,7 +48,7 @@ class Test_Base(unittest.TestCase):
         o1._bla = "mekker"
         o2 = Object()
         o2._bla = "blaet"
-        o1.update(o2)
+        o1._update(o2)
         self.assertEqual(o1._bla, "blaet")
 
     def test_iter(self):

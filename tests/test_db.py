@@ -11,5 +11,5 @@ class Test_Store(unittest.TestCase):
 
     def test_emptyargs(self):
         db = Db()
-        with self.assertRaises(ENOFILE):
-            res = list(db.find("", {}))
+        res = list(db.find("", {}))
+        self.assertEqual(res, [])

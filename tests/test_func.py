@@ -12,7 +12,6 @@ import types
 import unittest
 
 from bl.krn import Kernel
-from bl.obj import values
 from bl.hdl import Event
 from bl.thr import launch
 
