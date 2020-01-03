@@ -7,8 +7,12 @@ import logging
 from bl.dbs import Db
 from bl.obj import Object
 
+# defines
+
 def __dir__():
     return ("User", "Users")
+
+# classes
 
 class User(Object):
 

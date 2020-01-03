@@ -17,12 +17,14 @@ import bl.utl
 
 from bl.obj import Cfg, Object
 
-cmds = []
+# defines
+
+def __dir__():
+    return ("HISTFILE", "close_history", "complete", "enable_history", "execute", "get_completer", "make_opts", "parse_cli", "set_completer", "writepid")
 
 HISTFILE = ""
 
-def __dir__():
-    return ("daemon", "execute", "parse_cli", "set_completer")
+# functions
 
 def close_history():
     global HISTFILE
@@ -116,3 +118,7 @@ def writepid():
     f.write(str(os.getpid()))
     f.flush()
     f.close()
+
+# runtime
+
+cmds = []

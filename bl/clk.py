@@ -12,10 +12,12 @@ from bl.obj import Cfg, Object
 from bl.thr import launch
 from bl.utl import get_name
 
+# defines
+
 def __dir__():
     return ("Repeater", "Timer", "Timers")
 
-db = Db()
+# classes
 
 class Cfg(Cfg):
 
@@ -100,3 +102,7 @@ class Repeater(Timer):
     def run(self, *args, **kwargs):
         self._func(*args, **kwargs)
         return launch(self.start)
+
+# runtime
+
+db = Db()

@@ -23,12 +23,11 @@ from bl.thr import launch
 from bl.usr import Users
 from bl.utl import locked
 
+# defines
+
 def __dir__():
     return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "errored", "noticed", "privmsged")
 
-saylock = _thread.allocate_lock()
-k = kernels.get("0")
-          
 def init(k):
     bot = IRC()
     #l = bot.cfg.last()
@@ -49,6 +48,8 @@ def init(k):
         bot.cfg.save()
     bot.start()
     return bot
+
+# classes
 
 class Cfg(Cfg):
 
@@ -402,3 +403,8 @@ class DCC(Bot):
 
     def say(self, channel, txt, type="chat"):
         self.raw(txt)
+
+# runtime
+
+saylock = _thread.allocate_lock()
+k = kernels.get("0")

@@ -11,8 +11,12 @@ import types
 from bl.trc import get_exception
 from bl.utl import get_name
 
+# defines
+
 def __dir__():
-    return ("Task", "Launcher")
+    return ("Task", "Launcher", "launch")
+
+# classes
 
 class Thr(threading.Thread):
 
@@ -64,6 +68,8 @@ class Launcher:
         while not self._stopped:
             t = self._queue.get()
             t.start()
+
+# functions
 
 def launch(func, *args):
     l = Launcher()

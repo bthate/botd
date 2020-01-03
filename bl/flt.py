@@ -4,8 +4,12 @@
 
 from bl.obj import Object
 
+# defines
+
 def __dir__():
     return ("Fleet",)
+
+# classes
 
 class Fleet(Object):
 

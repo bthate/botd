@@ -11,10 +11,15 @@ import types
 import typing
 
 from bl.obj import Object, Register, xdir
+from bl.trc import get_exception
 from bl.typ import get_type
+
+# defines
 
 def __dir__():
     return ("Loader",)
+
+# classes
 
 class Loader(Object):
 
@@ -25,7 +30,11 @@ class Loader(Object):
         self.cmds = Register()
 
     def direct(self, name):
-        return importlib.import_module(name)
+        try:
+            return importlib.import_module(name)
+        except Exception as ex:
+            logging.debug(get_exception())
+            raise
 
     def get_mn(self, pn):
         names = []
@@ -52,8 +61,12 @@ class Loader(Object):
                  continue
              try:
                  mod = self.direct(mn)
-             except ModuleNotFoundError:
-                 continue
+             except ModuleNotFoundError as ex:
+                 if self.cfg and self.cfg.name:
+                     try:
+                         mod = self.direct("%s.%s" % (self.cfg.name, mn)) 
+                     except ModuleNotFoundError:
+                         raise ex
              mods.append(mod)
              for key, o in inspect.getmembers(mod, inspect.ismodule):
                  mods.append(o)

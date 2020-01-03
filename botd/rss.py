@@ -19,7 +19,7 @@ from bl.utl import get_tinyurl, get_url, strip_html, unescape
 
 from bl.krn import kernels
 
-k = kernels.get("0")
+# defines
 
 try:
     import feedparser
@@ -33,6 +33,8 @@ def __dir__():
 def init(kernel):
     fetcher.start()
     return fetcher
+
+# classes
 
 class Cfg(Cfg):
 
@@ -144,7 +146,7 @@ class Fetcher(Object):
     def stop(self):
         self.seen.save()
 
-fetcher = Fetcher()
+# functions
 
 def get_feed(url):
     result = get_url(url).data
@@ -236,3 +238,8 @@ def rss(event):
     o.rss = event.args[0]
     o.save()
     event.reply("ok 1")
+
+# runtime
+
+fetcher = Fetcher()
+k = kernels.get("0")

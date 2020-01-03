@@ -19,10 +19,17 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode, urlunparse
 from urllib.request import Request, urlopen
 
+from bl.trc import get_exception
+
+# defines
+
+def __dir__():
+    return ("cdir", "check_permissions", "consume", "fromfile", "get_name", "get_tinyurl", "get_url", "hd", "kill", "fnlast", "locked", "match", "randomname", "strip_html", "touch", "useragent", "unescape") 
+
 allowedchars = string.ascii_letters + string.digits + '_+/$.-'
 resume = {}
 
-from bl.trc import get_exception
+# functions
 
 def cdir(path):
     if os.path.exists(path):

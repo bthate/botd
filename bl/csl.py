@@ -12,16 +12,19 @@ from bl.krn import kernels
 from bl.hdl import Event, Handler
 from bl.thr import launch
 
+#defines
+
 def __dir__():
     return ("Console", "init")
 
-k = kernels.get("0", None)
 
 def init(kernel):
     csl = Console()
     csl.cmds = kernel.cmds
     csl.start()
     return csl
+
+# classes
 
 class Event(Event):
 
@@ -77,3 +80,7 @@ class Console(Handler):
     def start(self):
         launch(self.input)
         self._connected.set()
+
+# runtime
+
+k = kernels.get("0", None)

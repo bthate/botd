@@ -9,10 +9,12 @@ import sys
 from bl.krn import kernels
 from bl.obj import Cfg
 
+# defines
+
 def __dir__():
     return ('Bot', 'Cfg')
 
-k = kernels.get("0")
+# classes
 
 class Cfg(Cfg):
 
@@ -74,3 +76,7 @@ class Bot(bl.hdl.Handler):
             bl.thr.launch(self.output)
         if input:
             bl.thr.launch(self.input)
+
+# runtime
+
+k = kernels.get("0")

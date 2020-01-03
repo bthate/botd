@@ -7,6 +7,11 @@ import os
 import string
 import time
 
+# defines
+
+def __dir__():
+    return ("timestrings, year_formats", "allowedchars", "day", "days", "elapsed", "fntime", "get_time", "now", "parse_date", "rtime", "today", "to_day", "to_time")
+
 timestrings = [
     "%a, %d %b %Y %H:%M:%S %z",
     "%d %b %Y %H:%M:%S %z",
@@ -48,6 +53,8 @@ year_formats = [
 ]
 
 allowedchars = string.ascii_letters + string.digits + '_+/$.-'
+
+# functions
 
 def day():
     return str(datetime.datetime.today()).split()[0]

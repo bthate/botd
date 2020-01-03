@@ -20,6 +20,12 @@ from bl.trc import get_exception
 from bl.usr import Users
 from bl.utl import get_name
 
+# defines
+
+starttime = time.time()
+
+# classes
+
 class Cfg(Cfg):
 
     pass
@@ -95,7 +101,7 @@ class Kernel(Loader):
             self.cfg.save()
         if self.cfg.shell:
             self.init("bl.csl,botd.cmd")
-        else:
+        elif not self.cfg.kernel:
             self._skip = True
 
     def wait(self):
@@ -111,5 +117,7 @@ class Kernels(Register):
     def add(self, kernel):
         self.register(str(Kernels.nr), kernel)
         Kernels.nr += 1
+
+# runtime
 
 kernels = Kernels()

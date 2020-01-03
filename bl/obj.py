@@ -11,13 +11,16 @@ import time
 import types
 import _thread
 
-from json import JSONEncoder
+from json import JSONEncoder, JSONDecoder
 
 from bl.err import EJSON, EOVERLOAD
 from bl.typ import get_cls, get_type
 from bl.utl import cdir, locked, get_name
 
 # defines
+
+def __dir__():
+    return ("ObjectDecoder", "ObjectEncoder", "Object", "Default", "Cfg", "Register", "edit", "eq", "format", "hooked", "items", "keys", "ne", "search", "setter", "sliced", "stamp", "update2", "values", "xdir")
 
 lock = _thread.allocate_lock()
 starttime = time.time()
@@ -38,7 +41,7 @@ class ObjectEncoder(JSONEncoder):
             return o
         return repr(o)
 
-class ObjectDecoder(JSONEncoder):
+class ObjectDecoder(JSONDecoder):
 
     def decode(self, s):
         if s == "":

@@ -13,10 +13,14 @@ from bl.tms import fntime
 from bl.typ import get_cls
 from bl.utl import locked
 
+# defines
+
 def __dir__():
-    return ("Db",)
+    return ("Db", "hook", "lock", "names")
 
 lock = _thread.allocate_lock()
+
+# classes
 
 class Db(Object):
 
@@ -79,6 +83,8 @@ class Db(Object):
             if s:
                 return s[-1][-1]
         return None
+
+# functions
 
 @locked(lock)
 def hook(fn):

@@ -12,15 +12,18 @@ from bl.flt import Fleet
 from bl.thr import launch
 from bl.utl import get_name
 
+# defines
+
 def __dir__():
     return ("UDP", "Cfg", "init") 
 
-k = kernels.get("0")
 
 def init(kernel):
     server = UDP()
     server.start()
     return server
+
+# classes
 
 class Cfg(Cfg):
 
@@ -83,3 +86,7 @@ class UDP(Object):
         db = Db()
         self.cfg = db.last("bl.udp.Cfg") or Cfg()
         launch(self.server)
+
+# runtime
+
+k = kernels.get("0")

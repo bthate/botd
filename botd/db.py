@@ -8,7 +8,12 @@ import os
 from bl.dbs import Db
 from bl.krn import kernels
 
-k = kernels.get("0")
+# defines
+
+def __dir__():
+    return ("find",)
+
+# functions
 
 def find(event):
     opts = os.listdir(os.path.join(k.cfg.workdir, "store"))
@@ -29,3 +34,6 @@ def find(event):
         for o in db.find(opt, selector):
             event.display(o, str(c))
             c += 1
+# runtime
+
+k = kernels.get("0")

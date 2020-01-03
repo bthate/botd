@@ -9,6 +9,13 @@ import threading
 from bl.obj import Object
 from bl.dbs import Db
 
+# defines
+
+def __dir__():
+    return ("Log", "Todo", "log", "todo")
+
+# classes
+
 class Log(Object):
 
     def __init__(self):
@@ -20,6 +27,8 @@ class Todo(Object):
     def __init__(self):
         super().__init__()
         self.txt = ""
+
+# functions
 
 def log(event):
     obj = Log()

@@ -6,6 +6,13 @@ import bl
 import importlib
 import types
 
+# defines
+
+def __dir__():
+    return ("get_cls", "get_name", "get_type", "get_clstype", "get_objtype", "get_vartype")
+    
+# functions
+
 def get_cls(name):
     modname, clsname = name.rsplit(".", 1)
     mod = importlib.import_module(modname)

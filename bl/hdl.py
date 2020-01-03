@@ -16,8 +16,12 @@ from bl.obj import Object, Register
 from bl.thr import launch
 from bl.tms import days
 
+# defines
+
 def __dir__():
-    return ("Handler",)
+    return ("Event", "Handler")
+
+# classes
 
 class Event(Object):
 

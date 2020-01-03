@@ -11,7 +11,14 @@ import bl.obj
 
 from bl.utl import cdir, touch
 
+# defines
+
+def __dir__():
+    return ("DumpHandler", "level", "logfiled")
+    
 logfiled = ""
+
+# 
 
 class DumpHandler(logging.StreamHandler):
 

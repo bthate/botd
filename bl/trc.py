@@ -7,6 +7,13 @@ import sys
 import traceback
 import _thread
 
+# defines
+
+def __dir__():
+    return ("get_exception", "get_from")
+
+# functions
+
 def get_exception(txt="", sep=""):
     exctype, excvalue, tb = sys.exc_info()
     trace = traceback.extract_tb(tb)

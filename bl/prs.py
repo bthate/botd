@@ -8,8 +8,12 @@ import threading
 import bl
 import bl.obj
 
+# defines
+
 def __dir__():
-    return ("Command", "Event", "Object", "Token")
+    return ("Command", "Token")
+
+# classes
 
 class Token(bl.obj.Object):
 
