@@ -50,7 +50,10 @@ class Loader(Object):
         for mn in ms.split(","):
              if not mn:
                  continue
-             mod = self.direct(mn)
+             try:
+                 mod = self.direct(mn)
+             except ModuleNotFoundError:
+                 continue
              mods.append(mod)
              for key, o in inspect.getmembers(mod, inspect.ismodule):
                  mods.append(o)
