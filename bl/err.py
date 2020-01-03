@@ -2,6 +2,10 @@
 #
 # errors. 
 
+class EOVERLOAD(Exception):
+
+    pass
+
 class EBLOCKING(Exception):
 
     pass

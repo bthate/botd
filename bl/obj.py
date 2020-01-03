@@ -8,11 +8,12 @@ import json
 import logging
 import os
 import time
+import types
 import _thread
 
 from json import JSONEncoder
 
-from bl.err import EJSON
+from bl.err import EJSON, EOVERLOAD
 from bl.typ import get_cls, get_type
 from bl.utl import cdir, locked, get_name
 
@@ -44,7 +45,7 @@ class ObjectDecoder(JSONEncoder):
             return Object()
         return json.loads(s, object_hook=hooked)
 
-class Object():
+class Object:
 
     __slots__ = ("__dict__", "_path")
     default = ""
@@ -54,10 +55,23 @@ class Object():
         stime = str(datetime.datetime.now()).replace(" ", os.sep)
         path = os.path.join(get_type(self), stime)
         self._path = path
-        if args:
-            self.update(args[0])
-        if kwargs:
-            self.update(kwargs)
+
+    def __bool__(self):
+        for k in self:
+            if getattr(self, k, None):
+                return True
+        return False
+
+    def __getattr__(self, attrname):
+        try:
+            return self.__dict__[attrname]
+        except KeyError:
+            try:
+                return super().__getattribute__(attrname)
+            except AttributeError:
+                if "_default" in self:
+                    self[attrname] = self["_default"]
+        return self.__getattribute__(attrname)
 
     def __iter__(self):
         return iter(self.__dict__)
@@ -65,17 +79,20 @@ class Object():
     def __len__(self):
         return len(self.__dict__)
 
-    def __bool__(self):
-        for k in self:
-            if self.get(k, None):
-                return True
-        return False
+    def __setattr__(self, key, value):
+        func = getattr(self, key, None)
+        if func:
+            if isinstance(func, types.MethodType):
+                raise EOVERLOAD(key)
+        if isinstance(value, types.MethodType):
+            return super().__setattr__(key, value)
+        return self.__dict__.__setitem__(key, value)
 
-    def __getitem__(self, k):
-        return self.__dict__.__getitem__(k)
-    
-    def __setitem__(self, k, v):
-        return self.__dict__.__setitem__(k, v)
+    def __setitem__(self, key, value):
+        func = getattr(self, key, None)
+        if isinstance(func, types.MethodType):
+            raise EOVERLOAD(key)
+        return super().__dict__.__setitem__(key, value)
 
     def __str__(self):
         return json.dumps(self, cls=ObjectEncoder, indent=4, sort_keys=True)
@@ -88,7 +105,6 @@ class Object():
                 return self.__dict__[key]
             except (AttributeError, KeyError):
                 return getattr(self, key, default)
-
     def json(self):
         return json.dumps(self, cls=ObjectEncoder, indent=4, sort_keys=True)
 
@@ -96,6 +112,18 @@ class Object():
         from bl.dbs import Db
         db = Db()
         return db.last(str(get_type(self)))
+
+    def set(self, key, val):
+        setattr(self, key, val)
+
+    def update(self, o, skip=False):
+        if not o:
+            return
+        for key in o:
+            val = o.get(key)
+            if skip and not val:
+               continue
+            self.set(key, val)
 
     @locked(lock)
     def load(self, path):
@@ -124,25 +152,14 @@ class Object():
             json.dump(stamp(self), ofile, cls=ObjectEncoder, indent=4, sort_keys=True)
         return self._path
 
-    def set(self, key, val):
-        setattr(self, key, val)
-
-    def update(self, o, skip=False):
-        if not o:
-            return
-        for key in o:
-            val = o.get(key)
-            if skip and not val:
-               continue
-            self.set(key, val)
 
 class Default(Object):
 
     def __getattr__(self, k):
         if k in self:
-            return self.__dict_[k]
-        self.__dict__[k] = ""
-        return self.__dict__[k]
+            return self.__dict__.__getitem__(k)
+        self.__dict__.__setitem__(k, "")
+        return self.__dict__.__getitem__(k)
 
 class Cfg(Default):
 

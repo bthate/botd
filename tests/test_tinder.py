@@ -12,14 +12,12 @@ import unittest
 from bl.bot import Bot
 from bl.obj import Object, values
 from bl.hdl import Event
-from bl.krn import Kernel
+from bl.krn import Kernel, kernels
 from bl.utl import consume
 from bl.thr import launch
 from bl.usr import Users
 
-k = Kernel()
-k.start()
-k.walk("botd")
+k = kernels.get("0")
 users = Users()
 
 class Param(Object):
