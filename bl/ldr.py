@@ -10,7 +10,7 @@ import pkgutil
 import types
 import typing
 
-from bl.obj import Object, Register, xdir
+from bl.obj import Object, Register
 from bl.trc import get_exception
 from bl.typ import get_type
 
@@ -43,7 +43,7 @@ class Loader(Object):
         return names
 
     def get_cmd(self, cn):
-        return self.cmds.get(cn, None)
+        return self.cmds._get(cn, None)
 
     def get_cmds(self, mod):
         cmds = Register()
@@ -51,7 +51,7 @@ class Loader(Object):
             if "event" in o.__code__.co_varnames:
                 if o.__code__.co_argcount == 1:
                     if key not in cmds:
-                        cmds.register(key, o)
+                        cmds._register(key, o)
         return cmds
 
     def get_mods(self, ms):
@@ -79,14 +79,14 @@ class Loader(Object):
                 t = get_type(o)
                 n = t.split(".")[-1].lower()
                 if n not in names:
-                    names.register(n, t)
+                    names._register(n, t)
         return names
 
     def walk(self, modstr):
         mods = self.get_mods(modstr)
         for mod in mods:
             names = self.get_names(mod)
-            self.names.update(names)
+            self.names._update(names)
             cmds = self.get_cmds(mod)
-            self.cmds.update(cmds)
+            self.cmds._update(cmds)
         return mods

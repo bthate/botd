@@ -44,4 +44,4 @@ def v(event):
 
 # runtime
 
-k = kernels.get("0")
+k = kernels._get("0")

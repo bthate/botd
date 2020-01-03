@@ -40,8 +40,8 @@ class Kernel(Loader):
         super().__init__()
         self._stopped = False
         self._skip = False
-        self.cfg.update(cfg or {})
-        self.cfg.update(kwargs)
+        self.cfg._update(cfg or {})
+        self.cfg._update(kwargs)
         kernels.add(self)
         
     def cmd(self, txt, origin=""):
@@ -115,7 +115,7 @@ class Kernels(Register):
     nr = 0
 
     def add(self, kernel):
-        self.register(str(Kernels.nr), kernel)
+        self._register(str(Kernels.nr), kernel)
         Kernels.nr += 1
 
 # runtime

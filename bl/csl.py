@@ -83,4 +83,4 @@ class Console(Handler):
 
 # runtime
 
-k = kernels.get("0", None)
+k = kernels._get("0", None)
