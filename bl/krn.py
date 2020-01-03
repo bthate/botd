@@ -80,10 +80,11 @@ class Kernel(Loader):
         self.cmds.set(k, v)
 
     def start(self):
-        c = Cfg(self.cfg)
-        l = self.cfg.last()
-        self.cfg.update(l, True)
-        self.cfg.update(c, True)
+        if self.cfg.kernel:
+            c = Cfg(self.cfg)
+            l = self.cfg.last()
+            self.cfg.update(l, True)
+            self.cfg.update(c, True)
         try:
             self.init(self.cfg.modules)
         except bl.err.EINIT as ex:

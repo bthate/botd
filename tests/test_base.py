@@ -92,3 +92,36 @@ class Test_Base(unittest.TestCase):
         o.test.test = Object()
         stamp(o)
         self.assertTrue(o.test.test.stamp, "ob.obj.Object")
+
+    def test_overload1(self):
+        class O(object):
+            def bla(self):
+                print("yo!")
+        o = O()
+        o.bla = "mekker"
+        self.assertTrue(o.bla, "mekker")                
+
+    def test_overload2(self):
+        class O(object):
+            def bla(self):
+                return "yo!"
+        o = O()
+        a = o.bla()
+        self.assertTrue(a, "yo!")                
+
+    def test_overload3(self):
+        class O(object):
+            def bla(self):
+                return "yo!"
+        o = O()
+        setattr(o, "bla", "mekker")
+        with self.assertRaises(TypeError):
+            o.bla()
+            
+    def test_overload4(self):
+        class O(Object):
+            def bla(self):
+                return "yo!"
+        o = O()
+        a = o.bla()
+        self.assertTrue(a, "yo!")                

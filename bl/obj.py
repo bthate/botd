@@ -48,30 +48,16 @@ class ObjectDecoder(JSONEncoder):
 class Object:
 
     __slots__ = ("__dict__", "_path")
-    default = ""
 
     def __init__(self, *args, **kwargs):
         super().__init__()
         stime = str(datetime.datetime.now()).replace(" ", os.sep)
         path = os.path.join(get_type(self), stime)
         self._path = path
-
-    def __bool__(self):
-        for k in self:
-            if getattr(self, k, None):
-                return True
-        return False
-
-    def __getattr__(self, attrname):
-        try:
-            return self.__dict__[attrname]
-        except KeyError:
-            try:
-                return super().__getattribute__(attrname)
-            except AttributeError:
-                if "_default" in self:
-                    self[attrname] = self["_default"]
-        return self.__getattribute__(attrname)
+        if args:
+            self.update(args[0])
+        if kwargs:
+            self.update(kwargs)
 
     def __iter__(self):
         return iter(self.__dict__)
@@ -79,32 +65,15 @@ class Object:
     def __len__(self):
         return len(self.__dict__)
 
-    def __setattr__(self, key, value):
-        func = getattr(self, key, None)
-        if func:
-            if isinstance(func, types.MethodType):
-                raise EOVERLOAD(key)
-        if isinstance(value, types.MethodType):
-            return super().__setattr__(key, value)
-        return self.__dict__.__setitem__(key, value)
-
-    def __setitem__(self, key, value):
-        func = getattr(self, key, None)
-        if isinstance(func, types.MethodType):
-            raise EOVERLOAD(key)
-        return super().__dict__.__setitem__(key, value)
-
     def __str__(self):
         return json.dumps(self, cls=ObjectEncoder, indent=4, sort_keys=True)
 
-    def get(self, key, default=None):
+    def get(self, k, d=None):
         try:
-            return self[key]
-        except (TypeError, KeyError):
-            try:
-                return self.__dict__[key]
-            except (AttributeError, KeyError):
-                return getattr(self, key, default)
+            return self.__dict__.__getitem__(k)
+        except:
+            return d
+
     def json(self):
         return json.dumps(self, cls=ObjectEncoder, indent=4, sort_keys=True)
 
@@ -112,18 +81,6 @@ class Object:
         from bl.dbs import Db
         db = Db()
         return db.last(str(get_type(self)))
-
-    def set(self, key, val):
-        setattr(self, key, val)
-
-    def update(self, o, skip=False):
-        if not o:
-            return
-        for key in o:
-            val = o.get(key)
-            if skip and not val:
-               continue
-            self.set(key, val)
 
     @locked(lock)
     def load(self, path):
@@ -152,14 +109,22 @@ class Object:
             json.dump(stamp(self), ofile, cls=ObjectEncoder, indent=4, sort_keys=True)
         return self._path
 
+    def set(self, k, v):
+        self.__dict__[k] = v
+
+    def update(self, o, skip=False):
+        try:
+            oo = vars(o)
+        except TypeError:
+            oo = o
+        self.__dict__.update(oo)
 
 class Default(Object):
 
     def __getattr__(self, k):
-        if k in self:
-            return self.__dict__.__getitem__(k)
-        self.__dict__.__setitem__(k, "")
-        return self.__dict__.__getitem__(k)
+        if k not in self:
+            self.__dict__.__setitem__(k, "")
+        return self.__dict__[k]
 
 class Cfg(Default):
 
