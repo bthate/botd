@@ -63,7 +63,7 @@ class Object:
             self._update(kwargs)
 
     def __eq__(self, o):
-        if isinstance(2, (Dict, dict)):
+        if isinstance(self, (Object, dict)):
             return self.__dict__ == o.__dict__
         return False
 

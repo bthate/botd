@@ -42,7 +42,7 @@ class Timers(Object):
                 event = self.timers[t]
                 if time.time() > t:
                     self.cfg.latest = time.time()
-                    self.cfg.save()
+                    self.cfg._save()
                     event.raw(event.txt)
                     remove.append(t)
             for r in remove:

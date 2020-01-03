@@ -6,11 +6,14 @@ __version__ = 1
 
 from bl.dbs import Db
 from bl.krn import kernels
+from bl.typ import get_cls
+
+# defines
 
 def __dir__():
     return ("cfg",)
 
-k = kernels.get("0")
+# functions
 
 def cfg(event):
     if "IRC" in event.orig:
@@ -29,7 +32,7 @@ def cfg(event):
             event.reply("no %s found." % cn)
             return
         l = cls()
-        l.save()
+        l._save()
         event.reply("created a %s file" % cn)
     if len(event.args) == 1:
         event.reply(l)
@@ -38,7 +41,10 @@ def cfg(event):
         event.reply(l.get(event.args[1]))
         return
     setter = {event.args[1]: event.args[2]}
-    edit(l, setter)
-    l.save()
+    l._edit(setter)
+    l._save()
     event.reply("ok")
 
+# runtime
+
+k = kernels._get("0")

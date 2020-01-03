@@ -33,11 +33,11 @@ class Todo(Object):
 def log(event):
     obj = Log()
     obj.txt = event.rest
-    obj.save()
+    obj._save()
     event.reply("ok")
 
 def todo(event):
     obj = Todo()
     obj.txt = event.rest
-    obj.save()
+    obj._save()
     event.reply("ok")

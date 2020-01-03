@@ -6,6 +6,7 @@ import bl
 import inspect
 import importlib
 import logging
+import os
 import pkgutil
 import types
 import typing
@@ -67,11 +68,15 @@ class Loader(Object):
                          mod = self.direct("%s.%s" % (self.cfg.name, mn)) 
                      except ModuleNotFoundError:
                          raise ex
-             mods.append(mod)
-             for key, o in inspect.getmembers(mod, inspect.ismodule):
-                 print(key, o)
-                 if mn in str(o):
-                     mods.append(o)
+             if "__spec__" not in dir(mod):
+                 mods.append(mod)
+                 continue
+             for md in mod.__spec__.submodule_search_locations:
+                 for x in os.listdir(md):
+                     if x.endswith(".py"):
+                         mmn = "%s.%s" % (mn, x[:-3])
+                         mod = self.direct(mmn)
+                         mods.append(mod)
         return mods
 
     def get_names(self, mod):

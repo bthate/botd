@@ -23,4 +23,5 @@ import bl.krn
 import bl.csl
 import bl.prs
 
-def __dir__ = ("prs", "ldr", "flt", "hdl", "utl", "thr", "dbs", "err", "log", "shl", "trc", "typ", "tms", "trm", "clk", "usr", "krn", "csl")
+def __dir__():
+    return ("prs", "ldr", "flt", "hdl", "utl", "thr", "dbs", "err", "log", "shl", "trc", "typ", "tms", "trm", "clk", "usr", "krn", "csl")

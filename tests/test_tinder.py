@@ -72,7 +72,7 @@ def tests(b):
     consume(events)
 
 def do_cmd(b, cmd):
-    exs = param.get(cmd, [])
+    exs = param._get(cmd, [])
     e = list(exs)
     random.shuffle(e)
     events = []

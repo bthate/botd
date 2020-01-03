@@ -114,10 +114,10 @@ class Fetcher(Object):
                 except:
                     date = False
                 if date:
-                    feed.save(stime=date)
+                    feed._save(stime=date)
                 else:
-                    feed.save()
-        self.seen.save()
+                    feed._save()
+        self.seen._save()
         for o in objs:
             k.fleet.announce(self.display(o))
         return counter
@@ -145,7 +145,7 @@ class Fetcher(Object):
             return repeater
 
     def stop(self):
-        self.seen.save()
+        self.seen._save()
 
 # functions
 
@@ -175,7 +175,7 @@ def delete(event):
         rss._deleted = True
         got.append(rss)
     for rss in got:
-        rss.save()
+        rss._save()
     event.reply("ok %s" % nr)
 
 def display(event):
@@ -237,7 +237,7 @@ def rss(event):
         return
     o = Rss()
     o.rss = event.args[0]
-    o.save()
+    o._save()
     event.reply("ok 1")
 
 # runtime

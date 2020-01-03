@@ -98,7 +98,7 @@ class Kernel(Loader):
             self._skip = True
             return
         if self.cfg.dosave:
-            self.cfg.save()
+            self.cfg._save()
         if self.cfg.shell:
             self.init("bl.csl,botd.cmd")
         elif not self.cfg.kernel:

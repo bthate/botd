@@ -40,7 +40,7 @@ class Users(Db):
         for user in self.get_users(origin):
             try:
                 user.perms.remove(perm)
-                user.save()
+                user._save()
                 return True
             except ValueError:
                 pass

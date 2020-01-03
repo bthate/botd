@@ -15,7 +15,11 @@ import bl.log
 import bl.trm
 import bl.utl
 
+from bl.log import level
 from bl.obj import Cfg, Object
+from bl.trc import get_exception
+from bl.trm import save, reset
+from bl.utl import cdir, hd
 
 # defines
 
@@ -58,7 +62,7 @@ def enable_history():
     atexit.register(close_history)
 
 def execute(main):
-    bl.trm.save()
+    save()
     try:
         main()
     except KeyboardInterrupt:
@@ -68,9 +72,9 @@ def execute(main):
     except PermissionError:
         pass
     except Exception:
-        logging.error(bl.utl.get_exception())
+        logging.error(get_exception())
     finally:
-        bl.trm.reset()
+        reset()
 
 def get_completer():
     return readline.get_completer()
@@ -93,14 +97,14 @@ def parse_cli(name, version=None, opts=[], **kwargs):
     cfg = Cfg(ns)
     cfg._update(kwargs)
     cfg.txt = " ".join(cfg.args)
-    cfg.workdir = cfg.workdir or bl.utl.hd(".%s" % name)
+    cfg.workdir = cfg.workdir or hd(".%s" % name)
     cfg.name = name 
     cfg.version = version or __version__
     bl.obj.workdir = cfg.workdir
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
-        bl.utl.cdir(sp)
-    bl.log.level(cfg.level or "error")
+        cdir(sp)
+    level(cfg.level or "error")
     logging.debug("%s started in %s at %s (%s)" % (cfg.name.upper(), cfg.workdir, time.ctime(time.time()), cfg.level))
     return cfg
 

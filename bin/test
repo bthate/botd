@@ -38,9 +38,10 @@ def initialize(cfg):
     cdir("testdata")
     k.users.oper("test@shell")
     k.cfg.prompt = False
+    k.walk("bl")
     k.walk("botd")
     k.start()
-    for c in k.names:
+    for c in k.names._values():
         try:
             o = get_cls(c)()
             o.txt = "yo!"

@@ -30,10 +30,12 @@ class Test_Loader(unittest.TestCase):
 
     def test_bl(self):
         l = Loader()
+        l.walk("bl.all")
         l.walk("bl")
         self.assertTrue("bl.obj.Object" in l.names._values())
 
     def test_botd(self):
         l = Loader()
+        l.walk("botd.all")
         l.walk("botd")
-        self.assertTrue("botd.cmd" in l.names._values())
+        self.assertTrue("botd.udp.UDP" in l.names._values())

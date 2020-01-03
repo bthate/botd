@@ -45,7 +45,7 @@ def init(k):
         bot.cfg.server = server
         bot.cfg.channel = channel
         bot.cfg.nick = nick
-        bot.cfg.save()
+        bot.cfg._save()
     bot.start()
     return bot
 
