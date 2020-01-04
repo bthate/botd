@@ -2,19 +2,33 @@
 #
 # show status information.
 
+import os
 import threading
 import time
 
-from bl.krn import starttime
+from bl.krn import kernels, starttime
 from bl.obj import Object
 from bl.tms import elapsed
+from bl.typ import get_type
 
 # defines
 
 def __dir__():
-    return ("ps",)
+    return ("flt", "pid", "ps", "up")
 
 # functions
+
+def flt(event):
+    try:
+        index = int(event.args[0])
+        event.reply(str(k.fleet.bots[index]))
+        return
+    except (TypeError, ValueError, IndexError):
+        pass
+    event.reply([get_type(x) for x in k.fleet.bots])
+
+def pid(event):
+    event.reply(str(os.getpid()))
 
 def ps(event):
     psformat = "%-8s %-50s"
@@ -39,3 +53,7 @@ def ps(event):
 
 def up(event):
     event.reply(elapsed(time.time() - starttime))
+
+# runtime
+
+k = kernels._get("0")

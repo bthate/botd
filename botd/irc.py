@@ -288,6 +288,7 @@ class IRC(Bot):
             e.orig = repr(self)
             e.origin = event.origin
             e.txt = event.txt[1:]
+            print(e)
             k.dispatch(e)
 
     def poll(self):

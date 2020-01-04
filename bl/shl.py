@@ -95,7 +95,7 @@ def parse_cli(name, version=None, opts=[], **kwargs):
     ns = Object()
     make_opts(ns, opts)
     cfg = Cfg(ns)
-    cfg._update(kwargs)
+    cfg.update(kwargs)
     cfg.txt = " ".join(cfg.args)
     cfg.workdir = cfg.workdir or hd(".%s" % name)
     cfg.name = name 

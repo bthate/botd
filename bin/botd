@@ -14,9 +14,10 @@ import pwd
 import sys
 import bl.krn
 
+from bl.obj import workdir
 from bl.csl import Console
 from bl.err import EINIT
-from bl.krn import Kernel, workdir
+from bl.krn import Kernel
 from bl.log import level, logfiled
 from bl.shl import close_history, enable_history, execute, parse_cli, set_completer
 from bl.trm import reset, save
@@ -24,11 +25,11 @@ from bl.trc import get_exception
 from bl.utl import hd
 
 opts = [
-    ('-d', '--datadir', 'store', str, 'set working directory.', 'workdir'),
-    ('-m', '--modules', 'store', str, 'modules to load.', 'modules'),
-    ('-o', '--options', "store", str, "options to use.", 'options'),
-    ('-l', '--loglevel', 'store', str, 'set loglevel.', 'level'),
-    ('-a', '--logdir', "store", str, "directory to find the logfiles.", 'logdir'),
+    ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-o', '--options', "store", str, "", "options to use.", 'options'),
+    ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
+    ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
 ]
 
 def daemon():
