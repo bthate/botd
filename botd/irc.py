@@ -268,7 +268,7 @@ class IRC(Bot):
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
-        k.users.userhosts.set(event.nick, event.origin)
+        k.users.userhosts._set(event.nick, event.origin)
         if event.txt.startswith("DCC CHAT"):
             if not k.users.allowed(event.origin, "USER"):
                 return
@@ -283,8 +283,12 @@ class IRC(Bot):
             if not k.users.allowed(event.origin, "USER"):
                 logging.error("deny %s" % event.origin)
                 return
-            event.txt = event.txt[1:]
-            k.dispatch(event)
+            e = Event()
+            e.channel = event.channel
+            e.orig = repr(self)
+            e.origin = event.origin
+            e.txt = event.txt[1:]
+            k.dispatch(e)
 
     def poll(self):
         self._connected.wait()

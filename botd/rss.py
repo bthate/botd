@@ -77,7 +77,7 @@ class Fetcher(Object):
         if not dl:
             dl = self.cfg.display_list
         for key in dl:
-            data = o.get(key, None)
+            data = o._get(key, None)
             if key == "link":
                 datatmp = get_tinyurl(data)
                 if datatmp:
@@ -96,11 +96,13 @@ class Fetcher(Object):
         if not obj.rss:
             return 0
         for o in reversed(list(get_feed(obj.rss))):
+            print(o)
             if not o:
                 continue
             feed = Feed()
-            feed.update(o)
-            feed.update(obj)
+            feed._update(o)
+            feed._update(obj)
+            print(feed)
             u = urllib.parse.urlparse(feed.link)
             url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
             if url in self.seen.urls:
@@ -137,8 +139,8 @@ class Fetcher(Object):
         return res
 
     def start(self, repeat=True):
-        self.cfg.last()
-        self.seen.last()
+        self.cfg._last()
+        self.seen._last()
         if repeat:
             repeater = Repeater()
             repeater.start(600.0, self.run)

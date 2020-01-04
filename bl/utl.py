@@ -179,8 +179,9 @@ def touch(fname):
         pass
 
 def useragent():
-    k = bl.kernels.get_first()
-    return 'Mozilla/5.0 (X11; Linux x86_64) %s +http://git@github.com/bthate/%s)' % k.cfg.name
+    import bl.krn
+    k = bl.krn.kernels._get("0")
+    return 'Mozilla/5.0 (X11; Linux x86_64) %s +http://git@github.com/bthate/%s)' % (k.cfg.name.upper(), k.cfg.name)
 
 def unescape(text):
     import html

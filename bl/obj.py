@@ -78,8 +78,8 @@ class Object:
 
     def __setattr__(self, k, v):
         vv = self._get(k, None)
-        if vv and type(vv) in [types.MethodType, types.FunctionType]:
-            raise EOVERLOAD(k)
+        if vv and type(vv) == types.MethodType:
+            raise EOVERLOAD(k, vv)
         super().__setattr__(k, v)
 
     def __str__(self):
@@ -151,7 +151,7 @@ class Object:
     def _last(self):
         from bl.dbs import Db
         db = Db()
-        return db._last(str(get_type(self)))
+        return db.last(str(get_type(self)))
 
     @locked(lock)
     def _load(self, path):
@@ -238,11 +238,16 @@ class Object:
         return val
 
     def _update(self, o, skip=False):
+        print(type(self.__dict__.update))
+        print(type(o))
         try:
-            oo = vars(o)
-        except TypeError:
-            oo = o
-        self.__dict__.update(oo)
+            self.__dict__.update(o)
+        except (TypeError, ValueError):
+            try:
+                oo = vars(o)
+                self.__dict__.update(oo)
+            except TypeError:
+                raise
 
     def _values(self):
         return self.__dict__.values()
