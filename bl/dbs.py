@@ -31,7 +31,7 @@ class Db(Object):
             nr += 1
             if index is not None and nr != index:
                 continue
-            if selector and not o._search(selector):
+            if selector and not search(o, selector):
                 continue
             if "_deleted" in o and o._deleted:
                 continue
@@ -42,7 +42,7 @@ class Db(Object):
         for fn in names(otype):
             o = hook(fn)
             nr += 1
-            if selector and not o._search(selector):
+            if selector and not search(o, selector):
                 continue
             if "_deleted" not in o or not o._deleted:
                 continue
@@ -52,7 +52,7 @@ class Db(Object):
         nr = -1
         for fn in names(otype, delta):
             o = hook(fn)
-            if o._search(selector):
+            if search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
                     continue
@@ -71,7 +71,7 @@ class Db(Object):
         nr = -1
         for fn in names(otype, delta):
             o = hook(fn)
-            if selector and o._search(selector):
+            if selector and search(o, selector):
                 nr += 1
                 if index is not None and nr != index:
                     continue
@@ -94,7 +94,7 @@ def hook(fn):
     if not t:
         raise ENOFILE(fn)
     o = get_cls(t)()
-    o._load(fn)
+    o.load(fn)
     return o
 
 def names(name, delta=None):

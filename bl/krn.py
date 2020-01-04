@@ -14,7 +14,7 @@ import bl
 from bl.flt import Fleet
 from bl.hdl import Event
 from bl.ldr import Loader
-from bl.obj import Cfg, Object, Register
+from bl.obj import Cfg, Object, Register, last, merge
 from bl.shl import enable_history, set_completer, writepid
 from bl.trc import get_exception
 from bl.usr import Users
@@ -88,9 +88,9 @@ class Kernel(Loader):
     def start(self):
         if self.cfg.kernel:
             c = Cfg(self.cfg)
-            l = self.cfg.last()
-            self.cfg.update(l, True)
-            self.cfg.update(c, True)
+            l = last(self.cfg)
+            merge(self.cfg, l)
+            merge(self.cfg, c)
         try:
             self.init(self.cfg.modules)
         except bl.err.EINIT as ex:

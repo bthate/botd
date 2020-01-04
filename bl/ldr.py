@@ -44,7 +44,7 @@ class Loader(Object):
         return names
 
     def get_cmd(self, cn):
-        return self.cmds._get(cn, None)
+        return self.cmds.get(cn, None)
 
     def get_cmds(self, mod):
         cmds = Register()
@@ -52,7 +52,7 @@ class Loader(Object):
             if "event" in o.__code__.co_varnames:
                 if o.__code__.co_argcount == 1:
                     if key not in cmds:
-                        cmds._register(key, o)
+                        cmds.register(key, o)
         return cmds
 
     def get_mods(self, ms):
@@ -86,14 +86,14 @@ class Loader(Object):
                 t = get_type(o)
                 n = t.split(".")[-1].lower()
                 if n not in names:
-                    names._register(n, t)
+                    names.register(n, t)
         return names
 
     def walk(self, modstr):
         mods = self.get_mods(modstr)
         for mod in mods:
             names = self.get_names(mod)
-            self.names._update(names)
+            self.names.update(names)
             cmds = self.get_cmds(mod)
-            self.cmds._update(cmds)
+            self.cmds.update(cmds)
         return mods

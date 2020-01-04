@@ -94,8 +94,10 @@ def make_opts(ns, options, **kwargs):
 def parse_cli(name, version=None, opts=[], **kwargs):
     ns = Object()
     make_opts(ns, opts)
+    print(ns)
     cfg = Cfg(ns)
     cfg.update(kwargs)
+    print(cfg)
     cfg.txt = " ".join(cfg.args)
     cfg.workdir = cfg.workdir or hd(".%s" % name)
     cfg.name = name 

@@ -83,7 +83,7 @@ class Event(Object):
         if not self._verbose:
             return
         from bl.krn import kernels
-        k = kernels._get("0", None)
+        k = kernels.get("0", None)
         for txt in self.result:
             k.fleet.echo(self.orig, self.channel, txt)
  

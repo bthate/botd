@@ -38,8 +38,8 @@ def ps(event):
             continue
         d = vars(thr)
         o = Object()
-        o._update(d)
-        if o._get("sleep", None):
+        o.update(d)
+        if o.get("sleep", None):
             up = o.sleep - int(time.time() - o.state.latest)
         else:
             up = int(time.time() - starttime)
@@ -56,4 +56,4 @@ def up(event):
 
 # runtime
 
-k = kernels._get("0")
+k = kernels.get("0", None)
