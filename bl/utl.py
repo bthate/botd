@@ -76,6 +76,26 @@ def consume(elems):
         except ValueError:
             continue
 
+def edit(o, setter):
+    try:
+        setter = vars(setter)
+    except:
+        pass
+    if not setter:
+        setter = {}
+    count = 0
+    for key, value in setter.items():
+        count += 1
+        if "," in value:
+            value = value.split(",")
+        if value in ["True", "true"]:
+            o[key] = True
+        elif value in ["False", "false"]:
+            o[key] = False
+        else:
+            o[key] = value
+    return count
+
 def fromfile(f):
     try:
         fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -179,13 +199,18 @@ def touch(fname):
         pass
 
 def useragent():
-    import bl.krn
-    import bl.obj
-    k = bl.obj.get(bl.krn.kernels, "0")
-    return 'Mozilla/5.0 (X11; Linux x86_64) %s +http://git@github.com/bthate/%s)' % (k.cfg.name.upper(), k.cfg.name)
-
+    return 'Mozilla/5.0 (X11; Linux x86_64) BOTD +http://git@github.com/bthate/botd)'
+    
 def unescape(text):
     import html
     import html.parser
     txt = re.sub(r"\s+", " ", text)
     return html.parser.HTMLParser().unescape(txt)
+
+def xdir(o, skip=""):
+    res = []
+    for k in dir(o):
+        if skip and skip in k:
+            continue
+        res.append(k)
+    return res

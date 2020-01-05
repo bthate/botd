@@ -18,7 +18,7 @@ from bl.bot import Bot
 from bl.flt import Fleet
 from bl.krn import kernels
 from bl.hdl import Event
-from bl.obj import Cfg, Object, get, last, save, set, update
+from bl.obj import Cfg, Object
 from bl.thr import launch
 from bl.usr import Users
 from bl.utl import locked
@@ -30,8 +30,7 @@ def __dir__():
 
 def init(k):
     bot = IRC()
-    l = last(bot.cfg)
-    update(bot.cfg, l)
+    bot.cfg.last()
     if not bot.cfg.nick:
         bot.cfg.nick = "botd"
     if k.cfg.prompting or (not bot.cfg.server or not bot.cfg.channel):
@@ -46,7 +45,7 @@ def init(k):
         bot.cfg.server = server
         bot.cfg.channel = channel
         bot.cfg.nick = nick
-        save(bot.cfg)
+        bot.cfg.save()
     bot.start()
     return bot
 
@@ -269,7 +268,7 @@ class IRC(Bot):
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
-        set(k.users.userhosts, event.nick, event.origin)
+        k.users.userhosts.set(event.nick, event.origin)
         if event.txt.startswith("DCC CHAT"):
             if not k.users.allowed(event.origin, "USER"):
                 return
@@ -413,4 +412,4 @@ class DCC(Bot):
 
 # runtime
 
-k = get(kernels, "0", None)
+k = kernels.get("0", None)

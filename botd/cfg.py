@@ -2,7 +2,6 @@
 #
 # edit configuration. 
 
-from bl.obj import edit, get, save
 from bl.dbs import Db
 from bl.krn import kernels
 from bl.typ import get_cls
@@ -43,4 +42,4 @@ def cfg(event):
 
 # runtime
 
-k = get(kernels, "0", None)
+k = kernels.get("0", None)

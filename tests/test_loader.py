@@ -6,7 +6,6 @@ import bl
 import os
 import unittest
 
-from bl.obj import load, save, values
 from bl.ldr import Loader
 
 class Test_Loader(unittest.TestCase):
@@ -14,9 +13,9 @@ class Test_Loader(unittest.TestCase):
     def test_loadmod(self):
         l = Loader()
         l.walk("bl.ldr")
-        p = save(l)
+        p = l.save()
         ll = Loader()
-        load(ll, p)
+        ll.load(p)
         self.assertTrue("cmds" in ll)
 
     def test_getmods1(self):
@@ -32,9 +31,9 @@ class Test_Loader(unittest.TestCase):
     def test_bl(self):
         l = Loader()
         l.walk("bl")
-        self.assertTrue("bl.obj.Object" in values(l.names))
+        self.assertTrue("bl.obj.Object" in l.names.values())
 
     def test_botd(self):
         l = Loader()
         l.walk("botd")
-        self.assertTrue("botd.udp.UDP" in values(l.names))
+        self.assertTrue("botd.udp.UDP" in l.names.values())

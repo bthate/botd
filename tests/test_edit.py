@@ -7,9 +7,10 @@ import logging
 import os
 import unittest
 
-from bl.obj import Object, edit
+from bl.obj import Object
 from bl.prs import Command
 from bl.hdl import Event
+from bl.utl import edit
 
 class Log(Object):
 

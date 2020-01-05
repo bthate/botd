@@ -10,7 +10,7 @@ import time
 import unittest
 
 from bl.bot import Bot
-from bl.obj import Object, get
+from bl.obj import Object
 from bl.hdl import Event
 from bl.krn import Kernel, kernels
 from bl.utl import consume
@@ -21,7 +21,7 @@ class Param(Object):
 
     pass
 
-k = get(kernels, "0", None)
+k = kernels.get("0", None)
 
 users = Users()
 users.oper("test@shell")
@@ -33,6 +33,7 @@ except:
 
 bot = Bot()
 
+print(k.names)
 names = list(k.names)
 param = Param()
 param.cfg = [random.choice(["irc", "rss"]),]

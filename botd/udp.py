@@ -10,7 +10,6 @@ from bl.obj import Cfg, Object
 from bl.dbs import Db
 from bl.flt import Fleet
 from bl.krn import kernels
-from bl.obj import get
 from bl.thr import launch
 from bl.utl import get_name
 
@@ -90,4 +89,4 @@ class UDP(Object):
 
 # runtime
 
-k = get(kernels, "0", None)
+k = kernels.get("0", None)

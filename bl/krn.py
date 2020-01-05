@@ -11,7 +11,7 @@ import bl
 from bl.flt import Fleet
 from bl.hdl import Event
 from bl.ldr import Loader
-from bl.obj import Cfg, Object, last, merge, save, set, update
+from bl.obj import Cfg, Object
 from bl.shl import enable_history, set_completer, writepid
 from bl.trc import get_exception
 from bl.usr import Users
@@ -40,8 +40,8 @@ class Kernel(Loader):
         super().__init__()
         self._stopped = False
         self._skip = False
-        update(self.cfg, cfg or {})
-        update(self.cfg, kwargs)
+        self.cfg.update(cfg or {})
+        self.cfg.update(kwargs)
         kernels.add(self)
         
     def cmd(self, txt, origin=""):
@@ -71,36 +71,26 @@ class Kernel(Loader):
             event.show()
         event.ready()
 
-    def init(self, modstr):
-        mods = self.walk(modstr)
-        for mod in mods:
-            logging.warning("found %s" % mod.__name__)
-            try:
-                mod.init(self)
-            except (AttributeError, ModuleNotFoundError) as ex:
-                if mod.__name__ in str(ex):
-                    continue
-                raise
-
     def register(self, k, v):
-        set(self.cmds, k, v)
+        self.cmds.set(k, v)
 
     def start(self):
         if self.cfg.kernel:
             c = Cfg(self.cfg)
-            l = last(self.cfg)
-            merge(self.cfg, l)
-            merge(self.cfg, c)
+            self.cfg.last()
+            self.cfg.merge(c)
+        print(self.cfg)
+        print(self.cfg.modules)
         try:
-            self.init(self.cfg.modules)
+            self.walk(self.cfg.modules)
         except bl.err.EINIT as ex:
             print(ex)
             self._skip = True
             return
         if self.cfg.dosave:
-            save(self.cfg)
+            self.cfg.save()
         if self.cfg.shell:
-            self.init("bl.csl,botd.cmd")
+            self.walk("bl.csl,botd.cmd")
         elif not self.cfg.kernel:
             self._skip = True
 

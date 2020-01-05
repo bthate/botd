@@ -16,7 +16,7 @@ import bl.trm
 import bl.utl
 
 from bl.log import level
-from bl.obj import Cfg, Object, update
+from bl.obj import Cfg, Object
 from bl.trc import get_exception
 from bl.trm import termsave, termreset
 from bl.utl import cdir, hd
@@ -107,8 +107,8 @@ def parse_cli(name, version=None, opts=[], **kwargs):
     ns = Object()
     make_opts(ns, opts)
     cfg = Cfg(default)
-    update(cfg, ns)
-    update(cfg, kwargs)
+    cfg.update(ns)
+    cfg.update(kwargs)
     if "kernel" not in cfg:
         cfg.kernel = False
     if "kernel" not in cfg:

@@ -12,7 +12,7 @@ import urllib
 from bl.clk import Repeater
 from bl.dbs import Db
 from bl.flt import Fleet
-from bl.obj import Cfg, Object, get, last, save, update
+from bl.obj import Cfg, Object
 from bl.tms import to_time
 from bl.thr import launch
 from bl.tms import to_time, day
@@ -77,7 +77,7 @@ class Fetcher(Object):
         if not dl:
             dl = self.cfg.display_list
         for key in dl:
-            data = get(o, key, None)
+            data = o.get(key, None)
             if key == "link":
                 datatmp = get_tinyurl(data)
                 if datatmp:
@@ -99,8 +99,8 @@ class Fetcher(Object):
             if not o:
                 continue
             feed = Feed()
-            update(feed, obj)
-            update(feed, o)
+            feed.update(obj)
+            feed.update(o)
             u = urllib.parse.urlparse(feed.link)
             url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
             if url in self.seen.urls:
@@ -114,10 +114,10 @@ class Fetcher(Object):
                 except:
                     date = False
                 if date:
-                    save(feed, date)
+                    feed.save(date)
                 else:
-                    save(feed)
-        save(self.seen)
+                    feed.save()
+        self.seen.save()
         for o in objs:
             k.fleet.announce(self.display(o))
         return counter
@@ -137,12 +137,8 @@ class Fetcher(Object):
         return res
 
     def start(self, repeat=True):
-        l = last(self.cfg)
-        if l:
-            update(self.cfg, l)
-        l = last(self.seen)
-        if l:
-            update(self.seen, l)
+        self.cfg.last()
+        self.seen.last()
         if repeat:
             repeater = Repeater()
             repeater.start(600.0, self.run)
@@ -179,7 +175,7 @@ def delete(event):
         rss._deleted = True
         got.append(rss)
     for rss in got:
-        save(rss)
+        rss.save()
     event.reply("ok %s" % nr)
 
 def display(event):
@@ -192,8 +188,8 @@ def display(event):
     db = Db()
     for o in db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
-        edit(o, setter)
-        save(o)
+        o.edit(setter)
+        o.save()
     event.reply("ok %s" % nr)
 
 def feed(event):
@@ -241,10 +237,10 @@ def rss(event):
         return
     o = Rss()
     o.rss = event.args[0]
-    save(o)
+    o.save()
     event.reply("ok 1")
 
 # runtime
 
 fetcher = Fetcher()
-k = get(kernels, "0", None)
+k = kernels.get("0", None)

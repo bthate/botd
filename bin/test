@@ -13,7 +13,7 @@ import shutil
 import time
 import unittest
 
-from bl.obj import Object, save, starttime, update, values
+from bl.obj import Object, starttime
 from bl.krn import Kernel
 from bl.log import level
 from bl.shl import execute, parse_cli
@@ -38,14 +38,14 @@ def initialize(cfg):
     cdir("testdata")
     k.users.oper("test@shell")
     k.cfg.prompt = False
-    #k.walk("bl")
+    k.walk("bl")
     k.walk("botd")
     k.start()
-    for c in values(k.names):
+    for c in k.names.values():
         try:
             o = get_cls(c)()
             o.txt = "yo!"
-            save(o)
+            o.save()
         except (AttributeError, TypeError) as ex:
             pass
 
@@ -56,7 +56,7 @@ def main():
         pass
     cfg = parse_cli("test", __version__, opts)
     bl.obj.workdir = "testdata"
-    update(k.cfg, cfg)
+    k.cfg.update(cfg)
     level("error")
     initialize(cfg)
     k.cfg.debug = True

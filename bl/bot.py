@@ -7,7 +7,7 @@ import queue
 import sys
 
 from bl.krn import kernels
-from bl.obj import Cfg, get
+from bl.obj import Cfg
 from bl.thr import launch
 
 # defines
@@ -80,4 +80,4 @@ class Bot(bl.hdl.Handler):
 
 # runtime
 
-k = get(kernels, "0", None)
+k = kernels.get("0", None)

@@ -6,7 +6,6 @@ import time
 
 from bl.dbs import Db
 from bl.krn import kernels, __version__
-from bl.obj import get
 from bl.tms import elapsed
 from bl.usr import Users
 
@@ -29,7 +28,7 @@ def meet(event):
     except ValueError:
         event.reply("meet origin [permissions]")
         return
-    origin = get(Users.userhosts, origin, origin)
+    origin = Users.userhosts.get(origin, origin)
     u = k.users.meet(origin, perms)
     event.reply("added %s" % origin)
 
@@ -45,4 +44,4 @@ def v(event):
 
 # runtime
 
-k = get(kernels, "0", None)
+k = kernels.get("0", None)

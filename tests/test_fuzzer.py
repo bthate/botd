@@ -7,7 +7,6 @@ import random
 import unittest
 
 from bl.krn import Kernel
-from bl.obj import values
 from bl.typ import get_cls
 from bl.usr import Users
 
@@ -22,7 +21,7 @@ users.oper("test@shell")
 class Test_Fuzzer(unittest.TestCase):
 
     def test_fuzzer1(self):
-        for t in values(k.names):
+        for t in k.names.values():
             for key in k.names:
                 try:
                     e = get_cls(t)()

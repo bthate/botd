@@ -7,7 +7,7 @@ import time
 import types
 import unittest
 
-from bl.obj import Object, keys, items, values
+from bl.obj import Object
 from bl.hdl import Event
 from bl.krn import Kernel
 from bl.thr import launch
@@ -114,7 +114,7 @@ class Test_Cmnds(unittest.TestCase):
             thr.join()
     
 def cmndrun(event):
-    mods = values(k.table)
+    mods = k.table.values()
     for mod in mods:
         if mod.__name__ in ["botd.rss",]:
             continue
@@ -133,7 +133,7 @@ def cmndrun(event):
                    k.dispatch(e)
 
 def functest(event):
-    for name, mod in items(k.table):
+    for name, mod in k.table.items():
         if name in ["botd.rss"]:
             continue
         keys = dir(mod)

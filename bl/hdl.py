@@ -12,7 +12,7 @@ import threading
 
 from bl.flt import Fleet
 from bl.ldr import Loader
-from bl.obj import Object, get
+from bl.obj import Object
 from bl.thr import launch
 from bl.tms import days
 
@@ -83,7 +83,7 @@ class Event(Object):
         if not self.verbose:
             return
         from bl.krn import kernels
-        k = get(kernels, "0", None)
+        k = kernels.get("0", None)
         for txt in self.result:
             k.fleet.echo(self.orig, self.channel, txt)
  
