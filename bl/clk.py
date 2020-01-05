@@ -42,13 +42,14 @@ class Timers(Object):
                 event = self.timers[t]
                 if time.time() > t:
                     self.cfg.latest = time.time()
-                    self.cfg._save()
+                    save(self.cfg)
                     event.raw(event.txt)
                     remove.append(t)
             for r in remove:
                 del self.timers[r]
 
     def start(self):
+        db = Db()
         for evt in db.all("bl.clk.Timers"):
             e = Event()
             e.update(evt)
@@ -75,6 +76,8 @@ class Timer(Object):
         self.timer = None
 
     def start(self, sleep, func, name=""):
+        self.sleep = sleep
+        self.func = func
         if not name:
             name = get_name(func)
         self.name = name
@@ -89,7 +92,7 @@ class Timer(Object):
         self.timer = timer
         return timer
 
-    def run(self, *args, **kwargs) -> None:
+    def run(self, *args, **kwargs):
         self.state.latest = time.time()
         launch(self.func, *args, **kwargs)
 
@@ -102,7 +105,3 @@ class Repeater(Timer):
     def run(self, *args, **kwargs):
         self.func(*args, **kwargs)
         return launch(self.start, self.sleep, self.func)
-
-# runtime
-
-db = Db()
