@@ -5,7 +5,7 @@
 import json
 import unittest
 
-from bl.obj import Object, ObjectDecoder, ObjectEncoder, stamp
+from bl.obj import Object, ObjectDecoder, ObjectEncoder, load, save, stamp, update
 
 class Test_Base(unittest.TestCase):
 
@@ -24,8 +24,8 @@ class Test_Base(unittest.TestCase):
     def test_cleanload(self):
         o = Object()
         o.test = "bla"
-        p = o._save()
-        o._load(p)
+        p = save(o)
+        load(o, p)
         self.assertEqual(type(o), Object)
 
     def test_settingattribute(self):
@@ -48,7 +48,7 @@ class Test_Base(unittest.TestCase):
         o1._bla = "mekker"
         o2 = Object()
         o2._bla = "blaet"
-        o1._update(o2)
+        update(o1, o2)
         self.assertEqual(o1._bla, "blaet")
 
     def test_iter(self):

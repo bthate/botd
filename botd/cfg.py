@@ -1,9 +1,8 @@
 # BOTD - python3 IRC channel daemon.
 #
-# basic commands. 
+# edit configuration. 
 
-__version__ = 1
-
+from bl.obj import edit, get, save
 from bl.dbs import Db
 from bl.krn import kernels
 from bl.typ import get_cls
@@ -16,9 +15,6 @@ def __dir__():
 # functions
 
 def cfg(event):
-    if "IRC" in event.orig:
-        event.reply("this command might flood, use a DCC connection.")
-        return
     if not event.args:
         event.reply(str(k.cfg))
         return
@@ -32,7 +28,7 @@ def cfg(event):
             event.reply("no %s found." % cn)
             return
         l = cls()
-        l._save()
+        save(l)
         event.reply("created a %s file" % cn)
     if len(event.args) == 1:
         event.reply(l)
@@ -41,10 +37,10 @@ def cfg(event):
         event.reply(l.get(event.args[1]))
         return
     setter = {event.args[1]: event.args[2]}
-    l._edit(setter)
-    l._save()
+    edit(l, setter)
+    save(l)
     event.reply("ok")
 
 # runtime
 
-k = kernels._get("0")
+k = get(kernels, "0", None)

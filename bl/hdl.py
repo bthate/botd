@@ -12,7 +12,7 @@ import threading
 
 from bl.flt import Fleet
 from bl.ldr import Loader
-from bl.obj import Object, Register
+from bl.obj import Object, get
 from bl.thr import launch
 from bl.tms import days
 
@@ -28,7 +28,7 @@ class Event(Object):
     def __init__(self):
         super().__init__()
         self._ready = threading.Event()
-        self._verbose = True
+        self.verbose = True
         self.args = []
         self.channel = ""
         self.options = ""
@@ -80,10 +80,10 @@ class Event(Object):
         self.result.append(txt)
 
     def show(self):
-        if not self._verbose:
+        if not self.verbose:
             return
         from bl.krn import kernels
-        k = kernels.get("0", None)
+        k = get(kernels, "0", None)
         for txt in self.result:
             k.fleet.echo(self.orig, self.channel, txt)
  
@@ -96,7 +96,6 @@ class Handler(Loader):
         super().__init__()
         self._queue = queue.Queue()
         self._stopped = False
-        self.cmds = Register()
 
     def dispatch(self, event):
         if not event.txt:

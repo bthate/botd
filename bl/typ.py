@@ -4,7 +4,10 @@
 
 import bl
 import importlib
+import sys
 import types
+
+from bl.err import ENOCLASS
 
 # defines
 
@@ -14,8 +17,14 @@ def __dir__():
 # functions
 
 def get_cls(name):
-    modname, clsname = name.rsplit(".", 1)
-    mod = importlib.import_module(modname)
+    try:
+        modname, clsname = name.rsplit(".", 1)
+    except:
+        raise ENOCLASS(name)
+    if modname in sys.modules:
+        mod = sys.modules[modname]
+    else:
+        mod = importlib.import_module(modname)
     return getattr(mod, clsname)
 
 def get_name(o):

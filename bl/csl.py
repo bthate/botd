@@ -9,6 +9,7 @@ import threading
 from bl.err import ENOTXT
 from bl.flt import Fleet
 from bl.krn import kernels
+from bl.obj import get
 from bl.hdl import Event, Handler
 from bl.thr import launch
 
@@ -83,4 +84,4 @@ class Console(Handler):
 
 # runtime
 
-k = kernels["0"]
+k = get(kernels, "0", None)

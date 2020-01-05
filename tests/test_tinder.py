@@ -10,55 +10,49 @@ import time
 import unittest
 
 from bl.bot import Bot
-from bl.obj import Object
+from bl.obj import Object, get
 from bl.hdl import Event
 from bl.krn import Kernel, kernels
 from bl.utl import consume
 from bl.thr import launch
 from bl.usr import Users
 
-k = kernels._get("0")
-users = Users()
-
 class Param(Object):
 
     pass
 
+k = get(kernels, "0", None)
+
+users = Users()
 users.oper("test@shell")
-e = Event()
-e.verbose = k.cfg.verbose
-#e.parse("-o %s" % k.cfg.options)
+
 try:
-    e.index = int(k.cfg.args[1])
+    index = int(k.cfg.args[1])
 except:
-    e.index = 1
+    index = 1
 
 bot = Bot()
 
 names = list(k.names)
 param = Param()
-param.cfg = ["%s txt==yo channel=#mekker" % random.choice(names)]
-param.cfg.extend(["%s txt==yo test=a,b,c,d" % random.choice(names)])
-param.ed = ["%s txt==yo channel=#mekker" % random.choice(names)]
-param.ed.extend(["%s txt==yo test=a,b,c,d" % random.choice(names)])
-param.find = [random.choice(names)]
+param.cfg = [random.choice(["irc", "rss"]),]
+param.find = names
 param.log = ["yo!",]
 param.rm = ["%s txt==yo" % random.choice(names)]
 param.meet = ["test@shell",]
-param.show = ["config", "cmds", "fleet", "kernel", "tasks", "version"]
 #param.mbox = ["~/evidence/25-1-2013",]
 
 class Test_Tinder(unittest.TestCase):
 
     def test_tinder(self):
         thrs = []
-        for x in range(e.index or 1):
+        for x in range(index):
             thrs.append(launch(tests, k))
         for thr in thrs:
             thr.join()
 
     def test_tinder2(self):
-        for x in range(e.index or 1):
+        for x in range(index):
             tests(k)
         
 def tests(b):
@@ -72,7 +66,9 @@ def tests(b):
     consume(events)
 
 def do_cmd(b, cmd):
-    exs = param._get(cmd, [])
+    exs = get(param, cmd, [])
+    if not exs:
+        exs = ["bla",]
     e = list(exs)
     random.shuffle(e)
     events = []
@@ -81,7 +77,7 @@ def do_cmd(b, cmd):
         e.orig = repr(bot)
         e.origin = "test@shell"
         e.txt = cmd + " " + ex
-        e._verbose = k.cfg.verbose
+        e.verbose = k.cfg.verbose
         k.dispatch(e)
         events.append(e)
     return events

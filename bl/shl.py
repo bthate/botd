@@ -16,15 +16,27 @@ import bl.trm
 import bl.utl
 
 from bl.log import level
-from bl.obj import Cfg, Object
+from bl.obj import Cfg, Object, update
 from bl.trc import get_exception
-from bl.trm import save, reset
+from bl.trm import termsave, termreset
 from bl.utl import cdir, hd
 
 # defines
 
 def __dir__():
     return ("HISTFILE", "close_history", "complete", "enable_history", "execute", "get_completer", "make_opts", "parse_cli", "set_completer", "writepid")
+
+default = {
+           "workdir": "",
+           "kernel": False,
+           "modules": "",
+           "options": "",
+           "prompting": True,
+           "dosave": False,
+           "level": "",
+           "logdir": "",
+           "shell": False
+}
 
 HISTFILE = ""
 
@@ -62,7 +74,7 @@ def enable_history():
     atexit.register(close_history)
 
 def execute(main):
-    save()
+    termsave()
     try:
         main()
     except KeyboardInterrupt:
@@ -74,7 +86,7 @@ def execute(main):
     except Exception:
         logging.error(get_exception())
     finally:
-        reset()
+        termreset()
 
 def get_completer():
     return readline.get_completer()
@@ -94,10 +106,17 @@ def make_opts(ns, options, **kwargs):
 def parse_cli(name, version=None, opts=[], **kwargs):
     ns = Object()
     make_opts(ns, opts)
-    print(ns)
-    cfg = Cfg(ns)
-    cfg.update(kwargs)
-    print(cfg)
+    cfg = Cfg(default)
+    update(cfg, ns)
+    update(cfg, kwargs)
+    if "kernel" not in cfg:
+        cfg.kernel = False
+    if "kernel" not in cfg:
+        cfg.dosave = False
+    if "kernel" not in cfg:
+        cfg.kernel = False
+    if "kernel" not in cfg:
+        cfg.kernel = False
     cfg.txt = " ".join(cfg.args)
     cfg.workdir = cfg.workdir or hd(".%s" % name)
     cfg.name = name 
@@ -108,6 +127,7 @@ def parse_cli(name, version=None, opts=[], **kwargs):
         cdir(sp)
     level(cfg.level or "error")
     logging.debug("%s started in %s at %s (%s)" % (cfg.name.upper(), cfg.workdir, time.ctime(time.time()), cfg.level))
+    logging.debug(cfg)
     return cfg
 
 def set_completer(commands):

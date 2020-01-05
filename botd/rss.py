@@ -12,7 +12,7 @@ import urllib
 from bl.clk import Repeater
 from bl.dbs import Db
 from bl.flt import Fleet
-from bl.obj import Cfg, Object
+from bl.obj import Cfg, Object, get
 from bl.tms import to_time
 from bl.thr import launch
 from bl.tms import to_time, day
@@ -175,7 +175,7 @@ def delete(event):
         rss._deleted = True
         got.append(rss)
     for rss in got:
-        rss._save()
+        save(rss)
     event.reply("ok %s" % nr)
 
 def display(event):
@@ -188,8 +188,8 @@ def display(event):
     db = Db()
     for o in db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
-        o._edit(setter)
-        o._save()
+        edit(o, setter)
+        save(o)
     event.reply("ok %s" % nr)
 
 def feed(event):
@@ -237,10 +237,10 @@ def rss(event):
         return
     o = Rss()
     o.rss = event.args[0]
-    o._save()
+    save(o)
     event.reply("ok 1")
 
 # runtime
 
 fetcher = Fetcher()
-k = kernels._get("0")
+k = get(kernels, "0", None)

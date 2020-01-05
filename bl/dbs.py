@@ -8,7 +8,7 @@ import _thread
 import bl
 
 from bl.err import ENOFILE
-from bl.obj import Object
+from bl.obj import Object, load, search
 from bl.tms import fntime
 from bl.typ import get_cls
 from bl.utl import locked
@@ -94,7 +94,7 @@ def hook(fn):
     if not t:
         raise ENOFILE(fn)
     o = get_cls(t)()
-    o.load(fn)
+    load(o, fn)
     return o
 
 def names(name, delta=None):

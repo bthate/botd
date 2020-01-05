@@ -5,7 +5,7 @@
 import logging
 
 from bl.dbs import Db
-from bl.obj import Object
+from bl.obj import Object, get, save
 
 # defines
 
@@ -28,7 +28,7 @@ class Users(Db):
 
     def allowed(self, origin, perm):
         perm = perm.upper()
-        origin = self.userhosts._get(origin, origin)
+        origin = get(self.userhosts, origin, origin)
         user = self.get_user(origin)
         if user:
             if perm in user.perms:
@@ -40,7 +40,7 @@ class Users(Db):
         for user in self.get_users(origin):
             try:
                 user.perms.remove(perm)
-                user._save()
+                save(user)
                 return True
             except ValueError:
                 pass
@@ -60,14 +60,14 @@ class Users(Db):
             user = User()
         user.user = origin
         user.perms = ["USER", ]
-        user._save()
+        save(user)
         return user
 
     def oper(self, origin):
         user = User()
         user.user = origin
         user.perms = ["OPER", "USER"]
-        Users.cache._set(origin, user)
+        Users.cache[origin] = user
         return user
 
     def perm(self, origin, permission):
@@ -76,5 +76,5 @@ class Users(Db):
             raise ENOUSER(origin)
         if permission.upper() not in user.perms:
             user.perms.append(permission.upper())
-            user._save()
+            save(user)
         return user

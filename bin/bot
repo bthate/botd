@@ -17,7 +17,7 @@ opts = [
     ('-k', '--kernel', "store_true", True, "read kernel config from file", 'kernel'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-o', '--options', "store", str, "", "options to use.", 'options'),
-    ('-p', '--prompting', "store_true", True, "prompt for initial values.", 'prompting'),
+    ('-p', '--prompting', "store_false", True, "prompt for initial values.", 'prompting'),
     ('-s', '--save', "store", str, "", "save cli options to kernel config", 'dosave'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),

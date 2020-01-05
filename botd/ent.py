@@ -6,7 +6,7 @@ import os
 import time
 import threading
 
-from bl.obj import Object
+from bl.obj import Object, save
 from bl.dbs import Db
 
 # defines
@@ -33,11 +33,11 @@ class Todo(Object):
 def log(event):
     obj = Log()
     obj.txt = event.rest
-    obj._save()
+    save(obj)
     event.reply("ok")
 
 def todo(event):
     obj = Todo()
     obj.txt = event.rest
-    obj._save()
+    save(obj)
     event.reply("ok")

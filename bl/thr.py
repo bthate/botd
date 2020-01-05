@@ -14,7 +14,7 @@ from bl.utl import get_name
 # defines
 
 def __dir__():
-    return ("Task", "Launcher", "launch")
+    return ("Launcher", "Thr", "launch")
 
 # classes
 

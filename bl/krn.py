@@ -4,23 +4,23 @@
 
 __version__ = 1
 
-import inspect
 import logging
-import sys
 import time
-
 import bl
 
 from bl.flt import Fleet
 from bl.hdl import Event
 from bl.ldr import Loader
-from bl.obj import Cfg, Object, Register, last, merge
+from bl.obj import Cfg, Object, last, merge, save, set, update
 from bl.shl import enable_history, set_completer, writepid
 from bl.trc import get_exception
 from bl.usr import Users
 from bl.utl import get_name
 
 # defines
+
+def __dir__():
+    return ("Cfg", "Kernel", "Kernels", "kernels")
 
 starttime = time.time()
 
@@ -40,8 +40,8 @@ class Kernel(Loader):
         super().__init__()
         self._stopped = False
         self._skip = False
-        self.cfg.update(cfg or {})
-        self.cfg.update(kwargs)
+        update(self.cfg, cfg or {})
+        update(self.cfg, kwargs)
         kernels.add(self)
         
     def cmd(self, txt, origin=""):
@@ -83,7 +83,7 @@ class Kernel(Loader):
                 raise
 
     def register(self, k, v):
-        self.cmds.set(k, v)
+        set(self.cmds, k, v)
 
     def start(self):
         if self.cfg.kernel:
@@ -98,7 +98,7 @@ class Kernel(Loader):
             self._skip = True
             return
         if self.cfg.dosave:
-            self.cfg.save()
+            save(self.cfg)
         if self.cfg.shell:
             self.init("bl.csl,botd.cmd")
         elif not self.cfg.kernel:
@@ -110,12 +110,12 @@ class Kernel(Loader):
         while not self._stopped:
             time.sleep(1.0)
 
-class Kernels(Register):
+class Kernels(Object):
 
     nr = 0
 
     def add(self, kernel):
-        self.register(str(Kernels.nr), kernel)
+        self[str(Kernels.nr)] = kernel
         Kernels.nr += 1
 
 # runtime

@@ -7,7 +7,7 @@ import logging
 import os
 import unittest
 
-from bl.obj import Object
+from bl.obj import Object, edit
 from bl.prs import Command
 from bl.hdl import Event
 
@@ -26,35 +26,35 @@ class Test_Edit(unittest.TestCase):
     def test_edit1(self):
         e = Command()
         e.parse("ed log txt==bla txt=mekker")
-        l._edit(e.setter)
+        edit(l, e.setter)
         self.assertEqual(l.txt, "mekker")
 
     def test_edit2(self):
         e = Command()
         e.parse("ed")
-        l._edit(e.setter)
+        edit(l, e.setter)
         self.assertTrue(True, True)
 
     def test_edit3(self):
         e = Command()
         e.parse("ed log txt=#bla")
-        l._edit(e.setter)
+        edit(l, e.setter)
         self.assertEqual(l.txt, "#bla")
 
     def test_edit4(self):
         e = Command()
         e.parse("ed log txt==#bla txt=mekker2")
-        l._edit(e.setter)
+        edit(l, e.setter)
         self.assertEqual(l.txt, "mekker2")
 
     def test_edit5(self):
         e = Command()
         e.parse("ed log txt==mekker txt=bla1,bla2")
-        l._edit(e.setter)
+        edit(l, e.setter)
         self.assertEqual(l.txt, ["bla1", "bla2"])
 
     def test_edit(self):
         e = Command()
         e.parse("ed log txt==bla txt=#mekker")
-        l._edit(e.setter)
+        edit(l, e.setter)
         self.assertEqual(l.txt, "#mekker")

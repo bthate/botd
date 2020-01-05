@@ -18,7 +18,7 @@ from bl.bot import Bot
 from bl.flt import Fleet
 from bl.krn import kernels
 from bl.hdl import Event
-from bl.obj import Cfg, Object
+from bl.obj import Cfg, Object, get, last, save, set
 from bl.thr import launch
 from bl.usr import Users
 from bl.utl import locked
@@ -26,14 +26,15 @@ from bl.utl import locked
 # defines
 
 def __dir__():
-    return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init', "errored", "noticed", "privmsged")
+    return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init')
 
 def init(k):
     bot = IRC()
-    #l = bot.cfg.last()
-    if not k.cfg.nick:
-        k.cfg.nick = "botd"
-    if k.cfg.prompting:
+    last(bot.cfg)
+    if not bot.cfg.nick:
+        bot.cfg.nick = "botd"
+    print(k.cfg)
+    if k.cfg.prompting or (not bot.cfg.server or not bot.cfg.channel):
         try:
             server, channel, nick = k.cfg.args
         except ValueError:
@@ -45,7 +46,7 @@ def init(k):
         bot.cfg.server = server
         bot.cfg.channel = channel
         bot.cfg.nick = nick
-        bot.cfg._save()
+        save(bot.cfg)
     bot.start()
     return bot
 
@@ -268,7 +269,7 @@ class IRC(Bot):
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
-        k.users.userhosts._set(event.nick, event.origin)
+        set(k.users.userhosts, event.nick, event.origin)
         if event.txt.startswith("DCC CHAT"):
             if not k.users.allowed(event.origin, "USER"):
                 return
@@ -288,7 +289,6 @@ class IRC(Bot):
             e.orig = repr(self)
             e.origin = event.origin
             e.txt = event.txt[1:]
-            print(e)
             k.dispatch(e)
 
     def poll(self):
@@ -413,4 +413,4 @@ class DCC(Bot):
 
 # runtime
 
-k = kernels._get("0")
+k = get(kernels, "0", None)

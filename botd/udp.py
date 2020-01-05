@@ -10,6 +10,7 @@ from bl.obj import Cfg, Object
 from bl.dbs import Db
 from bl.flt import Fleet
 from bl.krn import kernels
+from bl.obj import get
 from bl.thr import launch
 from bl.utl import get_name
 
@@ -17,7 +18,6 @@ from bl.utl import get_name
 
 def __dir__():
     return ("UDP", "Cfg", "init") 
-
 
 def init(kernel):
     server = UDP()
@@ -90,4 +90,4 @@ class UDP(Object):
 
 # runtime
 
-k = kernels._get("0")
+k = get(kernels, "0", None)

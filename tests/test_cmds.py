@@ -7,7 +7,7 @@ import time
 import types
 import unittest
 
-from bl.obj import Object
+from bl.obj import Object, keys, items, values
 from bl.hdl import Event
 from bl.krn import Kernel
 from bl.thr import launch
@@ -82,11 +82,11 @@ class Test_Cmnds(unittest.TestCase):
 
     def test_run(self):
         event = Event()
-        event._verbose = k.cfg.verbose
+        event.verbose = k.cfg.verbose
         event.origin = "root@shell"
         event.txt = ""
         thrs = []
-        nrloops = 10
+        nrloops = 1
         for x in range(nrloops):
             thr = launch(testcmnds, event)
             thr.join()
@@ -94,10 +94,10 @@ class Test_Cmnds(unittest.TestCase):
     def test_func(self):
         event = Event()
         event.origin = "root@shell"
-        event._verbose = k.cfg.verbose
+        event.verbose = k.cfg.verbose
         event.txt = ""
         thrs = []
-        nrloops = 10
+        nrloops = 1
         for x in range(nrloops):
             thr = launch(functest, event)
             thr.join()
@@ -106,15 +106,15 @@ class Test_Cmnds(unittest.TestCase):
         event = Event()
         event.origin = "root@shell"
         event.txt = ""
-        event._verbose = k.cfg.verbose
+        event.verbose = k.cfg.verbose
         thrs = []
-        nrloops = 10
+        nrloops = 1
         for x in range(nrloops):
             thr = launch(cmndrun, event)
             thr.join()
     
 def cmndrun(event):
-    mods = k.get_mods("botd")
+    mods = values(k.table)
     for mod in mods:
         if mod.__name__ in ["botd.rss",]:
             continue
@@ -126,17 +126,16 @@ def cmndrun(event):
                if "event" in func.__code__.co_varnames:
                    e = Event()
                    e._func = func
-                   e._verbose = k.cfg.verbose
+                   e.verbose = k.cfg.verbose
                    e.origin = "root@shell"
                    e.server = "localhost"
                    e.btype = "cli"
                    k.dispatch(e)
 
 def functest(event):
-    for name in k.get_mn("botd"):
+    for name, mod in items(k.table):
         if name in ["botd.rss"]:
             continue
-        mod = k.walk(name)
         keys = dir(mod)
         random.shuffle(keys)
         for n in keys:
@@ -167,11 +166,11 @@ def testcmnds(event):
         else:
             name = randomarg()
         e = Event()
-        e._update(event)
-        e._verbose = k.cfg.verbose
+        e.update(event)
+        e.verbose = k.cfg.verbose
         e.orig = event.orig
         e.server = "localhost"
-        cmnd = examples._get(cmnd, cmnd)
+        cmnd = examples.get(cmnd, cmnd)
         e.txt = "%s %s" % (cmnd, name)
         e.origin = "root@shell"
         k.dispatch(e)

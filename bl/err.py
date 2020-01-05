@@ -10,6 +10,10 @@ class EBLOCKING(Exception):
 
     pass
 
+class ENOCLASS(Exception):
+
+    pass
+
 class ECLASS(Exception):
 
     pass

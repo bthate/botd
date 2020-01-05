@@ -7,7 +7,7 @@ import queue
 import sys
 
 from bl.krn import kernels
-from bl.obj import Cfg
+from bl.obj import Cfg, get
 from bl.thr import launch
 
 # defines
@@ -56,7 +56,7 @@ class Bot(bl.hdl.Handler):
         while not self._stopped:
             channel, txt, type = self._outqueue.get()
             if txt:
-                self._say(channel, txt, type)
+                self.say(channel, txt, type)
 
     def poll(self):
         pass
@@ -80,4 +80,4 @@ class Bot(bl.hdl.Handler):
 
 # runtime
 
-k = kernels._get("0")
+k = get(kernels, "0", None)

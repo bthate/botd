@@ -7,7 +7,7 @@ import threading
 import time
 
 from bl.krn import kernels, starttime
-from bl.obj import Object
+from bl.obj import Object, get, update
 from bl.tms import elapsed
 from bl.typ import get_type
 
@@ -38,8 +38,8 @@ def ps(event):
             continue
         d = vars(thr)
         o = Object()
-        o.update(d)
-        if o.get("sleep", None):
+        update(o, d)
+        if get(o, "sleep", None):
             up = o.sleep - int(time.time() - o.state.latest)
         else:
             up = int(time.time() - starttime)
@@ -56,4 +56,4 @@ def up(event):
 
 # runtime
 
-k = kernels.get("0", None)
+k = get(kernels, "0", None)

@@ -8,15 +8,15 @@ import termios
 
 resume = {}
 
-def reset():
+def termreset():
     if "old" in resume:
         termios.tcsetattr(resume["fd"], termios.TCSADRAIN, resume["old"])
 
-def save():
+def termsave():
     try:
         resume["fd"] = sys.stdin.fileno()
         resume["old"] = setup(sys.stdin.fileno())
-        atexit.register(reset)
+        atexit.register(termreset)
     except termios.error:
         pass    
 

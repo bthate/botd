@@ -7,6 +7,7 @@ import os
 
 from bl.dbs import Db
 from bl.krn import kernels
+from bl.obj import get
 
 # defines
 
@@ -36,4 +37,4 @@ def find(event):
             c += 1
 # runtime
 
-k = kernels._get("0")
+k = get(kernels, "0", None)
