@@ -26,7 +26,7 @@ opts = [
 def main():
     cfg = parse_cli("botd", __version__, opts)
     k = Kernel(cfg)
-    k.init("botd.cmd")
+    k.walk("botd.cmd")
     k.cmd(" ".join(k.cfg.args))
     
 execute(main)

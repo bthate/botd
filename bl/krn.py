@@ -79,8 +79,6 @@ class Kernel(Loader):
             c = Cfg(self.cfg)
             self.cfg.last()
             self.cfg.merge(c)
-        print(self.cfg)
-        print(self.cfg.modules)
         try:
             self.walk(self.cfg.modules)
         except bl.err.EINIT as ex:

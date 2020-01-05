@@ -81,7 +81,6 @@ class Loader(Object):
 
     def walk(self, mns):
         mods = []
-        print(mns)
         for mod in self.get_mods(mns):
             logging.warning("found %s" % mod.__name__)
             try:
