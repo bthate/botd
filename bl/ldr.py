@@ -55,11 +55,16 @@ class Loader(Object):
                     if key in self.cmds:
                         continue
                     self.cmds[key] = o
-            if type(o) == type and issubclass(o, Object):
-                n = key.split(".")[-1].lower()
-                if n in self.names:
+            try:
+                sc = issubclass(o, Object)
+                if not sc:
                     continue
-                self.names[n] = "%s.%s" % (mod.__name__, o.__name__)
+            except TypeError:
+                continue
+            n = key.split(".")[-1].lower()
+            if n in self.names:
+                continue
+            self.names[n] = "%s.%s" % (mod.__name__, o.__name__)
 
     def walk(self, mns):
         mods = []

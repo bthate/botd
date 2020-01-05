@@ -33,7 +33,6 @@ except:
 
 bot = Bot()
 
-print(k.names)
 names = list(k.names)
 param = Param()
 param.cfg = [random.choice(["irc", "rss"]),]
@@ -67,7 +66,7 @@ def tests(b):
     consume(events)
 
 def do_cmd(b, cmd):
-    exs = get(param, cmd, [])
+    exs = param.get(cmd, [])
     if not exs:
         exs = ["bla",]
     e = list(exs)

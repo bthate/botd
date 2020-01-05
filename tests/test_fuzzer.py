@@ -26,7 +26,7 @@ class Test_Fuzzer(unittest.TestCase):
                 try:
                     e = get_cls(t)()
                     e.verbose = k.cfg.verbose
-                    e.txt = key + " " + random.choice(list(values(k.names)))
+                    e.txt = key + " " + random.choice(k.names.values())
                     e.orig = repr(k)
                     e.origin = "test@shell"
                     v = k.get_cmd(key)

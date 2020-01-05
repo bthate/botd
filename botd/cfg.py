@@ -27,7 +27,7 @@ def cfg(event):
             event.reply("no %s found." % cn)
             return
         l = cls()
-        save(l)
+        l.save()
         event.reply("created a %s file" % cn)
     if len(event.args) == 1:
         event.reply(l)
@@ -36,8 +36,8 @@ def cfg(event):
         event.reply(l.get(event.args[1]))
         return
     setter = {event.args[1]: event.args[2]}
-    edit(l, setter)
-    save(l)
+    l.edit(setter)
+    l.save()
     event.reply("ok")
 
 # runtime
