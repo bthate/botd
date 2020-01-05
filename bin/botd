@@ -19,8 +19,8 @@ from bl.csl import Console
 from bl.err import EINIT
 from bl.krn import Kernel
 from bl.log import level, logfiled
-from bl.shl import close_history, enable_history, execute, parse_cli, set_completer
-from bl.trm import reset, save
+from bl.shl import execute, parse_cli
+from bl.trm import termreset
 from bl.trc import get_exception
 from bl.utl import hd
 
@@ -35,7 +35,7 @@ opts = [
 def daemon():
     pid = os.fork()
     if pid != 0:
-        reset()
+        termreset()
         os._exit(0)
     os.setsid()
     os.umask(0)
@@ -46,13 +46,13 @@ def daemon():
     os.dup2(so.fileno(), sys.stdout.fileno())
     os.dup2(se.fileno(), sys.stderr.fileno())
 
+
 def main():
     cfg = parse_cli("botd", __version__, opts)
     cfg.kernel = True
-    level("debug")
-    logging.warning("%s started at %s (%s)" % (cfg.name.upper(), cfg.workdir, "debug"))
-    daemon()
     k = Kernel(cfg)
+    level("debug")
+    daemon()
     k.start()
     k.wait()
 

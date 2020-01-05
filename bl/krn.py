@@ -89,9 +89,8 @@ class Kernel(Loader):
 
     def start(self):
         if self.cfg.kernel:
-            c = Cfg(self.cfg)
             self.cfg.last()
-            self.cfg.merge(c)
+            self.cfg.shell = False
         try:
             self.init(self.cfg.modules)
         except bl.err.EINIT as ex:

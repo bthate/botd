@@ -140,12 +140,15 @@ class Object(O, collections.MutableMapping):
     def json(self):
         return json.dumps(self, cls=ObjectEncoder, indent=4, sort_keys=True)
 
-    def last(self):
+    def last(self, strip=False):
         from bl.dbs import Db
         db = Db()
         l = db.last(str(get_type(self)))
         if l:
-            self.update(strip(l))
+            if strip:
+                self.update(strip(l))
+            else:
+                self.update(l)
 
     @locked(lock)
     def load(self, path):
@@ -230,8 +233,12 @@ def stamp(o):
     o.__dict__["stamp"] = o._path
     return o
 
-def strip(o):
+def strip(o, vals=["",]):
+    rip = []
     for k in o:
-       if not k:
-          del o[k]
+        for v in vals:
+            if k == v:
+                rip.append(k)
+    for k in rip:
+        del o[k]
     return o

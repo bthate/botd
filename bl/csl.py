@@ -17,7 +17,6 @@ from bl.thr import launch
 def __dir__():
     return ("Console", "init")
 
-
 def init(kernel):
     csl = Console()
     csl.cmds = kernel.cmds
