@@ -64,6 +64,8 @@ class Loader(Object):
     def get_mods(self, mns):
         mods = []
         for mn in mns.split(","):
+            if not mn:
+                continue
             mod = self.get_mod(mn)
             loc = mod.__spec__.submodule_search_locations
             if not loc:
