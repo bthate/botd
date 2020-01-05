@@ -71,6 +71,19 @@ class Kernel(Loader):
             event.show()
         event.ready()
 
+    def init(self, mns):
+        mods = []
+        for mod in self.walk(mns):
+            logging.warning("found %s" % mod.__name__)
+            try:
+                mod.init(self)
+                mods.append(mod)
+            except (AttributeError, ModuleNotFoundError) as ex:
+                if mod.__name__ in str(ex):
+                    continue
+                raise
+        return mods
+
     def register(self, k, v):
         self.cmds.set(k, v)
 
@@ -80,7 +93,7 @@ class Kernel(Loader):
             self.cfg.last()
             self.cfg.merge(c)
         try:
-            self.walk(self.cfg.modules)
+            self.init(self.cfg.modules)
         except bl.err.EINIT as ex:
             print(ex)
             self._skip = True
@@ -88,7 +101,7 @@ class Kernel(Loader):
         if self.cfg.dosave:
             self.cfg.save()
         if self.cfg.shell:
-            self.walk("bl.csl,botd.cmd")
+            self.init("bl.csl,botd.cmd")
         elif not self.cfg.kernel:
             self._skip = True
 

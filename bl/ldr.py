@@ -61,7 +61,7 @@ class Loader(Object):
                     continue
                 self.names[n] = "%s.%s" % (mod.__name__, o.__name__)
 
-    def get_mods(self, mns):
+    def walk(self, mns):
         mods = []
         for mn in mns.split(","):
             if not mn:
@@ -79,17 +79,4 @@ class Loader(Object):
                         m = self.direct(mmn)
                         mods.append(m)
                         self.introspect(m)
-        return mods
-
-    def walk(self, mns):
-        mods = []
-        for mod in self.get_mods(mns):
-            logging.warning("found %s" % mod.__name__)
-            try:
-                mod.init(self)
-                mods.append(mod)
-            except (AttributeError, ModuleNotFoundError) as ex:
-                if mod.__name__ in str(ex):
-                    continue
-                raise
         return mods
