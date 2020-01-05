@@ -12,7 +12,7 @@ import urllib
 from bl.clk import Repeater
 from bl.dbs import Db
 from bl.flt import Fleet
-from bl.obj import Cfg, Object, get
+from bl.obj import Cfg, Object, get, last, save, update
 from bl.tms import to_time
 from bl.thr import launch
 from bl.tms import to_time, day
@@ -77,7 +77,7 @@ class Fetcher(Object):
         if not dl:
             dl = self.cfg.display_list
         for key in dl:
-            data = o._get(key, None)
+            data = get(o, key, None)
             if key == "link":
                 datatmp = get_tinyurl(data)
                 if datatmp:
@@ -99,8 +99,8 @@ class Fetcher(Object):
             if not o:
                 continue
             feed = Feed()
-            feed._update(obj)
-            feed._update(o)
+            update(feed, obj)
+            update(feed, o)
             u = urllib.parse.urlparse(feed.link)
             url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
             if url in self.seen.urls:
@@ -114,10 +114,10 @@ class Fetcher(Object):
                 except:
                     date = False
                 if date:
-                    feed._save(stime=date)
+                    save(feed, date)
                 else:
-                    feed._save()
-        self.seen._save()
+                    save(feed)
+        save(self.seen)
         for o in objs:
             k.fleet.announce(self.display(o))
         return counter
@@ -137,15 +137,19 @@ class Fetcher(Object):
         return res
 
     def start(self, repeat=True):
-        self.cfg._last()
-        self.seen._last()
+        l = last(self.cfg)
+        if l:
+            update(self.cfg, l)
+        l = last(self.seen)
+        if l:
+            update(self.seen, l)
         if repeat:
             repeater = Repeater()
             repeater.start(600.0, self.run)
             return repeater
 
     def stop(self):
-        self.seen._save()
+        save(self.seen)
 
 # functions
 

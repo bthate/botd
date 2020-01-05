@@ -18,7 +18,7 @@ from bl.bot import Bot
 from bl.flt import Fleet
 from bl.krn import kernels
 from bl.hdl import Event
-from bl.obj import Cfg, Object, get, last, save, set
+from bl.obj import Cfg, Object, get, last, save, set, update
 from bl.thr import launch
 from bl.usr import Users
 from bl.utl import locked
@@ -30,10 +30,10 @@ def __dir__():
 
 def init(k):
     bot = IRC()
-    last(bot.cfg)
+    l = last(bot.cfg)
+    update(bot.cfg, l)
     if not bot.cfg.nick:
         bot.cfg.nick = "botd"
-    print(k.cfg)
     if k.cfg.prompting or (not bot.cfg.server or not bot.cfg.channel):
         try:
             server, channel, nick = k.cfg.args

@@ -180,7 +180,8 @@ def touch(fname):
 
 def useragent():
     import bl.krn
-    k = bl.krn.kernels._get("0")
+    import bl.obj
+    k = bl.obj.get(bl.krn.kernels, "0")
     return 'Mozilla/5.0 (X11; Linux x86_64) %s +http://git@github.com/bthate/%s)' % (k.cfg.name.upper(), k.cfg.name)
 
 def unescape(text):

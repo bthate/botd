@@ -92,6 +92,10 @@ class Object:
     def __str__(self):
         return to_json(self)
 
+class Dict(Object, collections.MutableMapping):
+
+    pass
+
 class Default(Object):
 
     def __getattr__(self, k):
@@ -184,7 +188,11 @@ def merge(o1, o2):
 @locked(lock)
 def save(o, stime=None):
     assert workdir
-    opath = os.path.join(workdir, "store", o._path)
+    if stime:
+        o._path = os.path.join(get_type(o), stime)
+        opath = os.path.join(workdir, "store", stime)
+    else:
+        opath = os.path.join(workdir, "store", o._path)
     cdir(opath)
     logging.debug("save %s" % o._path)
     with open(opath, "w") as ofile:
