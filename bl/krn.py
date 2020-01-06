@@ -74,7 +74,6 @@ class Kernel(Loader):
     def init(self, mns):
         mods = []
         for mod in self.walk(mns):
-            logging.warning("found %s" % mod.__name__)
             try:
                 mod.init(self)
                 mods.append(mod)

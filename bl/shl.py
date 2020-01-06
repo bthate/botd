@@ -127,7 +127,6 @@ def parse_cli(name, version=None, opts=[], **kwargs):
         cdir(sp)
     level(cfg.level or "error")
     logging.debug("%s started in %s at %s (%s)" % (cfg.name.upper(), cfg.workdir, time.ctime(time.time()), cfg.level))
-    logging.debug(cfg)
     return cfg
 
 def set_completer(commands):
