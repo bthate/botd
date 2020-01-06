@@ -98,7 +98,7 @@ class Object(O, collections.MutableMapping):
     def __str__(self):
         return self.json()
 
-    def edit(o, setter):
+    def edit(self, setter):
         try:
             setter = vars(setter)
         except:

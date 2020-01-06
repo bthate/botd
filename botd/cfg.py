@@ -21,14 +21,17 @@ def cfg(event):
     db = Db()
     l = db.last(cn)
     if not l:     
-        try:
-            cls = get_cls(cn)
-        except (AttributeError, ModuleNotFoundError):
-            event.reply("no %s found." % cn)
-            return
-        l = cls()
-        l.save()
-        event.reply("created a %s file" % cn)
+        cn = "bl.%s.Cfg" % event.args[0]
+        l = db.last(cn)
+        if not l:
+            try:
+                cls = get_cls(cn)
+            except (AttributeError, ModuleNotFoundError):
+                event.reply("no %s found." % cn)
+                return
+            l = cls()
+            l.save()
+            event.reply("created a %s file" % cn)
     if len(event.args) == 1:
         event.reply(l)
         return
