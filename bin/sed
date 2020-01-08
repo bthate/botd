@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+
+""" replace. """
+
+__version__ = 1
+
+## imports
+
+import os, sys, warnings ; sys.path.insert(0, os.getcwd())
+
+import logging
+import re
+import shutil
+import sys
+import os
+
+## functions
+
+def high(target, file_name):
+    highest = 0
+    for i in os.listdir(target):
+        if file_name in i:
+            try:
+                seqnr = i.split('.')[-1]
+            except IndexError:
+                continue
+            try:
+                if int(seqnr) > highest:
+                     highest = int(seqnr)
+            except ValueError:
+                pass
+    return highest
+
+def highest(target, filename):
+    nr = high(target, filename)
+    return "%s.%s" % (filename, nr+1)
+
+def run_sed(filename, sedstring):
+    f = open(filename, 'r')
+    tmp = filename + '.tmp'
+    fout = open(tmp, 'w')
+    if sedstring:
+        char = "#"
+        seds = sedstring.split(char)
+        fr = seds[1]
+        to = seds[2]
+        for line in f:
+            l = re.sub(fr, to, line)
+            fout.write(l)
+    else:
+        for line in f:
+            l = re.sub("\t", "    ", line.rstrip() + "\n")
+            fout.write(l)
+    fout.flush()
+    fout.close()
+    os.rename(tmp, filename)
+
+def do_replace(ddir, sedstring, allowed=""):
+    logging.info("dir %s" % ddir)
+    target = ddir
+    for f in os.listdir(ddir):
+        if "__" in f and "init" not in f: continue
+        if ".hg" in f: continue
+        if f.endswith("~"): continue
+        target = ddir + os.sep + f
+        if allowed in f:
+            run_sed(target, sedstring)
+        if os.path.isdir(target):
+            do_replace(target, sedstring, allowed)
+
+def main():
+    dir_sed = os.getcwd()
+    try:
+        str_sed = sys.argv[1]
+    except IndexError:
+        print("sed s#key#value#")
+        return
+    base, fn = os.path.split(dir_sed)
+    target = highest(base, fn)
+    print(base, target)
+    shutil.copytree(dir_sed, base + os.sep + target)
+    do_replace(base + os.sep + target, str_sed, ".py")
+    do_replace(base + os.sep + target + os.sep + "bin", str_sed, "")
+    os.popen("chmod +x %s" % base + os.sep + target + os.sep + "bin")
+
+if __name__ == "__main__":
+    main()
+
+os._exit(0)
