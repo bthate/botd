@@ -34,7 +34,6 @@ class Bot(Handler):
         self._outqueue = queue.Queue()
         self.cfg = Cfg()
         self.channels = []
-        k.fleet.add(self)
 
     def _say(self, channel, txt, mtype="normal"):
         self.raw(txt)
@@ -72,12 +71,10 @@ class Bot(Handler):
             self.raw(txt)
 
     def start(self, input=False, output=False):
+        k = kernels.get(0)
+        k.fleet.add(self)
         super().start()
         if output:
             launch(self.output)
         if input:
             launch(self.input)
-
-# runtime
-
-k = kernels.get(0)

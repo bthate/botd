@@ -212,7 +212,7 @@ class Default(Object):
             self.__dict__.__setitem__(k, "")
         return self.__dict__[k]
 
-class Cfg(Object):
+class Cfg(Default):
 
     pass
 

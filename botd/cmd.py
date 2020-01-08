@@ -15,6 +15,7 @@ def __dir__():
 # functions
 
 def cmds(event):
+    k = kernels.get(0)
     event.reply(",".join(sorted(k.cmds)))
 
 def meet(event):
@@ -26,6 +27,7 @@ def meet(event):
     except ValueError:
         event.reply("meet origin [permissions]")
         return
+    k = kernels.get(0)
     origin = Users.userhosts.get(origin, origin)
     u = k.users.meet(origin, perms)
     event.reply("added %s" % origin)
@@ -39,7 +41,3 @@ def u(event):
 
 def v(event):
     event.reply("BOTD %s" % __version__)
-
-# runtime
-
-k = kernels.get(0)

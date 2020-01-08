@@ -31,15 +31,6 @@ def __dir__():
 def init(k):
     bot = IRC()
     bot.cfg.last()
-    if k.cfg.prompting:
-        try:
-            server, channel, nick = k.cfg.args
-        except ValueError:
-            raise EINIT("%s <server> <channel> <nick>" % k.cfg.name)
-        bot.cfg.server = server
-        bot.cfg.channel = channel
-        bot.cfg.nick = nick
-        bot.cfg.save()
     bot.start()
     return bot
 
@@ -112,7 +103,6 @@ class IRC(Bot):
         self.threaded = False
         if self.cfg.channel and self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
-        k.fleet.add(self)
 
     def _connect(self):
         if self.cfg.ipv6:
@@ -263,6 +253,7 @@ class IRC(Bot):
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
+        k = kernels.get(0)
         k.users.userhosts.set(event.nick, event.origin)
         if event.txt.startswith("DCC CHAT"):
             if not k.users.allowed(event.origin, "USER"):
@@ -346,6 +337,8 @@ class IRC(Bot):
         self._outqueue.put((channel, txt, mtype))
 
     def start(self):
+        k = kernels.get(0)
+        k.fleet.add(self)
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
         self.connect()
@@ -390,6 +383,7 @@ class DCC(Bot):
 
     def poll(self):
         self._connected.wait()
+        k = kernels.get(0)
         e = DEvent()
         e.txt = self._fsock.readline()
         e.txt = e.txt.rstrip()
@@ -410,4 +404,3 @@ class DCC(Bot):
 
 # runtime
 
-k = kernels.get(0)

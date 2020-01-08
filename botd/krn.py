@@ -44,23 +44,7 @@ class Kernel(Loader):
         self.cfg.modules = ""
         self.cfg.update(cfg or {})
         self.cfg.update(kwargs)
-        kernels.add(self)        
-
-    def cmd(self, txt, origin=""):
-        if not txt:
-            return
-        from botd.csl import Console
-        self.cfg.shell = False
-        self.cfg.prompting = False
-        c = Console()
-        self.fleet.add(c)
-        e = Event()
-        e.txt = txt
-        e.origin = origin
-        e.orig = repr(c)
-        self.dispatch(e)
-        e.wait()
-
+        
     def dispatch(self, event):
         if not event.txt:
             return
@@ -94,6 +78,13 @@ class Kernel(Loader):
         self.cmds.set(k, v)
 
     def start(self):
+        kernels.add(self)
+        if self.cfg.shell:
+            from botd.csl import Console
+            c = Console()
+            c.start()
+        if not self.cfg.modules:
+            self.cfg.modules = "botd"
         self.init(self.cfg.modules)
 
     def wait(self):

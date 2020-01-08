@@ -28,18 +28,9 @@ class Console(Handler):
         super().__init__()
         self._connected = threading.Event()
         self._threaded = False
-        k.fleet.add(self)
         
     def announce(self, txt):
         self.raw(txt)
-
-    def cmd(self, txt):
-        e = Event()
-        e.txt = txt
-        e.orig = repr(self)
-        e.origin = "root@shell"
-        self.dispatch(e)
-        e.wait()
 
     def poll(self):
         self._connected.wait()
@@ -52,6 +43,7 @@ class Console(Handler):
         return e
 
     def input(self):
+        k = kernels.get(0)
         while not self._stopped:
             try:
                 e = self.poll()
@@ -70,10 +62,8 @@ class Console(Handler):
         self.raw(txt)
  
     def start(self):
+        k = kernels.get(0)
         k.fleet.add(self)
         launch(self.input)
         self._connected.set()
 
-# runtime
-
-k = kernels.get(0)

@@ -26,10 +26,12 @@ class DumpHandler(logging.StreamHandler):
     def emit(self, record):
         pass
 
-def level(loglevel="", logdir="/var/log/botd", logfile="botd.log", nostream=False):
+def level(loglevel="", logdir="", logfile="botd.log", nostream=False):
     global logfiled
     if not loglevel:
         loglevel = "error"
+    if not logdir:
+        logdir = os.path.join(os.getcwd(), ".botd")
     logfile = os.path.join(logdir, logfile)
     if not os.path.exists(logfile):
         cdir(logfile)

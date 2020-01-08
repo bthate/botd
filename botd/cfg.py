@@ -16,7 +16,7 @@ def __dir__():
 
 def cfg(event):
     if not event.args:
-        event.reply(str(k.cfg))
+        event.reply("choose on of %s" % "|".join([x.split(".")[-2].lower() for x in os.listdir(os.path.join(workdir, "store")) if x.endswith("Cfg")]))
         return
     target = event.args[0]
     cn = "botd.%s.Cfg" % target
@@ -44,7 +44,3 @@ def cfg(event):
     l.edit(setter)
     l.save()
     event.reply("ok")
-
-# runtime
-
-k = kernels.get(0)

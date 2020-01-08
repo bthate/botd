@@ -26,11 +26,17 @@ opts = [
 ]
 
 def main():
-    cfg = parse_cli("botsh", __version__, opts)
-    k = Kernel(cfg)
-    k.start()
-    c = Console()
-    c.start()
+    parse_cli("botsh", __version__, opts)
+    k = Kernel()
+    try:
+        server, channel, nick = k.cfg.args
+    except ValueError:
+        raise EINIT("%s <server> <channel> <nick>" % k.cfg.name)
+    bot.cfg.server = server
+    bot.cfg.channel = channel
+    bot.cfg.nick = nick
+    bot.cfg.save()
+    k.start(True)
     k.wait()
 
 execute(main)

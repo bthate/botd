@@ -31,6 +31,7 @@ def __dir__():
     return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"display", "feed", "fetch", "init", "rss")
 
 def init(kernel):
+    fetcher = Fetcher()
     fetcher.start()
     return fetcher
 
@@ -93,6 +94,7 @@ class Fetcher(Object):
         return result[:-2].rstrip()
 
     def fetch(self, obj):
+        k = kernels.get(0)
         counter = 0
         objs = []
         if not obj.rss:
@@ -139,6 +141,7 @@ class Fetcher(Object):
         return res
 
     def start(self, repeat=True):
+        fetchers.add(self)
         self.cfg.last()
         self.seen.last()
         if repeat:
@@ -148,6 +151,16 @@ class Fetcher(Object):
 
     def stop(self):
         save(self.seen)
+
+class Fetchers(Object):
+
+    fetchers = []
+    
+    def add(self, fetcher):
+        Fetchers.fetchers.append(fetcher)
+
+    def get(self, nr):
+        return Fetchers.fetchers[nr]
 
 # functions
 
@@ -222,6 +235,7 @@ def feed(event):
         event.reply("no results found")
  
 def fetch(event):
+    fetcher = fetchers.get(0)
     res = fetcher.run()
     event.reply("fetched %s" % ",".join([str(x) for x in res]))
 
@@ -247,5 +261,4 @@ def rss(event):
 
 # runtime
 
-fetcher = Fetcher()
-k = kernels.get(0)
+fetchers = Fetchers()
