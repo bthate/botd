@@ -28,11 +28,10 @@ def cfg(event):
         except (AttributeError, ModuleNotFoundError):
             event.reply("no %s found." % cn)
             return
+        l = cls()
         d = defaults.get(target, None)
         if d:
-            l = cls(d)
-        else:
-            l = cls()
+            l.update(d)
         l.save()
         event.reply("created a %s file" % cn)
     if len(event.args) == 1:
