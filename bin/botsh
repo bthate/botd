@@ -12,8 +12,10 @@ import logging
 from botd.err import EINIT
 from botd.krn import Kernel, kernels
 from botd.shl import execute, parse_cli
+from botd.trm import termreset
 
 opts = [
+    ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
     ('-k', '--kernel', "store_true", False, "read kernel config from file", 'kernel'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
@@ -25,10 +27,12 @@ opts = [
     ('-z', '--shell', "store_false", True, "disable shell", 'shell')
 ]
 
+
 def main():
-    cfg = parse_cli("bot", __version__, opts)
+    cfg = parse_cli("botsh", __version__, opts)
     k = Kernel(cfg)
-    k.init("cmd,irc")
+    k.cfg.shell = True
+    k.init("cmd")
     k.start()
     k.wait()
 

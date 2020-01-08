@@ -47,7 +47,6 @@ def main():
     daemon()
     k.cfg.shell = False
     k.cfg.prompting = False
-    k.init("cmd,irc")
     k.start()
     k.wait()
 
