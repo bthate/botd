@@ -1,5 +1,5 @@
 #!/usr/bin/python3 -u
-# BOTD - python3 IRC channel daemon.
+# BOTLIB - Framework to program bots (a botlib).
 #
 # bin/bot 
 
@@ -9,7 +9,8 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 
 import logging
 
-from bl.krn import Kernel
+from bl.err import EINIT
+from bl.krn import Kernel, kernels
 from bl.shl import execute, parse_cli
 
 opts = [
@@ -25,8 +26,9 @@ opts = [
 ]
 
 def main():
-    cfg = parse_cli("botd", __version__, opts)
+    cfg = parse_cli("bot", __version__, opts)
     k = Kernel(cfg)
+    k.init("cmd,irc")
     k.start()
     k.wait()
 

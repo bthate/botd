@@ -1,7 +1,7 @@
 #!/usr/bin/python3 -u
-# BOTD - python3 IRC channel daemon.
+# BOTLIB - Framework to program bots (a botlib).
 #
-# bin/bot 
+# bin/botctl
 
 __version__ = 1
 
@@ -9,14 +9,16 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 
 import logging
 
-from bl.krn import Kernel
+from bl.err import EINIT
+from bl.krn import Kernel, kernels
 from bl.shl import execute, parse_cli
 
 opts = [
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-k', '--kernel', "store_true", False, "read kernel config from file", 'kernel'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-o', '--options', "store", str, "", "options to use.", 'options'),
-    ('-p', '--prompting', "store_true", True, "prompt for initial values.", 'prompting'),
+    ('-p', '--prompting', "store_false", True, "prompt for initial values.", 'prompting'),
     ('-s', '--save', "store", str, "", "save cli options to kernel config", 'dosave'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
@@ -24,11 +26,13 @@ opts = [
 ]
 
 def main():
-    cfg = parse_cli("botd", __version__, opts)
+    cfg = parse_cli("bot", __version__, opts)
+    cfg.shell = False
+    cfg.prompting = False
     k = Kernel(cfg)
-    k.walk("cmd,shw,cfg")
-    k.walk(cfg.modules)
-    k.cmd(" ".join(k.cfg.args))
-    
+    k.init("cmd,shw,cfg,dbs")
+    k.init(k.cfg.modules)
+    k.cmd(k.cfg.txt)
+
 execute(main)
 os._exit(0)

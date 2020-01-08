@@ -2,7 +2,7 @@
 Description=botd
 
 [Service]
-ExecStart=/usr/local/bin/bot -k -p -d /var/lib/botd -a /var/log/botd -l debug
+ExecStart=/usr/local/bin/botd -k -d /var/lib/botd -a /var/log/botd -l debug
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,5 @@
+botctl -d /var/lib/botd cfg krn modules cmd,ent,rss,shw
+botctl -d /var/lib/botd cfg irc server localhost
+botctl -d /var/lib/botd cfg irc channel #botd
+botctl -d /var/lib/botd meet ~bart@127.0.0.1
+

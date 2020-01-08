@@ -1,12 +1,8 @@
 [ ! -d "/var/log/botd" ] && mkdir /var/log/botd
 [ ! -d "/var/lib/botd" ] && mkdir /var/lib/botd
-[ ! -d "/var/lib/botd/store" ] && mkdir /var/lib/botd/store
-[ ! -d "/var/lib/botd/store/bl.krn.Cfg" ] && mkdir /var/lib/botd/store/bl.krn.Cfg
-[ ! -d "/var/lib/botd/store/botd.irc.Cfg" ] && mkdir /var/lib/botd/store/botd.irc.Cfg
-#botctl -d /var/lib/botd cfg irc server localhost
-#botctl -d /var/lib/botd cfg irc channel \#botd
+python3 setup.py install
 cp init.d/botd.service /etc/systemd/system
 systemctl enable botd
 systemctl daemon-reload
 service botd start
-systemctl status botd
+systemctl status botd --no-pager

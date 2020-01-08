@@ -1,35 +1,30 @@
 #!/usr/bin/python3 -u
-# BOTD - python3 IRC channel daemon.
+# BOTLIB - Framework to program bots (a botlib).
 #
-# 
+# bin/bot 
 
 __version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import grp
-import os
 import logging
-import pwd
-import sys
-import bl.krn
 
-from bl.obj import workdir
-from bl.csl import Console
 from bl.err import EINIT
-from bl.krn import Kernel
-from bl.log import level, logfiled
+from bl.krn import Kernel, kernels
 from bl.shl import execute, parse_cli
 from bl.trm import termreset
-from bl.trc import get_exception
-from bl.utl import hd
 
 opts = [
+    ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-k', '--kernel', "store_true", False, "read kernel config from file", 'kernel'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-o', '--options', "store", str, "", "options to use.", 'options'),
+    ('-p', '--prompting', "store_false", True, "prompt for initial values.", 'prompting'),
+    ('-s', '--save', "store", str, "", "save cli options to kernel config", 'dosave'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
+    ('-z', '--shell', "store_false", True, "disable shell", 'shell')
 ]
 
 def daemon():
@@ -46,19 +41,16 @@ def daemon():
     os.dup2(so.fileno(), sys.stdout.fileno())
     os.dup2(se.fileno(), sys.stderr.fileno())
 
-
 def main():
     cfg = parse_cli("botd", __version__, opts)
-    cfg.kernel = True
     k = Kernel(cfg)
-    level("debug")
-    daemon()
+    if cfg.daemon:
+        daemon()
+    k.cfg.shell = False
+    k.cfg.prompting = False
+    k.init("cmd,irc")
     k.start()
     k.wait()
 
-try:
-    execute(main)
-except PermissionError:
-    print("you need to run botd as root")
-
+execute(main)
 os._exit(0)
