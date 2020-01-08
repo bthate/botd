@@ -2,7 +2,6 @@
 #
 # IRC bot. 
 
-import bl
 import logging
 import os
 import queue

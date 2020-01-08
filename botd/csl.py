@@ -2,7 +2,6 @@
 #
 # console code.
 
-import bl
 import sys
 import threading
 

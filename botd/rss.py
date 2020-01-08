@@ -2,7 +2,6 @@
 #
 # rss feed fetcher.
 
-import bl
 import datetime
 import os
 import random
