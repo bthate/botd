@@ -50,11 +50,18 @@ you can use the botctl program to configure BOTD:
 
 ::
 
- > botctl -d /var/lib/botd cfg krn modules cmd,ent,rss,shw,udp
- > botctl -d /var/lib/botd cfg irc server localhost
- > botctl -d /var/lib/botd cfg irc channel #botd
- > botctl -d /var/lib/botd meet ~bart@127.0.0.1
- > botctl -d /var/lib/botd rss https://news.ycombinator.com/rss
+ > sudo botctl -d /var/lib/botd cfg krn modules cmd,ent,rss,shw,udp
+ > sudo botctl -d /var/lib/botd cfg irc server localhost
+ > sudo botctl -d /var/lib/botd cfg irc channel #botd
+ > sudo botctl -d /var/lib/botd meet ~bart@127.0.0.1
+ > sudo botctl -d /var/lib/botd rss https://news.ycombinator.com/rss
+
+
+or run:
+
+::
+
+ > sudo init.d/config udp,irc,shw localhost \#botd botd ~bart@127.0.0.1
 
 
 U D P
