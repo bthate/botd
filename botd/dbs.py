@@ -7,11 +7,11 @@ import time
 import _thread
 import bl
 
-from bl.err import ENOFILE
-from bl.obj import Object
-from bl.tms import fntime
-from bl.typ import get_cls
-from bl.utl import locked
+from botd.err import ENOFILE
+from botd.obj import Object
+from botd.tms import fntime
+from botd.typ import get_cls
+from botd.utl import locked
 
 # defines
 
@@ -87,7 +87,7 @@ class Db(Object):
 # functions
 
 def find(event):
-    from bl.krn import kernels
+    from botd.krn import kernels
     k = kernels.get("0", None)
     opts = os.listdir(os.path.join(k.cfg.workdir, "store"))
     try:
@@ -120,16 +120,16 @@ def hook(fn):
     return o
 
 def names(name, delta=None):
-    assert bl.obj.workdir
+    assert botd.obj.workdir
     if not name:
         return []
-    p = os.path.join(bl.obj.workdir, "store", name) + os.sep
+    p = os.path.join(botd.obj.workdir, "store", name) + os.sep
     res = []
     now = time.time()
     past = now + delta
     for rootdir, dirs, files in os.walk(p, topdown=True):
         for fn in files:
-            fnn = os.path.join(rootdir, fn).split(os.path.join(bl.obj.workdir, "store"))[-1]
+            fnn = os.path.join(rootdir, fn).split(os.path.join(botd.obj.workdir, "store"))[-1]
             if delta:
                 if fntime(fnn) < past:
                     continue

@@ -7,22 +7,22 @@ __version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import bl
 import logging
 import shutil
 import time
 import unittest
+import botd
 
-from bl.obj import Object, starttime
-from bl.krn import Kernel
-from bl.log import level
-from bl.shl import execute, parse_cli
-from bl.tms import elapsed
-from bl.trc import get_exception
-from bl.trm import termsave, termreset
-from bl.typ import get_cls
-from bl.usr import Users
-from bl.utl import cdir
+from botd.obj import Object, starttime
+from botd.krn import Kernel
+from botd.log import level
+from botd.shl import execute, parse_cli
+from botd.tms import elapsed
+from botd.trc import get_exception
+from botd.trm import termsave, termreset
+from botd.typ import get_cls
+from botd.usr import Users
+from botd.utl import cdir
 
 opts = [
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
@@ -53,7 +53,7 @@ def main():
     except:
         pass
     cfg = parse_cli("test", __version__, opts)
-    bl.obj.workdir = "testdata"
+    botd.obj.workdir = "testdata"
     k = Kernel(cfg)
     level("error")
     initialize(k, cfg)

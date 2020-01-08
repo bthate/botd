@@ -14,14 +14,14 @@ import time
 import threading
 import _thread
 
-from bl.bot import Bot
-from bl.flt import Fleet
-from bl.krn import kernels
-from bl.hdl import Event
-from bl.obj import Cfg, Object
-from bl.thr import launch
-from bl.usr import Users
-from bl.utl import locked
+from botd.bot import Bot
+from botd.flt import Fleet
+from botd.krn import kernels
+from botd.hdl import Event
+from botd.obj import Cfg, Object
+from botd.thr import launch
+from botd.usr import Users
+from botd.utl import locked
 
 # defines
 
@@ -35,7 +35,7 @@ def init(k):
         try:
             server, channel, nick = k.cfg.args
         except ValueError:
-            raise bl.err.EINIT("%s <server> <channel> <nick>" % k.cfg.name)
+            raise botd.err.EINIT("%s <server> <channel> <nick>" % k.cfg.name)
         bot.cfg.server = server
         bot.cfg.channel = channel
         bot.cfg.nick = nick

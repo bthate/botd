@@ -6,9 +6,9 @@ import logging
 import random
 import unittest
 
-from bl.krn import Kernel
-from bl.typ import get_cls
-from bl.usr import Users
+from botd.krn import Kernel
+from botd.typ import get_cls
+from botd.usr import Users
 
 k = Kernel()
 k.cfg.prompt = False

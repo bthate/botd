@@ -5,7 +5,7 @@
 import json
 import unittest
 
-from bl.obj import Object, ObjectDecoder, ObjectEncoder, stamp
+from botd.obj import Object, ObjectDecoder, ObjectEncoder, stamp
 
 class Test_Base(unittest.TestCase):
 

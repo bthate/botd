@@ -6,7 +6,7 @@ import json
 import os
 import unittest
 
-from bl.obj import Object, workdir
+from botd.obj import Object, workdir
 
 class ENOTCOMPAT(Exception):
     pass

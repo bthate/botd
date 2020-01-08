@@ -4,7 +4,7 @@
 
 import unittest
 
-from bl.obj import Cfg
+from botd.obj import Cfg
 
 class O(object):
 

@@ -6,11 +6,11 @@ import bl
 import sys
 import threading
 
-from bl.err import ENOTXT
-from bl.flt import Fleet
-from bl.krn import kernels
-from bl.hdl import Event, Handler
-from bl.thr import launch
+from botd.err import ENOTXT
+from botd.flt import Fleet
+from botd.krn import kernels
+from botd.hdl import Event, Handler
+from botd.thr import launch
 
 #defines
 

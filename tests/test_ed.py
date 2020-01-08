@@ -7,8 +7,8 @@ import logging
 import os
 import unittest
 
-from bl.krn import Kernel
-from bl.prs import Command
+from botd.krn import Kernel
+from botd.prs import Command
 class Test_Ed(unittest.TestCase):
 
     k = Kernel()

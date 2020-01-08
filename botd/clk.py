@@ -6,11 +6,11 @@ import threading
 import time
 import typing
 
-from bl.dbs import Db
-from bl.hdl import Event
-from bl.obj import Cfg, Object
-from bl.thr import launch
-from bl.utl import get_name
+from botd.dbs import Db
+from botd.hdl import Event
+from botd.obj import Cfg, Object
+from botd.thr import launch
+from botd.utl import get_name
 
 # defines
 
@@ -50,7 +50,7 @@ class Timers(Object):
 
     def start(self):
         db = Db()
-        for evt in db.all("bl.clk.Timers"):
+        for evt in db.all("botd.clk.Timers"):
             e = Event()
             e.update(evt)
             if "done" in e and e.done:

@@ -7,10 +7,10 @@ import logging
 import os
 import types
 
-from bl.obj import Object
-from bl.trc import get_exception
-from bl.typ import get_name, get_type
-from bl.utl import xdir
+from botd.obj import Object
+from botd.trc import get_exception
+from botd.typ import get_name, get_type
+from botd.utl import xdir
 
 # defines
 
@@ -38,7 +38,7 @@ class Loader(Object):
 
     def get_mod(self, mn):
         try:
-            mod = self.direct("bl.%s" % mn)
+            mod = self.direct("botd.%s" % mn)
         except ModuleNotFoundError:
             try:
                 mod = self.direct(mn)

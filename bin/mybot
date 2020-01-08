@@ -7,18 +7,18 @@ __version__ = 1
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import bl.krn
+import botd.krn
 import logging
 
-from bl.csl import Console
-from bl.err import EINIT
-from bl.evt import Event
-from bl.krn import Kernel, workdir
-from bl.log import level, logfiled
-from bl.shl import close_history, enable_history, parse_cli, set_completer
-from bl.trm import reset, save
-from bl.trc import get_exception
-from bl.utl import hd
+from botd.csl import Console
+from botd.err import EINIT
+from botd.evt import Event
+from botd.krn import Kernel, workdir
+from botd.log import level, logfiled
+from botd.shl import close_history, enable_history, parse_cli, set_completer
+from botd.trm import reset, save
+from botd.trc import get_exception
+from botd.utl import hd
 
 opts = [
     ('-b', '--background', 'store_true', False, 'run in daemon mode.', 'daemon'),

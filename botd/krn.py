@@ -8,16 +8,16 @@ import logging
 import time
 import bl
 
-from bl.err import EINIT
-from bl.flt import Fleet
-from bl.hdl import Event
-from bl.ldr import Loader
-from bl.obj import Cfg, Object
-from bl.shl import enable_history, set_completer, writepid
-from bl.thr import launch
-from bl.trc import get_exception
-from bl.usr import Users
-from bl.utl import get_name
+from botd.err import EINIT
+from botd.flt import Fleet
+from botd.hdl import Event
+from botd.ldr import Loader
+from botd.obj import Cfg, Object
+from botd.shl import enable_history, set_completer, writepid
+from botd.thr import launch
+from botd.trc import get_exception
+from botd.usr import Users
+from botd.utl import get_name
 
 # defines
 
@@ -49,7 +49,7 @@ class Kernel(Loader):
     def cmd(self, txt, origin=""):
         if not txt:
             return
-        from bl.csl import Console
+        from botd.csl import Console
         self.cfg.shell = False
         self.cfg.prompting = False
         c = Console()
@@ -102,7 +102,7 @@ class Kernel(Loader):
             self.cfg.shell = False
         try:
             self.init(self.cfg.modules)
-        except bl.err.EINIT as ex:
+        except botd.err.EINIT as ex:
             print(ex)
             self._skip = True
             return

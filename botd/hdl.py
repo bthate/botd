@@ -10,11 +10,11 @@ import queue
 import time
 import threading
 
-from bl.flt import Fleet
-from bl.ldr import Loader
-from bl.obj import Object
-from bl.thr import launch
-from bl.tms import days
+from botd.flt import Fleet
+from botd.ldr import Loader
+from botd.obj import Object
+from botd.thr import launch
+from botd.tms import days
 
 # defines
 
@@ -82,7 +82,7 @@ class Event(Object):
     def show(self):
         if not self.verbose:
             return
-        from bl.krn import kernels
+        from botd.krn import kernels
         k = kernels.get(0)
         for txt in self.result:
             k.fleet.echo(self.orig, self.channel, txt)

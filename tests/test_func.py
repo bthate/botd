@@ -11,9 +11,9 @@ import time
 import types
 import unittest
 
-from bl.krn import Kernel
-from bl.hdl import Event
-from bl.thr import launch
+from botd.krn import Kernel
+from botd.hdl import Event
+from botd.thr import launch
 
 k = Kernel()
 

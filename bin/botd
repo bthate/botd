@@ -9,10 +9,10 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 
 import logging
 
-from bl.err import EINIT
-from bl.krn import Kernel, kernels
-from bl.shl import execute, parse_cli
-from bl.trm import termreset
+from botd.err import EINIT
+from botd.krn import Kernel, kernels
+from botd.shl import execute, parse_cli
+from botd.trm import termreset
 
 opts = [
     ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),

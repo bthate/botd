@@ -9,16 +9,16 @@ import random
 import time
 import urllib
 
-from bl.clk import Repeater
-from bl.dbs import Db
-from bl.flt import Fleet
-from bl.obj import Cfg, Object
-from bl.tms import to_time
-from bl.thr import launch
-from bl.tms import to_time, day
-from bl.utl import get_tinyurl, get_url, strip_html, unescape
+from botd.clk import Repeater
+from botd.dbs import Db
+from botd.flt import Fleet
+from botd.obj import Cfg, Object
+from botd.tms import to_time
+from botd.thr import launch
+from botd.tms import to_time, day
+from botd.utl import get_tinyurl, get_url, strip_html, unescape
 
-from bl.krn import kernels
+from botd.krn import kernels
 
 # defines
 
@@ -133,7 +133,7 @@ class Fetcher(Object):
         res = []
         thrs = []
         db = Db()
-        for o in db.all("bl.rss.Rss"):
+        for o in db.all("botd.rss.Rss"):
             thrs.append(launch(self.fetch, o))
         for thr in thrs:
             res.append(thr.join())
@@ -189,7 +189,7 @@ def display(event):
     db = Db()
     setter = {"display_list": event.args[1]}
     db = Db()
-    for o in db.find("bl.rss.Rss", {"rss": event.args[0]}):
+    for o in db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
         o.edit(setter)
         o.save()
@@ -202,19 +202,19 @@ def feed(event):
     nr = 0
     diff = time.time() - to_time(day())
     db = Db()
-    res = list(db.find("bl.rss.Feed", {"link": match}, delta=-diff))
+    res = list(db.find("botd.rss.Feed", {"link": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s - %s" % (nr, o.title, o.summary, o.updated or o.published or "nodate", o.link))
         nr += 1
     if nr:
         return
-    res = list(db.find("bl.rss.Feed", {"title": match}, delta=-diff))
+    res = list(db.find("botd.rss.Feed", {"title": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
         nr += 1
-    res = list(db.find("bl.rss.Feed", {"summary": match}, delta=-diff))
+    res = list(db.find("botd.rss.Feed", {"summary": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
@@ -230,14 +230,14 @@ def rss(event):
     db = Db()
     if not event.args or "http" not in event.args[0]:
         nr = 0
-        for o in db.find("bl.rss.Rss", {"rss": ""}):
+        for o in db.find("botd.rss.Rss", {"rss": ""}):
             event.reply("%s %s" % (nr, o.rss))
             nr += 1
         if not nr:
             event.reply("rss <url>")
         return
     url = event.args[0]
-    if db.find("bl.rss.Rss", {"rss": url}):
+    if db.find("botd.rss.Rss", {"rss": url}):
         event.reply("feed is already knows.")
         return
     o = Rss()

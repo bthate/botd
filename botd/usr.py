@@ -4,8 +4,8 @@
 
 import logging
 
-from bl.dbs import Db
-from bl.obj import Object
+from botd.dbs import Db
+from botd.obj import Object
 
 # defines
 
@@ -47,7 +47,7 @@ class Users(Db):
 
     def get_users(self, origin=""):
         s = {"user": origin}
-        return self.all("bl.usr.User", s)
+        return self.all("botd.usr.User", s)
 
     def get_user(self, origin):
         u =  list(self.get_users())

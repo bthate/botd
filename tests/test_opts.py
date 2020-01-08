@@ -4,9 +4,9 @@
 
 import unittest
 
-from bl.obj import Default, Object
-from bl.krn import Cfg
-from bl.shl import make_opts
+from botd.obj import Default, Object
+from botd.krn import Cfg
+from botd.shl import make_opts
 
 opts = [
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),

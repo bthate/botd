@@ -4,8 +4,8 @@
 
 import unittest
 
-from bl.hdl import Event
-from bl.krn import Kernel
+from botd.hdl import Event
+from botd.krn import Kernel
 
 k = Kernel()
 k.walk("bl")

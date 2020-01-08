@@ -6,7 +6,7 @@ import os
 import time
 import unittest
 
-from bl.obj import Object
+from botd.obj import Object
 
 class Test_Object(unittest.TestCase):
 

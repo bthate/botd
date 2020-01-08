@@ -5,7 +5,7 @@
 import json
 import _thread
 
-from bl.utl import locked
+from botd.utl import locked
 
 lock = _thread.allocate_lock()
 
@@ -63,7 +63,7 @@ def keys(o):
     return o.__dict__.keys()
 
 def last(o):
-    from bl.dbs import Db
+    from botd.dbs import Db
     db = Db()
     return db.last(str(get_type(o)))
 

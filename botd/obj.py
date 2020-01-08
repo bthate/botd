@@ -14,9 +14,9 @@ import _thread
 
 from json import JSONEncoder, JSONDecoder
 
-from bl.err import EJSON, EOVERLOAD
-from bl.typ import get_cls, get_type
-from bl.utl import cdir, locked, get_name
+from botd.err import EJSON, EOVERLOAD
+from botd.typ import get_cls, get_type
+from botd.utl import cdir, locked, get_name
 
 # defines
 
@@ -141,7 +141,7 @@ class Object(O, collections.MutableMapping):
         return json.dumps(self, cls=ObjectEncoder, indent=4, sort_keys=True)
 
     def last(self, strip=False):
-        from bl.dbs import Db
+        from botd.dbs import Db
         db = Db()
         l = db.last(str(get_type(self)))
         if l:

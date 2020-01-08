@@ -2,23 +2,23 @@
 #
 # include all modules.
 
-import bl.obj
-import bl.prs
-import bl.ldr
-import bl.flt
-import bl.hdl
-import bl.utl
-import bl.thr
-import bl.dbs
-import bl.err
-import bl.log
-import bl.shl
-import bl.trc
-import bl.typ
-import bl.tms
-import bl.trm
-import bl.clk
-import bl.usr
-import bl.krn
-import bl.csl
+import botd.obj
+import botd.prs
+import botd.ldr
+import botd.flt
+import botd.hdl
+import botd.utl
+import botd.thr
+import botd.dbs
+import botd.err
+import botd.log
+import botd.shl
+import botd.trc
+import botd.typ
+import botd.tms
+import botd.trm
+import botd.clk
+import botd.usr
+import botd.krn
+import botd.csl
 

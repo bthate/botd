@@ -6,7 +6,7 @@ import time
 import threading
 
 import bl
-import bl.obj
+import botd.obj
 
 # defines
 
@@ -15,7 +15,7 @@ def __dir__():
 
 # classes
 
-class Token(bl.obj.Object):
+class Token(botd.obj.Object):
 
     def __init__(self):
         super().__init__()
@@ -86,7 +86,7 @@ class Token(bl.obj.Object):
             self.selector = word
             self.value = None
 
-class Command(bl.obj.Object):
+class Command(botd.obj.Object):
 
     def __init__(self):
         super().__init__()
@@ -119,7 +119,7 @@ class Command(bl.obj.Object):
         if not txt:
             txt = self.txt 
         if not txt:
-            raise bl.err.ENOTXT
+            raise botd.err.ENOTXT
         self.txt = txt
         txt = txt.replace("\u0001", "")
         txt = txt.replace("\001", "")
@@ -165,9 +165,9 @@ class Command(bl.obj.Object):
             if token.setter:
                 self.setter[token.setter] = token.value
             if token.up:
-                self.delta = bl.tms.parse_date(token.up)
+                self.delta = botd.tms.parse_date(token.up)
             elif token.down:
-                self.delta = bl.tms.parse_date(token.down)
+                self.delta = botd.tms.parse_date(token.down)
             if not self.noignore and token.ignore:
                 self.ignore = token.ignore
                 continue
@@ -184,7 +184,7 @@ class Command(bl.obj.Object):
         self.start = time.time() + self.delta
         self.stop = time.time()
         self.rest = " ".join(self.args)
-        self.time = bl.tms.to_day(self.rest)
+        self.time = botd.tms.to_day(self.rest)
 
     def ready(self):
         self._ready.set()

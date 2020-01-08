@@ -6,12 +6,12 @@ import bl
 import socket
 import time
 
-from bl.obj import Cfg, Object
-from bl.dbs import Db
-from bl.flt import Fleet
-from bl.krn import kernels
-from bl.thr import launch
-from bl.utl import get_name
+from botd.obj import Cfg, Object
+from botd.dbs import Db
+from botd.flt import Fleet
+from botd.krn import kernels
+from botd.thr import launch
+from botd.utl import get_name
 
 # defines
 
@@ -84,7 +84,7 @@ class UDP(Object):
 
     def start(self):
         db = Db()
-        self.cfg = db.last("bl.udp.Cfg") or Cfg()
+        self.cfg = db.last("botd.udp.Cfg") or Cfg()
         launch(self.server)
 
 # runtime

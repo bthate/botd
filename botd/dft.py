@@ -2,7 +2,7 @@
 #
 # default values.
 
-from bl.obj import Object
+from botd.obj import Object
 
 default_irc = {
     "channel": "",

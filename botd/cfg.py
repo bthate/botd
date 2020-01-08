@@ -2,10 +2,10 @@
 #
 # edit configuration. 
 
-from bl.dbs import Db
-from bl.dft import defaults
-from bl.krn import kernels
-from bl.typ import get_cls
+from botd.dbs import Db
+from botd.dft import defaults
+from botd.krn import kernels
+from botd.typ import get_cls
 
 # defines
 
@@ -19,7 +19,7 @@ def cfg(event):
         event.reply(str(k.cfg))
         return
     target = event.args[0]
-    cn = "bl.%s.Cfg" % target
+    cn = "botd.%s.Cfg" % target
     db = Db()
     l = db.last(cn)
     if not l:     

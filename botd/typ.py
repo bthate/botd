@@ -7,7 +7,7 @@ import importlib
 import sys
 import types
 
-from bl.err import ENOCLASS
+from botd.err import ENOCLASS
 
 # defines
 

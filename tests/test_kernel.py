@@ -6,7 +6,7 @@ import logging
 import os
 import unittest
 
-from bl.krn import Kernel, Cfg
+from botd.krn import Kernel, Cfg
 
 class Test_Kernel(unittest.TestCase):
 

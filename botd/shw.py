@@ -6,10 +6,10 @@ import os
 import threading
 import time
 
-from bl.krn import kernels, starttime
-from bl.obj import Object
-from bl.tms import elapsed
-from bl.typ import get_type
+from botd.krn import kernels, starttime
+from botd.obj import Object
+from botd.tms import elapsed
+from botd.typ import get_type
 
 # defines
 

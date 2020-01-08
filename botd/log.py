@@ -7,9 +7,9 @@ import logging.handlers
 import os
 
 import bl
-import bl.obj
+import botd.obj
 
-from bl.utl import cdir, touch
+from botd.utl import cdir, touch
 
 # defines
 
@@ -34,7 +34,7 @@ def level(loglevel="", logdir="", logfile="", nostream=False):
     if not logfile:
         logfile = "bot.log"
     if not logdir:
-        logdir = logfiled = os.path.join(bl.obj.workdir, "logs")
+        logdir = logfiled = os.path.join(botd.obj.workdir, "logs")
     else:
         logfile = logfiled = os.path.join(logdir, logfile)
     if not os.path.exists(logfile):

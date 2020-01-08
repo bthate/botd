@@ -6,22 +6,22 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 
 import json
 import time
-import bl.tbl
+import botd.tbl
 
-from bl.log import level
+from botd.log import level
 level("error")
 
-bl.tbl.classes = []
-bl.tbl.names = {}
-bl.tbl.modules = {}
+botd.tbotd.classes = []
+botd.tbotd.names = {}
+botd.tbotd.modules = {}
 
-from bl.krn import Kernel
+from botd.krn import Kernel
 
 k = Kernel()
 k.walk("bl")
 k.walk("botd")
 print(txt)
-print("classes = %s" % bl.tbl.classes)
-print("names = %s" % bl.tbl.names)
-print("modules = %s" % bl.tbl.modules)
+print("classes = %s" % botd.tbotd.classes)
+print("names = %s" % botd.tbotd.names)
+print("modules = %s" % botd.tbotd.modules)
 sys.exit()

@@ -9,13 +9,13 @@ import sys
 import time
 import unittest
 
-from bl.bot import Bot
-from bl.obj import Object
-from bl.hdl import Event
-from bl.krn import Kernel, kernels
-from bl.utl import consume
-from bl.thr import launch
-from bl.usr import Users
+from botd.bot import Bot
+from botd.obj import Object
+from botd.hdl import Event
+from botd.krn import Kernel, kernels
+from botd.utl import consume
+from botd.thr import launch
+from botd.usr import Users
 
 class Param(Object):
 

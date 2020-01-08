@@ -19,7 +19,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode, urlunparse
 from urllib.request import Request, urlopen
 
-from bl.trc import get_exception
+from botd.trc import get_exception
 
 # defines
 
@@ -99,7 +99,7 @@ def edit(o, setter):
 def fromfile(f):
     try:
         fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        return json.load(f, object_hook=bl.hook)
+        return json.load(f, object_hook=botd.hook)
     except:
         fcntl.flock(f, fcntl.LOCK_UN)
         raise

@@ -6,9 +6,9 @@ import bl
 import queue
 import sys
 
-from bl.krn import kernels
-from bl.obj import Cfg
-from bl.thr import launch
+from botd.krn import kernels
+from botd.obj import Cfg
+from botd.thr import launch
 
 # defines
 
@@ -26,7 +26,7 @@ class Cfg(Cfg):
         self.port = 0
         self.server = ""
 
-class Bot(bl.hdl.Handler):
+class Bot(botd.hdl.Handler):
 
     def __init__(self):
         super().__init__()

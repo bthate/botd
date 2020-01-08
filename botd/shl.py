@@ -11,16 +11,16 @@ import readline
 import time
 
 import bl
-import bl.log
-import bl.trm
-import bl.utl
+import botd.log
+import botd.trm
+import botd.utl
 
-from bl.dft import defaults
-from bl.log import level, logfiled
-from bl.obj import Cfg, Object
-from bl.trc import get_exception
-from bl.trm import termsave, termreset
-from bl.utl import cdir, hd
+from botd.dft import defaults
+from botd.log import level, logfiled
+from botd.obj import Cfg, Object
+from botd.trc import get_exception
+from botd.trm import termsave, termreset
+from botd.utl import cdir, hd
 
 # defines
 
@@ -33,12 +33,12 @@ HISTFILE = ""
 
 def close_history():
     global HISTFILE
-    if bl.obj.workdir:
+    if botd.obj.workdir:
         if not HISTFILE:
-            HISTFILE = os.path.join(bl.obj.workdir, "history")
+            HISTFILE = os.path.join(botd.obj.workdir, "history")
         if not os.path.isfile(HISTFILE):
-            bl.utl.cdir(HISTFILE)
-            bl.utl.touch(HISTFILE)
+            botd.utl.cdir(HISTFILE)
+            botd.utl.touch(HISTFILE)
         readline.write_history_file(HISTFILE)
 
 def complete(text, state):
@@ -54,8 +54,8 @@ def complete(text, state):
 
 def enable_history():
     global HISTFILE
-    if bl.obj.workdir:
-        HISTFILE = os.path.abspath(os.path.join(bl.obj.workdir, "history"))
+    if botd.obj.workdir:
+        HISTFILE = os.path.abspath(os.path.join(botd.obj.workdir, "history"))
         if not os.path.exists(HISTFILE):
             touch(HISTFILE)
         else:
@@ -68,7 +68,7 @@ def execute(main):
         main()
     except KeyboardInterrupt:
         print("")
-    except bl.err.EINIT:
+    except botd.err.EINIT:
         pass
     except PermissionError:
         pass
@@ -103,13 +103,13 @@ def parse_cli(name, version=None, opts=[], **kwargs):
     cfg.workdir = cfg.workdir or hd(".bot")
     cfg.name = name 
     cfg.version = version or __version__
-    bl.obj.workdir = cfg.workdir
+    botd.obj.workdir = cfg.workdir
     sp = os.path.join(cfg.workdir, "store") + os.sep
     if not os.path.exists(sp):
         cdir(sp)
     level(cfg.level or "error", cfg.logdir)
     logging.debug("%s started in %s at %s (%s)" % (cfg.name.upper(), cfg.workdir, time.ctime(time.time()), cfg.level))
-    logging.debug("logging in %s" % bl.log.logfiled)
+    logging.debug("logging in %s" % botd.log.logfiled)
     return cfg
 
 def set_completer(commands):
@@ -120,8 +120,8 @@ def set_completer(commands):
     atexit.register(lambda: readline.set_completer(None))
 
 def writepid():
-    assert bl.obj.workdir
-    path = os.path.join(bl.obj.workdir, "pid")
+    assert botd.obj.workdir
+    path = os.path.join(botd.obj.workdir, "pid")
     f = open(path, 'w')
     f.write(str(os.getpid()))
     f.flush()

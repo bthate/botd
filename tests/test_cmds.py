@@ -7,10 +7,10 @@ import time
 import types
 import unittest
 
-from bl.obj import Object
-from bl.hdl import Event
-from bl.krn import Kernel
-from bl.thr import launch
+from botd.obj import Object
+from botd.hdl import Event
+from botd.krn import Kernel
+from botd.thr import launch
 
 k = Kernel()
 

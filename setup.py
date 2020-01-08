@@ -125,25 +125,25 @@ BOTD contains the following modules:
 
 
  bl			- bot library
- bl.all			- contains all sub modules
- bl.clk			- clock functions.
- bl.csl			- console.
- bl.dbs			- database.
- bl.err			- errors.
- bl.flt			- list of bots.
- bl.evt			- event.
- bl.hdl			- handler.
- bl.ldr			- module loader.
- bl.log			- logging.
- bl.pst			- persitence.
- bl.shl			- shell.
- bl.tbl			- dispatch tables.
- bl.tms			- time related.
- bl.trm			- terminal code.
- bl.thr			- threads.
- bl.trc			- trace.
- bl.typ			- typing.
- bl.utl			- utilities.
+ botd.all			- contains all sub modules
+ botd.clk			- clock functions.
+ botd.csl			- console.
+ botd.dbs			- database.
+ botd.err			- errors.
+ botd.flt			- list of bots.
+ botd.evt			- event.
+ botd.hdl			- handler.
+ botd.ldr			- module loader.
+ botd.log			- logging.
+ botd.pst			- persitence.
+ botd.shl			- shell.
+ botd.tbl			- dispatch tables.
+ botd.tms			- time related.
+ botd.trm			- terminal code.
+ botd.thr			- threads.
+ botd.trc			- trace.
+ botd.typ			- typing.
+ botd.utl			- utilities.
 
 ::
 

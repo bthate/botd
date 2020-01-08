@@ -8,8 +8,8 @@ import queue
 import threading
 import types
 
-from bl.trc import get_exception
-from bl.utl import get_name
+from botd.trc import get_exception
+from botd.utl import get_name
 
 # defines
 

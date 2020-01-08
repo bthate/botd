@@ -4,8 +4,8 @@
 
 import unittest
 
-from bl.dbs import Db
-from bl.err import ENOFILE
+from botd.dbs import Db
+from botd.err import ENOFILE
 
 class Test_Store(unittest.TestCase):
 

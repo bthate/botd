@@ -2,10 +2,10 @@
 #
 # basic commands. 
 
-from bl.obj import Object
-from bl.dbs import Db
-from bl.krn import kernels, __version__
-from bl.usr import Users
+from botd.obj import Object
+from botd.dbs import Db
+from botd.krn import kernels, __version__
+from botd.usr import Users
 
 # defines
 
@@ -33,7 +33,7 @@ def meet(event):
 def u(event):
     res = ""
     db = Db()
-    for o in db.all("bl.usr.User"):
+    for o in db.all("botd.usr.User"):
         res += "%s," % o.user
     event.reply(res)
 
