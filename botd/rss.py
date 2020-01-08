@@ -40,7 +40,7 @@ class Cfg(Cfg):
 
     def __init__(self):
         super().__init__()
-        self.display_list = ["title", "link"]
+        self.display_list = "title,link"
         self.dosave = True
         self.tinyurl = False
 
