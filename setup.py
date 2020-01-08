@@ -193,7 +193,7 @@ you can contact me on IRC/freenode/#dunkbots.
     
     """,
     license='Public Domain',
-    install_requires=["bl", "feedparser"],
+    install_requires=["botlib", "feedparser"],
     packages=["botd"],
     scripts=["bin/bot", "bin/botd", "bin/botctl", "bin/toudp"],
     classifiers=['Development Status :: 3 - Alpha',
