@@ -44,8 +44,7 @@ def daemon():
 def main():
     cfg = parse_cli("botd", __version__, opts)
     k = Kernel(cfg)
-    if cfg.daemon:
-        daemon()
+    daemon()
     k.cfg.shell = False
     k.cfg.prompting = False
     k.init("cmd,irc")

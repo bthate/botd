@@ -1,4 +1,4 @@
-# BOTLIB - Framework to program bots.
+# BOTD - python3 IRC channel daemon.
 #
 # kernel for boot proces.
 

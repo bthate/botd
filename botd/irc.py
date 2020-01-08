@@ -1,4 +1,4 @@
-# BOTLIB - Framework to program bots.
+# BOTD - python3 IRC channel daemon.
 #
 # IRC bot. 
 
@@ -14,6 +14,7 @@ import threading
 import _thread
 
 from botd.bot import Bot
+from botd.err import EINIT
 from botd.flt import Fleet
 from botd.krn import kernels
 from botd.hdl import Event
@@ -34,7 +35,7 @@ def init(k):
         try:
             server, channel, nick = k.cfg.args
         except ValueError:
-            raise botd.err.EINIT("%s <server> <channel> <nick>" % k.cfg.name)
+            raise EINIT("%s <server> <channel> <nick>" % k.cfg.name)
         bot.cfg.server = server
         bot.cfg.channel = channel
         bot.cfg.nick = nick
