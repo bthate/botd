@@ -11,29 +11,28 @@ import logging
 
 from botd.err import EINIT
 from botd.krn import Kernel, kernels
+from botd.log import level
 from botd.shl import execute, parse_cli
 from botd.trm import termreset
 
 opts = [
-    ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
-    ('-k', '--kernel', "store_true", False, "read kernel config from file", 'kernel'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
-    ('-o', '--options', "store", str, "", "options to use.", 'options'),
-    ('-p', '--prompting', "store_false", True, "prompt for initial values.", 'prompting'),
-    ('-s', '--save', "store", str, "", "save cli options to kernel config", 'dosave'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
-    ('-z', '--shell', "store_false", True, "disable shell", 'shell')
 ]
 
 
 def main():
     cfg = parse_cli("botsh", __version__, opts)
-    k = Kernel(cfg)
-    k.cfg.shell = True
-    k.init("cmd")
+    level(cfg.level)
+    k = Kernel()
+    k.cfg.prompting = False
+    k.init("cmd,shw,cfg,ent")
     k.start()
+    from botd.csl import Console
+    c = Console()
+    c.start()
     k.wait()
 
 execute(main)

@@ -41,6 +41,7 @@ class Kernel(Loader):
         super().__init__()
         self._stopped = False
         self._skip = False
+        self.cfg.modules = ""
         self.cfg.update(cfg or {})
         self.cfg.update(kwargs)
         kernels.add(self)        
@@ -93,26 +94,9 @@ class Kernel(Loader):
         self.cmds.set(k, v)
 
     def start(self):
-        if self._skip:
-            return
-        if self.cfg.kernel:
-            self.cfg.last()
-            self.cfg.prompting = False
-            self.cfg.shell = False
-        try:
-            self.init(self.cfg.modules)
-        except botd.err.EINIT as ex:
-            print(ex)
-            self._skip = True
-            return
-        if self.cfg.dosave:
-            self.cfg.save()
-        if self.cfg.shell:
-            self.init("cmd,csl")
+        self.init(self.cfg.modules)
 
     def wait(self):
-        if self._skip:
-            return
         while not self._stopped:
             time.sleep(1.0)
 

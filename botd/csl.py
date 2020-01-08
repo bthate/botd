@@ -14,12 +14,7 @@ from botd.thr import launch
 #defines
 
 def __dir__():
-    return ("Console", "init")
-
-def init(kernel):
-    csl = Console()
-    csl.start()
-    return csl
+    return ("Console",)
 
 # classes
 
@@ -33,6 +28,7 @@ class Console(Handler):
         super().__init__()
         self._connected = threading.Event()
         self._threaded = False
+        k.fleet.add(self)
         
     def announce(self, txt):
         self.raw(txt)

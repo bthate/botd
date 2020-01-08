@@ -97,7 +97,7 @@ class Object(O, collections.MutableMapping):
     def __str__(self):
         return self.json()
 
-    def edit(self, setter):
+    def edit(self, setter, skip=False):
         try:
             setter = vars(setter)
         except:
@@ -106,9 +106,9 @@ class Object(O, collections.MutableMapping):
             setter = {}
         count = 0
         for key, value in setter.items():
+            if skip and key in skip.split(","):
+                continue
             count += 1
-            #if "," in value:
-            #    value = value.split(",")
             if value in ["True", "true"]:
                 self[key] = True
             elif value in ["False", "false"]:

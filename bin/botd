@@ -1,7 +1,7 @@
 #!/usr/bin/python3 -u
-# BOTLIB - Framework to program bots (a botlib).
+# BOTD - python3 IRC channel daemon.
 #
-# bin/bot 
+# bin/botd
 
 __version__ = 1
 
@@ -13,19 +13,6 @@ from botd.err import EINIT
 from botd.krn import Kernel, kernels
 from botd.shl import execute, parse_cli
 from botd.trm import termreset
-
-opts = [
-    ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
-    ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
-    ('-k', '--kernel', "store_true", False, "read kernel config from file", 'kernel'),
-    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
-    ('-o', '--options', "store", str, "", "options to use.", 'options'),
-    ('-p', '--prompting', "store_false", True, "prompt for initial values.", 'prompting'),
-    ('-s', '--save', "store", str, "", "save cli options to kernel config", 'dosave'),
-    ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
-    ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
-    ('-z', '--shell', "store_false", True, "disable shell", 'shell')
-]
 
 def daemon():
     pid = os.fork()
@@ -42,13 +29,17 @@ def daemon():
     os.dup2(se.fileno(), sys.stderr.fileno())
 
 def main():
-    cfg = parse_cli("botd", __version__, opts)
-    k = Kernel(cfg)
+    parse_cli("botd", __version__)
     daemon()
-    k.cfg.shell = False
-    k.cfg.prompting = False
+    k = Kernel()
+    k.cfg.last()
     k.start()
     k.wait()
 
-execute(main)
+try:
+    execute(main)
+except PermissionError:
+    sys.stdout.write("you need root to run botd.\n")
+    sys.stdout.sync()
+
 os._exit(0)

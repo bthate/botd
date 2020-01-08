@@ -94,21 +94,14 @@ def make_opts(ns, options, **kwargs):
 def parse_cli(name, version=None, opts=[], **kwargs):
     ns = Object()
     make_opts(ns, opts)
-    d = defaults.get("krn")
-    cfg = Cfg(d)
-    cfg.update(ns)
-    cfg.update(kwargs)
-    cfg.txt = " ".join(cfg.args)
-    cfg.workdir = cfg.workdir or hd(".botd")
+    cfg = Cfg(ns, kwargs)
+    if not cfg.workdir:
+        cfg.workdir = "/var/lib/botd"
+    botd.obj.workdir = cfg.workdir
+    if not cfg.logdir:
+        cfg.logdir = "/var/log/botd"
     cfg.name = name 
     cfg.version = version or __version__
-    botd.obj.workdir = cfg.workdir
-    sp = os.path.join(cfg.workdir, "store") + os.sep
-    if not os.path.exists(sp):
-        cdir(sp)
-    level(cfg.level or "error", cfg.logdir)
-    logging.debug("%s started in %s at %s (%s)" % (cfg.name.upper(), cfg.workdir, time.ctime(time.time()), cfg.level))
-    logging.debug("logging in %s" % botd.log.logfiled)
     return cfg
 
 def set_completer(commands):
