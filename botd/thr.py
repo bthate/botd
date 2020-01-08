@@ -2,7 +2,6 @@
 #
 # threading.
 
-import bl
 import logging
 import queue
 import threading

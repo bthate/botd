@@ -2,7 +2,6 @@
 #
 # utility functions.
 
-import bl
 import json
 import html
 import html.parser

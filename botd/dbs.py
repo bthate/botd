@@ -5,7 +5,7 @@
 import os
 import time
 import _thread
-import bl
+import botd.obj
 
 from botd.err import ENOFILE
 from botd.obj import Object
@@ -88,7 +88,7 @@ class Db(Object):
 
 def find(event):
     from botd.krn import kernels
-    k = kernels.get("0", None)
+    k = kernels.get(0)
     opts = os.listdir(os.path.join(k.cfg.workdir, "store"))
     try:
         match = event.txt.split(" ")[1]

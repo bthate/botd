@@ -5,11 +5,9 @@
 import unittest
 
 from botd.hdl import Event
-from botd.krn import Kernel
+from botd.krn import kernels
 
-k = Kernel()
-k.walk("bl")
-k.start()
+k = kernels.get(0)
 
 class Test_Scheduler(unittest.TestCase):
 
@@ -21,4 +19,4 @@ class Test_Scheduler(unittest.TestCase):
         e.verbose = k.cfg.verbose
         k.dispatch(e)
         e.wait()
-        self.assertTrue(e.result and "BOTLIB" in e.result[0])
+        self.assertTrue(e.result and "BOTD" in e.result[0])

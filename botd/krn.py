@@ -6,7 +6,6 @@ __version__ = 1
 
 import logging
 import time
-import bl
 
 from botd.err import EINIT
 from botd.flt import Fleet

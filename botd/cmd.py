@@ -38,7 +38,7 @@ def u(event):
     event.reply(res)
 
 def v(event):
-    event.reply("BOTLIB %s" % __version__)
+    event.reply("BOTD %s" % __version__)
 
 # runtime
 

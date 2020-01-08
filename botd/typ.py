@@ -2,7 +2,6 @@
 #
 # types.
 
-import bl
 import importlib
 import sys
 import types

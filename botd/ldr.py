@@ -37,6 +37,7 @@ class Loader(Object):
         return self.cmds.get(cn, None)
 
     def get_mod(self, mn):
+        mod = None
         try:
             mod = self.direct("botd.%s" % mn)
         except ModuleNotFoundError:
@@ -72,7 +73,11 @@ class Loader(Object):
             if not mn:
                 continue
             m = self.get_mod(mn)
-            loc = m.__spec__.submodule_search_locations
+            if not m:
+                continue
+            loc = None
+            if "__spec__" in dir(m):
+                loc = m.__spec__.submodule_search_locations
             if not loc:
                 self.introspect(m)
                 mods.append(m)
@@ -82,6 +87,7 @@ class Loader(Object):
                     if x.endswith(".py"):
                         mmn = "%s.%s" % (mn, x[:-3])
                         m = self.get_mod(mmn)
-                        self.introspect(m)
-                        mods.append(m)
+                        if m:
+                            self.introspect(m)
+                            mods.append(m)
         return mods

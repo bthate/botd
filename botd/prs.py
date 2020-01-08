@@ -5,7 +5,6 @@
 import time
 import threading
 
-import bl
 import botd.obj
 
 # defines

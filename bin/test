@@ -37,7 +37,7 @@ def initialize(k, cfg):
     cdir("testdata")
     k.users.oper("test@shell")
     k.cfg.prompt = False
-    k.walk("bl")
+    k.walk("botd")
     k.start()
     for c in k.names.values():
         try:

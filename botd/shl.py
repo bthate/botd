@@ -10,7 +10,6 @@ import os
 import readline
 import time
 
-import bl
 import botd.log
 import botd.trm
 import botd.utl

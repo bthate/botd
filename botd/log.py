@@ -6,7 +6,6 @@ import logging
 import logging.handlers
 import os
 
-import bl
 import botd.obj
 
 from botd.utl import cdir, touch

@@ -2,7 +2,6 @@
 #
 # udp input to irc channel.
 
-import bl
 import socket
 import time
 

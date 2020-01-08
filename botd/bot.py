@@ -2,10 +2,10 @@
 #
 # bot base class.
 
-import bl
 import queue
 import sys
 
+from botd.hdl import Handler
 from botd.krn import kernels
 from botd.obj import Cfg
 from botd.thr import launch
@@ -26,7 +26,7 @@ class Cfg(Cfg):
         self.port = 0
         self.server = ""
 
-class Bot(botd.hdl.Handler):
+class Bot(Handler):
 
     def __init__(self):
         super().__init__()

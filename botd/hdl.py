@@ -2,7 +2,6 @@
 #
 # event handler.
 
-import bl
 import inspect
 import logging
 import pkgutil
