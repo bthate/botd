@@ -236,8 +236,9 @@ def rss(event):
             event.reply("rss <url>")
         return
     url = event.args[0]
-    if db.find("botd.rss.Rss", {"rss": url}):
-        event.reply("feed is already knows.")
+    res = list(db.find("botd.rss.Rss", {"rss": url}))
+    if res:
+        event.reply("feed is already known.")
         return
     o = Rss()
     o.rss = event.args[0]

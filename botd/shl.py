@@ -99,7 +99,7 @@ def parse_cli(name, version=None, opts=[], **kwargs):
     cfg.update(ns)
     cfg.update(kwargs)
     cfg.txt = " ".join(cfg.args)
-    cfg.workdir = cfg.workdir or hd(".bot")
+    cfg.workdir = cfg.workdir or hd(".botd")
     cfg.name = name 
     cfg.version = version or __version__
     botd.obj.workdir = cfg.workdir

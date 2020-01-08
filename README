@@ -114,36 +114,31 @@ BOTD contains the following modules:
 
 ::
 
-
- bl			- bot library.
- bl.all			- contains all sub modules
- bl.bot		- bot base class.
- bl.clk			- clock functions.
- bl.csl			- console.
- bl.dbs			- database.
- bl.err			- errors.
- bl.flt			- list of bots.
- bl.evt			- event.
- bl.hdl			- handler.
- bl.ldr			- module loader.
- bl.log			- logging.
- bl.pst			- persitence.
- bl.shl			- shell.
- bl.tbl			- dispatch tables.
- bl.tms			- time related.
- bl.trm			- terminal code.
- bl.thr			- threads.
- bl.trc			- trace.
- bl.typ			- typing.
- bl.usr		- user management.
- bl.utl			- utilities.
-
-::
-
- botd.cmd		- basic commands
- botd.ent		- log and todo commands.
- botd.irc		- IRC bot.
- botd.udp		- UDP packet to IRC channel relay.
+ botd				- bot library.
+ botd.bot			- bot base class.
+ botd.clk			- clock functions.
+ botd.cmd			- basic commands
+ botd.csl			- console.
+ botd.dbs			- database.
+ botd.ent			- log and todo commands.
+ botd.err			- errors.
+ botd.flt			- list of bots.
+ botd.evt			- event.
+ botd.hdl			- handler.
+ botd.irc			- IRC bot.
+ botd.ldr			- module loader.
+ botd.log			- logging.
+ botd.pst			- persitence.
+ botd.shl			- shell.
+ botd.tbl			- dispatch tables.
+ botd.tms			- time related.
+ botd.trm			- terminal code.
+ botd.thr			- threads.
+ botd.trc			- trace.
+ botd.typ			- typing.
+ botd.udp			- UDP packet to IRC channel relay.
+ botd.usr			- user management.
+ botd.utl			- utilities.
  
 C O D E
 
