@@ -19,7 +19,7 @@ def __dir__():
 # functions
 
 def flt(event):
-    k = kernels.get(0)
+    k = kernels.get_first()
     try:
         index = int(event.args[0])
         event.reply(str(k.fleet.bots[index]))
@@ -32,7 +32,7 @@ def pid(event):
     event.reply(str(os.getpid()))
 
 def ps(event):
-    k = kernels.get(0)
+    k = kernels.get_first()
     psformat = "%-8s %-50s"
     result = []
     for thr in sorted(threading.enumerate(), key=lambda x: x.getName()):

@@ -11,35 +11,44 @@ import logging
 
 from botd.err import EINIT
 from botd.krn import Kernel, kernels
+from botd.log import level
 from botd.hdl import Event
-from botd.shl import execute, parse_cli
+from botd.shl import parse_cli
+from botd.trc import get_exception
+from botd.trm import termsave, termreset
 
 opts = [
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
-    ('-k', '--kernel', "store_true", False, "read kernel config from file", 'kernel'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
-    ('-o', '--options', "store", str, "", "options to use.", 'options'),
-    ('-p', '--prompting', "store_false", True, "prompt for initial values.", 'prompting'),
-    ('-s', '--save', "store", str, "", "save cli options to kernel config", 'dosave'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
-    ('-z', '--shell', "store_false", True, "disable shell", 'shell')
 ]
 
+def execute(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except EINIT:
+        pass
+    except PermissionError:
+        print("you need root permissions.")
+    except Exception:
+        logging.error(get_exception())
+    finally:
+        termreset()
+
 def main():
-    cfg = parse_cli("bot", __version__, opts)
-    cfg.shell = False
-    cfg.prompting = False
-    k = Kernel(cfg)
-    k.init("cmd,shw,cfg,dbs")
-    k.init(k.cfg.modules)
-    from botd.csl import Console
-    c = Console()
-    k.fleet.add(c)
+    cfg = parse_cli("botctl", __version__, opts)
+    if not cfg.txt:
+        return
+    k = Kernel()
+    k.fleet.add(k)
+    kernels.add(k)
+    k.walk("botd")
     e = Event()
     e.txt = cfg.txt
-    e.origin = "root@shell"
-    e.orig = repr(c)
     k.dispatch(e)
     e.wait()
 

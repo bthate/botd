@@ -21,9 +21,8 @@ class Param(Object):
 
     pass
 
-k = kernels.get(0)
-users = Users()
-users.oper("test@shell")
+k = kernels.get_first()
+k.users.oper("test@shell")
 
 try:
     index = int(k.cfg.args[1])
@@ -31,6 +30,7 @@ except:
     index = 1
 
 bot = Bot()
+bot.start()
 
 names = list(k.names)
 param = Param()

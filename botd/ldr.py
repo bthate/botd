@@ -37,21 +37,13 @@ class Loader(Object):
         return self.cmds.get(cn, None)
 
     def get_mod(self, mn):
-        return self.direct(mn)
-
-    def init(self, mns):
-        mods = []
-        for mod in self.walk(mns):
-            if "init" in dir(mod):
-                logging.warning("init %s" % mod.__name__)
-                try:
-                    mod.init(self)
-                except EINIT as ex:
-                    print(ex)
-                    self._skip = True
-                    return
-                mods.append(mod)
-        return mods
+        got = True
+        try:
+            return self.direct("botd.%s" % mn)
+        except ModuleNotFoundError as ex:
+            got = False
+        if not got:
+            return self.direct(mn)
 
     def introspect(self, mod):
         for key in xdir(mod, "_"):
@@ -73,7 +65,7 @@ class Loader(Object):
                 continue
             self.names[n] = "%s.%s" % (mod.__name__, o.__name__)
 
-    def walk(self, mns):
+    def walk(self, mns, init=False):
         mods = []
         for mn in mns.split(","):
             if not mn:
@@ -96,4 +88,7 @@ class Loader(Object):
                         if m:
                             self.introspect(m)
                             mods.append(m)
+        if init:
+            for mod in mods:
+                mod.init(self)
         return mods

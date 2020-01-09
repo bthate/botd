@@ -14,20 +14,38 @@ from botd.err import EINIT
 from botd.krn import Kernel
 from botd.csl import Console
 from botd.log import level
-from botd.shl import execute, parse_cli
-from botd.trm import termreset
+from botd.shl import parse_cli
+from botd.trm import termreset, termsave
+from botd.trc import get_exception
+from botd.utl import hd
 
 opts = [
-    ('-d', '--datadir', 'store', str, os.path.join(os.getcwd(), ".botd"), 'set working directory.', 'workdir'),
+    ('-d', '--datadir', 'store', str, hd(".botd"), 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-p', '--prompting', 'store_true', False, "", "query for initial values."),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
 ]
 
+def execute(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except botd.err.EINIT:
+        pass
+    except PermissionError:
+        print("you need root permissions.")
+    except Exception:
+        logging.error(get_exception())
+    finally:
+        termreset()
+
 def main():
     cfg = parse_cli("botsh", __version__, opts)
     k = Kernel(cfg)
+    k.walk("botd")
     k.start()
     c = Console()
     c.start()

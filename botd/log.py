@@ -8,7 +8,7 @@ import os
 
 import botd.obj
 
-from botd.utl import cdir, touch
+from botd.utl import cdir, hd, touch
 
 # defines
 
@@ -31,7 +31,7 @@ def level(loglevel="", logdir="", logfile="botd.log", nostream=False):
     if not loglevel:
         loglevel = "error"
     if not logdir:
-        logdir = os.path.join(os.getcwd(), ".botd")
+        logdir = os.path.join(hd(".botd"), "logs")
     logfile = os.path.join(logdir, logfile)
     if not os.path.exists(logfile):
         cdir(logfile)

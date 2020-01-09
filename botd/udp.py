@@ -46,18 +46,18 @@ class UDP(Object):
         self._sock.setblocking(1)
         self._starttime = time.time()
         self.cfg = Cfg()
-        self.kernel = kernels.get(0)
 
     def output(self, txt, addr=None):
         if not self.verbose:
             return
+        k = kernels.get(0)
         try:
             (passwd, text) = txt.split(" ", 1)
         except ValueError:
             return
         text = text.replace("\00", "")
         if passwd == self.cfg.password:
-            for b in self.kernel.fleet.bots:
+            for b in k.fleet.bots:
                 if "DCC" in get_name(b):
                     b.announce(text)
 

@@ -90,7 +90,10 @@ class Object(O, collections.MutableMapping):
     def __init__(self, *args, **kwargs):
         super().__init__()
         if args:
-            self.update(args[0])
+            try:
+                self.update(args[0])
+            except TypeError:
+                self.update(vars(args[0]))
         if kwargs:
             self.update(kwargs)
 
@@ -220,7 +223,7 @@ class Cfg(Default):
 
 def stamp(o):
     for k in dir(o):
-        oo = o.get(k)
+        oo = getattr(o, k, None)
         if isinstance(oo, Object):
             stamp(oo)
             oo.__dict__["stamp"] = oo._path

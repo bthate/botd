@@ -2,6 +2,9 @@
 #
 # edit configuration. 
 
+import os
+import botd.obj
+
 from botd.dbs import Db
 from botd.dft import defaults
 from botd.krn import kernels
@@ -15,9 +18,15 @@ def __dir__():
 # functions
 
 def cfg(event):
+    assert(botd.obj.workdir)
     if not event.args:
-        event.reply("choose on of %s" % "|".join([x.split(".")[-2].lower() for x in os.listdir(os.path.join(workdir, "store")) if x.endswith("Cfg")]))
-        return
+        files = [x.split(".")[-2].lower() for x in os.listdir(os.path.join(botd.obj.workdir, "store")) if x.endswith("Cfg")]
+        if files:
+            event.reply("choose on of %s" % "|".join())
+            return
+        else:
+            event.reply("no config files available yet.")
+            return
     target = event.args[0]
     cn = "botd.%s.Cfg" % target
     db = Db()

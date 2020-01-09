@@ -10,9 +10,10 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 import logging
 
 from botd.err import EINIT
-from botd.krn import Kernel, kernels
-from botd.shl import execute, parse_cli
-from botd.trm import termreset
+from botd.krn import Kernel
+from botd.shl import parse_cli
+from botd.trc import get_exception
+from botd.trm import termreset, termsave
 
 def daemon():
     pid = os.fork()
@@ -35,6 +36,21 @@ def main():
     k.cfg.last()
     k.start()
     k.wait()
+
+def execute(main):
+    termsave()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("")
+    except botd.err.EINIT:
+        pass
+    except PermissionError:
+        print("you need root permissions.")
+    except Exception:
+        logging.error(get_exception())
+    finally:
+        termreset()
 
 try:
     execute(main)

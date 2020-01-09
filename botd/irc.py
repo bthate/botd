@@ -253,7 +253,7 @@ class IRC(Bot):
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
-        k = kernels.get(0)
+        k = kernels.get_first()
         k.users.userhosts.set(event.nick, event.origin)
         if event.txt.startswith("DCC CHAT"):
             if not k.users.allowed(event.origin, "USER"):
@@ -337,7 +337,7 @@ class IRC(Bot):
         self._outqueue.put((channel, txt, mtype))
 
     def start(self):
-        k = kernels.get(0)
+        k = kernels.get_first()
         k.fleet.add(self)
         if self.cfg.channel:
             self.channels.append(self.cfg.channel)
@@ -363,6 +363,7 @@ class DCC(Bot):
         self.raw(txt)
 
     def connect(self, event):
+        k = kernels.get_first()
         arguments = event.txt.split()
         addr = arguments[3]
         port = arguments[4]
@@ -383,7 +384,7 @@ class DCC(Bot):
 
     def poll(self):
         self._connected.wait()
-        k = kernels.get(0)
+        k = kernels.get_first()
         e = DEvent()
         e.txt = self._fsock.readline()
         e.txt = e.txt.rstrip()

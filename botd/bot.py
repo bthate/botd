@@ -71,7 +71,7 @@ class Bot(Handler):
             self.raw(txt)
 
     def start(self, input=False, output=False):
-        k = kernels.get(0)
+        k = kernels.get_first()
         k.fleet.add(self)
         super().start()
         if output:

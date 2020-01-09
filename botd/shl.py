@@ -24,7 +24,7 @@ from botd.utl import cdir, hd
 # defines
 
 def __dir__():
-    return ("HISTFILE", "close_history", "complete", "enable_history", "execute", "get_completer", "make_opts", "parse_cli", "set_completer", "writepid")
+    return ("HISTFILE", "close_history", "complete", "enable_history", "get_completer", "make_opts", "parse_cli", "set_completer", "writepid")
 
 HISTFILE = ""
 
@@ -61,21 +61,6 @@ def enable_history():
             readline.read_history_file(HISTFILE)
     atexit.register(close_history)
 
-def execute(main):
-    termsave()
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("")
-    except botd.err.EINIT:
-        pass
-    except PermissionError:
-        pass
-    except Exception:
-        logging.error(get_exception())
-    finally:
-        termreset()
-
 def get_completer():
     return readline.get_completer()
 
@@ -96,8 +81,15 @@ def parse_cli(name, version=None, opts=[], **kwargs):
     if opts:
         make_opts(ns, opts)
     cfg = Cfg(ns, kwargs)
+    if not cfg.workdir:
+        cfg.workdir = hd(".botd") 
+    p = os.path.join(cfg.workdir, "store")
+    if not os.path.isdir(p):
+        print(p)
+        cdir(p)
     botd.obj.workdir = cfg.workdir
     cfg.name = name 
+    cfg.txt = " ".join(cfg.args)
     cfg.version = version or __version__
     level(cfg.level, cfg.logdir)
     return cfg

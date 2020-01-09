@@ -82,10 +82,10 @@ class Event(Object):
         if not self.verbose:
             return
         from botd.krn import kernels
-        k = kernels.get(0)
+        k = kernels.get_first()
         for txt in self.result:
             k.fleet.echo(self.orig, self.channel, txt)
- 
+
     def wait(self):
         self._ready.wait()
 

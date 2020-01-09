@@ -5,6 +5,7 @@
 __version__ = 1
 
 import logging
+import os
 import time
 
 from botd.err import EINIT
@@ -77,15 +78,16 @@ class Kernel(Loader):
     def register(self, k, v):
         self.cmds.set(k, v)
 
+    def say(self, channel, txt, mtype="normal"):
+        print(txt)
+
     def start(self):
         kernels.add(self)
         if self.cfg.shell:
             from botd.csl import Console
             c = Console()
             c.start()
-        if not self.cfg.modules:
-            self.cfg.modules = "botd"
-        self.init(self.cfg.modules)
+        self.walk(self.cfg.modules, True)
 
     def wait(self):
         while not self._stopped:
@@ -102,9 +104,11 @@ class Kernels(Object):
             Kernels.kernels.append(kernel)
             Kernels.nr += 1
 
-    def get(self, nr, default=None):
-        return Kernels.kernels[nr]
-
+    def get_first(self):
+        try:
+            return Kernels.kernels[0]
+        except IndexError:
+            pass
 # runtime
 
 kernels = Kernels()

@@ -8,7 +8,7 @@ import _thread
 import botd.obj
 
 from botd.err import ENOFILE
-from botd.obj import Object
+from botd.obj import Object, workdir
 from botd.tms import fntime
 from botd.typ import get_cls
 from botd.utl import locked
@@ -16,7 +16,7 @@ from botd.utl import locked
 # defines
 
 def __dir__():
-    return ("Db", "find", "hook", "lock", "names")
+    return ("Db", "hook", "lock", "names")
 
 lock = _thread.allocate_lock()
 
@@ -85,28 +85,6 @@ class Db(Object):
         return None
 
 # functions
-
-def find(event):
-    from botd.krn import kernels
-    k = kernels.get(0)
-    opts = os.listdir(os.path.join(k.cfg.workdir, "store"))
-    try:
-        match = event.txt.split(" ")[1]
-    except (IndexError, AttributeError):
-        event.reply("find %s" % "|".join([x.split(".")[-1].lower() for x in opts]))
-        return
-    opts = [x for x in opts if match in x.lower()]
-    c = 0
-    db = Db()
-    for opt in opts:
-        if len(event.txt.split()) > 2:
-           for arg in event.txt.split()[2:]:
-               selector = {arg: ""}
-        else:
-            selector = {"txt": ""}
-        for o in db.find(opt, selector):
-            event.display(o, str(c))
-            c += 1
 
 @locked(lock)
 def hook(fn):

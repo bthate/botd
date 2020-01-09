@@ -12,7 +12,7 @@ from botd.usr import Users
 
 k = Kernel()
 k.cfg.prompt = False
-k.walk("bl")
+k.walk("botd")
 k.start()
 
 users = Users()
