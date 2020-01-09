@@ -1,6 +1,13 @@
-botctl -d /var/lib/botd cfg krn modules $1
-botctl -d /var/lib/botd cfg irc server $2
-botctl -d /var/lib/botd cfg irc channel $3
-botctl -d /var/lib/botd cfg irc nick $4
-botctl -d /var/lib/botd meet $5
+MODULES=
+SERVER=
+CHANNEL=
+NICK=
+OWNER=
+
+botctl -d /var/lib/botd cfg krn modules ${1-cfg,cmd,shw,rss,udp,irc}
+botctl -d /var/lib/botd cfg irc server ${2-localhost}
+botctl -d /var/lib/botd cfg irc channel ${3-#botd}
+botctl -d /var/lib/botd cfg irc nick ${4-botd}
+botctl -d /var/lib/botd meet ${5-~bart@127.0.0.1}
+botctl -d /var/lib/botd cfg krn
 
