@@ -33,7 +33,7 @@ class Users(Db):
         if user:
             if perm in user.perms:
                 return True
-        logging.warn("denied %s" % origin)
+        logging.error("denied %s" % origin)
         return False
 
     def delete(self, origin, perm):
