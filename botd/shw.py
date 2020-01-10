@@ -53,9 +53,6 @@ def ps(event):
         if res.strip():
             event.reply(res)
 
-def table(event):
-    event.reply(botd.tbl.modules)
-
 def up(event):
     event.reply(elapsed(time.time() - starttime))
 

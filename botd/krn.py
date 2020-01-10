@@ -49,7 +49,6 @@ class Kernel(Loader):
         kernels.add(self)
         
     def dispatch(self, event):
-        print(event)
         if not event.txt:
             return
         event.parse()

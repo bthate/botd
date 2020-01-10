@@ -39,7 +39,6 @@ class Loader(Object):
         modname = botd.tbl.modules.get(cn, None)
         if modname and modname not in Loader.table:
             self.get_mod(modname)
-        print(self.cmds)
         return self.cmds.get(cn, None)
 
     def get_mod(self, mn, force=True):
