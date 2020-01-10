@@ -9,7 +9,8 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 
 import logging
 import os
- 
+
+from botd.csl import Console 
 from botd.err import EINIT
 from botd.irc import IRC
 from botd.krn import Kernel
@@ -44,8 +45,6 @@ def execute(main):
 def main():
     cfg = parse_cli("botirc", __version__, opts)
     k = Kernel()
-    k.cfg.shell = True
-    k.start()
     try:
         server, channel, nick = cfg.args
     except ValueError:
@@ -57,6 +56,8 @@ def main():
     bot.cfg.nick = nick
     bot.cfg.save()
     bot.start()
+    csl = Console()
+    csl.start()
     k.wait()
 
 execute(main)
