@@ -371,7 +371,11 @@ class DCC(Bot):
             s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((addr, port))
+        try:
+            s.connect((addr, port))
+        except ConnectionRefusedError:
+            logging.error("connection to %s:%s refused" % (addr, port))
+            return
         s.send(bytes('Welcome to %s %s !!\n' % (k.cfg.name, event.nick), "utf-8"))
         s.setblocking(1)
         os.set_inheritable(s.fileno(), os.O_RDWR)
