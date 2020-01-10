@@ -34,6 +34,7 @@ class Cfg(Cfg):
         self.seed = "blablablablablaz" # needs to be 16 chars wide
         self.server = self.host
         self.owner = ""
+        self.verbose = True
 
 class UDP(Object):
 
@@ -48,9 +49,9 @@ class UDP(Object):
         self.cfg = Cfg()
 
     def output(self, txt, addr=None):
-        if not self.verbose:
+        if not self.cfg.verbose:
             return
-        k = kernels.get(0)
+        k = kernels.get_first()
         try:
             (passwd, text) = txt.split(" ", 1)
         except ValueError:
