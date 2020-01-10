@@ -173,10 +173,8 @@ class Object(O, collections.MutableMapping):
         return self.update(strip(self))
 
     @locked(lock)
-    def save(self, stime=None):
+    def save(self):
         assert workdir
-        if stime:
-            self._path = os.path.join(get_type(self), stime)
         opath = os.path.join(workdir, "store", self._path)
         cdir(opath)
         logging.debug("save %s" % self._path)

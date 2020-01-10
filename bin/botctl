@@ -45,8 +45,6 @@ def main():
         return
     k = Kernel()
     k.fleet.add(k)
-    kernels.add(k)
-    k.walk("botd")
     e = Event()
     e.txt = cfg.txt
     k.dispatch(e)

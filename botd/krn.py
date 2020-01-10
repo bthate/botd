@@ -45,8 +45,11 @@ class Kernel(Loader):
         self.cfg.modules = ""
         self.cfg.update(cfg or {})
         self.cfg.update(kwargs)
+        self.run = Object()
+        kernels.add(self)
         
     def dispatch(self, event):
+        print(event)
         if not event.txt:
             return
         event.parse()
@@ -66,10 +69,6 @@ class Kernel(Loader):
 
     def say(self, channel, txt, mtype="normal"):
         print(txt)
-
-    def start(self):
-        kernels.add(self)
-        self.walk(self.cfg.modules, True)
 
     def wait(self):
         while not self._stopped:

@@ -20,9 +20,9 @@ def __dir__():
 def cfg(event):
     assert(botd.obj.workdir)
     if not event.args:
-        files = [x.split(".")[-2].lower() for x in os.listdir(os.path.join(botd.obj.workdir, "store")) if x.endswith("Cfg")]
+        files = ["none", ] + [x.split(".")[-2].lower() for x in os.listdir(os.path.join(botd.obj.workdir, "store")) if x.endswith("Cfg")]
         if files:
-            event.reply("choose on of %s" % "|".join())
+            event.reply("choose from %s" % "|".join(files))
             return
         else:
             event.reply("no config files available yet.")

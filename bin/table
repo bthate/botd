@@ -9,19 +9,19 @@ import time
 import botd.tbl
 
 from botd.log import level
-level("error")
+level("debug")
 
-botd.tbotd.classes = []
-botd.tbotd.names = {}
-botd.tbotd.modules = {}
+botd.tbl.classes = []
+botd.tbl.names = {}
+botd.tbl.modules = {}
 
 from botd.krn import Kernel
 
 k = Kernel()
-k.walk("bl")
 k.walk("botd")
+
 print(txt)
-print("classes = %s" % botd.tbotd.classes)
-print("names = %s" % botd.tbotd.names)
-print("modules = %s" % botd.tbotd.modules)
+print("classes = %s" % botd.tbl.classes)
+print("names = %s" % botd.tbl.names)
+print("modules = %s" % botd.tbl.modules)
 sys.exit()

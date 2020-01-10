@@ -44,7 +44,6 @@ def execute(main):
 def main():
     cfg = parse_cli("botirc", __version__, opts)
     k = Kernel()
-    k.walk("botd.cmd")
     k.cfg.shell = True
     k.start()
     try:

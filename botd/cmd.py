@@ -2,9 +2,11 @@
 #
 # basic commands. 
 
+import botd.tbl
+
 from botd.obj import Object
 from botd.dbs import Db
-from botd.krn import kernels, __version__
+from botd.krn import __version__
 from botd.usr import Users
 
 # defines
@@ -15,8 +17,7 @@ def __dir__():
 # functions
 
 def cmds(event):
-    k = kernels.get_first()
-    event.reply(",".join(sorted(k.cmds)))
+    event.reply(",".join(sorted(botd.tbl.modules)))
 
 def meet(event):
     if not event.args:
@@ -27,9 +28,8 @@ def meet(event):
     except ValueError:
         event.reply("meet origin [permissions]")
         return
-    k = kernels.get_first()
     origin = Users.userhosts.get(origin, origin)
-    u = k.users.meet(origin, perms)
+    Users.meet(origin, perms)
     event.reply("added %s" % origin)
 
 def u(event):

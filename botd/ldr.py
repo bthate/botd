@@ -6,7 +6,9 @@ import importlib
 import logging
 import os
 import types
+import botd.tbl
 
+from botd.err import ENOMODULE
 from botd.obj import Object
 from botd.trc import get_exception
 from botd.typ import get_name, get_type
@@ -20,12 +22,12 @@ def __dir__():
 # classes
 
 class Loader(Object):
+
+    table = Object()
     
     def __init__(self):
         super().__init__()
         self.cmds = Object()
-        self.names = Object()
-        self.table = Object()
 
     def direct(self, name):
         return importlib.import_module(name)
@@ -34,17 +36,29 @@ class Loader(Object):
         return self.table.keys()
 
     def get_cmd(self, cn):
+        modname = botd.tbl.modules.get(cn, None)
+        if modname and modname not in Loader.table:
+            self.get_mod(modname)
+        print(self.cmds)
         return self.cmds.get(cn, None)
 
-    def get_mod(self, mn):
-        got = True
+    def get_mod(self, mn, force=True):
+        if mn in Loader.table:
+            return Loader.table[mn]
+        mod = None
         try:
-            return self.direct("botd.%s" % mn)
+            mod = self.direct("botd.%s" % mn)
         except ModuleNotFoundError as ex:
-            got = False
-        if not got:
-            return self.direct(mn)
-
+            pass
+        if not mod:
+            mod =  self.direct(mn)
+        if not mod:
+            raise ENOMODULE(mn)
+        if force or mn not in Loader.table:
+            Loader.table[mn] = mod
+            self.introspect(Loader.table[mn])
+        return Loader.table[mn]
+            
     def introspect(self, mod):
         for key in xdir(mod, "_"):
             o = getattr(mod, key)
@@ -53,6 +67,7 @@ class Loader(Object):
                     if key in self.cmds:
                         continue
                     self.cmds[key] = o
+                    botd.tbl.modules[key] = mod.__name__
                 continue
             try:
                 sc = issubclass(o, Object)
@@ -61,9 +76,11 @@ class Loader(Object):
             except TypeError:
                 continue
             n = key.split(".")[-1].lower()
-            if n in self.names:
+            if n in botd.tbl.names:
                 continue
-            self.names[n] = "%s.%s" % (mod.__name__, o.__name__)
+            mn = "%s.%s" % (mod.__name__, o.__name__)
+            botd.tbl.names[n] = mn 
+            botd.tbl.classes.append(mn)
 
     def walk(self, mns, init=False):
         mods = []
@@ -77,7 +94,6 @@ class Loader(Object):
             if "__spec__" in dir(m):
                 loc = m.__spec__.submodule_search_locations
             if not loc:
-                self.introspect(m)
                 mods.append(m)
                 continue
             for md in loc:
@@ -86,7 +102,6 @@ class Loader(Object):
                         mmn = "%s.%s" % (mn, x[:-3])
                         m = self.get_mod(mmn)
                         if m:
-                            self.introspect(m)
                             mods.append(m)
         if init:
             for mod in mods:

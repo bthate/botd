@@ -69,6 +69,7 @@ class Fetcher(Object):
     def __init__(self):
         super().__init__()
         self._thrs = []
+        fetchers.add(self)
 
     def display(self, o):
         result = ""
@@ -114,14 +115,7 @@ class Fetcher(Object):
             counter += 1
             objs.append(feed)
             if self.cfg.dosave:
-                try:
-                    date = file_time(to_time(feed.published))
-                except:
-                    date = False
-                if date:
-                    feed.save(date)
-                else:
-                    feed.save()
+                feed.save()
         if objs:
             Fetcher.seen.save()
         for o in objs:
@@ -143,7 +137,6 @@ class Fetcher(Object):
         return res
 
     def start(self, repeat=True):
-        fetchers.add(self)
         Fetcher.cfg.last()
         Fetcher.seen.last()
         if repeat:
@@ -161,8 +154,9 @@ class Fetchers(Object):
     def add(self, fetcher):
         Fetchers.fetchers.append(fetcher)
 
-    def get(self, nr):
-        return Fetchers.fetchers[nr]
+    def get_first(self):
+        if Fetchers.fetchers:
+            return Fetchers.fetchers[0]
 
 # functions
 
@@ -237,7 +231,9 @@ def feed(event):
         event.reply("no results found")
  
 def fetch(event):
-    fetcher = fetchers.get(0)
+    fetcher = fetchers.get_first()
+    if not fetcher:
+        fetcher = Fetcher()
     res = fetcher.run()
     event.reply("fetched %s" % ",".join([str(x) for x in res]))
 
