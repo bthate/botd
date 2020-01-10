@@ -109,7 +109,7 @@ class Object(O, collections.MutableMapping):
             setter = {}
         count = 0
         for key, value in setter.items():
-            if skip and key in skip.split(","):
+            if skip and value == "":
                 continue
             count += 1
             if value in ["True", "true"]:
