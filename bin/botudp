@@ -23,8 +23,15 @@ def out(txt):
     sock.sendto(bytes(data, "utf-8"), (udp["host"], udp["port"]))
 
 def main():
+    if len(sys.argv) > 1:
+        txt = " ".join(sys.argv[1:])
+        out(txt)
+        return
     while 1:
-        (i, o, e) = select.select([sys.stdin,], [], [sys.stderr,])
+        try:
+            (i, o, e) = select.select([sys.stdin,], [], [sys.stderr,])
+        except KeyboardInterrupt:
+            return
         if e:
             break
         stop = False
