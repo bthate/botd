@@ -147,7 +147,7 @@ class IRC(Bot):
                 txtlist = []
                 adding = False
                 for arg in arguments[2:]:
-                    if arg.startswith(":"):
+                    if arg.count(":") <= 1 and arg.startswith(":"):
                         adding = True
                         txtlist.append(arg[1:])
                         continue
@@ -155,7 +155,7 @@ class IRC(Bot):
                         txtlist.append(arg)
                     else:
                         o.arguments.append(arg)
-                    o.txt = " ".join(txtlist)
+                o.txt = " ".join(txtlist)
         else:
             o.command = o.origin
             o.origin = self.cfg.server
@@ -253,6 +253,7 @@ class IRC(Bot):
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
+        print(event)
         k = kernels.get_first()
         k.users.userhosts.set(event.nick, event.origin)
         if event.txt.startswith("DCC CHAT"):
@@ -267,7 +268,6 @@ class IRC(Bot):
                 return
         if event.txt and event.txt[0] == self.cc:
             if not k.users.allowed(event.origin, "USER"):
-                logging.error("deny %s" % event.origin)
                 return
             e = Event()
             e.channel = event.channel

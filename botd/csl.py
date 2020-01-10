@@ -1,4 +1,4 @@
-# BOTD - python3 IRC channel daemon.
+# BOTD - python3 IRC channel daemon
 #
 # console code.
 

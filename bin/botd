@@ -8,12 +8,23 @@ __version__ = 1
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 import logging
+import botd.log
 
+from botd.csl import Console
 from botd.err import EINIT
 from botd.krn import Kernel
+from botd.log import level, logfiled
 from botd.shl import parse_cli
 from botd.trc import get_exception
 from botd.trm import termreset, termsave
+
+opts = [
+    ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
+    ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
+    ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
+]
 
 def daemon():
     pid = os.fork()
@@ -29,21 +40,13 @@ def daemon():
     os.dup2(so.fileno(), sys.stdout.fileno())
     os.dup2(se.fileno(), sys.stderr.fileno())
 
-def main():
-    parse_cli("botd", __version__)
-    daemon()
-    k = Kernel()
-    k.cfg.last()
-    k.start()
-    k.wait()
-
 def execute(main):
     termsave()
     try:
         main()
     except KeyboardInterrupt:
         print("")
-    except botd.err.EINIT:
+    except EINIT:
         pass
     except PermissionError:
         print("you need root permissions.")
@@ -52,10 +55,18 @@ def execute(main):
     finally:
         termreset()
 
-try:
-    execute(main)
-except PermissionError:
-    sys.stdout.write("you need root to run botd.\n")
-    sys.stdout.sync()
+def main():
+    cfg = parse_cli("botd", __version__, opts)
+    k = Kernel(cfg)
+    k.start()
+    if cfg.daemon:
+        daemon()
+    else:
+        c = Console()
+        c.start()
+    k.cfg.last()
+    k.cfg.update(cfg)
+    k.wait()
 
+execute(main)
 os._exit(0)

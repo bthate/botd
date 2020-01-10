@@ -90,5 +90,6 @@ class Loader(Object):
                             mods.append(m)
         if init:
             for mod in mods:
-                mod.init(self)
+                if "init" in dir(mod):
+                    mod.init(self)
         return mods

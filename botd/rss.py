@@ -63,10 +63,11 @@ class Seen(Object):
 
 class Fetcher(Object):
 
+    cfg = Cfg()
+    seen = Seen()
+
     def __init__(self):
         super().__init__()
-        self.cfg = Cfg()
-        self.seen = Seen()
         self._thrs = []
 
     def display(self, o):
@@ -94,7 +95,7 @@ class Fetcher(Object):
         return result[:-2].rstrip()
 
     def fetch(self, obj):
-        k = kernels.get(0)
+        k = kernels.get_first()
         counter = 0
         objs = []
         if not obj.rss:
@@ -107,9 +108,9 @@ class Fetcher(Object):
             feed.update(o)
             u = urllib.parse.urlparse(feed.link)
             url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
-            if url in self.seen.urls:
+            if url in Fetcher.seen.urls:
                 continue
-            self.seen.urls.append(url)
+            Fetcher.seen.urls.append(url)
             counter += 1
             objs.append(feed)
             if self.cfg.dosave:
@@ -121,7 +122,8 @@ class Fetcher(Object):
                     feed.save(date)
                 else:
                     feed.save()
-        self.seen.save()
+        if objs:
+            Fetcher.seen.save()
         for o in objs:
             k.fleet.announce(self.display(o))
         return counter
@@ -142,15 +144,15 @@ class Fetcher(Object):
 
     def start(self, repeat=True):
         fetchers.add(self)
-        self.cfg.last()
-        self.seen.last()
+        Fetcher.cfg.last()
+        Fetcher.seen.last()
         if repeat:
             repeater = Repeater()
             repeater.start(600.0, self.run)
             return repeater
 
     def stop(self):
-        save(self.seen)
+        Fetcher.seen.save()
 
 class Fetchers(Object):
 

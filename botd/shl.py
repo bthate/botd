@@ -28,6 +28,14 @@ def __dir__():
 
 HISTFILE = ""
 
+opts = [
+    ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
+    ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
+    ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
+]
+
 # functions
 
 def close_history():
@@ -76,13 +84,17 @@ def make_opts(ns, options, **kwargs):
     parser.add_argument('args', nargs='*')
     parser.parse_known_args(namespace=ns)
 
-def parse_cli(name, version=None, opts=[], **kwargs):
+def parse_cli(name, version=None, opts=opts, wd="", ld="", **kwargs):
     ns = Object()
     if opts:
         make_opts(ns, opts)
     cfg = Cfg(ns, kwargs)
     if not cfg.workdir:
-        cfg.workdir = hd(".botd") 
+        cfg.workdir = wd or hd(".botd") 
+    if not cfg.logdir:
+        cfg.logdir = ld or os.path.join(cfg.workdir, "logs")
+    if not cfg.level:
+        cfg.level = "error"
     p = os.path.join(cfg.workdir, "store")
     if not os.path.isdir(p):
         print(p)
@@ -91,7 +103,8 @@ def parse_cli(name, version=None, opts=[], **kwargs):
     cfg.name = name 
     cfg.txt = " ".join(cfg.args)
     cfg.version = version or __version__
-    level(cfg.level, cfg.logdir)
+    level(cfg.level, cfg.logdir, nostream=cfg.daemon)
+    logging.warning("BOTD started at %s (%s)" % (cfg.workdir, cfg.level or "debug"))
     return cfg
 
 def set_completer(commands):

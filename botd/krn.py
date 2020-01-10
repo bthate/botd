@@ -61,20 +61,6 @@ class Kernel(Loader):
             event.show()
         event.ready()
 
-    def init(self, mns):
-        mods = []
-        for mod in self.walk(mns):
-            if "init" in dir(mod):
-                logging.warning("init %s" % mod.__name__)
-                try:
-                    mod.init(self)
-                except EINIT as ex:
-                    print(ex)
-                    self._skip = True
-                    return
-                mods.append(mod)
-        return mods
-
     def register(self, k, v):
         self.cmds.set(k, v)
 
@@ -83,10 +69,6 @@ class Kernel(Loader):
 
     def start(self):
         kernels.add(self)
-        if self.cfg.shell:
-            from botd.csl import Console
-            c = Console()
-            c.start()
         self.walk(self.cfg.modules, True)
 
     def wait(self):

@@ -32,7 +32,7 @@ def level(loglevel="", logdir="", logfile="botd.log", nostream=False):
         loglevel = "error"
     if not logdir:
         logdir = os.path.join(hd(".botd"), "logs")
-    logfile = os.path.join(logdir, logfile)
+    logfile = logfiled = os.path.join(logdir, logfile)
     if not os.path.exists(logfile):
         cdir(logfile)
         touch(logfile)
