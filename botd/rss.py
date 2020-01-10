@@ -43,7 +43,7 @@ class Cfg(Cfg):
         super().__init__()
         self.display_list = "title,link"
         self.dosave = True
-        self.tinyurl = False
+        self.tinyurl = True
 
 class Feed(Object):
 
@@ -187,7 +187,7 @@ def delete(event):
     nr = 0
     got = []
     db = Db()
-    for rss in db.find("b.rss.Rss", selector):
+    for rss in db.find("botd.rss.Rss", selector):
         nr += 1
         rss._deleted = True
         got.append(rss)

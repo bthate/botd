@@ -97,7 +97,6 @@ def parse_cli(name, version=None, opts=opts, wd="", ld="", **kwargs):
         cfg.level = "error"
     p = os.path.join(cfg.workdir, "store")
     if not os.path.isdir(p):
-        print(p)
         cdir(p)
     botd.obj.workdir = cfg.workdir
     cfg.name = name 

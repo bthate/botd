@@ -253,7 +253,6 @@ class IRC(Bot):
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
-        print(event)
         k = kernels.get_first()
         k.users.userhosts.set(event.nick, event.origin)
         if event.txt.startswith("DCC CHAT"):

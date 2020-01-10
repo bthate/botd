@@ -60,7 +60,6 @@ def main():
     k = Kernel()
     k.cfg.last()
     k.cfg.edit(cfg, True)
-    print(k.cfg)
     k.start()
     if cfg.daemon:
         daemon()
