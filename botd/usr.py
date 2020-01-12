@@ -50,7 +50,7 @@ class Users(Db):
         return self.all("botd.usr.User", s)
 
     def get_user(self, origin):
-        u =  list(self.get_users())
+        u =  list(self.get_users(origin))
         if u:
             return u[-1]
  

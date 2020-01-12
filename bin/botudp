@@ -27,6 +27,8 @@ def main():
         txt = " ".join(sys.argv[1:])
         out(txt)
         return
+    if not select.select([sys.stdin,],[],[],0.0)[0]:
+        return
     while 1:
         try:
             (i, o, e) = select.select([sys.stdin,], [], [sys.stderr,])

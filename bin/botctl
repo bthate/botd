@@ -44,6 +44,7 @@ def main():
     if not cfg.txt:
         return
     k = Kernel()
+    k.walk(cfg.modules, True)
     k.fleet.add(k)
     e = Event()
     e.txt = cfg.txt

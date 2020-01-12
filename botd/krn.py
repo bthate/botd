@@ -2,7 +2,7 @@
 #
 # kernel for boot proces.
 
-__version__ = 1
+__version__ = 2
 
 import logging
 import os

@@ -45,6 +45,7 @@ def execute(main):
 def main():
     cfg = parse_cli("botsh", __version__, opts)
     k = Kernel(cfg)
+    k.walk(cfg.modules, True)
     c = Console()
     c.start()
     k.wait()
