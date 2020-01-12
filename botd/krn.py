@@ -10,8 +10,7 @@ import time
 
 from botd.err import EINIT
 from botd.flt import Fleet
-from botd.hdl import Event
-from botd.ldr import Loader
+from botd.hdl import Event, Handler
 from botd.obj import Cfg, Object
 from botd.shl import enable_history, set_completer, writepid
 from botd.thr import launch
@@ -32,7 +31,7 @@ class Cfg(Cfg):
 
     pass
 
-class Kernel(Loader):
+class Kernel(Handler):
 
     cfg = Cfg()
     fleet = Fleet()
@@ -62,6 +61,9 @@ class Kernel(Loader):
             event._func(event)
             event.show()
         event.ready()
+
+    def handle(self, event):
+        launch(self.dispatch, event)
 
     def register(self, k, v):
         self.cmds.set(k, v)

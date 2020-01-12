@@ -48,6 +48,7 @@ def main():
     k.walk(cfg.modules, True)
     c = Console()
     c.start()
+    k.start()
     k.wait()
 
 execute(main)

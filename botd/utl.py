@@ -137,9 +137,10 @@ def get_url(*args):
     logging.debug("GET %s" % args[0])
     url = urlunparse(urllib.parse.urlparse(args[0]))
     req = Request(url, headers={"User-Agent": useragent()})
-    resp = urlopen(req)
-    resp.data = resp.read()
-    return resp
+    data = ""
+    with urllib.request.urlopen(req) as resp:
+        data = resp.read()
+    return data
 
 def hd(*args):
     homedir = os.path.expanduser("~")

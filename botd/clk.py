@@ -66,35 +66,33 @@ class Timers(Object):
 
 class Timer(Object):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, sleep, func, *args, **kwargs):
         super().__init__()
-        self.func = None
-        self.sleep = None
+        self.func = func
+        self.sleep = sleep
         self.args = args
+        self.name = kwargs.get("name", "")
         self.kwargs = kwargs
         self.state = Object()
         self.timer = None
 
-    def start(self, sleep, func, name=""):
-        self.sleep = sleep
-        self.func = func
-        if not name:
-            name = get_name(func)
-        self.name = name
+    def start(self):
+        if not self.name:
+            self.name = get_name(self.func)
         timer = threading.Timer(self.sleep, self.run, self.args, self.kwargs)
         timer.setName(self.name)
-        timer.sleep = sleep
+        timer.sleep = self.sleep
         timer.state = self.state
         timer.state.starttime = time.time()
         timer.state.latest = time.time()
-        timer.func = func
+        timer.func = self.func
         timer.start()
         self.timer = timer
         return timer
 
     def run(self, *args, **kwargs):
         self.state.latest = time.time()
-        launch(self.func, *args, **kwargs)
+        launch(self.func, *self.args, **self.kwargs)
 
     def exit(self):
         if self.timer:
@@ -104,4 +102,4 @@ class Repeater(Timer):
 
     def run(self, *args, **kwargs):
         self.func(*args, **kwargs)
-        return launch(self.start, self.sleep, self.func)
+        return launch(self.start)

@@ -31,9 +31,10 @@ def __dir__():
     return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"display", "feed", "fetch", "init", "rss")
 
 def init(kernel):
-    fetcher = Fetcher()
-    fetcher.start()
-    return fetcher
+    k = kernels.get_first()
+    k.run.fetcher = Fetcher()
+    k.run.fetcher.start()
+    return k.run.fetcher
 
 # classes
 
@@ -69,7 +70,6 @@ class Fetcher(Object):
     def __init__(self):
         super().__init__()
         self._thrs = []
-        fetchers.add(self)
 
     def display(self, o):
         result = ""
@@ -123,8 +123,14 @@ class Fetcher(Object):
         return counter
 
     def join(self):
+        res = []
+        remove = []
         for thr in self._thrs:
-            thr.join()
+            res.append(thr.join())
+            remove.append(thr)
+        for thr in remove:
+            self._thrs.remove(thr)
+        return res
 
     def run(self):
         res = []
@@ -140,28 +146,17 @@ class Fetcher(Object):
         Fetcher.cfg.last()
         Fetcher.seen.last()
         if repeat:
-            repeater = Repeater()
-            repeater.start(600.0, self.run)
+            repeater = Repeater(300.0, self.run)
+            repeater.start()
             return repeater
 
     def stop(self):
         Fetcher.seen.save()
 
-class Fetchers(Object):
-
-    fetchers = []
-    
-    def add(self, fetcher):
-        Fetchers.fetchers.append(fetcher)
-
-    def get_first(self):
-        if Fetchers.fetchers:
-            return Fetchers.fetchers[0]
-
 # functions
 
 def get_feed(url):
-    result = get_url(url).data
+    result = get_url(url)
     if gotparser:
         result = feedparser.parse(result)
         if "entries" in result:
@@ -231,10 +226,11 @@ def feed(event):
         event.reply("no results found")
  
 def fetch(event):
-    fetcher = fetchers.get_first()
-    if not fetcher:
-        fetcher = Fetcher()
-    res = fetcher.run()
+    k = kernels.get_first()
+    if not k.run.fetcher:
+        k.run.fetcher = Fetcher()
+    k.run.fetcher.start(False)
+    res = k.run.fetcher.run()
     event.reply("fetched %s" % ",".join([str(x) for x in res]))
 
 def rss(event):
@@ -257,6 +253,3 @@ def rss(event):
     o.save()
     event.reply("ok 1")
 
-# runtime
-
-fetchers = Fetchers()

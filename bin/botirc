@@ -59,6 +59,7 @@ def main():
     bot.start()
     csl = Console()
     csl.start()
+    k.start()
     k.wait()
 
 execute(main)

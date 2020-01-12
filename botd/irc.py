@@ -272,8 +272,8 @@ class IRC(Bot):
             e.channel = event.channel
             e.orig = repr(self)
             e.origin = event.origin
-            e.txt = event.txt[1:]
-            k.dispatch(e)
+            e.txt = event.txt.strip()[1:]
+            k.put(e)
 
     def poll(self):
         self._connected.wait()
@@ -333,7 +333,7 @@ class IRC(Bot):
         self.state.nrsend += 1
 
     def say(self, channel, txt, mtype="chat"):
-        self._outqueue.put((channel, txt, mtype))
+        self._outqueue.put_nowait((channel, txt, mtype))
 
     def start(self):
         k = kernels.get_first()
@@ -405,6 +405,4 @@ class DCC(Bot):
 
     def say(self, channel, txt, type="chat"):
         self.raw(txt)
-
-# runtime
 
