@@ -50,7 +50,7 @@ class Loader(Object):
         except ModuleNotFoundError as ex:
             pass
         if not mod:
-            mod =  self.direct(mn)
+            mod = self.direct(mn)
         if not mod:
             raise ENOMODULE(mn)
         if force or mn not in Loader.table:

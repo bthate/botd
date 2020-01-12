@@ -4,6 +4,7 @@
 
 import os
 import unittest
+import botd.tbl
 
 from botd.ldr import Loader
 
@@ -25,9 +26,9 @@ class Test_Loader(unittest.TestCase):
     def test_bl(self):
         l = Loader()
         l.walk("botd")
-        self.assertTrue("botd.obj.Object" in l.names.values())
+        self.assertTrue("botd.obj.Object" in botd.tbl.names.values())
 
     def test_botd(self):
         l = Loader()
         l.walk("botd")
-        self.assertTrue("botd.udp.UDP" in l.names.values())
+        self.assertTrue("botd.udp.UDP" in botd.tbl.names.values())

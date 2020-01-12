@@ -13,8 +13,6 @@ class Test_Ed(unittest.TestCase):
 
     k = Kernel()
 
-    def setUp(self):
-        self.k.start()
         
     def test_ed1(self):
         e = Command()

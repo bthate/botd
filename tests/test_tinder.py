@@ -13,6 +13,7 @@ from botd.bot import Bot
 from botd.obj import Object
 from botd.hdl import Event
 from botd.krn import Kernel, kernels
+from botd.tbl import names
 from botd.utl import consume
 from botd.thr import launch
 from botd.usr import Users
@@ -32,7 +33,7 @@ except:
 bot = Bot()
 bot.start()
 
-names = list(k.names)
+names = list(names)
 param = Param()
 param.cfg = [random.choice(["irc", "rss"]),]
 param.find = names

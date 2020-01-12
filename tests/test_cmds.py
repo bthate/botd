@@ -114,8 +114,9 @@ class Test_Cmnds(unittest.TestCase):
             thr.join()
     
 def cmndrun(event):
-    mods = k.table.values()
-    for mod in mods:
+    for name, mod in k.table.items():
+        if name == "stamp":
+            continue
         if mod.__name__ in ["botd.rss",]:
             continue
         for n in dir(mod):

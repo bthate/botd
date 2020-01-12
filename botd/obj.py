@@ -166,11 +166,11 @@ class Object(O, collections.MutableMapping):
                 val = json.load(ofile, cls=ObjectDecoder)
             except json.decoder.JSONDecodeError as ex:
                 raise EJSON(str(ex) + " " + lpath)
-            self.update(val)
+            self.update(val.__dict__)
         return self
 
-    def merge(self, o):
-        return self.update(strip(self))
+    def merge(self, o, vals={}):
+        return self.update(strip(self, vals))
 
     @locked(lock)
     def save(self):
@@ -205,6 +205,7 @@ class Object(O, collections.MutableMapping):
 
     def set(self, k, v):
         self[k] = v
+
 
 class Default(Object):
 
