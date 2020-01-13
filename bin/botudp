@@ -5,6 +5,7 @@
 # echo input to BOTD so it can display that txt on the channel.
 
 import logging
+import os
 import select
 import socket
 import sys
@@ -48,3 +49,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    os._exit(0)
