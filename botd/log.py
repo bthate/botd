@@ -17,7 +17,7 @@ def __dir__():
     
 logfiled = ""
 
-# 
+# classes
 
 class DumpHandler(logging.StreamHandler):
 
@@ -25,6 +25,8 @@ class DumpHandler(logging.StreamHandler):
 
     def emit(self, record):
         pass
+
+# functions
 
 def level(loglevel="", logdir="", logfile="botd.log", nostream=False):
     global logfiled

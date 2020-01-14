@@ -1,35 +1,19 @@
 # BOTD - python3 IRC channel daemon.
 #
-# show status information.
+#
 
-import os
 import threading
 import time
 
 from botd.krn import kernels, starttime
 from botd.obj import Object
 from botd.tms import elapsed
-from botd.typ import get_type
 
 # defines
 
-def __dir__():
-    return ("flt", "pid", "ps", "up")
+k = kernels.get_first()
 
-# functions
-
-def flt(event):
-    k = kernels.get_first()
-    try:
-        index = int(event.args[0])
-        event.reply(str(k.fleet.bots[index]))
-        return
-    except (TypeError, ValueError, IndexError):
-        pass
-    event.reply([get_type(x) for x in k.fleet.bots])
-
-def pid(event):
-    event.reply(str(os.getpid()))
+# commands
 
 def ps(event):
     k = kernels.get_first()
@@ -53,6 +37,6 @@ def ps(event):
         if res.strip():
             event.reply(res)
 
-def up(event):
-    event.reply(elapsed(time.time() - starttime))
+# runtime
 
+k.add("ps", ps)

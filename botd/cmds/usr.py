@@ -1,23 +1,16 @@
-# BOTD - python3 IRC channel daemon.
+# BOTD - python3 IRC channel daemon
 #
-# basic commands. 
+#
 
-import botd.tbl
-
-from botd.obj import Object
 from botd.dbs import Db
-from botd.krn import __version__
+from botd.krn import kernels
 from botd.usr import Users
 
-# defines
+# define
 
-def __dir__():
-    return ("cmds", "meet", "u", "v")
+k = kernels.get_first()
 
 # functions
-
-def cmds(event):
-    event.reply(",".join(sorted(botd.tbl.modules)))
 
 def meet(event):
     if not event.args:
@@ -39,5 +32,7 @@ def u(event):
         res += "%s," % o.user
     event.reply(res)
 
-def v(event):
-    event.reply("BOTD %s" % __version__)
+# runtime
+
+k.add("meet", meet)
+k.add("u", u)

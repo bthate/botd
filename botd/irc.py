@@ -15,9 +15,9 @@ import _thread
 
 from botd.bot import Bot
 from botd.err import EINIT
+from botd.evt import Event
 from botd.flt import Fleet
 from botd.krn import kernels
-from botd.hdl import Event
 from botd.obj import Cfg, Object
 from botd.thr import launch
 from botd.usr import Users
@@ -405,4 +405,3 @@ class DCC(Bot):
 
     def say(self, channel, txt, type="chat"):
         self.raw(txt)
-

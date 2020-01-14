@@ -6,7 +6,6 @@ import importlib
 import logging
 import os
 import types
-import botd.tbl
 
 from botd.err import ENOMODULE
 from botd.obj import Object
@@ -25,21 +24,8 @@ class Loader(Object):
 
     table = Object()
     
-    def __init__(self):
-        super().__init__()
-        self.cmds = Object()
-
     def direct(self, name):
         return importlib.import_module(name)
-
-    def get_mn(self, pn):
-        return self.table.keys()
-
-    def get_cmd(self, cn):
-        modname = botd.tbl.modules.get(cn, None)
-        if modname and modname not in Loader.table:
-            self.get_mod(modname)
-        return self.cmds.get(cn, None)
 
     def get_mod(self, mn, force=True):
         if mn in Loader.table:
@@ -55,32 +41,8 @@ class Loader(Object):
             raise ENOMODULE(mn)
         if force or mn not in Loader.table:
             Loader.table[mn] = mod
-            self.introspect(Loader.table[mn])
         return Loader.table[mn]
             
-    def introspect(self, mod):
-        for key in xdir(mod, "_"):
-            o = getattr(mod, key)
-            if type(o) == types.FunctionType and "event" in o.__code__.co_varnames:
-                if o.__code__.co_argcount == 1:
-                    if key in self.cmds:
-                        continue
-                    self.cmds[key] = o
-                    botd.tbl.modules[key] = mod.__name__
-                continue
-            try:
-                sc = issubclass(o, Object)
-                if not sc:
-                    continue
-            except TypeError:
-                continue
-            n = key.split(".")[-1].lower()
-            if n in botd.tbl.names:
-                continue
-            mn = "%s.%s" % (mod.__name__, o.__name__)
-            botd.tbl.names[n] = mn 
-            botd.tbl.classes.append(mn)
-
     def walk(self, mns, init=False):
         mods = []
         for mn in mns.split(","):

@@ -78,3 +78,4 @@ class Users(Db):
             user.perms.append(permission.upper())
             user.save()
         return user
+

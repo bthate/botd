@@ -10,12 +10,10 @@ import os
 import readline
 import time
 
-import botd.log
 import botd.trm
 import botd.utl
 
 from botd.dft import defaults
-from botd.log import level, logfiled
 from botd.obj import Cfg, Object
 from botd.trc import get_exception
 from botd.trm import termsave, termreset
@@ -85,6 +83,7 @@ def make_opts(ns, options, **kwargs):
     parser.parse_known_args(namespace=ns)
 
 def parse_cli(name, version=None, opts=opts, wd="", ld="", **kwargs):
+    from botd.log import level, logfiled
     ns = Object()
     if opts:
         make_opts(ns, opts)

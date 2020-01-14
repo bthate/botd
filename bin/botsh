@@ -1,7 +1,7 @@
 #!/usr/bin/python3 -u
-# BOTLIB - Framework to program bots (a botlib).
+# BOTD - python3 IRC channel daemon.
 #
-# bin/bot 
+# bin/botsh
 
 __version__ = 1
 
@@ -33,7 +33,7 @@ def execute(main):
         main()
     except KeyboardInterrupt:
         print("")
-    except botd.err.EINIT:
+    except EINIT:
         pass
     except PermissionError:
         print("you need root permissions.")
@@ -45,6 +45,7 @@ def execute(main):
 def main():
     cfg = parse_cli("botsh", __version__, opts)
     k = Kernel(cfg)
+    k.walk("botd.cmds")
     k.walk(cfg.modules, True)
     c = Console()
     c.start()

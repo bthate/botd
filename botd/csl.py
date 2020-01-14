@@ -6,9 +6,9 @@ import sys
 import threading
 
 from botd.err import ENOTXT
-from botd.flt import Fleet
+from botd.evt import Event
 from botd.krn import kernels
-from botd.hdl import Event, Handler
+from botd.hdl import Handler
 from botd.thr import launch
 
 #defines
@@ -35,6 +35,7 @@ class Console(Handler):
     def poll(self):
         self._connected.wait()
         e = Event()
+        e.etype = "command"
         e.origin = "root@shell"
         e.orig = repr(self)
         e.txt = input("> ")
@@ -51,7 +52,7 @@ class Console(Handler):
                 continue
             except EOFError:
                 break
-            k.dispatch(e)
+            k.put(e)
             e.wait()
 
     def raw(self, txt):

@@ -53,3 +53,8 @@ def cfg(event):
     l.edit(setter)
     l.save()
     event.reply("ok")
+
+# runtime
+
+k = kernels.get_first()
+k.add("cfg", cfg)

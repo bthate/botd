@@ -6,8 +6,13 @@ import os
 import botd.obj
 
 from botd.dbs import Db
+from botd.krn import kernels
 
-# functions
+# defines
+
+k = kernels.get_first()
+
+# commands
 
 def find(event):
     assert botd.obj.workdir
@@ -29,3 +34,7 @@ def find(event):
         for o in db.find(opt, selector):
             event.display(o, str(c))
             c += 1
+
+# runtime
+
+k.add("find", find)

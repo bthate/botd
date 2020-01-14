@@ -7,7 +7,7 @@ import time
 import typing
 
 from botd.dbs import Db
-from botd.hdl import Event
+from botd.evt import Event
 from botd.obj import Cfg, Object
 from botd.thr import launch
 from botd.utl import get_name
