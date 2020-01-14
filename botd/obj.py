@@ -13,7 +13,7 @@ import _thread
 
 from json import JSONEncoder, JSONDecoder
 
-from botd.err import EJSON, EOVERLOAD
+from botd.err import EJSON, EOVERLOAD, ETYPE
 from botd.typ import get_cls, get_type
 from botd.utl import cdir, locked, get_name
 
@@ -166,6 +166,14 @@ class Object(O, collections.MutableMapping):
                 val = json.load(ofile, cls=ObjectDecoder)
             except json.decoder.JSONDecodeError as ex:
                 raise EJSON(str(ex) + " " + lpath)
+            ot = val.__dict__["stamp"].split(os.sep)[0]
+            t = get_cls(ot)
+            if type(self) != t:
+                raise ETYPE(type(self), t)
+            try:
+                del val.__dict__["stamp"]
+            except KeyError:
+                pass
             self.update(val.__dict__)
         return self
 

@@ -58,6 +58,10 @@ class ENOTYPE(Exception):
 
     pass
 
+class ETYPE(Exception):
+
+    pass
+
 class EOWNER(Exception):
 
     pass
