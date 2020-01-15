@@ -4,6 +4,7 @@
 
 __version__ = 3
 
+import inspect
 import logging
 import os
 import time
@@ -39,7 +40,6 @@ class Kernel(Handler):
         self._stopped = False
         self._skip = False
         self.cfg = Cfg()
-        self.cfg.modules = ""
         self.cfg.update(cfg or {})
         self.cfg.update(kwargs)
         self.cmds = Object()
@@ -52,12 +52,15 @@ class Kernel(Handler):
     def add(self, cmd, func):
         self.cmds[cmd] = func
 
+    def find_cmds(self, mod):
+        for key, o in inspect.getmembers(mod, inspect.isfunction):
+            if "event" in o.__code__.co_varnames:
+                if o.__code__.co_argcount == 1:
+                    self.add(key, o)
+
     def get_cmd(self, cn):
-        mn = botd.tbl.modules.get(cn, None)
-        if mn and mn not in self.table:
-            self.load_mod(mn)
         return self.cmds.get(cn, None)
-        
+ 
     def say(self, channel, txt, mtype="normal"):
         print(txt)
 
@@ -65,6 +68,40 @@ class Kernel(Handler):
         while not self._stopped:
             time.sleep(1.0)
         logging.warn("exit")
+
+    def walk(self, mns, init=False, cmds=True):
+        if not mns:
+            return
+        mods = []
+        for mn in mns.split(","):
+            if not mn:
+                continue
+            m = self.load_mod(mn)
+            if not m:
+                continue
+            loc = None
+            if "__spec__" in dir(m):
+                loc = m.__spec__.submodule_search_locations
+            if not loc:
+                if cmds:
+                    self.find_cmds(m)
+                mods.append(m)
+                continue
+            for md in loc:
+                for x in os.listdir(md):
+                    if x.endswith(".py"):
+                        mmn = "%s.%s" % (mn, x[:-3])
+                        m = self.load_mod(mmn)
+                        if cmds:
+                            self.find_cmds(m)
+                        if m:
+                            mods.append(m)
+        if init:
+            for mod in mods:
+                if "init" in dir(mod):
+                    mod.init(self)
+        return mods
+
 
 class Kernels(Object):
 

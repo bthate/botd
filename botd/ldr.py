@@ -2,9 +2,11 @@
 #
 # module loader.
 
+import cmd
 import importlib
 import logging
 import os
+import sys
 import types
 
 from botd.err import ENOMODULE
@@ -28,50 +30,29 @@ class Loader(Object):
         logging.warn("direct %s" % name)
         return importlib.import_module(name)
 
+    def get_cmds(mod):
+        for key, o in inspect.getmembers(mod, inspect.isfunction):
+            if "event" in o.__code__.co_varnames:
+                if o.__code__.co_argcount == 1:
+                    yield (key, o)
+
     def load_mod(self, mn, force=True):
         if mn in Loader.table:
             return Loader.table[mn]
         mod = None
-        try:
-            mod = self.direct(mn)
-        except ModuleNotFoundError:
-            pass
+        if mn not in sys.modules:
+            try:
+                mod = self.direct(mn)
+            except ModuleNotFoundError:
+                pass
         if not mod:
             try:
                 mod = self.direct("botd.%s" % mn)
             except ModuleNotFoundError:
                 pass
         if not mod:
-            raise ENOMODULE(mn)
+            return
         if force or mn not in Loader.table:
             Loader.table[mn] = mod
         return Loader.table[mn]
             
-    def walk(self, mns, init=False):
-        if not mns:
-            return
-        mods = []
-        for mn in mns.split(","):
-            if not mn:
-                continue
-            m = self.load_mod(mn)
-            if not m:
-                continue
-            loc = None
-            if "__spec__" in dir(m):
-                loc = m.__spec__.submodule_search_locations
-            if not loc:
-                mods.append(m)
-                continue
-            for md in loc:
-                for x in os.listdir(md):
-                    if x.endswith(".py"):
-                        mmn = "%s.%s" % (mn, x[:-3])
-                        m = self.load_mod(mmn)
-                        if m:
-                            mods.append(m)
-        if init:
-            for mod in mods:
-                if "init" in dir(mod):
-                    mod.init(self)
-        return mods

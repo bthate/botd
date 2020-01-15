@@ -2,6 +2,11 @@
 #
 # clock module providing timers and repeaters 
 
+""" clock module.
+
+    clock and timer classes that can be used to periodically run jobs.
+"""
+
 import threading
 import time
 import typing
@@ -19,52 +24,16 @@ def __dir__():
 
 # classes
 
-class Cfg(Cfg):
-
-    def __init__(self):
-        super().__init__()
-        self.latest =  0
-        self.starttime =  0
-
-class Timers(Object):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__()
-        self._stopped = False
-        self.cfg = Cfg()
-        self.timers = Object()
-
-    def loop(self):
-        while not self._stopped:
-            time.sleep(1.0)
-            remove = []
-            for t in self.timers:
-                event = self.timers[t]
-                if time.time() > t:
-                    self.cfg.latest = time.time()
-                    save(self.cfg)
-                    event.raw(event.txt)
-                    remove.append(t)
-            for r in remove:
-                del self.timers[r]
-
-    def start(self):
-        db = Db()
-        for evt in db.all("botd.clk.Timers"):
-            e = Event()
-            e.update(evt)
-            if "done" in e and e.done:
-                continue
-            if "time" not in e:
-                continue
-            if time.time() < int(e.time):
-                self.timers[e.time] = e
-        return launch(self.loop)
-
-    def stop(self):
-        self._stopped = True
-
 class Timer(Object):
+
+    """ one time execution of a function at x seconds from now.
+    
+        Timer(sleep, funcion, name="timername")
+    
+        sleep is the number of seconds to sleep before running the timers function.
+        function is the function to run
+        name can be a provided name of the timer otherwist the timer function is the name
+    """
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__()
@@ -77,6 +46,10 @@ class Timer(Object):
         self.timer = None
 
     def start(self):
+        """ start the timer
+        
+            start the timer after x seconds of sleep.
+        """
         if not self.name:
             self.name = get_name(self.func)
         timer = threading.Timer(self.sleep, self.run, self.args, self.kwargs)
@@ -91,15 +64,32 @@ class Timer(Object):
         return timer
 
     def run(self, *args, **kwargs):
+        """ run the timer's funtion. 
+        
+            launch the funcion in it's own thread.
+        """
         self.state.latest = time.time()
         launch(self.func, *self.args, **self.kwargs)
 
     def exit(self):
+        """ exit timer.
+        
+            call cancel on the running timer.
+        """
         if self.timer:
             self.timer.cancel()
 
 class Repeater(Timer):
 
+    """ Repeater class
+    
+        run a function repeatedly every x seconds.
+    """
+
     def run(self, *args, **kwargs):
+        """ run repeater
+        
+            run the function and launch a thread with a new timer.
+        """
         self.func(*args, **kwargs)
         return launch(self.start)

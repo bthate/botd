@@ -3,15 +3,12 @@
 # data entry.
 
 from botd.dbs import Db
-from botd.krn import kernels
 from botd.obj import Object
 
 # defines
 
 def __dir__():
     return ("Log", "Todo", "log", "todo")
-
-k = kernels.get_first()
 
 # classes
 
@@ -54,8 +51,3 @@ def todo(event):
     obj.txt = event.rest
     obj.save()
     event.reply("ok")
-
-# runtime
-
-k.add("log", log)
-k.add("todo", todo)

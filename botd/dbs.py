@@ -2,6 +2,13 @@
 #
 # databases. 
 
+"""
+    database related functionality.
+
+    provides a Db cursor to the objects stored on disk.
+    
+"""
+
 import os
 import time
 import _thread
@@ -24,7 +31,25 @@ lock = _thread.allocate_lock()
 
 class Db(Object):
 
+    """
+        Db class
+        
+        make queries on the JSON objects possible.
+
+    """
+    
     def all(self, otype, selector={}, index=None, delta=0):
+        """
+            query all objects
+        
+            basic query need a type (full qualified name) and a selector (dict with name/values) to match the objects.
+            index (number in resultset) and delta option (time diff from now) can be provided to limit search.
+
+            Db.all("botd.irc.Cfg", {"server": localhost})        
+
+            by default the all method return all records.
+
+        """
         nr = -1
         for fn in names(otype, delta):
             o = hook(fn)
@@ -38,6 +63,14 @@ class Db(Object):
             yield o
 
     def deleted(self, otype, selector={}):
+        """
+            deleted method
+        
+            show deleted records, requires a type and optional selector.
+
+            Db.deleted("botd.krn.Cfg")
+            
+        """
         nr = -1
         for fn in names(otype):
             o = hook(fn)
@@ -49,6 +82,17 @@ class Db(Object):
             yield o
 
     def find(self, otype, selector={}, index=None, delta=0):
+        """ 
+            search typed objects
+        
+            basic query need a type (full qualified name) and a selector (dict with name/values) to match the objects.
+            index (number in resultset) and delta option (time diff from now) can be provided to limit search.
+
+            Db.find("botd.irc.Cfg", {"server": localhost})        
+
+            by default the find method only returns objects that match.
+
+        """
         nr = -1
         for fn in names(otype, delta):
             o = hook(fn)
@@ -61,12 +105,26 @@ class Db(Object):
                 yield o
 
     def last(self, otype, index=None, delta=0):
+        """
+            last method.
+        
+            return the last saved object of a type.
+
+            Db.last("botd.rss.Rss")
+            
+        """
         fns = names(otype, delta)
         if fns:
             fn = fns[-1]
             return hook(fn)
 
     def last_all(self, otype, selector={}, index=None, delta=0):
+        """
+            scan the database in reverse.
+
+            return the objects saved last while matching the provided selector.
+            
+        """
         res = []
         nr = -1
         for fn in names(otype, delta):
@@ -88,6 +146,16 @@ class Db(Object):
 
 @locked(lock)
 def hook(fn):
+    """
+        hook function.
+    
+        convert a filename into a object. the objects type is taken f
+        rom the filename, constructed an the loaded from disk.
+      
+        >>> o = hook("botd.rss.Rss/01-01-2020/00:00:00")
+
+    """
+    
     t = fn.split(os.sep)[0]
     if not t:
         t = fn.split(os.sep)[0][1:]
@@ -98,6 +166,14 @@ def hook(fn):
     return o
 
 def names(name, delta=None):
+    """
+        names function.
+        
+        return all matching types found in the workdir.
+        
+        >>> n = names("botd.cfg.Krn")
+        
+    """
     assert botd.obj.workdir
     if not name:
         return []
