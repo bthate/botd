@@ -64,6 +64,7 @@ class Kernel(Handler):
     def wait(self):
         while not self._stopped:
             time.sleep(1.0)
+        logging.warn("exit")
 
 class Kernels(Object):
 

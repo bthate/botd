@@ -8,7 +8,7 @@ __version__ = 1
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 import logging
-import botd.log
+import botd
 
 from botd.csl import Console
 from botd.err import EINIT
@@ -57,12 +57,11 @@ def execute(main):
 
 def main():
     cfg = parse_cli("botd", __version__, opts)
-    level("debug")
-    daemon()
+    if cfg.daemon:
+        daemon()
     k = Kernel(cfg)
     k.cfg.last()
     k.walk(k.cfg.modules, True)
-    k.walk("botd.irc", True)
     k.start()
     k.wait()
 
