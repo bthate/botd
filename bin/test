@@ -52,14 +52,8 @@ def initialize(k, cfg):
     cdir("testdata")
     k.users.oper("test@shell")
     k.cfg.prompt = False
-    k.walk("botd")
-    for c in botd.tbl.names.values():
-        try:
-            o = get_cls(c)()
-            o.txt = "yo!"
-            o.save()
-        except (AttributeError, TypeError) as ex:
-            pass
+    k.walk("botd.cmds")
+    k.start()
 
 def main():
     try:

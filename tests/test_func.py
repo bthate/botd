@@ -10,13 +10,12 @@ import random
 import time
 import types
 import unittest
-import botd.tbl
 
-from botd.krn import Kernel
-from botd.hdl import Event
+from botd.evt import Event
+from botd.krn import kernels
 from botd.thr import launch
 
-k = Kernel()
+k = kernels.get_first()
 
 class Test_Func(unittest.TestCase):
 
@@ -35,7 +34,7 @@ def randomarg(name):
     return types.new_class(t)()
     
 def functest(nr):
-    names = list(botd.tbl.modules.values())
+    names = list(k.table.values())
     for x in range(nr):
         random.shuffle(names)
         for name in names:

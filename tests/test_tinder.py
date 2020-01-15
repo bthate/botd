@@ -10,10 +10,9 @@ import time
 import unittest
 
 from botd.bot import Bot
-from botd.obj import Object
-from botd.hdl import Event
+from botd.evt import Event
 from botd.krn import Kernel, kernels
-from botd.tbl import names
+from botd.obj import Object
 from botd.utl import consume
 from botd.thr import launch
 from botd.usr import Users
@@ -33,12 +32,9 @@ except:
 bot = Bot()
 bot.start()
 
-names = list(names)
 param = Param()
 param.cfg = [random.choice(["irc", "rss"]),]
-param.find = names
 param.log = ["yo!",]
-param.rm = ["%s txt==yo" % random.choice(names)]
 param.meet = ["test@shell",]
 #param.mbox = ["~/evidence/25-1-2013",]
 
@@ -74,10 +70,11 @@ def do_cmd(b, cmd):
     events = []
     for ex in e:
         e = Event()
+        e.etype = "command"
         e.orig = repr(bot)
         e.origin = "test@shell"
         e.txt = cmd + " " + ex
         e.verbose = k.cfg.verbose
-        k.dispatch(e)
+        k.put(e)
         events.append(e)
     return events

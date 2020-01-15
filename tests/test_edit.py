@@ -7,9 +7,9 @@ import logging
 import os
 import unittest
 
+from botd.evt import Event
 from botd.obj import Object
 from botd.prs import Command
-from botd.hdl import Event
 from botd.utl import edit
 
 class Log(Object):

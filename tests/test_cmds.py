@@ -7,12 +7,12 @@ import time
 import types
 import unittest
 
+from botd.evt import Event
 from botd.obj import Object
-from botd.hdl import Event
-from botd.krn import Kernel
+from botd.krn import kernels
 from botd.thr import launch
 
-k = Kernel()
+k = kernels.get_first()
 
 def test():
     print("yooo!")
@@ -82,6 +82,7 @@ class Test_Cmnds(unittest.TestCase):
 
     def test_run(self):
         event = Event()
+        event.orig = repr(k)
         event.verbose = k.cfg.verbose
         event.origin = "root@shell"
         event.txt = ""
@@ -93,6 +94,7 @@ class Test_Cmnds(unittest.TestCase):
 
     def test_func(self):
         event = Event()
+        event.orig = repr(k)
         event.origin = "root@shell"
         event.verbose = k.cfg.verbose
         event.txt = ""
@@ -104,6 +106,7 @@ class Test_Cmnds(unittest.TestCase):
 
     def test_cmnd(self):
         event = Event()
+        event.orig = repr(k)
         event.origin = "root@shell"
         event.txt = ""
         event.verbose = k.cfg.verbose
@@ -128,10 +131,10 @@ def cmndrun(event):
                    e = Event()
                    e._func = func
                    e.verbose = k.cfg.verbose
+                   e.orig = repr(k)
                    e.origin = "root@shell"
                    e.server = "localhost"
-                   e.btype = "cli"
-                   k.dispatch(e)
+                   k.put(e)
 
 def functest(event):
     for name, mod in k.table.items():
@@ -174,7 +177,7 @@ def testcmnds(event):
         cmnd = examples.get(cmnd, cmnd)
         e.txt = "%s %s" % (cmnd, name)
         e.origin = "root@shell"
-        k.dispatch(e)
+        k.put(e)
 
 exclude = ["exit", "loglevel", "reboot", "real_reboot", "fetcher", "synchronize", "init", "shutdown", "wrongxml","mbox", "testcmnds", "runkernel", "functest", "cmndrun"]
 outtxt = u"Đíť ìš éèñ ëņċøďıńğŧęŝţ· .. にほんごがはなせません .. ₀0⁰₁1¹₂2²₃3³₄4⁴₅5⁵₆6⁶₇7⁷₈8⁸₉9⁹ .. ▁▂▃▄▅▆▇▉▇▆▅▄▃▂▁ .. .. uǝʌoqǝʇsɹǝpuo pɐdı ǝɾ ʇpnoɥ ǝɾ"

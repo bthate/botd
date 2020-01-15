@@ -99,6 +99,7 @@ class Command(botd.obj.Object):
         self.cc = ""
         self.delta = 0
         self.dkeys = []
+        self.etype = "command"
         self.index = None
         self.match = None
         self.noignore = ""

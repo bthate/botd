@@ -6,7 +6,7 @@ import time
 
 from botd.dbs import Db
 from botd.krn import kernels
-from botd.tms import to_time
+from botd.tms import day, to_time
 
 # defines
 

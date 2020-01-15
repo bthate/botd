@@ -7,16 +7,16 @@ import logging
 import os
 import unittest
 
-from botd.krn import Kernel
+from botd.krn import kernels
 from botd.prs import Command
+
+k = kernels.get_first()
+
 class Test_Ed(unittest.TestCase):
 
-    k = Kernel()
-
-        
     def test_ed1(self):
         e = Command()
         e.parse("ed log txt==bla txt=mekker")
-        self.k.dispatch(e)
+        k.put(e)
         e.wait()
         self.assertEqual(e.result, [])

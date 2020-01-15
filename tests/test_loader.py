@@ -4,9 +4,11 @@
 
 import os
 import unittest
-import botd.tbl
 
+from botd.krn import kernels
 from botd.ldr import Loader
+
+k = kernels.get_first()
 
 class Test_Loader(unittest.TestCase):
 
@@ -16,19 +18,14 @@ class Test_Loader(unittest.TestCase):
         p = l.save()
         ll = Loader()
         ll.load(p)
-        self.assertTrue("cmds" in ll)
+        self.assertTrue("botd.ldr" in ll.table)
 
     def test_getmods1(self):
         l = Loader()
         mods = l.walk("botd")
         self.assertTrue("botd.flt" in [x.__name__ for x in mods])
 
-    def test_bl(self):
-        l = Loader()
-        l.walk("botd")
-        self.assertTrue("botd.obj.Object" in botd.tbl.names.values())
-
     def test_botd(self):
         l = Loader()
-        l.walk("botd")
-        self.assertTrue("botd.udp.UDP" in botd.tbl.names.values())
+        l.walk("botd.cmds")
+        self.assertTrue("v" in k.cmds)
