@@ -28,7 +28,7 @@ class Loader(Object):
         logging.warn("direct %s" % name)
         return importlib.import_module(name)
 
-    def get_mod(self, mn, force=True):
+    def load_mod(self, mn, force=True):
         if mn in Loader.table:
             return Loader.table[mn]
         mod = None
@@ -54,7 +54,7 @@ class Loader(Object):
         for mn in mns.split(","):
             if not mn:
                 continue
-            m = self.get_mod(mn)
+            m = self.load_mod(mn)
             if not m:
                 continue
             loc = None
@@ -67,7 +67,7 @@ class Loader(Object):
                 for x in os.listdir(md):
                     if x.endswith(".py"):
                         mmn = "%s.%s" % (mn, x[:-3])
-                        m = self.get_mod(mmn)
+                        m = self.load_mod(mmn)
                         if m:
                             mods.append(m)
         if init:

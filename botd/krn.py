@@ -55,7 +55,7 @@ class Kernel(Handler):
     def get_cmd(self, cn):
         mn = botd.tbl.modules.get(cn, None)
         if mn and mn not in self.table:
-            self.get_mod(mn)
+            self.load_mod(mn)
         return self.cmds.get(cn, None)
         
     def say(self, channel, txt, mtype="normal"):

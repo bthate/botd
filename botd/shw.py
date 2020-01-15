@@ -14,7 +14,7 @@ from botd.typ import get_type
 # defines
 
 def __dir__():
-    return ("flt", "pid", "up", "v")
+    return ("flt", "pid", "up", "ps", "v")
 
 # functions
 
@@ -30,36 +30,6 @@ def flt(event):
 
 def pid(event):
     event.reply(str(os.getpid()))
-
-def up(event):
-    event.reply(elapsed(time.time() - starttime))
-
-def v(event):
-    event.reply("BOTD %s" % __version__)
-
-# runtime
-
-k = kernels.get_first()
-k.add("flt", flt)
-k.add("pid", pid)
-k.add("up", up)
-k.add("v", v)
-# BOTD - python3 IRC channel daemon.
-#
-#
-
-import threading
-import time
-
-from botd.krn import kernels, starttime
-from botd.obj import Object
-from botd.tms import elapsed
-
-# defines
-
-k = kernels.get_first()
-
-# commands
 
 def ps(event):
     k = kernels.get_first()
@@ -83,6 +53,17 @@ def ps(event):
         if res.strip():
             event.reply(res)
 
+def up(event):
+    event.reply(elapsed(time.time() - starttime))
+
+def v(event):
+    event.reply("BOTD %s" % __version__)
+
 # runtime
 
+k = kernels.get_first()
+k.add("flt", flt)
+k.add("pid", pid)
 k.add("ps", ps)
+k.add("up", up)
+k.add("v", v)

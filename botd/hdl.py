@@ -27,7 +27,6 @@ class Handler(Loader):
         self.cbs = Object()
 
     def handle_cb(self, event):
-        logging.debug("handle %s (%s) on %s" % (event.etype, event.origin, get_name(event.orig) or event.orig))
         if event.etype in self.cbs:
             self.cbs[event.etype](self, event)
 
@@ -36,7 +35,7 @@ class Handler(Loader):
             e = self._queue.get()
             try:
                 self.handle_cb(e)
-            except Excpetion as ex:
+            except Exception as ex:
                 logging.error(get_exception())
     def poll(self):
         raise ENOTIMPLEMENTED

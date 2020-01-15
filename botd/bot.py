@@ -15,8 +15,6 @@ from botd.thr import launch
 def __dir__():
     return ('Bot', 'Cfg')
 
-k = kernels.get_first()
-
 # classes
 
 class Cfg(Cfg):
@@ -73,6 +71,7 @@ class Bot(Handler):
             self.raw(txt)
 
     def start(self, input=False, output=False):
+        k = kernels.get_first()
         k.fleet.add(self)
         super().start()
         if output:
