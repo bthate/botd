@@ -38,7 +38,6 @@ class Thr(threading.Thread):
         self._result = func(*args)
 
     def join(self, timeout=None):
-        logging.debug("join %s" % get_name(self))
         super().join(timeout)
         return self._result
 
