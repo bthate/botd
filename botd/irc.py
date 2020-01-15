@@ -103,6 +103,9 @@ class IRC(Bot):
         self.threaded = False
         if self.cfg.channel and self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
+        self.register("ERROR", ERROR)
+        self.register("NOTICE", NOTICE)
+        self.register("PRIVMSG", PRIVMSG)
 
     def _connect(self):
         if self.cfg.ipv6:
@@ -143,6 +146,7 @@ class IRC(Bot):
             o.origin = o.origin[1:]
             if len(arguments) > 1:
                 o.command = arguments[1]
+                o.etype = o.command
             if len(arguments) > 2:
                 txtlist = []
                 adding = False
@@ -241,39 +245,6 @@ class IRC(Bot):
             event._func(event)
         event.ready()
 
-    def ERROR(self, event):
-        self.state.error = event
-        self._connected.clear()
-        time.sleep(self.state.nrconnect * 3.0)
-        self.connect()
-
-    def NOTICE(self, event):
-        if event.txt.startswith("VERSION"):
-            txt = "\001VERSION %s %s - %s\001" % ("BOTLIB", "1", "python3 IRC channel daemon")
-            self.command("NOTICE", event.channel, txt)
-
-    def PRIVMSG(self, event):
-        k = kernels.get_first()
-        k.users.userhosts.set(event.nick, event.origin)
-        if event.txt.startswith("DCC CHAT"):
-            if not k.users.allowed(event.origin, "USER"):
-                return
-            try:
-                dcc = DCC()
-                dcc.encoding = "utf-8"
-                launch(dcc.connect, event)
-                return
-            except ConnectionRefusedError:
-                return
-        if event.txt and event.txt[0] == self.cc:
-            if not k.users.allowed(event.origin, "USER"):
-                return
-            e = Event()
-            e.channel = event.channel
-            e.orig = repr(self)
-            e.origin = event.origin
-            e.txt = event.txt.strip()[1:]
-            k.put(e)
 
     def poll(self):
         self._connected.wait()
@@ -397,11 +368,48 @@ class DCC(Bot):
             e.args = []
         e._sock = self._sock
         e._fsock = self._fsock
+        e.etype = "command"
         e.channel = self.origin
         e.origin = self.origin or "root@dcc"
         e.orig = repr(self)
-        k.dispatch(e)
+        k.put(e)
         return e
 
     def say(self, channel, txt, type="chat"):
         self.raw(txt)
+
+
+def ERROR(handler, event):
+    handler.state.error = event
+    handler._connected.clear()
+    time.sleep(handler.state.nrconnect * 3.0)
+    launch(handler.connect)
+
+def NOTICE(handler, event):
+    if event.txt.startswith("VERSION"):
+        txt = "\001VERSION %s %s - %s\001" % ("BOTD", "1", "python3 IRC channel daemon")
+        handler.command("NOTICE", event.channel, txt)
+
+def PRIVMSG(handler, event):
+    k = kernels.get_first()
+    k.users.userhosts.set(event.nick, event.origin)
+    if event.txt.startswith("DCC CHAT"):
+        if not k.users.allowed(event.origin, "USER"):
+            return
+        try:
+            dcc = DCC()
+            dcc.encoding = "utf-8"
+            launch(dcc.connect, event)
+            return
+        except ConnectionRefusedError:
+            return
+    if event.txt and event.txt[0] == handler.cc:
+        if not k.users.allowed(event.origin, "USER"):
+            return
+        e = Event()
+        e.etype = "command"
+        e.channel = event.channel
+        e.orig = repr(handler)
+        e.origin = event.origin
+        e.txt = event.txt.strip()[1:]
+        k.put(e)

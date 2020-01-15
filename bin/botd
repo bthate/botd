@@ -57,16 +57,12 @@ def execute(main):
 
 def main():
     cfg = parse_cli("botd", __version__, opts)
-    k = Kernel()
+    level("debug")
+    daemon()
+    k = Kernel(cfg)
     k.cfg.last()
-    #k.cfg.edit(cfg, True)
-    k.walk("botd")
     k.walk(k.cfg.modules, True)
-    if cfg.daemon:
-        daemon()
-    else:
-        c = Console()
-        c.start()
+    k.walk("botd.irc", True)
     k.start()
     k.wait()
 

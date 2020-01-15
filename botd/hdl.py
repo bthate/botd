@@ -2,11 +2,14 @@
 #
 # event handler.
 
+import logging
 import queue
 
 from botd.ldr import Loader
 from botd.obj import Object
 from botd.thr import launch
+from botd.trc import get_exception
+from botd.utl import get_name
 
 # defines
 
@@ -24,14 +27,17 @@ class Handler(Loader):
         self.cbs = Object()
 
     def handle_cb(self, event):
+        logging.debug("handle %s (%s) on %s" % (event.etype, event.origin, get_name(event.orig) or event.orig))
         if event.etype in self.cbs:
             self.cbs[event.etype](self, event)
 
     def handler(self):
         while not self._stopped:
             e = self._queue.get()
-            self.handle_cb(e)
-
+            try:
+                self.handle_cb(e)
+            except Excpetion as ex:
+                logging.error(get_exception())
     def poll(self):
         raise ENOTIMPLEMENTED
 
@@ -39,6 +45,7 @@ class Handler(Loader):
         self._queue.put_nowait(event)
 
     def register(self, cbname, handler):
+        logging.debug("register %s" % cbname)
         self.cbs[cbname] = handler        
 
     def start(self):
