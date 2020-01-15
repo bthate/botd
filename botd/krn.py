@@ -33,19 +33,19 @@ class Cfg(Cfg):
 
 class Kernel(Handler):
 
-    cfg = Cfg()
-    fleet = Fleet()
-    users = Users()
         
     def __init__(self, cfg=None, **kwargs):
         super().__init__()
         self._stopped = False
         self._skip = False
+        self.cfg = Cfg()
         self.cfg.modules = ""
         self.cfg.update(cfg or {})
         self.cfg.update(kwargs)
         self.cmds = Object()
+        self.fleet = Fleet()
         self.run = Object()
+        self.users = Users()
         kernels.add(self)
         self.register("command", dispatch)
 
