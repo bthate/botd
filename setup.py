@@ -2,7 +2,7 @@
 #
 # setup.py
 
-from setuptools import setup
+from setuptools import setup, find_namespace_packages
 
 setup(
     name='botd',
@@ -162,7 +162,8 @@ you can contact me on IRC/freenode/#dunkbots.
     long_description_content_type="rest",
     license='Public Domain',
     install_requires=["feedparser"],
-    packages=["botd", "botd.cmds"],
+    zip_safe=False,
+    packages=find_namespace_packages(include=['botd.*']),
     scripts=["bin/botd", "bin/botctl", "bin/botirc", "bin/botsh", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',

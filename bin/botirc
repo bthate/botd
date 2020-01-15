@@ -45,6 +45,7 @@ def execute(main):
 def main():
     cfg = parse_cli("botirc", __version__, opts)
     k = Kernel()
+    k.walk("botd.cmds")
     k.walk(cfg.modules, True)
     try:
         server, channel, nick = cfg.args

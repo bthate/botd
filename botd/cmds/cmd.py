@@ -2,28 +2,23 @@
 #
 # basic commands. 
 
-from botd.obj import Object
-from botd.dbs import Db
+import botd.tbl
+
 from botd.krn import kernels, __version__
 from botd.usr import Users
 
 # defines
 
 def __dir__():
-    return ("cmds", "meet", "u", "v")
+    return ("cmds",)
 
 k = kernels.get_first()
 
 # functions
 
 def cmds(event):
-    k = kernels.get_first()
-    event.reply(",".join(sorted(k.cmds)))
-
-def v(event):
-    event.reply("BOTD %s" % __version__)
+    event.reply(",".join(sorted(botd.tbl.modules)))
 
 # runtime
 
 k.add("cmds", cmds)
-k.add("v", v)

@@ -10,9 +10,9 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 import logging
 
 from botd.err import EINIT
-from botd.krn import Kernel, kernels
+from botd.evt import Event
+from botd.krn import Kernel, kernels, dispatch
 from botd.log import level
-from botd.hdl import Event
 from botd.shl import parse_cli
 from botd.trc import get_exception
 from botd.trm import termsave, termreset
@@ -44,11 +44,12 @@ def main():
     if not cfg.txt:
         return
     k = Kernel()
+    k.walk("botd.cmds")
     k.walk(cfg.modules, True)
     k.fleet.add(k)
     e = Event()
     e.txt = cfg.txt
-    k.dispatch(e)
+    dispatch(k, e)
     e.wait()
 
 execute(main)

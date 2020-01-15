@@ -7,6 +7,7 @@ __version__ = 3
 import logging
 import os
 import time
+import botd.tbl
 
 from botd.err import EINIT
 from botd.flt import Fleet
@@ -52,6 +53,9 @@ class Kernel(Handler):
         self.cmds[cmd] = func
 
     def get_cmd(self, cn):
+        mn = botd.tbl.modules.get(cn, None)
+        if mn and mn not in self.table:
+            self.get_mod(mn)
         return self.cmds.get(cn, None)
         
     def say(self, channel, txt, mtype="normal"):

@@ -33,7 +33,7 @@ def log(event):
     if not event.rest:
        db = Db()
        nr = 0
-       for o in db.find("botd.ent.Log", {"txt": ""}):
+       for o in db.find("botd.cmds.ent.Log", {"txt": ""}):
             event.display(o, str(nr))
             nr += 1
        return
@@ -46,7 +46,7 @@ def todo(event):
     if not event.rest:
        db = Db()
        nr = 0
-       for o in db.find("botd.ent.Todo", {"txt": ""}):
+       for o in db.find("botd.cmds.ent.Todo", {"txt": ""}):
             event.display(o, str(nr))
             nr += 1
        return

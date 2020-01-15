@@ -13,7 +13,6 @@ import os
 from botd.err import EINIT
 from botd.krn import Kernel
 from botd.csl import Console
-from botd.log import level
 from botd.shl import parse_cli
 from botd.trm import termreset, termsave
 from botd.trc import get_exception
@@ -45,7 +44,6 @@ def execute(main):
 def main():
     cfg = parse_cli("botsh", __version__, opts)
     k = Kernel(cfg)
-    k.walk("botd.cmds")
     k.walk(cfg.modules, True)
     c = Console()
     c.start()

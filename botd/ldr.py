@@ -25,6 +25,7 @@ class Loader(Object):
     table = Object()
     
     def direct(self, name):
+        logging.warn("direct %s" % name)
         return importlib.import_module(name)
 
     def get_mod(self, mn, force=True):
@@ -32,11 +33,9 @@ class Loader(Object):
             return Loader.table[mn]
         mod = None
         try:
-            mod = self.direct("botd.%s" % mn)
-        except ModuleNotFoundError as ex:
-            pass
-        if not mod:
             mod = self.direct(mn)
+        except ModuleNotFoundError:
+            pass
         if not mod:
             raise ENOMODULE(mn)
         if force or mn not in Loader.table:
@@ -44,6 +43,8 @@ class Loader(Object):
         return Loader.table[mn]
             
     def walk(self, mns, init=False):
+        if not mns:
+            return
         mods = []
         for mn in mns.split(","):
             if not mn:
