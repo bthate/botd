@@ -4,6 +4,7 @@
 
 import botd.tbl
 
+from botd.dbs import Db
 from botd.krn import kernels, __version__
 from botd.usr import Users
 

@@ -37,6 +37,11 @@ class Loader(Object):
         except ModuleNotFoundError:
             pass
         if not mod:
+            try:
+                mod = self.direct("botd.%s" % mn)
+            except ModuleNotFoundError:
+                pass
+        if not mod:
             raise ENOMODULE(mn)
         if force or mn not in Loader.table:
             Loader.table[mn] = mod

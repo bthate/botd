@@ -60,7 +60,7 @@ def main():
     k = Kernel()
     k.cfg.last()
     #k.cfg.edit(cfg, True)
-    k.walk("botd.cmds")
+    k.walk("botd")
     k.walk(k.cfg.modules, True)
     if cfg.daemon:
         daemon()

@@ -9,6 +9,7 @@ import time
 import urllib
 
 from botd.clk import Repeater
+from botd.krn import kernels
 from botd.dbs import Db
 from botd.flt import Fleet
 from botd.obj import Cfg, Object
@@ -30,8 +31,9 @@ except ModuleNotFoundError:
 def __dir__():
     return ("Cfg", "Feed", "Fetcher", "Rss", "Seen", "delete" ,"display", "feed", "fetch", "init", "rss")
 
+k = kernels.get_first()
+
 def init(kernel):
-    k = kernels.get_first()
     k.run.fetcher = Fetcher()
     k.run.fetcher.start()
     return k.run.fetcher
@@ -167,20 +169,6 @@ def get_feed(url):
     
 def file_time(timestamp):
     return str(datetime.datetime.fromtimestamp(timestamp)).replace(" ", os.sep) + "." + str(random.randint(111111, 999999))
-
-# BOTD - python3 IRC channel daemon.
-#
-# rss feed fetcher.
-
-import time
-
-from botd.dbs import Db
-from botd.krn import kernels
-from botd.tms import day, to_time
-
-# defines
-
-k = kernels.get_first()
 
 # commands
 
