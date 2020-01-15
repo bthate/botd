@@ -1,10 +1,14 @@
 R E A D M E
 ###########
 
+
+
 BOTD is a python3 IRC channel daemon and contains no copyright or LICENSE.
 
 
+
 I N S T A L L
+
 
 
 download the tarball from pypi, https://pypi.org/project/botd/#files
@@ -46,7 +50,9 @@ if you want to have the daemon started at boot, run:
 this will install an botd service and starts BOTD on boot.
 
 
+
 C O N F I G U R A T I O N
+
 
 
 you can use the botctl program to configure BOTD:
@@ -61,7 +67,9 @@ you can use the botctl program to configure BOTD:
  > botctl -d /var/lib/botd rss https://news.ycombinator.com/rss
 
 
+
 U D P
+
 
 
 using udp to relay text into a channel, start the bot with -m udp and use
@@ -72,7 +80,9 @@ the botudp program to send text to the UDP to channel server:
  > tail -f ~/.bot/logs/bot.log | botudp 
 
 
+
 M O D U L E S
+
 
 
 BOTD contains the following modules:
@@ -112,7 +122,9 @@ BOTD contains the following modules:
  botd.utl			- utilities.
  
 
+
 C O D I N G
+
 
 
 you can write your own modules for the bot, create a mod directory, put your 
@@ -135,7 +147,9 @@ to give feedback to the user use the event.reply(txt) method:
 have fun coding ;]
 
 
+
 I N F O
+
 
 
 you can contact me on IRC/freenode/#dunkbots.
