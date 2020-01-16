@@ -50,20 +50,27 @@ class Users(Db):
         return self.all("botd.usr.User", s)
 
     def get_user(self, origin):
+        if origin in Users.cache:
+            return Users.cache[origin]
         u =  list(self.get_users(origin))
         if u:
+            Users.cache[origin] = u
             return u[-1]
  
     def meet(self, origin, perms=None):
         user = self.get_user(origin)
-        if not user:
-            user = User()
+        if user:
+            return user
+        user = User()
         user.user = origin
         user.perms = ["USER", ]
         user.save()
         return user
 
     def oper(self, origin):
+        user = self.get_user(origin)
+        if user:
+            return user
         user = User()
         user.user = origin
         user.perms = ["OPER", "USER"]

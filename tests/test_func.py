@@ -38,7 +38,7 @@ def functest(nr):
     for x in range(nr):
         random.shuffle(names)
         for name in names:
-            mod = k.walk(name)
+            mod = k.load_mod(name, cmds=False)
             keys = dir(mod)
             random.shuffle(keys)
             for key in keys:

@@ -120,7 +120,7 @@ class Object(O, collections.MutableMapping):
                 self[key] = value
         return count
 
-    def find(self, value):
+    def find(self, val):
         for item in self.values():
             if val in item:
                 return True

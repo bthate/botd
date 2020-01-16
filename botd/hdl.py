@@ -37,6 +37,8 @@ class Handler(Loader):
                 self.handle_cb(e)
             except Exception as ex:
                 logging.error(get_exception())
+                e.ready()
+
     def poll(self):
         raise ENOTIMPLEMENTED
 

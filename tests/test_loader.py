@@ -20,11 +20,7 @@ class Test_Loader(unittest.TestCase):
         ll.load(p)
         self.assertTrue("botd.ldr" in ll.table)
 
-    def test_getmods1(self):
-        mods = k.walk("botd")
-        self.assertTrue("botd.flt" in [x.__name__ for x in mods])
-
-    def test_botd(self):
+    def test_loadmod(self):
         l = Loader()
         l.load_mod("botd.cmd")
         self.assertTrue("botd.cmd" in l.table)

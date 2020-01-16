@@ -23,7 +23,6 @@ class Param(Object):
     pass
 
 k = kernels.get_first()
-k.walk("botd")
 k.users.oper("test@shell")
 
 try:
@@ -40,7 +39,7 @@ param = Param()
 param.cfg = ["irc", "rss", "krn"]
 param.log = ["yo!",]
 param.meet = ["test@shell",]
-param.find = ["%s yo" % [x for x in botd.tbl.names]]
+param.find = ["%s yo" % x for x in botd.tbl.names]
 param.rss = ["https://www.reddit.com/r/python/.rss", ""]
 #param.mbox = ["~/evidence/25-1-2013",]
 

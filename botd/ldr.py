@@ -36,7 +36,7 @@ class Loader(Object):
                 if o.__code__.co_argcount == 1:
                     yield (key, o)
 
-    def load_mod(self, mn, force=False, cmds=True):
+    def load_mod(self, mn, force=False):
         if mn in Loader.table:
             return Loader.table[mn]
         mod = None
@@ -56,7 +56,4 @@ class Loader(Object):
             return
         if force or mn not in Loader.table:
             Loader.table[mn] = mod
-        if cmds:
-            self.find_cmds(mod)
         return Loader.table[mn]
-            

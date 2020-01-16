@@ -38,7 +38,6 @@ class Kernel(Handler):
     def __init__(self, cfg=None, **kwargs):
         super().__init__()
         self._stopped = False
-        self._skip = False
         self.cfg = Cfg({"autoload": True, "verbose": False})
         self.cfg.update(cfg or {})
         self.cfg.update(kwargs)
@@ -68,6 +67,12 @@ class Kernel(Handler):
             cmd = self.cmds.get(cn, None)
         return cmd
  
+    def load_mod(self, mn, force=False, cmds=True):
+        mod = super().load_mod(mn, force)
+        if cmds:
+             self.find_cmds(mod)
+        return mod
+       
     def say(self, channel, txt, mtype="normal"):
         print(txt)
 
@@ -83,24 +88,20 @@ class Kernel(Handler):
         for mn in mns.split(","):
             if not mn:
                 continue
-            m = self.load_mod(mn)
+            m = self.load_mod(mn, False, cmds)
             if not m:
                 continue
             loc = None
             if "__spec__" in dir(m):
                 loc = m.__spec__.submodule_search_locations
             if not loc:
-                if cmds:
-                    self.find_cmds(m)
                 mods.append(m)
                 continue
             for md in loc:
                 for x in os.listdir(md):
                     if x.endswith(".py"):
                         mmn = "%s.%s" % (mn, x[:-3])
-                        m = self.load_mod(mmn)
-                        if cmds:
-                            self.find_cmds(m)
+                        m = self.load_mod(mmn, False, cmds)
                         if m:
                             mods.append(m)
         if init:
@@ -133,8 +134,9 @@ def dispatch(handler, event):
     if not event.txt:
         return
     event.parse()
-    chk = event.txt.split()[0]
-    event._func = handler.get_cmd(chk)
+    if "_func" not in event:
+        chk = event.txt.split()[0]
+        event._func = handler.get_cmd(chk)
     if event._func:
         event._func(event)
         event.show()
