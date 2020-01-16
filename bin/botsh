@@ -47,8 +47,7 @@ def execute(main):
 def main():
     cfg = parse_cli("botsh", __version__, opts)
     k = Kernel()
-    if cfg.walk:
-        k.walk("botd")
+    k.walk("botd")
     k.walk(cfg.modules, True)
     c = Console()
     c.start()
