@@ -40,7 +40,9 @@ class Loader(Object):
         if mn in Loader.table:
             return Loader.table[mn]
         mod = None
-        if mn not in sys.modules:
+        if mn in sys.modules:
+            mod = sys.modules[mn]
+        else:
             try:
                 mod = self.direct(mn)
             except ModuleNotFoundError:

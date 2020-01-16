@@ -29,12 +29,4 @@ def cmds(event):
         show list of commands.
 
     """
-    res = []
-    for cn, mn in modules.items():
-        for mmn in k.table:
-            if mmn in mn:
-                res.append(cn)
-    if res:
-        event.reply(",".join(sorted(res)))
-    else:
-        event.reply("no commands.")
+    event.reply(",".join(sorted(k.cmds)))

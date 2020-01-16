@@ -56,7 +56,8 @@ class Kernel(Handler):
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
                 if o.__code__.co_argcount == 1:
-                    self.add(key, o)
+                    if key not in self.cmds:
+                        self.add(key, o)
 
     def get_cmd(self, cn):
         return self.cmds.get(cn, None)

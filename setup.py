@@ -163,7 +163,7 @@ you can contact me on IRC/freenode/#dunkbots.
     license='Public Domain',
     install_requires=["feedparser"],
     zip_safe=False,
-    packages=find_namespace_packages(include=['botd.*']),
+    packages=["botd"],
     scripts=["bin/botd", "bin/botctl", "bin/botirc", "bin/botsh", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',

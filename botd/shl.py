@@ -101,8 +101,9 @@ def parse_cli(name, version=None, opts=opts, wd="", ld="", **kwargs):
     cfg.name = name 
     cfg.txt = " ".join(cfg.args)
     cfg.version = version or __version__
-    level(cfg.level, cfg.logdir, nostream=cfg.daemon)
+    level(cfg.level, cfg.logdir, nostream=not cfg.daemon)
     logging.warning("BOTD started at %s (%s)" % (cfg.workdir, cfg.level or "debug"))
+    logging.warning("log at %s" % logfiled)
     return cfg
 
 def set_completer(commands):
