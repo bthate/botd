@@ -26,6 +26,7 @@ opts = [
     ('-p', '--prompting', 'store_true', False, "", "query for initial values."),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
     ('-n', '--ondemand', 'store_false', True, "", 'enable on demand loading', 'ondemand'),
+    ('-w', '--walk', 'store', str, "", 'walk packages', 'walk'),
 ]
 
 def execute(main):
@@ -46,7 +47,8 @@ def execute(main):
 def main():
     cfg = parse_cli("botsh", __version__, opts)
     k = Kernel()
-    k.walk("botd")
+    if cfg.walk:
+        k.walk("botd")
     k.walk(cfg.modules, True)
     c = Console()
     c.start()

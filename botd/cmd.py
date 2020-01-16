@@ -11,7 +11,6 @@
 """
 
 from botd.krn import kernels
-from botd.tbl import modules
 
 # defines
 

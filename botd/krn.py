@@ -8,7 +8,6 @@ import inspect
 import logging
 import os
 import time
-import botd.tbl
 
 from botd.err import EINIT
 from botd.flt import Fleet

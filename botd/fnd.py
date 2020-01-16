@@ -2,13 +2,19 @@
 #
 # find command
 
-import ob
 import os
 import time
 
 from botd.dbs import Db
-from botd.krn import k
+from botd.krn import kernels
+from botd.obj import workdir
 from botd.tms import elapsed
+
+# defines
+
+k = kernels.get_first()
+
+# commands
 
 def find(event):
     db = Db()
@@ -18,7 +24,7 @@ def find(event):
             event.reply("|".join(sorted({x for x in o.keys() if not x.startswith("_")})))
             return
     if not event.args:
-        fns = os.listdir(os.path.join(ob.workdir, "store"))
+        fns = os.listdir(os.path.join(workdir, "store"))
         fns = sorted({x.split(".")[-1].lower() for x in fns})
         if fns:
             event.reply("|".join(fns))

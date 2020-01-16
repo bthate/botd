@@ -104,6 +104,7 @@ BOTD contains the following modules:
     botd.ent			- log and todo commands.
     botd.err			- errors.
     botd.flt			- list of bots.
+    botd.fnd			- search objects.
     botd.fnd			- search database.
     botd.gnr			- generic object functions.
     botd.hdl			- handler.
@@ -114,7 +115,6 @@ BOTD contains the following modules:
     botd.prs			- parsing of commands.
     botd.rss			- fetch RSS feeds.
     botd.shl			- shell.
-    botd.tbl			- core tables.
     botd.thr			- threads.
     botd.tms			- time related.
     botd.trc			- trace.
