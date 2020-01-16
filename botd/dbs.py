@@ -104,6 +104,29 @@ class Db(Object):
                     continue
                 yield o
 
+    def find_value(self, otype, values=[], index=None, delta=0):
+        """ 
+            search typed objects
+        
+            basic query need a type (full qualified name) and a selector (dict with name/values) to match the objects.
+            index (number in resultset) and delta option (time diff from now) can be provided to limit search.
+
+            Db.find("botd.irc.Cfg", {"server": localhost})        
+
+            by default the find method only returns objects that match.
+
+        """
+        nr = -1
+        for fn in names(otype, delta):
+            o = hook(fn)
+            if o.find(values):
+                nr += 1
+                if index is not None and nr != index:
+                    continue
+                if "_deleted" in o and o._deleted:
+                    continue
+                yield o
+
     def last(self, otype, index=None, delta=0):
         """
             last method.

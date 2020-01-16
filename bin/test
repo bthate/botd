@@ -48,13 +48,6 @@ def execute(main):
     finally:
         termreset()
 
-def initialize(k, cfg):
-    cdir("testdata")
-    k.users.oper("test@shell")
-    k.cfg.prompt = False
-    k.walk("botd")
-    k.start()
-
 def main():
     try:
         shutil.rmtree("testdata")
@@ -62,11 +55,12 @@ def main():
         pass
     cfg = parse_cli("test", __version__, opts)
     botd.obj.workdir = "testdata"
+    cdir("testdata")
     k = Kernel(cfg)
-    level("error")
-    initialize(k, cfg)
+    k.users.oper("test@shell")
+    k.cfg.prompt = False
     k.cfg.debug = True
-    level(k.cfg.level)
+    k.start()
     test_path = os.getcwd() + os.sep + "tests"
     p = ""
     if k.cfg.args:

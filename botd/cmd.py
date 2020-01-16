@@ -10,6 +10,8 @@
 
 """
 
+import botd.tbl
+
 from botd.krn import kernels
 
 # defines
@@ -28,4 +30,7 @@ def cmds(event):
         show list of commands.
 
     """
+    if k.cfg.autoload:
+        event.reply(",".join(botd.tbl.modules))
+        return
     event.reply(",".join(sorted(k.cmds)))

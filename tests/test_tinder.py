@@ -8,6 +8,7 @@ import random
 import sys
 import time
 import unittest
+import botd.tbl
 
 from botd.bot import Bot
 from botd.evt import Event
@@ -33,10 +34,14 @@ except:
 bot = Bot()
 bot.start()
 
+# OPML <outline text="The Verge" title="The Verge" type="rss" xmlUrl="https://www.youtube.com/feeds/videos.xml?channel_id=UCddiUEpeqJcYeBxX1IVBKvQ" />
+
 param = Param()
-param.cfg = [random.choice(["irc", "rss"]),]
+param.cfg = ["irc", "rss", "krn"]
 param.log = ["yo!",]
 param.meet = ["test@shell",]
+param.find = ["%s yo" % [x for x in botd.tbl.names]]
+param.rss = ["https://www.reddit.com/r/python/.rss", ""]
 #param.mbox = ["~/evidence/25-1-2013",]
 
 class Test_Tinder(unittest.TestCase):
@@ -57,8 +62,6 @@ def tests(b):
     keys = list(b.cmds)
     random.shuffle(keys)
     for cmd in keys:
-        if cmd in ["fetch", "exit", "reboot", "reconnect", "test"]:
-            continue
         events.extend(do_cmd(k, cmd))
     consume(events)
 

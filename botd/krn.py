@@ -8,11 +8,12 @@ import inspect
 import logging
 import os
 import time
+import botd.tbl
 
 from botd.err import EINIT
 from botd.flt import Fleet
 from botd.hdl import Handler
-from botd.obj import Cfg, Object
+from botd.obj import Cfg, Default, Object
 from botd.shl import enable_history, set_completer, writepid
 from botd.trc import get_exception
 from botd.usr import Users
@@ -38,12 +39,12 @@ class Kernel(Handler):
         super().__init__()
         self._stopped = False
         self._skip = False
-        self.cfg = Cfg({"verbose": False})
+        self.cfg = Cfg({"autoload": True, "verbose": False})
         self.cfg.update(cfg or {})
         self.cfg.update(kwargs)
         self.cmds = Object()
         self.fleet = Fleet()
-        self.run = Object()
+        self.run = Default()
         self.users = Users()
         kernels.add(self)
         self.register("command", dispatch)
@@ -59,7 +60,13 @@ class Kernel(Handler):
                         self.add(key, o)
 
     def get_cmd(self, cn):
-        return self.cmds.get(cn, None)
+        cmd = self.cmds.get(cn, None)
+        if not cmd and self.cfg.autoload:
+            mn = botd.tbl.modules.get(cn, None)
+            if mn:
+                self.load_mod(mn)
+            cmd = self.cmds.get(cn, None)
+        return cmd
  
     def say(self, channel, txt, mtype="normal"):
         print(txt)

@@ -18,6 +18,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode, urlunparse
 from urllib.request import Request, urlopen
 
+from botd.err import EDEBUG
 from botd.trc import get_exception
 
 # defines
@@ -134,6 +135,11 @@ def get_tinyurl(url):
             return i.groups()
 
 def get_url(*args):
+    from botd.krn import kernels
+    k = kernels.get_first()
+    if k.cfg.debug:
+        logging.debug("debug enabled, ignoring %s" % args[0])
+        return ""
     logging.debug("GET %s" % args[0])
     url = urlunparse(urllib.parse.urlparse(args[0]))
     req = Request(url, headers={"User-Agent": useragent()})

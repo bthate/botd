@@ -120,6 +120,12 @@ class Object(O, collections.MutableMapping):
                 self[key] = value
         return count
 
+    def find(self, value):
+        for item in self.values():
+            if val in item:
+                return True
+        return False
+
     def format(self, keys=None):
         if keys is None:
             keys = vars(self).keys()

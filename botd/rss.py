@@ -255,11 +255,3 @@ def rss(event):
     o.rss = event.args[0]
     o.save()
     event.reply("ok 1")
-
-# runtime
-
-k.add("delete", delete)
-k.add("display", display)
-k.add("feed", feed)
-k.add("fetch", fetch)
-k.add("rss", rss)

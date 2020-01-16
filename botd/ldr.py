@@ -30,13 +30,13 @@ class Loader(Object):
         logging.warn("direct %s" % name)
         return importlib.import_module(name)
 
-    def get_cmds(mod):
+    def find_cmds(mod):
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
                 if o.__code__.co_argcount == 1:
                     yield (key, o)
 
-    def load_mod(self, mn, force=True):
+    def load_mod(self, mn, force=False, cmds=True):
         if mn in Loader.table:
             return Loader.table[mn]
         mod = None
@@ -56,5 +56,7 @@ class Loader(Object):
             return
         if force or mn not in Loader.table:
             Loader.table[mn] = mod
+        if cmds:
+            self.find_cmds(mod)
         return Loader.table[mn]
             

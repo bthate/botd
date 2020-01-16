@@ -82,7 +82,7 @@ def make_opts(ns, options, **kwargs):
     parser.add_argument('args', nargs='*')
     parser.parse_known_args(namespace=ns)
 
-def parse_cli(name, version=None, opts=opts, wd="", ld="", **kwargs):
+def parse_cli(name, version=None, opts=None, wd="", ld="", **kwargs):
     from botd.log import level, logfiled
     ns = Object()
     if opts:
@@ -101,7 +101,8 @@ def parse_cli(name, version=None, opts=opts, wd="", ld="", **kwargs):
     cfg.name = name 
     cfg.txt = " ".join(cfg.args)
     cfg.version = version or __version__
-    level(cfg.level, cfg.logdir, nostream=not cfg.daemon)
+    level(cfg.level, cfg.logdir)
+    logfiled = cfg.logdir
     logging.warning("BOTD started at %s (%s)" % (cfg.workdir, cfg.level or "debug"))
     logging.warning("log at %s" % logfiled)
     return cfg

@@ -18,6 +18,10 @@ class ECLASS(Exception):
 
     pass
 
+class EDEBUG(Exception):
+
+    pass
+
 class EEMPTY(Exception):
 
     pass
