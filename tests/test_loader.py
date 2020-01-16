@@ -14,18 +14,17 @@ class Test_Loader(unittest.TestCase):
 
     def test_loadmod(self):
         l = Loader()
-        l.walk("botd.ldr")
+        l.load_mod("botd.ldr")
         p = l.save()
         ll = Loader()
         ll.load(p)
         self.assertTrue("botd.ldr" in ll.table)
 
     def test_getmods1(self):
-        l = Loader()
-        mods = l.walk("botd")
+        mods = k.walk("botd")
         self.assertTrue("botd.flt" in [x.__name__ for x in mods])
 
     def test_botd(self):
         l = Loader()
-        l.walk("botd.cmds")
-        self.assertTrue("v" in k.cmds)
+        l.load_mod("botd.cmd")
+        self.assertTrue("botd.cmd" in l.table)
