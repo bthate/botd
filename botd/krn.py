@@ -39,7 +39,7 @@ class Kernel(Handler):
         super().__init__()
         self._stopped = False
         self._skip = False
-        self.cfg = Cfg()
+        self.cfg = Cfg({"verbose": False})
         self.cfg.update(cfg or {})
         self.cfg.update(kwargs)
         self.cmds = Object()

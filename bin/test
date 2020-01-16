@@ -52,7 +52,7 @@ def initialize(k, cfg):
     cdir("testdata")
     k.users.oper("test@shell")
     k.cfg.prompt = False
-    k.walk("botd.cmds")
+    k.walk("botd")
     k.start()
 
 def main():
@@ -62,7 +62,7 @@ def main():
         pass
     cfg = parse_cli("test", __version__, opts)
     botd.obj.workdir = "testdata"
-    k = Kernel()
+    k = Kernel(cfg)
     level("error")
     initialize(k, cfg)
     k.cfg.debug = True

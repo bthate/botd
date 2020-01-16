@@ -22,6 +22,7 @@ class Param(Object):
     pass
 
 k = kernels.get_first()
+k.walk("botd")
 k.users.oper("test@shell")
 
 try:
