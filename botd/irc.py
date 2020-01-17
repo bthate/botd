@@ -14,6 +14,7 @@ import threading
 import _thread
 
 from botd.bot import Bot
+from botd.dft import defaults
 from botd.err import EINIT
 from botd.evt import Event
 from botd.flt import Fleet
@@ -40,16 +41,9 @@ saylock = _thread.allocate_lock()
 
 class Cfg(Cfg):
 
-    def __init__(self):
-        super().__init__()
-        self.channel = ""
-        self.nick = "botlib"
-        self.ipv6 = False
-        self.port = 6667
-        self.server = ""
-        self.ssl = False
-        self.realname = "botlib"
-        self.username = "botlib"
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.update(defaults.irc)
 
 class Event(Event):
 
@@ -245,7 +239,6 @@ class IRC(Bot):
             event._func(event)
         event.ready()
 
-
     def poll(self):
         self._connected.wait()
         if not self._buffer:
@@ -281,7 +274,7 @@ class IRC(Bot):
     def logon(self, server, nick):
         self._connected.wait()
         self.raw("NICK %s" % nick)
-        self.raw("USER %s %s %s :%s" % (self.cfg.username or "botlib", server, server, self.cfg.realname or "botlib"))
+        self.raw("USER %s %s %s :%s" % (self.cfg.username or "botd", server, server, self.cfg.realname or "botd"))
 
     def output(self):
         self._outputed = True

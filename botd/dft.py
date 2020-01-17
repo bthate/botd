@@ -6,13 +6,13 @@ from botd.obj import Object
 
 default_irc = {
     "channel": "",
-    "nick": "botlib",
+    "nick": "botd",
     "ipv6": False,
     "port": 6667,
     "server": "",
     "ssl": False,
-    "realname": "botlib",
-    "username": "botlib"
+    "realname": "python3 IRC channel daemon",
+    "username": "botd"
 }
 
 default_krn = {

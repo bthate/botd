@@ -1,4 +1,4 @@
-# BOTLIB - Framework to program bots (a botlib).
+# BOTD - python3 IRC channel daemon
 #
 # configuration tests
 
@@ -28,4 +28,3 @@ class Test_Opts(unittest.TestCase):
         cfg = Object()
         make_opts(cfg, opts)
         self.assertTrue(cfg.shell)
-

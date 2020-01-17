@@ -1,7 +1,7 @@
 #!/usr/bin/python3 -u
-# BOTLIB - Framework to program bots (a botlib).
+# BOTD - python3 IRC channel daemon
 #
-# bin/bot 
+# bin/botirc
 
 __version__ = 1
 

@@ -1,4 +1,4 @@
-# BOTLIB - Framework to program bots (a botlib).
+# BOTD - python3 IRC channel daemon
 #
 # edit command tests.
 
