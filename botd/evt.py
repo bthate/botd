@@ -1,6 +1,9 @@
 # BOTD - python3 IRC channel daemon.
 #
-# event handler.
+# event base.
+
+""" base event for the event handler. """
+
 
 import threading
 
@@ -17,6 +20,13 @@ def __dir__():
 
 class Event(Object):
 
+    """
+        event class
+
+        event base class used to define other specific events.
+
+    """    
+
     def __init__(self):
         super().__init__()
         self._ready = threading.Event()
@@ -31,12 +41,23 @@ class Event(Object):
         self.txt = ""
 
     def display(self, o, txt=""):
+        """
+            display method.
+        
+            display object to the event origin.
+
+         """
         txt = txt[:]
         txt += " " + "%s %s" % (self.format(o), days(o._path))
         txt = txt.strip()
         self.reply(txt)
 
     def format(self, o, keys=None):
+        """
+            format this event.
+
+            format the event in a one string response.
+        """
         if keys is None:
             keys = vars(o).keys()
         res = []
@@ -54,6 +75,12 @@ class Event(Object):
         return txt.strip()
 
     def parse(self, txt=""):
+        """
+            parse method
+            
+            parse text into this event.
+
+        """
         txt = txt or self.txt
         if not txt:
             return
@@ -65,12 +92,30 @@ class Event(Object):
         self.rest = " ".join(self.args)
 
     def ready(self):
+        """
+            ready method.
+
+            signal this event as ready.
+            
+        """
         self._ready.set()
 
     def reply(self, txt):
+        """
+            reply method.
+            
+            reply text to origin.
+            
+        """
         self.result.append(txt)
 
     def show(self):
+        """
+            show method.
+            
+            show result to the origin.
+            
+        """
         if not self.verbose:
             return
         k = kernels.get_first()
@@ -78,5 +123,11 @@ class Event(Object):
             k.fleet.echo(self.orig, self.channel, txt)
 
     def wait(self):
+        """
+            wait method.
+            
+            wait for event to complete.
+            
+        """
         self._ready.wait()
 

@@ -2,6 +2,14 @@
 #
 # data entry.
 
+"""
+    data entry commands
+
+
+    log and todo commands
+    
+"""
+
 from botd.dbs import Db
 from botd.obj import Object
 
@@ -14,11 +22,15 @@ def __dir__():
 
 class Log(Object):
 
+    """ item to log. """
+
     def __init__(self):
         super().__init__()
         self.txt = ""
 
 class Todo(Object):
+
+    """ todo item. """
 
     def __init__(self):
         super().__init__()
@@ -27,6 +39,12 @@ class Todo(Object):
 # commands
 
 def log(event):
+    """
+        log command.
+        
+        shows a list of log entries when no argument is given or log <txt>.
+
+    """
     if not event.rest:
        db = Db()
        nr = 0
@@ -40,6 +58,12 @@ def log(event):
     event.reply("ok")
 
 def todo(event):
+    """
+        todo command.
+
+        shows a list of todo's when no argument is given or todo <txt>.
+
+    """
     if not event.rest:
        db = Db()
        nr = 0

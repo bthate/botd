@@ -2,7 +2,8 @@
 #
 # edit configuration. 
 
-""" configuration related commands.
+"""
+     configuration command.
 
 """
 
@@ -21,10 +22,12 @@ def __dir__():
 # functions
 
 def cfg(event):
-    """ the cfg command. 
+    """
+        configuration command. 
     
         the cfg command can he used to edit configuration files.
         a list of possible arguments is given if not argument is provided.
+
     """
     assert(botd.obj.workdir)
     if not event.args:

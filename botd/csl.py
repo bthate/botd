@@ -3,7 +3,7 @@
 # console code.
 
 """ 
-    Console class.
+    console class.
 
     provides a class that can be used to fetch input from the console.
     typed strings can run as commands.

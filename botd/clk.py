@@ -2,9 +2,11 @@
 #
 # clock module providing timers and repeaters 
 
-""" clock module.
+"""
+    clock module.
 
     clock and timer classes that can be used to periodically run jobs.
+
 """
 
 import threading
@@ -26,13 +28,15 @@ def __dir__():
 
 class Timer(Object):
 
-    """ one time execution of a function at x seconds from now.
+    """
+        one time execution of a function at x seconds from now.
     
         Timer(sleep, funcion, name="timername")
     
         sleep is the number of seconds to sleep before running the timers function.
         function is the function to run
         name can be a provided name of the timer otherwist the timer function is the name
+
     """
 
     def __init__(self, sleep, func, *args, **kwargs):
@@ -46,9 +50,11 @@ class Timer(Object):
         self.timer = None
 
     def start(self):
-        """ start the timer
+        """
+            start the timer
         
             start the timer after x seconds of sleep.
+
         """
         if not self.name:
             self.name = get_name(self.func)
@@ -64,32 +70,40 @@ class Timer(Object):
         return timer
 
     def run(self, *args, **kwargs):
-        """ run the timer's funtion. 
+        """
+            run the timer's funtion. 
         
             launch the funcion in it's own thread.
+
         """
         self.state.latest = time.time()
         launch(self.func, *self.args, **self.kwargs)
 
     def exit(self):
-        """ exit timer.
+        """
+            exit timer.
         
             call cancel on the running timer.
+
         """
         if self.timer:
             self.timer.cancel()
 
 class Repeater(Timer):
 
-    """ Repeater class
+    """
+        Repeater class
     
         run a function repeatedly every x seconds.
+
     """
 
     def run(self, *args, **kwargs):
-        """ run repeater
+        """
+            run repeater
         
             run the function and launch a thread with a new timer.
+
         """
         self.func(*args, **kwargs)
         return launch(self.start)
