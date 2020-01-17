@@ -4,12 +4,16 @@
 
 import logging
 import random
+import types
 import unittest
 import botd.tbl
 
 from botd.evt import Event
 from botd.krn import kernels
+from botd.obj import Object
+from botd.trc import get_exception
 from botd.typ import get_cls
+from botd.utl import xobj
 
 k = kernels.get_first()
 k.cfg.prompt = False
@@ -21,18 +25,17 @@ class Test_Fuzzer(unittest.TestCase):
     def test_fuzzer1(self):
         for key in botd.tbl.modules:
             for n in botd.tbl.names:
-                print(key, n)
                 t = botd.tbl.names[n]
                 try:
                     e = get_cls(t)()
-                    e.txt = key + " " + random.choice(list(k.names))
-                    e.parse(e.txt)
+                    e.txt = key + " " + random.choice(list(k.modules.values()))
+                    e.parse(e)
                     e.etype = "command"
                     e.orig = repr(b)
                     e.origin = "test@shell"
-                    print(e)
                     v = k.get_cmd(key)
                     if v:
+                        logging.debug("%s %s" % (str(v), e))
                         v(e)
                 except AttributeError:
                     pass
@@ -47,30 +50,29 @@ class Test_Fuzzer(unittest.TestCase):
         event.txt = ""
         thrs = []
         nrloops = 1
+        exs = []
         for x in range(nrloops):
-            names = list(k.table.values())
+            names = list(botd.tbl.names)
             random.shuffle(names)
             for name in names:
                 mod = k.load_mod(name, cmds=False)
-                keys = dir(mod)
-                random.shuffle(keys)
-                for key in keys:
-                    obj = getattr(mod, key, None)
-                    if not obj:
-                        for func in dir(obj):
-                            print(func, type(func))
-                            if func and type(func) in [types.FunctionType, types.MethodType]:
-                                arglist = []
-                                for name in func.__code__.co_varnames:
-                                    nrvar = func.__code__.co_argcount
-                                    n = randomarg(name)
-                                    if n:
-                                        arglist.append(n)
-                                try:
-                                    func(*arglist[:nrvar])
-                                except:
-                                    logging.error(get_exception())
-
+                for obj in xobj(mod, "_"):
+                    for func in xobj(obj, "_", [types.MethodType, types.FunctionType]):
+                        if "handleError" in str(func):
+                            continue
+                        arglist = []
+                        for name in func.__code__.co_varnames:
+                            nrvar = func.__code__.co_argcount
+                            n = randomarg(name)
+                            if n:
+                                arglist.append(n)
+                        try:
+                            logging.debug("%s %s" % (str(func), str(arglist)))
+                            func(*arglist[:nrvar])
+                        except:
+                            exs.append(get_exception())
+        self.assertTrue(True)
+                        
 # functions
 
 def randomarg(name):

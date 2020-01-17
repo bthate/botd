@@ -220,3 +220,18 @@ def xdir(o, skip=""):
             continue
         res.append(k)
     return res
+
+def xobj(obj, skip="", types=[]):
+    res = []
+    for k in xdir(obj, skip):
+        o = getattr(obj, k, None)
+        ok = False
+        for t in types:
+            if t == type(o):
+                ok = True
+        if types and not ok:
+            continue
+        if o:
+            res.append(o)
+    return res
+    
