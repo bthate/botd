@@ -2,6 +2,8 @@
 #
 # utility functions.
 
+""" utility functions. """
+
 import json
 import html
 import html.parser
@@ -24,7 +26,7 @@ from botd.trc import get_exception
 # defines
 
 def __dir__():
-    return ("cdir", "check_permissions", "consume", "fromfile", "get_name", "get_tinyurl", "get_url", "hd", "kill", "fnlast", "locked", "match", "randomname", "strip_html", "touch", "useragent", "unescape") 
+    return ("cdir", "check_permissions", "consume", "get_name", "get_tinyurl", "get_url", "hd", "kill", "fnlast", "locked", "strip_html", "touch", "useragent", "unescape") 
 
 allowedchars = string.ascii_letters + string.digits + '_+/$.-'
 resume = {}
@@ -32,6 +34,12 @@ resume = {}
 # functions
 
 def cdir(path):
+    """
+        cdir function.
+        
+        create a directory.
+        
+    """
     if os.path.exists(path):
         return
     res = ""
@@ -46,6 +54,12 @@ def cdir(path):
     return True
 
 def check_permissions(path, dirmask=0o700, filemask=0o600):
+    """
+        check_permssion function.
+        
+        set permissions of a file.
+        
+    """
     uid = os.getuid()
     gid = os.getgid()
     try:
@@ -66,6 +80,12 @@ def check_permissions(path, dirmask=0o700, filemask=0o600):
         os.chmod(path, mask)
 
 def consume(elems):
+    """
+        consume functions.
+        
+        wait for all elements.
+        
+    """
     fixed = []
     for e in elems:
         e.wait()
@@ -76,35 +96,13 @@ def consume(elems):
         except ValueError:
             continue
 
-def edit(o, setter):
-    try:
-        setter = vars(setter)
-    except:
-        pass
-    if not setter:
-        setter = {}
-    count = 0
-    for key, value in setter.items():
-        count += 1
-        if "," in value:
-            value = value.split(",")
-        if value in ["True", "true"]:
-            o[key] = True
-        elif value in ["False", "false"]:
-            o[key] = False
-        else:
-            o[key] = value
-    return count
-
-def fromfile(f):
-    try:
-        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        return json.load(f, object_hook=botd.hook)
-    except:
-        fcntl.flock(f, fcntl.LOCK_UN)
-        raise
-
 def get_name(o):
+    """
+        get_name function.
+        
+        return the FQN (full qualified name) of a object.
+        
+    """
     t = type(o)
     if t == types.ModuleType:
         return o.__name__
@@ -121,6 +119,12 @@ def get_name(o):
     return n
 
 def get_tinyurl(url):
+    """
+        get_tinyurl function.
+        
+        return a tinyurl version of an url.
+        
+    """
     postarray = [
         ('submit', 'submit'),
         ('url', url),
@@ -135,6 +139,12 @@ def get_tinyurl(url):
             return i.groups()
 
 def get_url(*args):
+    """
+        get_url function.
+        
+        return a http get on a url.
+        
+    """
     from botd.krn import kernels
     k = kernels.get_first()
     if k.cfg.debug:
@@ -149,10 +159,22 @@ def get_url(*args):
     return data
 
 def hd(*args):
+    """
+        hd function.
+        
+        return the homedirectory appended with arguments.
+        
+    """
     homedir = os.path.expanduser("~")
     return os.path.abspath(os.path.join(homedir, *args))
 
 def kill(thrname):
+    """
+        kill function.
+        
+        kill all threads matching threadname.
+        
+    """
     for task in threading.enumerate():
         if thrname not in str(task):
             continue
@@ -164,11 +186,23 @@ def kill(thrname):
             task.stop()
 
 def fnlast(otype):
+    """
+        fnlast function.
+        
+        return the filename of the last object of object type.
+        
+    """
     fns = list(names(otype))
     if fns:
         return fns[-1]
 
 def locked(lock):
+    """
+        locked funcion.
+        
+        locked decorator to use on methods or functions.
+        
+    """
     def lockeddec(func, *args, **kwargs):
         def lockedfunc(*args, **kwargs):
             lock.acquire()
@@ -181,23 +215,23 @@ def locked(lock):
         return lockedfunc
     return lockeddec
 
-def match(a, b):
-    for n in b:
-        if n in a:
-            return True
-    return False        
-
-def randomname():
-    s = ""
-    for x in range(8):
-        s += random.choice(allowedchars)
-    return s
-
 def strip_html(text):
+    """
+        strip_html function.
+        
+        strip html code  from text.
+        
+    """
     clean = re.compile('<.*?>')
     return re.sub(clean, '', text)
 
 def touch(fname):
+    """
+        touch function.
+        
+        touch a filename and thus create it.
+        
+    """
     try:
         fd = os.open(fname, os.O_RDWR | os.O_CREAT)
         os.close(fd)
@@ -205,15 +239,33 @@ def touch(fname):
         pass
 
 def useragent():
-    return 'Mozilla/5.0 (X11; Linux x86_64) BOTD +http://git@github.com/bthate/botd)'
+    """
+        useragent function
+        
+        return the useragent to use if http requestt.
+        
+    """
+    return 'Mozilla/5.0 (X11; Linux x86_64) BOTD +http://git@bitbucket.org/botd/botd)'
     
 def unescape(text):
+    """
+        unescape function.
+        
+        remove escape code from text.
+        
+    """
     import html
     import html.parser
     txt = re.sub(r"\s+", " ", text)
     return html.parser.HTMLParser().unescape(txt)
 
 def xdir(o, skip=""):
+    """
+        xdir function.
+        
+        return results of the dir() function but skip keys containing skip characters.
+        
+    """
     res = []
     for k in dir(o):
         if skip and skip in k:
@@ -222,6 +274,12 @@ def xdir(o, skip=""):
     return res
 
 def xobj(obj, skip="", types=[]):
+    """
+        xobj function.
+        
+        return the objects matching skipped keys.
+        
+    """
     res = []
     for k in xdir(obj, skip):
         o = getattr(obj, k, None)

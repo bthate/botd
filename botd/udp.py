@@ -2,6 +2,8 @@
 #
 # udp input to irc channel.
 
+""" udp packet data to irc channel relay. """
+
 import socket
 import time
 
@@ -26,6 +28,13 @@ def init(kernel):
 
 class Cfg(Cfg):
 
+    """ 
+        UDP config class.
+        
+        stored udp specific data.
+        
+    """
+
     def __init__(self):
         super().__init__()
         self.host = "localhost"
@@ -38,6 +47,13 @@ class Cfg(Cfg):
 
 class UDP(Object):
 
+    """
+        UDP server.
+        
+        run a udp socket read loop in a thread.
+        
+    """
+
     def __init__(self):
         super().__init__()
         self._stopped = False
@@ -49,6 +65,12 @@ class UDP(Object):
         self.cfg = Cfg()
 
     def output(self, txt, addr=None):
+        """
+            output method.
+        
+            output txt th the registered fleet bots.
+            
+        """
         if not self.cfg.verbose:
             return
         k = kernels.get_first()
@@ -63,6 +85,12 @@ class UDP(Object):
                     b.announce(text)
 
     def server(self, host="", port=""):
+        """
+            server method.
+            
+            read from udp socket and call output loop.
+            
+        """
         c = self.cfg
         try:
             self._sock.bind((host or c.host, port or c.port))
@@ -79,11 +107,21 @@ class UDP(Object):
             self.output(data, addr)
 
     def exit(self):
+        """
+            exit method.
+            
+            stop the udp server.
+        """
         self._stopped = True
         self._sock.settimeout(0.01)
         self._sock.sendto(bytes("bla", "utf-8"), (self.cfg.host, self.cfg.port))
 
     def start(self):
+        """
+            start method.
+        
+            start the udp server.
+        """
         db = Db()
         self.cfg = db.last("botd.udp.Cfg") or Cfg()
         launch(self.server)
