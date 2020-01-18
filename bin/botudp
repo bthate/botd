@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# BOTD - python3 IRC channel daemon.
+# BOTD - IRC channel daemon.
 # -*- coding: utf-8 -*-
 #
 # echo input to BOTD so it can display that txt on the channel.

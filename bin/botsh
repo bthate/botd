@@ -1,5 +1,5 @@
 #!/usr/bin/python3 -u
-# BOTD - python3 IRC channel daemon.
+# BOTD - IRC channel daemon.
 #
 # bin/botsh
 

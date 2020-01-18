@@ -1,4 +1,4 @@
-# BOTD - python3 IRC channel daemon.
+# BOTD - IRC channel daemon.
 #
 # setup.py
 
@@ -10,12 +10,12 @@ setup(
     url='https://bitbucket.org/bthate/botd',
     author='Bart Thate',
     author_email='bthate@dds.nl',
-    description="BOTD is a python3 IRC channel daemon and contains no copyright or LICENSE.",
+    description="BOTD is a IRC channel daemon and contains no copyright or LICENSE.",
     long_description="""
 R E A D M E
 ###########
 
-BOTD is a python3 IRC channel daemon and contains no copyright or LICENSE.
+BOTD is a IRC channel daemon and contains no copyright or LICENSE.
 
 
 I N S T A L L
@@ -159,7 +159,7 @@ you can contact me on IRC/freenode/#dunkbots.
     
     
     """,
-    long_description_content_type="rest",
+    long_description_content_type="text/markdown",
     license='Public Domain',
     install_requires=["feedparser"],
     zip_safe=False,

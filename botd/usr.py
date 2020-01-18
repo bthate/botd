@@ -1,4 +1,4 @@
-# BOTD - python3 IRC channel daemon.
+# BOTD - IRC channel daemon.
 #
 # user management.
 
@@ -54,7 +54,7 @@ class Users(Db):
             return Users.cache[origin]
         u =  list(self.get_users(origin))
         if u:
-            Users.cache[origin] = u
+            Users.cache[origin] = u[-1]
             return u[-1]
  
     def meet(self, origin, perms=None):

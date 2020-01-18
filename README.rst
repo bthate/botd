@@ -3,7 +3,7 @@ R E A D M E
 
 
 
-BOTD is a python3 IRC channel daemon and contains no copyright or LICENSE.
+BOTD is a IRC channel daemon and contains no copyright or LICENSE.
 
 
 

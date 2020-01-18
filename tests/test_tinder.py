@@ -1,4 +1,4 @@
-# BOTD - python3 IRC channel daemon
+# BOTD - IRC channel daemon
 #
 # tinder tests.
 

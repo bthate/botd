@@ -1,4 +1,4 @@
-# BOTD - python3 IRC channel daemon.
+# BOTD - IRC channel daemon.
 #
 # IRC bot. 
 
@@ -568,7 +568,7 @@ def NOTICE(handler, event):
         
     """
     if event.txt.startswith("VERSION"):
-        txt = "\001VERSION %s %s - %s\001" % ("BOTD", "1", "python3 IRC channel daemon")
+        txt = "\001VERSION %s %s - %s\001" % ("BOTD", "1", "IRC channel daemon")
         handler.command("NOTICE", event.channel, txt)
 
 def PRIVMSG(handler, event):

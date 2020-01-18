@@ -1,4 +1,4 @@
-# BOTD - python3 IRC channel daemon.
+# BOTD - IRC channel daemon.
 #
 # default values.
 
@@ -17,7 +17,7 @@ default_irc = {
     "port": 6667,
     "server": "",
     "ssl": False,
-    "realname": "python3 IRC channel daemon",
+    "realname": "IRC channel daemon",
     "username": "botd"
 }
 

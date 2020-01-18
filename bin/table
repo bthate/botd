@@ -1,6 +1,6 @@
 #!/usr/bin/python3 
 
-txt = """# BOTD - python3 IRC channel daemon\n#\n# dispatch tables.\n"""
+txt = """# BOTD - IRC channel daemon\n#\n# dispatch tables.\n"""
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
