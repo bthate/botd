@@ -2,6 +2,14 @@
 #
 # big O Object.
 
+"""
+    obj module.
+    
+    provide a object class that can do persistence (load/save) to objects.
+    use JSON to serialize objects to/from disk.
+    
+"""
+
 import collections
 import datetime
 import json
@@ -39,7 +47,20 @@ workdir = ""
 
 class ObjectEncoder(JSONEncoder):
 
+    """
+        objectencoder class
+        
+        used to serialize objects to strings.
+        
+    """   
+
     def default(self, o):
+        """
+            default method.
+            
+            return stringable representation of an object.
+            
+        """
         if isinstance(o, Object):
             return vars(o)
         if isinstance(o, dict):
@@ -52,12 +73,32 @@ class ObjectEncoder(JSONEncoder):
 
 class ObjectDecoder(JSONDecoder):
 
+    """
+        objectdecoder class.
+        
+        used to reconstruct an object from JSON
+        
+    """
+
     def decode(self, s):
+        """
+            decode method.
+            
+            decode JSON string to it's corresponding object (convert to type).
+            
+        """
         if s == "":
             return Object()
         return json.loads(s, object_hook=hooked)
 
 class O:
+
+    """ 
+        o class.
+        
+        basic object to hook persistence into.
+        
+    """
 
     __slots__ = ("__dict__", "_path")
 
@@ -87,6 +128,13 @@ class O:
 
 class Object(O, collections.MutableMapping):
 
+    """
+        object class.
+        
+        persistable, inheritable object.
+        
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__()
         if args:
@@ -101,6 +149,12 @@ class Object(O, collections.MutableMapping):
         return self.json()
 
     def edit(self, setter, skip=False):
+        """
+            edit method.
+            
+            update the object to a setter key/value dict.
+            
+        """
         try:
             setter = vars(setter)
         except:
@@ -121,12 +175,24 @@ class Object(O, collections.MutableMapping):
         return count
 
     def find(self, val):
+        """
+            find method.
+            
+            see if val is in one of the object's values.
+            
+        """
         for item in self.values():
             if val in item:
                 return True
         return False
 
     def format(self, keys=None):
+        """
+            format method.
+            
+            format the object to a printable string, using provided keys (or all keys if none given).
+            
+        """
         if keys is None:
             keys = vars(self).keys()
         res = []
@@ -146,9 +212,21 @@ class Object(O, collections.MutableMapping):
         return txt.strip()
 
     def json(self):
+        """
+            json method.
+            
+            return json string of the objects.
+            
+        """
         return json.dumps(self, cls=ObjectEncoder, indent=4, sort_keys=True)
 
     def last(self, strip=False):
+        """
+            last method.
+            
+            return last saved object of this type.
+            
+        """
         from botd.dbs import Db
         db = Db()
         l = db.last(str(get_type(self)))
@@ -160,6 +238,12 @@ class Object(O, collections.MutableMapping):
 
     @locked(lock)
     def load(self, path):
+        """
+            load method.
+            
+            load object from disk.
+
+        """
         assert path
         assert workdir
         lpath = os.path.join(workdir, "store", path)
@@ -184,10 +268,22 @@ class Object(O, collections.MutableMapping):
         return self
 
     def merge(self, o, vals={}):
+        """
+            merge method.
+            
+            merge another object into this one (skip empty values).
+            
+        """
         return self.update(strip(self, vals))
 
     @locked(lock)
     def save(self):
+        """
+            save method.
+            
+            save the object to disk.
+            
+        """
         assert workdir
         opath = os.path.join(workdir, "store", self._path)
         cdir(opath)
@@ -197,6 +293,12 @@ class Object(O, collections.MutableMapping):
         return self._path
 
     def search(self, match=None):
+        """
+            search method.
+            
+            see if one of the attributes values matches.
+            
+        """
         res = False
         if not match:
             return res
@@ -218,10 +320,23 @@ class Object(O, collections.MutableMapping):
         return res
 
     def set(self, k, v):
+        """
+             set method.
+             
+             set a attribute on the object.
+             
+        """
         self[k] = v
 
 
 class Default(Object):
+
+    """ 
+        default class.
+        
+        overwritten getattribute to do autoinitialisation with a default value.
+        
+    """
 
     def __getattr__(self, k):
         if k not in self:
@@ -230,11 +345,24 @@ class Default(Object):
 
 class Cfg(Default):
 
+    """
+        config class.
+        
+        default config class.
+        
+    """
     pass
 
 # funcions
 
 def stamp(o):
+    """
+        stamp function.
+        
+        add the filename as a stamp to objects so recursive object can be reconstructed properly.
+        
+    """
+
     for k in dir(o):
         oo = getattr(o, k, None)
         if isinstance(oo, Object):
@@ -247,6 +375,12 @@ def stamp(o):
     return o
 
 def strip(o, vals=["",]):
+    """
+        strip function.
+
+        return stripped version of the object (remove all empty fields).
+
+    """
     rip = []
     for k in o:
         for v in vals:

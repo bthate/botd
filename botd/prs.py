@@ -1,6 +1,6 @@
 # BOTD - python3 IRC channel daemon.
 #
-# Event base class and command parsing
+# command parsing
 
 import time
 import threading

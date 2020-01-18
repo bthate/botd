@@ -2,6 +2,13 @@
 #
 # module loader.
 
+"""
+    module loader.
+    
+    provides a class with a table so modules can be managed in memory.
+    
+"""
+
 import cmd
 import importlib
 import logging
@@ -24,19 +31,44 @@ def __dir__():
 
 class Loader(Object):
 
+    """
+        loader class
+        
+        class to load modules into a modname/module table.
+        
+    """
+
     table = Object()
     
     def direct(self, name):
+        """
+            direct method.
+            
+            import a module and return it.
+            
+        """
         logging.warn("direct %s" % name)
         return importlib.import_module(name)
 
     def find_cmds(mod):
+        """
+            find_cmds method
+            
+            scan a module for commands and return them (don't register in the table)
+
+        """
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
                 if o.__code__.co_argcount == 1:
                     yield (key, o)
 
     def load_mod(self, mn, force=False):
+        """
+            load_mod method.
+            
+            load a module in the table. uses the table as a cache.
+            
+        """
         if mn in Loader.table:
             return Loader.table[mn]
         mod = None

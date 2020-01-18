@@ -2,6 +2,14 @@
 #
 # logging.
 
+"""
+    logging module
+    
+    enable logging by setting the loglevel with the level() function.
+    logging to file is also enabled, set this with the --logdir option.
+    
+"""
+
 import logging
 import logging.handlers
 import os
@@ -21,6 +29,13 @@ logfiled = ""
 
 class DumpHandler(logging.StreamHandler):
 
+    """
+        dumphandler class.
+        
+        throws away log messages.
+        
+    """
+
     propagate = False
 
     def emit(self, record):
@@ -29,6 +44,12 @@ class DumpHandler(logging.StreamHandler):
 # functions
 
 def level(loglevel="", logdir="", logfile="botd.log", nostream=False):
+    """
+        level function.
+        
+        enable logging and set the loglevel.
+        
+    """
     global logfiled
     if not loglevel:
         loglevel = "error"
