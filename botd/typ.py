@@ -85,7 +85,7 @@ def get_objtype(o):
         get_objtype function.
         
         return the type if the object is a an object.
-        
+    """        
     try:
         return "%s.%s" % (o.__self__.__module__, o.__self__.__name__)
     except AttributeError:
