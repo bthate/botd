@@ -2,6 +2,8 @@
 #
 # threading.
 
+""" launch threads. """
+
 import logging
 import queue
 import threading
@@ -19,6 +21,13 @@ def __dir__():
 
 class Thr(threading.Thread):
 
+    """
+        thr class.
+        
+        represents a thread in the BOTD universe.
+        
+    """
+
     def __init__(self, func, *args, name="noname", daemon=True):
         super().__init__(None, self.run, name, (), {}, daemon=daemon)
         self._name = name
@@ -34,15 +43,34 @@ class Thr(threading.Thread):
             yield k
 
     def run(self):
+        """
+            run method.
+            
+            fetch job from queue, run the function and set result which is returned on join
+            
+        """
         func, args = self._queue.get()
         self._result = func(*args)
 
     def join(self, timeout=None):
+        """
+            join method.
+            
+            wait for thread to finish and return the result.
+            
+        """
         super().join(timeout)
         return self._result
 
 
 class Launcher:
+
+    """
+        launcher class.
+
+        launch a thread.
+        
+    """
 
     def __init__(self):
         super().__init__()
@@ -60,13 +88,14 @@ class Launcher:
         t.start()
         return t
 
-    def start(self):
-        while not self._stopped:
-            t = self._queue.get()
-            t.start()
-
 # functions
 
 def launch(func, *args):
+    """
+        launch function.
+        
+        launch a thread.
+        
+    """
     l = Launcher()
     return l.launch(func, *args)

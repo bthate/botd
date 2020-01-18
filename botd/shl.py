@@ -2,6 +2,8 @@
 #
 # shell related code.
 
+""" command line parsing and tab completion. """
+
 import argparse
 import atexit
 import logging
@@ -37,6 +39,12 @@ opts = [
 # functions
 
 def close_history():
+    """
+        close_history function.
+        
+        syncs the command log to disk.
+        
+    """
     global HISTFILE
     if botd.obj.workdir:
         if not HISTFILE:
@@ -47,6 +55,12 @@ def close_history():
         readline.write_history_file(HISTFILE)
 
 def complete(text, state):
+    """
+        complete function.
+        
+        return possible completions.
+        
+    """
     matches = []
     if text:
         matches = [s for s in cmds if s and s.startswith(text)]
@@ -58,6 +72,12 @@ def complete(text, state):
         return None
 
 def enable_history():
+    """
+        enable_history function.
+        
+        starts logging entered commands.
+        
+    """
     global HISTFILE
     if botd.obj.workdir:
         HISTFILE = os.path.abspath(os.path.join(botd.obj.workdir, "history"))
@@ -68,9 +88,21 @@ def enable_history():
     atexit.register(close_history)
 
 def get_completer():
+    """
+        get_completer function.
+        
+        return the completer.
+        
+    """
     return readline.get_completer()
 
 def make_opts(ns, options, **kwargs):
+    """
+        make_opts function.
+        
+        parse command line options
+        
+    """
     parser = argparse.ArgumentParser(**kwargs)
     for opt in options:
         if not opt:
@@ -83,6 +115,12 @@ def make_opts(ns, options, **kwargs):
     parser.parse_known_args(namespace=ns)
 
 def parse_cli(name, version=None, opts=None, wd="", ld="", **kwargs):
+    """
+        parse_cli function.
+        
+        parse command line options.
+        
+    """        
     from botd.log import level, logfiled
     ns = Object()
     if opts:
@@ -108,6 +146,12 @@ def parse_cli(name, version=None, opts=None, wd="", ld="", **kwargs):
     return cfg
 
 def set_completer(commands):
+    """
+        set_completer function.
+        
+        set the completer with the provided commands list.
+        
+    """
     global cmds
     cmds = commands
     readline.set_completer(complete)
@@ -115,6 +159,12 @@ def set_completer(commands):
     atexit.register(lambda: readline.set_completer(None))
 
 def writepid():
+    """
+        writepid function.
+        
+        write the pid of the bot to a file.
+        
+    """
     assert botd.obj.workdir
     path = os.path.join(botd.obj.workdir, "pid")
     f = open(path, 'w')

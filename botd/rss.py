@@ -2,6 +2,8 @@
 #
 # rss feed fetcher.
 
+""" fetches rss feeds and echo's them on a channel. """
+
 import datetime
 import os
 import random
@@ -34,6 +36,12 @@ def __dir__():
 k = kernels.get_first()
 
 def init(kernel):
+    """
+        init function.
+        
+        start the rss fetcher.
+        
+    """
     k.run.fetcher = Fetcher()
     k.run.fetcher.start()
     return k.run.fetcher
@@ -41,6 +49,13 @@ def init(kernel):
 # classes
 
 class Cfg(Cfg):
+
+    """
+        rss config class
+        
+        provides rss configuration data.
+        
+    """
 
     def __init__(self):
         super().__init__()
@@ -50,9 +65,22 @@ class Cfg(Cfg):
 
 class Feed(Object):
 
+    """
+        feed class.
+        
+        represent one single feed item.
+        
+    """
     pass
 
 class Rss(Object):
+
+    """
+        rss class.
+        
+        rss url entry.
+        
+    """
 
     def __init__(self):
         super().__init__()
@@ -60,11 +88,25 @@ class Rss(Object):
 
 class Seen(Object):
 
+    """
+        seen class.
+        
+        holds a list of all seen urls.
+        
+    """
+    
     def __init__(self):
         super().__init__()
         self.urls = []
 
 class Fetcher(Object):
+
+    """
+        fetcher class.
+        
+        polls a list of rss urls periodically and displays new urls on the channel.
+        
+    """
 
     cfg = Cfg()
     seen = Seen()
@@ -74,6 +116,12 @@ class Fetcher(Object):
         self._thrs = []
 
     def display(self, o):
+        """
+            display method
+            
+            return displayable string of the feed.
+            
+        """
         result = ""
         try:
             dl = o.display_list.split(",")
@@ -98,6 +146,12 @@ class Fetcher(Object):
         return result[:-2].rstrip()
 
     def fetch(self, obj):
+        """
+            fetch method
+            
+            fetch data from one feed.
+            
+        """
         k = kernels.get_first()
         counter = 0
         objs = []
@@ -124,17 +178,13 @@ class Fetcher(Object):
             k.fleet.announce(self.display(o))
         return counter
 
-    def join(self):
-        res = []
-        remove = []
-        for thr in self._thrs:
-            res.append(thr.join())
-            remove.append(thr)
-        for thr in remove:
-            self._thrs.remove(thr)
-        return res
-
     def run(self):
+        """
+            run method
+            
+            do one run of fetching all the feeds and displaying them.
+        
+        """
         res = []
         thrs = []
         db = Db()
@@ -145,6 +195,12 @@ class Fetcher(Object):
         return res
 
     def start(self, repeat=True):
+        """
+            start method
+            
+            start the fetcher, polls after initial wait.
+            
+        """
         Fetcher.cfg.last()
         Fetcher.seen.last()
         if repeat:
@@ -153,11 +209,23 @@ class Fetcher(Object):
             return repeater
 
     def stop(self):
+        """
+            stop method.
+            
+            save seen urls to disk.
+            
+        """
         Fetcher.seen.save()
 
 # functions
 
 def get_feed(url):
+    """
+        get_feed function
+        
+        fetch a rss feed from url.
+        
+    """
     result = get_url(url)
     if gotparser:
         result = feedparser.parse(result)
@@ -173,6 +241,12 @@ def file_time(timestamp):
 # commands
 
 def delete(event):
+    """
+        delete <string to match with feed url.>
+        
+        deletes a rss entry so it won't display any more.
+        
+    """
     if not event.args:
         event.reply("delete <match>")
         return
@@ -189,6 +263,12 @@ def delete(event):
     event.reply("ok %s" % nr)
 
 def display(event):
+    """
+        display <feed> <key1,key2,key3>
+ 
+        set the feeds item to display to key1,key2 and key3. feed is a string matching the url of the feed.
+        
+    """
     if len(event.args) < 2:
         event.reply("display <feed> key1,key2,etc.")
         return
@@ -203,9 +283,16 @@ def display(event):
     event.reply("ok %s" % nr)
 
 def feed(event):
-    match = ""
-    if event.args:
-        match = event.args[0]
+    """
+        feed <match>
+        
+        search saved feeds for items that have fields with data in them that matches the match string.
+        
+    """
+    if not event.args:
+        event.reply("feed <match>")
+        return
+    match = event.args[0]
     nr = 0
     diff = time.time() - to_time(day())
     db = Db()
@@ -230,6 +317,12 @@ def feed(event):
         event.reply("no results found")
  
 def fetch(event):
+    """
+        fetch command
+        
+        run one round of fetching the feeds.
+        
+    """
     if not k.run.fetcher:
         k.run.fetcher = Fetcher()
     k.run.fetcher.start(False)
@@ -237,6 +330,12 @@ def fetch(event):
     event.reply("fetched %s" % ",".join([str(x) for x in res]))
 
 def rss(event):
+    """
+        rss <url>
+        
+        saves a feed url to disk.
+        
+    """
     db = Db()
     if not event.args or "http" not in event.args[0]:
         nr = 0

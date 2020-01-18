@@ -3,7 +3,7 @@
 # IRC bot. 
 
 """
-    IRC class.
+    irc class.
     
     provides an IRC bot.
     

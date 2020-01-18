@@ -2,6 +2,8 @@
 #
 # command parsing
 
+""" provide persistence to objects (load/save). """
+
 import time
 import threading
 
@@ -15,6 +17,13 @@ def __dir__():
 # classes
 
 class Token(botd.obj.Object):
+
+    """ 
+        token class
+        
+        create meta data on a single word.
+        
+    """
 
     def __init__(self):
         super().__init__()
@@ -33,6 +42,12 @@ class Token(botd.obj.Object):
         self.up = None
 
     def parse(self, nr, word):
+        """
+            parse method
+            
+            parse a word into a token.
+            
+        """
         if nr == 0:
             if word.startswith("!"):
                 word = word[1:]
@@ -87,6 +102,13 @@ class Token(botd.obj.Object):
 
 class Command(botd.obj.Object):
 
+    """
+        command class
+        
+        represents a list of tokens (words) that can be use to process a command.
+
+    """
+    
     def __init__(self):
         super().__init__()
         self._cb = None
@@ -116,6 +138,12 @@ class Command(botd.obj.Object):
         self.txt = ""
 
     def parse(self, txt="", options=""):
+        """
+            parse method.
+            
+            parse a line into a command.
+            
+        """
         if not txt:
             txt = self.txt 
         if not txt:
@@ -187,9 +215,21 @@ class Command(botd.obj.Object):
         self.time = botd.tms.to_day(self.rest)
 
     def ready(self):
+        """
+            ready method
+            
+            signal this command as ready.
+            
+        """
         self._ready.set()
         
     def wait(self):
+        """
+            wait method
+            
+            wait for command to be ready.
+            
+        """
         self._ready.wait()
         thrs = []
         vals = []
@@ -200,4 +240,3 @@ class Command(botd.obj.Object):
             self._thrs.remove(thr)
         self.ready()
         return self
-

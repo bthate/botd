@@ -2,6 +2,9 @@
 #
 # dispatch tables.
 
+""" tables for load ondemand, type checking and more. """
+
+#:
 classes = {
     "Bot": "botd.bot.Bot",
     "Cfg": "botd.bot.Cfg",
@@ -32,6 +35,8 @@ classes = {
     "User": "botd.usr.User",
     "Users": "botd.usr.Users"
 }
+
+#:
 modules = {
     "cfg": "botd.cfg",
     "cmds": "botd.cmd",
@@ -51,6 +56,8 @@ modules = {
     "users": "botd.usr",
     "v": "botd.shw"
 }
+
+#:
 names = {
     "bot": "botd.bot.Bot",
     "cfg": "botd.bot.Cfg",
