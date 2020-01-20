@@ -60,11 +60,11 @@ you can use the botctl program to configure BOTD:
 
 ::
 
- > botctl -d /var/lib/botd cfg krn modules rss,udp
- > botctl -d /var/lib/botd cfg irc server localhost
- > botctl -d /var/lib/botd cfg irc channel #botd
- > botctl -d /var/lib/botd meet ~bart@127.0.0.1
- > botctl -d /var/lib/botd rss https://news.ycombinator.com/rss
+ > botctl cfg krn modules rss,udp
+ > botctl cfg irc server localhost
+ > botctl irc channel #botd
+ > botctl meet ~bart@127.0.0.1
+ > botctl rss https://news.ycombinator.com/rss
 
 
 
