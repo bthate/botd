@@ -62,7 +62,7 @@ you can use the botctl program to configure BOTD:
 
  > botctl cfg krn modules rss,udp
  > botctl cfg irc server localhost
- > botctl irc channel #botd
+ > botctl cfg irc channel #botd
  > botctl meet ~bart@127.0.0.1
  > botctl rss https://news.ycombinator.com/rss
 
