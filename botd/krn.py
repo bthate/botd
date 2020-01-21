@@ -119,6 +119,10 @@ class Kernel(Handler):
         """
         print(txt)
 
+    def start(self):
+        set_completer(self.cmds)
+        super().start()
+
     def wait(self):
         """
             wait method
