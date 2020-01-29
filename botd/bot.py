@@ -54,17 +54,6 @@ class Bot(Handler):
         self.cfg = Cfg()
         self.channels = []
 
-    def _say(self, channel, txt, mtype="normal"):
-        """
-            raw output
-        
-            called when output is buffered.
-
-            >>> b._say("#botd", "yo!")
-            yo!
-        """
-        self.raw(txt)
-        
     def announce(self, txt):
         """
             annouce to all channels
@@ -110,7 +99,7 @@ class Bot(Handler):
         while not self._stopped:
             channel, txt, type = self._outqueue.get()
             if txt:
-                self._say(channel, txt, type)
+                self.say(channel, txt, type)
 
     def poll(self):
         """
@@ -144,10 +133,7 @@ class Bot(Handler):
             yo!
 
         """ 
-        if self._outputed:
-            self._outqueue.put((channel, txt, mtype))
-        else:
-            self.raw(txt)
+        self.raw(txt)
 
     def start(self, input=False, output=False):
         """

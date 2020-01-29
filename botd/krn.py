@@ -19,10 +19,12 @@ import botd.tbl
 
 from botd.err import EINIT
 from botd.flt import Fleet
+from botd.gnr import format
 from botd.hdl import Handler, dispatch
 from botd.obj import Cfg, Default, Object
 from botd.shl import enable_history, set_completer, writepid
 from botd.trc import get_exception
+from botd.tms import days
 from botd.usr import Users
 from botd.utl import get_name
 
@@ -69,6 +71,25 @@ class Kernel(Handler):
         """
         self.cmds[cmd] = func
 
+    def cmd(self, txt):
+        from botd.evt import Event
+        e = Event()
+        e.txt = txt
+        dispatch(self, e)
+        e.wait()
+
+    def display(self, o, txt=""):
+        """
+            display method.
+        
+            display object to the event origin.
+
+         """
+        txt = txt[:]
+        txt += " " + "%s %s" % (format(o), days(o._path))
+        txt = txt.strip()
+        self.say("", txt)
+        
     def find_cmds(self, mod):
         """
             find command function.
