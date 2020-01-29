@@ -285,7 +285,7 @@ class IRC(Bot):
 
         """
         for channel in self.channels:
-            self._say(channel, txt)
+            self.say(channel, txt)
 
     def command(self, cmd, *args):
         """

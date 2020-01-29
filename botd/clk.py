@@ -105,5 +105,6 @@ class Repeater(Timer):
             run the function and launch a thread with a new timer.
 
         """
+        thr = launch(self.start)
         self.func(*args, **kwargs)
-        return launch(self.start)
+        return thr

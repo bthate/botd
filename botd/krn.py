@@ -19,7 +19,7 @@ import botd.tbl
 
 from botd.err import EINIT
 from botd.flt import Fleet
-from botd.hdl import Handler
+from botd.hdl import Handler, dispatch
 from botd.obj import Cfg, Default, Object
 from botd.shl import enable_history, set_completer, writepid
 from botd.trc import get_exception
@@ -59,7 +59,6 @@ class Kernel(Handler):
         self.run = Default()
         self.users = Users()
         kernels.add(self)
-        self.register("command", dispatch)
 
     def add(self, cmd, func):
         """
@@ -120,6 +119,7 @@ class Kernel(Handler):
         print(txt)
 
     def start(self):
+        self.register("command", dispatch)
         set_completer(self.cmds)
         super().start()
 
@@ -209,26 +209,6 @@ class Kernels(Object):
             return Kernels.kernels[0]
         except IndexError:
             pass
-
-# functions
-
-def dispatch(handler, event):
-    """
-        dispatch handler.
-        
-        parse the event and dispatch to a command.
-        
-    """
-    if not event.txt:
-        return
-    event.parse()
-    if "_func" not in event:
-        chk = event.txt.split()[0]
-        event._func = handler.get_cmd(chk)
-    if event._func:
-        event._func(event)
-        event.show()
-    event.ready()
 
 # runtime
 

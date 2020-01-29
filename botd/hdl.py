@@ -41,6 +41,9 @@ class Handler(Loader):
         self._stopped = False
         self.cbs = Object()
 
+    # functions
+
+
     def handle_cb(self, event):
         """
             handle_cb method.
@@ -50,6 +53,7 @@ class Handler(Loader):
         """
         if event.etype in self.cbs:
             self.cbs[event.etype](self, event)
+        event.ready()
 
     def handler(self):
         """
@@ -113,3 +117,23 @@ class Handler(Loader):
         """
         self._stopped = True
         self._queue.put(None)
+
+
+def dispatch(handler, event):
+    """
+        dispatch handler.
+        
+        parse the event and dispatch to a command.
+        
+    """
+    if not event.txt:
+        event.ready()
+        return
+    event.parse()
+    if "_func" not in event:
+        chk = event.txt.split()[0]
+        event._func = handler.get_cmd(chk)
+    if event._func:
+        event._func(event)
+        event.show()
+    event.ready()

@@ -11,7 +11,8 @@ import logging
 
 from botd.err import EINIT
 from botd.evt import Event
-from botd.krn import Kernel, kernels, dispatch
+from botd.krn import Kernel, kernels
+from botd.hdl import dispatch
 from botd.log import level
 from botd.shl import parse_cli
 from botd.trc import get_exception

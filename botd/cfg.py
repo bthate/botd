@@ -12,6 +12,7 @@ import botd.obj
 
 from botd.dbs import Db
 from botd.dft import defaults
+from botd.krn import kernels
 from botd.typ import get_cls
 
 # defines
@@ -31,7 +32,7 @@ def cfg(event):
     """
     assert(botd.obj.workdir)
     if not event.args:
-        files = ["none", ] + [x.split(".")[-2].lower() for x in os.listdir(os.path.join(botd.obj.workdir, "store")) if x.endswith("Cfg")]
+        files = ["global", ] + [x.split(".")[-2].lower() for x in os.listdir(os.path.join(botd.obj.workdir, "store")) if x.endswith("Cfg")]
         if files:
             event.reply("choose from %s" % "|".join(files))
             return
@@ -39,6 +40,10 @@ def cfg(event):
             event.reply("no config files available yet.")
             return
     target = event.args[0]
+    if target == "global":
+        k = kernels.get_first()
+        event.reply(k.cfg)
+        return
     cn = "botd.%s.Cfg" % target
     db = Db()
     l = db.last(cn)

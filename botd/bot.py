@@ -43,6 +43,8 @@ class Bot(Handler):
     
         basic bot outputs to stdout.
 
+        >>> b = Bot()
+
     """
 
     def __init__(self):
@@ -58,6 +60,8 @@ class Bot(Handler):
         
             called when output is buffered.
 
+            >>> b._say("#botd", "yo!")
+            yo!
         """
         self.raw(txt)
         
@@ -66,6 +70,9 @@ class Bot(Handler):
             annouce to all channels
         
             uses the say method on registered bots
+
+            >>> b.announce("yo!")
+            yo!
 
         """
         for channel in self.channels:
@@ -77,6 +84,11 @@ class Bot(Handler):
         
             calls the poll method of the inherited class that returns an event to process.
 
+            >>> from botd.evt import Event
+            >>> e = Event()
+            >>> b.put(e)
+            >>> e.wait()
+             
         """
         while not self._stopped:
             try:
@@ -90,6 +102,8 @@ class Bot(Handler):
             output loop
         
             queues output to create buffered output.
+
+            >>> b._outqueue.put(("#botd", "yo!", "normal"))
 
         """
         self._outputed = True
@@ -113,6 +127,9 @@ class Bot(Handler):
         
             outputs directly to the screen
 
+            >>> b.raw("yo!")
+            yo!
+
         """
         sys.stdout.write(str(txt) + "\n")
         sys.stdout.flush()
@@ -122,6 +139,9 @@ class Bot(Handler):
             say something. 
         
             output text to the channel.
+
+            >>> b.say("#botd", "yo!", "normal")
+            yo!
 
         """ 
         if self._outputed:
@@ -134,6 +154,8 @@ class Bot(Handler):
             start the bot
         
             add the bot to the kernels fleet and launches input,output threads.
+
+            >>> b.start()
 
         """
         k = kernels.get_first()

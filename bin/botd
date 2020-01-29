@@ -22,8 +22,10 @@ opts = [
     ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-n', '--nocmds', 'store_true', False, "don't scan for commands", 'nocmds'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
+    ('-z', '--shell', 'store_true', False, 'enable shell', 'shell')
 ]
 
 def daemon():
@@ -59,9 +61,15 @@ def main():
     cfg = parse_cli("botd", __version__, opts)
     if cfg.daemon:
         daemon()
-    k = Kernel(cfg)
+    k = Kernel()
     k.cfg.last()
-    k.walk(k.cfg.modules, True)
+    k.cfg.update(cfg)
+    if k.cfg.nocmds:
+        k.cfg.autoload = False
+    k.walk(k.cfg.modules, True, k.cfg.nocmds)
+    if k.cfg.shell:
+        c = Console()
+        c.start()
     k.start()
     k.wait()
 
