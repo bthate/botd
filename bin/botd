@@ -61,15 +61,9 @@ def main():
     cfg = parse_cli("botd", __version__, opts)
     if cfg.daemon:
         daemon()
-    k = Kernel()
+    k = Kernel(cfg)
     k.cfg.last()
-    k.cfg.update(cfg)
-    if k.cfg.nocmds:
-        k.cfg.autoload = False
     k.walk(k.cfg.modules, True, k.cfg.nocmds)
-    if k.cfg.shell:
-        c = Console()
-        c.start()
     k.start()
     k.wait()
 
