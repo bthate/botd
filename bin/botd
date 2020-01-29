@@ -63,7 +63,7 @@ def main():
         daemon()
     k = Kernel(cfg)
     k.cfg.last()
-    k.walk(k.cfg.modules, True, False)
+    k.walk(k.cfg.modules, True, k.cfg.nocmds)
     k.start()
     k.wait()
 
