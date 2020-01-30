@@ -9,7 +9,7 @@
     
 """
 
-__version__ = 4
+__version__ = 5
 
 import inspect
 import logging
