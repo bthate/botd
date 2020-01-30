@@ -64,7 +64,6 @@ class Handler(Loader):
         """
         while not self._stopped:
             e = self._queue.get()
-            print(type(e))
             if e == None:
                 break
             try:
