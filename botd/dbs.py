@@ -6,7 +6,13 @@
     database related functionality.
 
     provides a Db cursor to the objects stored on disk.
-    
+
+    >>> import botd.obj
+    >>> botd.obj.workdir = "testdata"
+
+    >>> from botd.dbs import Db
+    >>> db = Db()
+        
 """
 
 import os
@@ -45,12 +51,13 @@ class Db(Object):
             basic query need a type (full qualified name) and a selector (dict with name/values) to match the objects.
             index (number in resultset) and delta option (time diff from now) can be provided to limit search.
 
-            Db.all("botd.irc.Cfg", {"server": localhost})        
+            by default the all method returns all records of a certain type.
 
-            by default the all method return all records.
+            >>> for o in db.all("botd.irc.Cfg", {"server": "localhost"}): print(o)
 
         """
         nr = -1
+        res = []
         for fn in names(otype, delta):
             o = hook(fn)
             nr += 1
@@ -60,7 +67,8 @@ class Db(Object):
                 continue
             if "_deleted" in o and o._deleted:
                 continue
-            yield o
+            res.append(o)
+        return res
 
     def deleted(self, otype, selector={}):
         """
@@ -68,10 +76,11 @@ class Db(Object):
         
             show deleted records, requires a type and optional selector.
 
-            Db.deleted("botd.krn.Cfg")
+            >>> for o in db.deleted("botd.krn.Cfg"): print(o)
             
         """
         nr = -1
+        res = []
         for fn in names(otype):
             o = hook(fn)
             nr += 1
@@ -79,8 +88,9 @@ class Db(Object):
                 continue
             if "_deleted" not in o or not o._deleted:
                 continue
-            yield o
-
+            res.append(o)
+        return res
+        
     def find(self, otype, selector={}, index=None, delta=0):
         """ 
             search typed objects
@@ -88,12 +98,13 @@ class Db(Object):
             basic query need a type (full qualified name) and a selector (dict with name/values) to match the objects.
             index (number in resultset) and delta option (time diff from now) can be provided to limit search.
 
-            Db.find("botd.irc.Cfg", {"server": localhost})        
-
             by default the find method only returns objects that match.
+
+            >>> for o in db.find("botd.irc.Cfg", {"server": "localhost"}): print(o)
 
         """
         nr = -1
+        res = []
         for fn in names(otype, delta):
             o = hook(fn)
             if o.search(selector):
@@ -102,7 +113,8 @@ class Db(Object):
                     continue
                 if "_deleted" in o and o._deleted:
                     continue
-                yield o
+                res.append(o)
+        return res
 
     def find_value(self, otype, values=[], index=None, delta=0):
         """ 
@@ -111,12 +123,13 @@ class Db(Object):
             basic query need a type (full qualified name) and a selector (dict with name/values) to match the objects.
             index (number in resultset) and delta option (time diff from now) can be provided to limit search.
 
-            Db.find("botd.irc.Cfg", {"server": localhost})        
-
             by default the find method only returns objects that match.
+
+            >>> for o in db.find_value("botd.irc.Cfg", "localhost"): print(o)
 
         """
         nr = -1
+        res = []
         for fn in names(otype, delta):
             o = hook(fn)
             if o.find(values):
@@ -125,7 +138,8 @@ class Db(Object):
                     continue
                 if "_deleted" in o and o._deleted:
                     continue
-                yield o
+                res.append(o)
+        return res
 
     def last(self, otype, index=None, delta=0):
         """
@@ -133,7 +147,7 @@ class Db(Object):
         
             return the last saved object of a type.
 
-            Db.last("botd.rss.Rss")
+            >>> o = db.last("botd.rss.Rss") 
             
         """
         fns = names(otype, delta)
@@ -146,10 +160,12 @@ class Db(Object):
             scan the database in reverse.
 
             return the objects saved last while matching the provided selector.
-            
+           
+            >>> o = db.last_all("botd.rss.Rss")
+             
         """
-        res = []
         nr = -1
+        res = []
         for fn in names(otype, delta):
             o = hook(fn)
             if selector and o.search(selector):
@@ -175,6 +191,7 @@ def hook(fn):
         convert a filename into a object. the objects type is taken f
         rom the filename, constructed an the loaded from disk.
       
+        >>> from botd.dbs import hook
         >>> o = hook("botd.rss.Rss/01-01-2020/00:00:00")
 
     """
@@ -194,6 +211,7 @@ def names(name, delta=None):
         
         return all matching types found in the workdir.
         
+        >>> from botd.dbs import names
         >>> n = names("botd.cfg.Krn")
         
     """
@@ -203,7 +221,8 @@ def names(name, delta=None):
     p = os.path.join(botd.obj.workdir, "store", name) + os.sep
     res = []
     now = time.time()
-    past = now + delta
+    if delta:
+        past = now + delta
     for rootdir, dirs, files in os.walk(p, topdown=True):
         for fn in files:
             fnn = os.path.join(rootdir, fn).split(os.path.join(botd.obj.workdir, "store"))[-1]
