@@ -132,7 +132,7 @@ def dispatch(handler, event):
     event.parse()
     if "_func" not in event:
         chk = event.txt.split()[0]
-        event._func = handler.get_cmd(chk)
+        event._func = handler.cmds.get(chk, None)
     if event._func:
         event._func(event)
         event.show()

@@ -7,8 +7,7 @@
     
     query objects.
 
- """
-
+"""
 
 import os
 import time
@@ -16,7 +15,6 @@ import time
 from botd.dbs import Db
 from botd.krn import kernels
 from botd.obj import workdir
-from botd.tbl import names
 from botd.tms import elapsed
 
 # defines
@@ -42,7 +40,6 @@ def find(event):
         event.reply("find <type> <match>")
         return
     match = event.args[0]
-    match = names.get(match, match)
     nr = -1
     db = Db()
     for o in db.find_value(match, event.args[1]):

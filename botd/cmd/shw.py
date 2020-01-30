@@ -14,7 +14,7 @@ from botd.typ import get_type
 # defines
 
 def __dir__():
-    return ("flt", "pid", "up", "ps", "v")
+    return ("flt", "ps", "up", "v")
 
 # commands
 
@@ -33,15 +33,6 @@ def flt(event):
     except (TypeError, ValueError, IndexError):
         pass
     event.reply([get_type(x) for x in k.fleet.bots])
-
-def pid(event):
-    """
-        show pid.
-    
-        shows process id of the bot.
-
-    """
-    event.reply(str(os.getpid()))
 
 def ps(event):
     """

@@ -35,6 +35,10 @@ class Event(Event):
 
     """
 
+    def reply(self, txt):
+        """ reply on console. """
+        print(txt)
+        
 class Console(Handler):
 
     """

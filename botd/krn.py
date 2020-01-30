@@ -15,12 +15,11 @@ import inspect
 import logging
 import os
 import time
-import botd.tbl
 
 from botd.err import EINIT
 from botd.flt import Fleet
 from botd.gnr import format
-from botd.hdl import Handler, dispatch
+from botd.hdl import Handler
 from botd.obj import Cfg, Default, Object
 from botd.shl import enable_history, set_completer, writepid
 from botd.trc import get_exception
@@ -110,13 +109,7 @@ class Kernel(Handler):
             return a command, use autoload if not in the kernels table.
             
         """
-        cmd = self.cmds.get(cn, None)
-        if not cmd and self.cfg.autoload:
-            mn = botd.tbl.modules.get(cn, None)
-            if mn:
-                self.load_mod(mn)
-            cmd = self.cmds.get(cn, None)
-        return cmd
+        return self.cmds.get(cn, None)
  
     def load_mod(self, mn, force=False, cmds=True):
         """
@@ -230,6 +223,27 @@ class Kernels(Object):
             return Kernels.kernels[0]
         except IndexError:
             pass
+
+# commands
+
+def dispatch(handler, event):
+    """
+        dispatch handler.
+        
+        parse the event and dispatch to a command.
+        
+    """
+    if not event.txt:
+        event.ready()
+        return
+    event.parse()
+    if "_func" not in event:
+        chk = event.txt.split()[0]
+        event._func = handler.cmds.get(chk, None)
+    if event._func:
+        event._func(event)
+        event.show()
+    event.ready()
 
 # runtime
 
