@@ -45,6 +45,7 @@ def main():
     if not cfg.txt:
         return
     k = Kernel()
+    k.walk("botd.cmd")
     k.walk(cfg.modules, True)
     k.fleet.add(k)
     e = Event()
