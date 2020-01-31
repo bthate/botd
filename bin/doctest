@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+
+""" generate botd documentation. """
+
+import importlib
+
+importlib.invalidate_caches()
+
+import sys, os
+sys.path.insert(0, os.getcwd())
+
+for line in os.popen("bin/clean").readlines():
+    print(line.strip())
+for line in os.popen("sphinx-build -b doctest docs  docs/html").readlines():
+    print(line.strip())
