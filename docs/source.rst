@@ -6,7 +6,7 @@ source
 BOTD contains the following modules:
 
 .. autosummary::
-    :toctree:
+    :toctree: code
     :template: module.rst
 
     botd.bot			- bot base class.

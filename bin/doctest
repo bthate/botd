@@ -11,5 +11,5 @@ sys.path.insert(0, os.getcwd())
 
 for line in os.popen("bin/clean").readlines():
     print(line.strip())
-for line in os.popen("sphinx-build -b doctest docs  docs/html").readlines():
+for line in os.popen("sphinx-build -E -a -b doctest docs  docs/html").readlines():
     print(line.strip())

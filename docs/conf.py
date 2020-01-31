@@ -36,7 +36,7 @@ autodoc_member_order='bysource'
 autodoc_docstring_signature=True
 autoclass_content="class"
 doctest_global_setup=""
-doctest_global_cleanup=""
+doctest_global_cleanup="from botd.krn import kernels ; k = kernels.get_first() ; k.stop()"
 doctest_test_doctest_blocks="default"
 trim_doctest_flags=True
 doctest_default_flags=doctest.REPORT_NDIFF & doctest.ELLIPSIS

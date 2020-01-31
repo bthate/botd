@@ -222,7 +222,8 @@ class Kernels(Object):
         try:
             return Kernels.kernels[0]
         except IndexError:
-            pass
+            k = Kernel()
+            self.add(k)
 
 # commands
 
