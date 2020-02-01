@@ -16,7 +16,6 @@ class Event(Object):
     def __init__(self):
         super().__init__()
         self._ready = threading.Event()
-        self.verbose = True
         self.args = []
         self.channel = ""
         self.etype = "event"
@@ -67,8 +66,6 @@ class Event(Object):
         self.result.append(txt)
 
     def show(self):
-        if not self.verbose:
-            return
         k = kernels.get_first()
         for txt in self.result:
             k.fleet.echo(self.orig, self.channel, txt)

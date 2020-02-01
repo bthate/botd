@@ -34,7 +34,7 @@ class Kernel(Handler):
     def __init__(self, cfg=None, **kwargs):
         super().__init__()
         self._stopped = False
-        self.cfg = Cfg({"verbose": True})
+        self.cfg = Cfg()
         self.cfg.update(cfg or {})
         self.cfg.update(kwargs)
         self.cmds = Object()
@@ -48,6 +48,7 @@ class Kernel(Handler):
 
     def cmd(self, txt):
         from botd.evt import Event
+        self.fleet.add(self)
         e = Event()
         e.txt = txt
         dispatch(self, e)
@@ -124,7 +125,6 @@ class Kernels(Object):
     nr = 0
 
     def add(self, kernel):
-        logging.warning("add %s" % get_name(kernel))
         if kernel not in Kernels.kernels:
             Kernels.kernels.append(kernel)
             Kernels.nr += 1

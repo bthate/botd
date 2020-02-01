@@ -3,8 +3,6 @@
 #
 # bin/botd
 
-__version__ = 1
-
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 import logging
@@ -13,7 +11,7 @@ import botd
 from botd.csl import Console
 from botd.err import EINIT
 from botd.gnr import update
-from botd.krn import Kernel
+from botd.krn import Kernel, __version__
 from botd.log import level, logfiled
 from botd.shl import parse_cli
 from botd.trc import get_exception
@@ -25,6 +23,8 @@ opts = [
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
+    ('-w', '--wait', 'store_true', False, 'wait until ctrl-c', 'wait'),
+    ('-x', '--exec', 'store_true', False, 'execute', 'exec'),
     ('-z', '--shell', 'store_true', False, 'enable shell', 'shell')
 ]
 
@@ -57,20 +57,28 @@ def execute(main):
     finally:
         termreset()
 
+k = Kernel()
+
 def main():
     cfg = parse_cli("botd", __version__, opts)
+    if cfg.exec:
+        k.walk("botd.cmd")
+        k.cmd(" ".join(cfg.args))
+        return
     if cfg.daemon and not cfg.shell:
         daemon()
-    k = Kernel(cfg)
     if not cfg.shell:
         k.cfg.last()
+    else:
+        k.cfg.update(cfg)
     k.walk(k.cfg.modules, True)
     k.start()
     if cfg.shell:
         k.walk("botd.cmd")
         c = Console()
         c.start()
-    k.wait()
+    if cfg.wait or cfg.shell:
+        k.wait()
 
 execute(main)
 os._exit(0)
