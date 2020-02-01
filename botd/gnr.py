@@ -287,9 +287,9 @@ def update(o1, o2, keys=None, skip=None):
 
     """
     for key in o2:
-        if keys and key not in keys:
+        if keys != None and key not in keys:
             continue
-        if skip and key in skip:
+        if skip != None and key in skip:
             continue
         set(o1, key, get(o2, key))
 

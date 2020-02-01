@@ -12,6 +12,7 @@ import botd
 
 from botd.csl import Console
 from botd.err import EINIT
+from botd.gnr import update
 from botd.krn import Kernel
 from botd.log import level, logfiled
 from botd.shl import parse_cli
@@ -61,10 +62,11 @@ def main():
     cfg = parse_cli("botd", __version__, opts)
     if cfg.daemon and not cfg.shell:
         daemon()
-    k = Kernel()
+    k = Kernel(cfg)
     k.cfg.last()
-    k.cfg.update(cfg)
-    k.walk(cfg.modules, True)
+    #update(k.cfg, cfg, skip=[""])
+    print(k.cfg)
+    k.walk(k.cfg.modules, True)
     k.start()
     if cfg.shell:
         k.walk("botd.cmd")

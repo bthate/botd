@@ -52,7 +52,7 @@ class Kernel(Handler):
     def __init__(self, cfg=None, **kwargs):
         super().__init__()
         self._stopped = False
-        self.cfg = Cfg({"autoload": True, "verbose": False})
+        self.cfg = Cfg({"verbose": True})
         self.cfg.update(cfg or {})
         self.cfg.update(kwargs)
         self.cmds = Object()

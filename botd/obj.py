@@ -328,6 +328,19 @@ class Object(O, collections.MutableMapping):
         """
         self[k] = v
 
+    def update(self, o, keys=None, skip=None):
+        """
+            update function.
+        
+            update one object with the other.
+
+        """
+        for key in o:
+            if keys != None and key not in keys:
+                continue
+            if skip != None and key in skip:
+                continue
+            self[key] = o.get(key)
 
 class Default(Object):
 
