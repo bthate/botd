@@ -33,8 +33,9 @@ def cfg(event):
     assert(botd.obj.workdir)
     if not event.args:
         files = [x.split(".")[-2].lower() for x in os.listdir(os.path.join(botd.obj.workdir, "store")) if x.endswith("Cfg")]
-        event.reply("choose from %s" % "|".join(files))
+        event.reply("choose from %s" % "|".join(set(files)))
         return
+    target = event.args[0]
     cn = "botd.%s.Cfg" % target
     db = Db()
     l = db.last(cn)
