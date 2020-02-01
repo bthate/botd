@@ -159,12 +159,12 @@ you can contact me on IRC/freenode/#dunkbots.
     
     
     """,
-    long_description_content_type="text/markdown",
+    long_description_content_type="text/x-rst",
     license='Public Domain',
     install_requires=["feedparser"],
     zip_safe=False,
     packages=["botd", "botd.cmd"],
-    scripts=["bin/botd", "bin/botctl", "bin/botirc", "bin/botlog", "bin/botsh", "bin/botudp"],
+    scripts=["bin/botd", "bin/botctl", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',
                  'Operating System :: Unix',

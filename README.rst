@@ -55,8 +55,7 @@ you can use the botctl program to configure BOTD:
 the botctl program takes normal bot commands and executes them. you can use the -d
 option to use it on other then the default ~/.botd directory.
 
-U D P
-=====
+## U D P
 
 using udp to relay text into a channel, start the bot with -m udp and use
 the botudp program to send text to the UDP to channel server:
@@ -92,4 +91,3 @@ I N F O
 | botfather on #dunkbots irc.freenode.net
 |
 | http:/pypi.org/project/botd
-
