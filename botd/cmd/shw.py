@@ -11,20 +11,10 @@ from botd.obj import Object
 from botd.tms import elapsed
 from botd.typ import get_type
 
-# defines
-
 def __dir__():
     return ("flt", "ps", "up", "v")
 
-# commands
-
 def flt(event):
-    """ 
-        show fleet.
-    
-        show a list of registered bots, living in k.fleet.bots
-
-    """
     k = kernels.get_first()
     try:
         index = int(event.args[0])
@@ -35,12 +25,6 @@ def flt(event):
     event.reply([get_type(x) for x in k.fleet.bots])
 
 def ps(event):
-    """
-        show running threads.
-    
-        shows threads started with botd.krn.launch
-
-    """
     k = kernels.get_first()
     psformat = "%-8s %-50s"
     result = []
@@ -63,19 +47,7 @@ def ps(event):
             event.reply(res)
 
 def up(event):
-    """
-        show uptime.
-    
-        show uptime since boot, takes starttime from botd.krn
-
-    """
     event.reply(elapsed(time.time() - starttime))
 
 def v(event):
-    """
-        show version.
-    
-        show the version of the bot, stored in botd.krn.__version__
-
-    """
     event.reply("BOTD %s" % __version__)

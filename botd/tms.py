@@ -2,14 +2,10 @@
 #
 # time related code.
 
-""" time related functions. """
-
 import datetime
 import os
 import string
 import time
-
-# defines
 
 def __dir__():
     return ("timestrings, year_formats", "allowedchars", "day", "days", "elapsed", "fntime", "get_time", "now", "parse_date", "rtime", "today", "to_day", "to_time")
@@ -56,33 +52,13 @@ year_formats = [
 
 allowedchars = string.ascii_letters + string.digits + '_+/$.-'
 
-# functions
-
 def day():
-    """
-        day function.
-        
-        return timestamp of 0:00 this day.
-        
-    """
     return str(datetime.datetime.today()).split()[0]
 
 def days(path):
-    """
-        days function.
-        
-        return number of days since file save.
-        
-    """
     return elapsed(time.time() - fntime(path))
 
 def elapsed(seconds, short=True):
-    """
-        elapsed function.
-        
-        return elapsed days/hours/min/sec.
-
-    """
     txt = ""
     nsec = float(seconds)
     year = 365*24*60*60
@@ -126,12 +102,6 @@ def elapsed(seconds, short=True):
     return txt
 
 def fntime(daystr):
-    """
-        fntime function
-        
-        convert timestamp in the filetime to a real timestamp
-
-    """
     daystr = daystr.replace("_", ":")
     datestr = " ".join(daystr.split(os.sep)[-2:])
     try:
@@ -147,12 +117,6 @@ def fntime(daystr):
     return t
 
 def get_time(daystr):
-    """
-        get_time function.
-        
-        convert timestring to seconds, using mktime.
-        
-    """
     for f in year_formats:
         try:
             t = time.mktime(time.strptime(daystr, f))
@@ -161,21 +125,9 @@ def get_time(daystr):
             pass
 
 def now():
-    """
-        now function.
-        
-        return current timestamp.
-        
-    """
     return str(datetime.datetime.now()).split()[0]
 
 def parse_date(daystr):
-    """
-        parse_date function
-    
-        parse elapsed string back into seconds.
-        
-    """
     if daystr.startswith("-"):
         neg = True
         daystr = daystr[1:]
@@ -209,31 +161,13 @@ def parse_date(daystr):
         return total 
 
 def rtime():
-    """
-        rtime function.
-        
-        return timestrig to be used in filenames.
-        
-    """
     res = str(datetime.datetime.now()).replace(" ", os.sep)
     return res
 
 def today():
-    """
-        today funcion.
-        
-        use datetime to return present time.
-        
-    """
     return datetime.datetime.today().timestamp()
 
 def to_day(daystring):
-    """
-        to_day function.
-        
-        parse date/time string into a timestamp.
-        
-    """
     line = ""
     daystr = str(daystring)
     for word in daystr.split():
@@ -249,12 +183,6 @@ def to_day(daystring):
         pass
 
 def to_time(daystr):
-    """
-        to_time function.
-        
-        parse string for time.
-        
-    """
     daystr = daystr.strip()
     if "," in daystr:
         daystr = " ".join(daystr.split(None)[1:7])

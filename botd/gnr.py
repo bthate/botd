@@ -2,13 +2,6 @@
 #
 # generic functios.
 
-"""
-    generic functions.
-
-    functions that operate on a object.
-    
-"""
-
 import json
 import _thread
 
@@ -16,15 +9,7 @@ from botd.utl import locked
 
 lock = _thread.allocate_lock()
 
-# functions
-
 def edit(o, setter):
-    """
-        edit function.
-        
-        the edit command can be used to change items of an object.
-        
-    """
     try:
         setter = vars(setter)
     except:
@@ -45,12 +30,6 @@ def edit(o, setter):
     return count
 
 def format(o, keys=None):
-    """
-        format function.
-        
-        the format function return a displayable string of an object.
-        
-    """
     if keys is None:
         keys = vars(o).keys()
     res = []
@@ -70,54 +49,24 @@ def format(o, keys=None):
     return txt.strip()
 
 def get(o, k, d=None):
-    """
-        get function
-        
-        returns a the value of an object attribute.
-        
-    """
     try:
         return o[k]
     except KeyError:
         return d
 
 def items(o):
-    """
-        items function
-        
-        return all items of an object.
-        
-    """
     return o.__dict__.items()
 
 def keys(o):
-    """
-        keys function
-        
-        return all attribute names of an object.
-        
-    """
     return o.__dict__.keys()
 
 def last(o):
-    """
-        last function.
-        
-        return last saved version of an object's type
-        
-    """
     from botd.dbs import Db
     db = Db()
     return db.last(str(get_type(o)))
 
 @locked(lock)
 def load(o, path):
-    """
-        load function.
-        
-        load an object from disk
-        
-    """
     assert path
     assert workdir
     lpath = os.path.join(workdir, "store", path)
@@ -134,22 +83,10 @@ def load(o, path):
     return o
 
 def merge(o1, o2):
-    """
-        merge function
-
-        the merge function merges 2 objects into one, not updating a field if the value is empty.
-        
-    """
     return update(o1, strip(o2))
 
 @locked(lock)
 def save(o):
-    """
-        save function
-        
-        save an object to disk
-
-    """
     assert workdir
     opath = os.path.join(workdir, "store", o._path)
     cdir(opath)
@@ -159,12 +96,6 @@ def save(o):
     return o._path
 
 def search(o, match=None):
-    """
-        search function.
-        
-        search an object and check if match, a key/value dict matches.
-        
-    """
     res = False
     if not match:
         return res
@@ -186,21 +117,9 @@ def search(o, match=None):
     return res
 
 def set(o, k, v):
-    """
-        set function.
-        
-        set attribute of an object to a new value.
-        
-    """
     o[k] = v
 
 def setter(o, d):
-    """
-        setter function
-        
-        the setter function updates an object with the provided key/value dict.
-        
-    """
     if not d:
         d = {}
     count = 0
@@ -222,12 +141,6 @@ def setter(o, d):
     return count
 
 def sliced(o, keys=None):
-    """
-        sliced function.
-        
-        sliced returns a sliced version (only has keys attributes) of an object.
-        
-    """
     t = type(o)
     val = t()
     if not keys:
@@ -240,13 +153,6 @@ def sliced(o, keys=None):
     return val
 
 def stamp(o):
-    """
-        stamp function.
-        
-        the stamp function add a "stamp" field to the object's sub object's so it can be properly reconstructed.
-        this field get's removed when loading an object from disk.
-         
-    """
     for k in dir(o):
         oo = get(o, k)
         if isinstance(oo, Object):
@@ -259,33 +165,15 @@ def stamp(o):
     return o
 
 def strip(o):
-    """
-        strip function.
-        
-        strip empty fields from an object.
-
-    """
     for k in o:
        if not k:
           del o[k]
     return o
 
 def to_json(o):
-    """
-        to_json function.
-
-        return a json string dump of an object.
-        
-    """
     return json.dumps(o, cls=ObjectEncoder, indent=4, sort_keys=True)
 
 def update(o1, o2, keys=None, skip=None):
-    """
-        update function.
-        
-        update one object with the other.
-
-    """
     for key in o2:
         if keys != None and key not in keys:
             continue
@@ -294,21 +182,9 @@ def update(o1, o2, keys=None, skip=None):
         set(o1, key, get(o2, key))
 
 def values(o):
-    """
-        values function.
-        
-        return all values of an object.
-        
-    """
     return o.__dict__.values()
 
 def xdir(o, skip=""):
-    """
-        xdir function.
-        
-        run dir() and skip keys that match with 'skip'
-        
-    """  
     res = []
     for k in dir(o):
         if skip and skip in k:

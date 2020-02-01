@@ -2,13 +2,6 @@
 #
 # kernel for boot proces.
 
-"""
-    kernel module
-    
-    place where commands are registered and event can get pushed to for processing.
-    
-"""
-
 __version__ = 6
 
 import inspect
@@ -27,14 +20,10 @@ from botd.tms import days
 from botd.usr import Users
 from botd.utl import get_name
 
-# defines
-
 def __dir__():
     return ("Cfg", "Kernel", "Kernels", "kernels")
 
 starttime = time.time()
-
-# classes
 
 class Cfg(Cfg):
 
@@ -42,13 +31,6 @@ class Cfg(Cfg):
 
 class Kernel(Handler):
 
-    """
-        kernel class
-
-        class to hold basic objects like fleet, users, runtime stash and commands.
-        
-    """
-          
     def __init__(self, cfg=None, **kwargs):
         super().__init__()
         self._stopped = False
@@ -62,12 +44,6 @@ class Kernel(Handler):
         kernels.add(self)
 
     def add(self, cmd, func):
-        """
-            add method
-            
-            add a command to the kernel.
-            
-        """
         self.cmds[cmd] = func
 
     def cmd(self, txt):
@@ -78,24 +54,12 @@ class Kernel(Handler):
         e.wait()
 
     def display(self, o, txt=""):
-        """
-            display method.
-        
-            display object to the event origin.
-
-         """
         txt = txt[:]
         txt += " " + "%s %s" % (format(o), days(o._path))
         txt = txt.strip()
         self.say("", txt)
         
     def find_cmds(self, mod):
-        """
-            find command function.
-            
-            locate and register command found in a module.
-            
-        """
         for key, o in inspect.getmembers(mod, inspect.isfunction):
             if "event" in o.__code__.co_varnames:
                 if o.__code__.co_argcount == 1:
@@ -103,33 +67,15 @@ class Kernel(Handler):
                         self.add(key, o)
 
     def get_cmd(self, cn):
-        """
-            get_cmd method
-            
-            return a command, use autoload if not in the kernels table.
-            
-        """
         return self.cmds.get(cn, None)
  
     def load_mod(self, mn, force=False, cmds=True):
-        """
-            load_mod method.
-            
-            load a module into the kernel table and scan for commands.
-
-        """
         mod = super().load_mod(mn, force)
         if cmds:
              self.find_cmds(mod)
         return mod
        
     def say(self, channel, txt, mtype="normal"):
-        """
-            say method.
-            
-            raw display on terminal
-            
-        """
         print(txt)
 
     def start(self):
@@ -138,26 +84,11 @@ class Kernel(Handler):
         super().start()
 
     def wait(self):
-        """
-            wait method
-            
-            run a loop to keep the kernel running.
-            
-        """
         while not self._stopped:
             time.sleep(1.0)
         logging.warn("exit")
 
     def walk(self, mns, init=False, cmds=True):
-        """
-            walk method
-            
-            walk over the modules in a package (or load the module directly)
-            modules can have a init() function to start bots or do basic intialisation.
-            you can enable this by providing init=True. use cmds=True to have the module
-            scanned for commands (functions with an event parameter).
-
-        """
         if not mns:
             return
         mods = []
@@ -189,51 +120,23 @@ class Kernel(Handler):
 
 class Kernels(Object):
 
-    """
-        kernels class
-        
-        list of kernels. created kernels register themselves with this object.
-        purpose of it is to have runtime references to kernels and not store them in the library itself.
-        
-    """
-
     kernels = []
     nr = 0
 
     def add(self, kernel):
-        """
-            add method
-            
-            add a kernel to the list of kernels.
-            
-        """
         logging.warning("add %s" % get_name(kernel))
         if kernel not in Kernels.kernels:
             Kernels.kernels.append(kernel)
             Kernels.nr += 1
 
     def get_first(self):
-        """
-            get_first method
-            
-            return first registered bot.
-            
-        """
         try:
             return Kernels.kernels[0]
         except IndexError:
             k = Kernel()
             self.add(k)
 
-# commands
-
 def dispatch(handler, event):
-    """
-        dispatch handler.
-        
-        parse the event and dispatch to a command.
-        
-    """
     if not event.txt:
         event.ready()
         return
@@ -245,7 +148,5 @@ def dispatch(handler, event):
         event._func(event)
         event.show()
     event.ready()
-
-# runtime
 
 kernels = Kernels()

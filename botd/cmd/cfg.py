@@ -2,11 +2,6 @@
 #
 # edit configuration. 
 
-"""
-     configuration command.
-
-"""
-
 import os
 import botd.obj
 
@@ -15,21 +10,10 @@ from botd.dft import defaults
 from botd.krn import kernels
 from botd.typ import get_cls
 
-# defines
-
 def __dir__():
     return ("cfg", "main") 
 
-# functions
-
 def cfg(event):
-    """
-        configuration command. 
-    
-        the cfg command can he used to edit configuration files.
-        a list of possible arguments is given if not argument is provided.
-
-    """
     assert(botd.obj.workdir)
     if not event.args:
         files = [x.split(".")[-2].lower() for x in os.listdir(os.path.join(botd.obj.workdir, "store")) if x.endswith("Cfg")]

@@ -2,32 +2,14 @@
 #
 # data entry.
 
-"""
-    data entry commands
-
-
-    log and todo commands
-    
-"""
-
 from botd.dbs import Db
 from botd.ent import Log, Todo
 from botd.obj import Object
 
-# defines
-
 def __dir__():
     return ("log", "todo")
 
-# commands
-
 def log(event):
-    """
-        log command.
-        
-        shows a list of log entries when no argument is given or log <txt>.
-
-    """
     if not event.rest:
        db = Db()
        nr = 0
@@ -41,12 +23,6 @@ def log(event):
     event.reply("ok")
 
 def todo(event):
-    """
-        todo command.
-
-        shows a list of todo's when no argument is given or todo <txt>.
-
-    """
     if not event.rest:
        db = Db()
        nr = 0

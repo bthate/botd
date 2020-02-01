@@ -2,19 +2,6 @@
 #
 # databases. 
 
-"""
-    database related functionality.
-
-    provides a Db cursor to the objects stored on disk.
-
-    >>> import botd.obj
-    >>> botd.obj.workdir = "testdata"
-
-    >>> from botd.dbs import Db
-    >>> db = Db()
-        
-"""
-
 import os
 import time
 import _thread
@@ -26,36 +13,14 @@ from botd.tms import fntime
 from botd.typ import get_cls
 from botd.utl import locked
 
-# defines
-
 def __dir__():
     return ("Db", "hook", "lock", "names")
 
 lock = _thread.allocate_lock()
 
-# classes
-
 class Db(Object):
 
-    """
-        Db class
-        
-        make queries on the JSON objects possible.
-
-    """
-    
     def all(self, otype, selector={}, index=None, delta=0):
-        """
-            query all objects
-        
-            basic query need a type (full qualified name) and a selector (dict with name/values) to match the objects.
-            index (number in resultset) and delta option (time diff from now) can be provided to limit search.
-
-            by default the all method returns all records of a certain type.
-
-            >>> for o in db.all("botd.irc.Cfg", {"server": "localhost"}): print(o)
-
-        """
         nr = -1
         res = []
         for fn in names(otype, delta):
@@ -71,14 +36,6 @@ class Db(Object):
         return res
 
     def deleted(self, otype, selector={}):
-        """
-            deleted method
-        
-            show deleted records, requires a type and optional selector.
-
-            >>> for o in db.deleted("botd.krn.Cfg"): print(o)
-            
-        """
         nr = -1
         res = []
         for fn in names(otype):
@@ -92,17 +49,6 @@ class Db(Object):
         return res
         
     def find(self, otype, selector={}, index=None, delta=0):
-        """ 
-            search typed objects
-        
-            basic query need a type (full qualified name) and a selector (dict with name/values) to match the objects.
-            index (number in resultset) and delta option (time diff from now) can be provided to limit search.
-
-            by default the find method only returns objects that match.
-
-            >>> for o in db.find("botd.irc.Cfg", {"server": "localhost"}): print(o)
-
-        """
         nr = -1
         res = []
         for fn in names(otype, delta):
@@ -117,17 +63,6 @@ class Db(Object):
         return res
 
     def find_value(self, otype, values=[], index=None, delta=0):
-        """ 
-            search typed objects
-        
-            basic query need a type (full qualified name) and a selector (dict with name/values) to match the objects.
-            index (number in resultset) and delta option (time diff from now) can be provided to limit search.
-
-            by default the find method only returns objects that match.
-
-            >>> for o in db.find_value("botd.irc.Cfg", "localhost"): print(o)
-
-        """
         nr = -1
         res = []
         for fn in names(otype, delta):
@@ -142,28 +77,12 @@ class Db(Object):
         return res
 
     def last(self, otype, index=None, delta=0):
-        """
-            last method.
-        
-            return the last saved object of a type.
-
-            >>> o = db.last("botd.rss.Rss") 
-            
-        """
         fns = names(otype, delta)
         if fns:
             fn = fns[-1]
             return hook(fn)
 
     def last_all(self, otype, selector={}, index=None, delta=0):
-        """
-            scan the database in reverse.
-
-            return the objects saved last while matching the provided selector.
-           
-            >>> o = db.last_all("botd.rss.Rss")
-             
-        """
         nr = -1
         res = []
         for fn in names(otype, delta):
@@ -181,21 +100,8 @@ class Db(Object):
                 return s[-1][-1]
         return None
 
-# functions
-
 @locked(lock)
 def hook(fn):
-    """
-        hook function.
-    
-        convert a filename into a object. the objects type is taken f
-        rom the filename, constructed an the loaded from disk.
-      
-        >>> from botd.dbs import hook
-        >>> o = hook("botd.rss.Rss/01-01-2020/00:00:00")
-
-    """
-    
     t = fn.split(os.sep)[0]
     if not t:
         t = fn.split(os.sep)[0][1:]
@@ -206,15 +112,6 @@ def hook(fn):
     return o
 
 def names(name, delta=None):
-    """
-        names function.
-        
-        return all matching types found in the workdir.
-        
-        >>> from botd.dbs import names
-        >>> n = names("botd.cfg.Krn")
-        
-    """
     assert botd.obj.workdir
     if not name:
         return []

@@ -2,14 +2,6 @@
 #
 # IRC bot. 
 
-"""
-    irc class.
-    
-    provides an IRC bot.
-    
-"""
-
-
 import logging
 import os
 import queue
@@ -32,18 +24,10 @@ from botd.thr import launch
 from botd.usr import Users
 from botd.utl import locked
 
-# defines
-
 def __dir__():
     return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init')
 
 def init(k):
-    """
-        init function.
-        
-        starts an IRC bot and returns it.
-        
-    """
     bot = IRC()
     bot.cfg.last()
     bot.start()
@@ -51,28 +35,13 @@ def init(k):
 
 saylock = _thread.allocate_lock()
 
-# classes
-
 class Cfg(Cfg):
 
-    """
-        Cfg class.
-        
-        IRC configuration.
-        
-    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.update(defaults.irc)
 
 class Event(Event):
-
-    """
-        Event class
-        
-        basic IRC event, dispatches on command attribute (event.command)
-        
-    """
 
     def __init__(self):
         super().__init__()
@@ -85,13 +54,6 @@ class Event(Event):
 
 class DEvent(Event):
 
-    """
-        DEvent class
-        
-        DCC event class, write to the DCC socket.
-        
-    """
-
     def __init__(self):
         super().__init__()
         self._sock = None
@@ -100,13 +62,6 @@ class DEvent(Event):
 
 class TextWrap(textwrap.TextWrapper):
 
-    """
-        TextWrap class.
-        
-        wrap text within the IRC limited message length (480 chars long).
-
-    """
-    
     def __init__(self):
         super().__init__()
         self.break_long_words = False
@@ -117,13 +72,6 @@ class TextWrap(textwrap.TextWrapper):
         self.width = 480
 
 class IRC(Bot):
-
-    """
-        IRC class
-        
-        implements the IRC bot.
-        
-    """
 
     def __init__(self):
         super().__init__()
@@ -150,12 +98,6 @@ class IRC(Bot):
         self.register("PRIVMSG", PRIVMSG)
 
     def _connect(self):
-        """
-            _connect method
-            
-            internal connecting function, used in the connect loop (with retries).
-
-        """
         if self.cfg.ipv6:
             oldsock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         else:
@@ -177,12 +119,6 @@ class IRC(Bot):
         return True
 
     def _parsing(self, txt):
-        """
-            _parsing method.
-            
-            parse text into an IRC evemt.
-            
-        """
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
@@ -241,12 +177,6 @@ class IRC(Bot):
 
     @locked(saylock)
     def _say(self, channel, txt, mtype="chat"):
-        """
-            _say method.
-            
-            echo text to a channel with 3 seconds interval
-            
-        """
         wrapper = TextWrap()
         txt = txt.replace("\n", "")
         for t in wrapper.wrap(txt):
@@ -256,13 +186,6 @@ class IRC(Bot):
             self.state.last = time.time()
 
     def _some(self, use_ssl=False, encoding="utf-8"):
-        """
-            _some method.
-            
-            wait on the IRC connection for "some" data to arrive.
-            used to fill a buffer of incoming data.
-            
-        """
         if use_ssl:
             inbytes = self._sock.read()
         else:
@@ -278,22 +201,10 @@ class IRC(Bot):
         self.state.lastline = splitted[-1]
 
     def announce(self, txt):
-        """
-            announce method.
-            
-            annouce text on joined channels.
-
-        """
         for channel in self.channels:
             self.say(channel, txt)
 
     def command(self, cmd, *args):
-        """
-            command method
-            
-            generic command handler, handles basic commands.
-            
-        """
         if not args:
             self.raw(cmd)
             return
@@ -308,12 +219,6 @@ class IRC(Bot):
             return
 
     def connect(self):
-        """
-            connect method.
-            
-            run a loop until a connection is made.
-            
-        """
         nr = 0
         while 1:
             self.state.nrconnect += 1
@@ -325,24 +230,12 @@ class IRC(Bot):
         self.logon(self.cfg.server, self.cfg.nick)
 
     def dispatch(self, event):
-        """
-            dispatch method.
-            
-            dispatch the event based on the event.command attribute.
-
-        """
         event._func = getattr(self, event.command, None)
         if event._func:
             event._func(event)
         event.ready()
 
     def poll(self):
-        """
-            poll method.
-            
-            poll on the IRC line to receive text and convert that to a received event.
-
-        """
         self._connected.wait()
         if not self._buffer:
             try:
@@ -371,33 +264,15 @@ class IRC(Bot):
         return e
 
     def joinall(self):
-        """
-           joinall method.
-           
-           join all channels in the self.channels list.
-           
-        """ 
         for channel in self.channels:
             self.command("JOIN", channel)
 
     def logon(self, server, nick):
-        """
-            logon method
-            
-            echo login data to the server.
-            
-        """
         self._connected.wait()
         self.raw("NICK %s" % nick)
         self.raw("USER %s %s %s :%s" % (self.cfg.username or "botd", server, server, self.cfg.realname or "botd"))
 
     def output(self):
-        """
-            output method.
-            
-            loop to implement bufferd output.
-            
-        """
         self._outputed = True
         while not self._stopped:
             channel, txt, type = self._outqueue.get()
@@ -405,12 +280,6 @@ class IRC(Bot):
                 self._say(channel, txt, type)
 
     def raw(self, txt):
-        """
-            raw method
-            
-            echo raw text on the connection.
-            
-        """
         txt = txt.rstrip()
         logging.info(txt)
         if self._stopped:
@@ -424,21 +293,9 @@ class IRC(Bot):
         self.state.nrsend += 1
 
     def say(self, channel, txt, mtype="chat"):
-        """
-            say method.
-            
-            put channel,txt to the output loop.
-            
-        """
         self._outqueue.put_nowait((channel, txt, mtype))
 
     def start(self):
-        """
-            start method.
-            
-            start the IRC bot and let it connect to the server.
-            
-        """
         k = kernels.get_first()
         k.fleet.add(self)
         if self.cfg.channel:
@@ -447,13 +304,6 @@ class IRC(Bot):
         super().start(True, True)
 
 class DCC(Bot):
-
-    """
-        DCC class
-        
-        implements a direct client to client bot.
-        
-    """
 
     def __init__(self):
         super().__init__()
@@ -464,32 +314,14 @@ class DCC(Bot):
         self.origin = ""
 
     def raw(self, txt):
-        """
-            raw method
-            
-            echo text on the DCC socket.
-            
-        """
         self._fsock.write(txt.rstrip())
         self._fsock.write("\n")
         self._fsock.flush()
 
     def announce(self, txt):
-        """
-            announce method.
-            
-            just echo's text on the DCC socket.
-
-        """
         self.raw(txt)
 
     def connect(self, event):
-        """
-            connect method.
-            
-            make a DCC socket connection.
-            
-        """
         k = kernels.get_first()
         arguments = event.txt.split()
         addr = arguments[3]
@@ -514,12 +346,6 @@ class DCC(Bot):
         super().start(True)
 
     def poll(self):
-        """
-            poll method
-            
-            return an DCC event from text typed in a DCC chat session.
-            
-        """
         self._connected.wait()
         k = kernels.get_first()
         e = DEvent()
@@ -539,45 +365,21 @@ class DCC(Bot):
         return e
 
     def say(self, channel, txt, type="chat"):
-        """
-            say method
-            
-            echo's to the DCC socket.
-            
-        """
         self.raw(txt)
 
 
 def ERROR(handler, event):
-    """
-        error handler.
-        
-        callback to handle errors.
-        
-    """
     handler.state.error = event
     handler._connected.clear()
     time.sleep(handler.state.nrconnect * 3.0)
     launch(handler.connect)
 
 def NOTICE(handler, event):
-    """
-        notice handler.
-        
-        respond to notice queries.
-        
-    """
     if event.txt.startswith("VERSION"):
         txt = "\001VERSION %s %s - %s\001" % ("BOTD", "1", "IRC channel daemon")
         handler.command("NOTICE", event.channel, txt)
 
 def PRIVMSG(handler, event):
-    """
-        privmsg handler.
-        
-        read text written in a channel, check for commands and if so send to kernel for processing.
-        
-    """
     k = kernels.get_first()
     k.users.userhosts.set(event.nick, event.origin)
     if event.txt.startswith("DCC CHAT"):

@@ -2,13 +2,6 @@
 #
 # find command
 
-"""
-    find command.
-    
-    query objects.
-
-"""
-
 import os
 import time
 
@@ -17,19 +10,9 @@ from botd.krn import kernels
 from botd.obj import workdir
 from botd.tms import elapsed
 
-# defines
-
 k = kernels.get_first()
 
-# commands
-
 def find(event):
-    """
-        find <type> <selector>
-        
-        find uses a type to search for and a selector (key,value) dict to match and select objects. 
-    
-    """
     if not event.args:
         fns = os.listdir(os.path.join(workdir, "store"))
         fns = sorted({x.split(".")[-1].lower() for x in fns})

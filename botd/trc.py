@@ -2,27 +2,15 @@
 #
 # tracebacks and exception catcher.
 
-""" trace module. """
-
 import os
 import sys
 import traceback
 import _thread
 
-# defines
-
 def __dir__():
     return ("get_exception", "get_from")
 
-# functions
-
 def get_exception(txt="", sep=""):
-    """
-        get_exception function
-        
-        returns the current exception in a 1 line error message.
-        
-    """
     exctype, excvalue, tb = sys.exc_info()
     trace = traceback.extract_tb(tb)
     result = ""
@@ -43,12 +31,6 @@ def get_exception(txt="", sep=""):
     return res
 
 def get_from(nr=2):
-    """
-        get_from function
-        
-        return code line number and file.
-        
-    """
     frame = sys._getframe(nr)
     if not frame:
         return frame

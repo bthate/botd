@@ -2,8 +2,6 @@
 #
 # rss feed fetcher.
 
-""" fetches rss feeds and echo's them on a channel. """
-
 import datetime
 import os
 import random
@@ -22,8 +20,6 @@ from botd.utl import get_tinyurl, get_url, strip_html, unescape
 
 from botd.krn import kernels
 
-# defines
-
 try:
     import feedparser
     gotparser = True
@@ -36,26 +32,11 @@ def __dir__():
 k = kernels.get_first()
 
 def init(kernel):
-    """
-        init function.
-        
-        start the rss fetcher.
-        
-    """
     k.run.fetcher = Fetcher()
     k.run.fetcher.start()
     return k.run.fetcher
 
-# classes
-
 class Cfg(Cfg):
-
-    """
-        rss config class
-        
-        provides rss configuration data.
-        
-    """
 
     def __init__(self):
         super().__init__()
@@ -65,22 +46,9 @@ class Cfg(Cfg):
 
 class Feed(Object):
 
-    """
-        feed class.
-        
-        represent one single feed item.
-        
-    """
     pass
 
 class Rss(Object):
-
-    """
-        rss class.
-        
-        rss url entry.
-        
-    """
 
     def __init__(self):
         super().__init__()
@@ -88,25 +56,11 @@ class Rss(Object):
 
 class Seen(Object):
 
-    """
-        seen class.
-        
-        holds a list of all seen urls.
-        
-    """
-    
     def __init__(self):
         super().__init__()
         self.urls = []
 
 class Fetcher(Object):
-
-    """
-        fetcher class.
-        
-        polls a list of rss urls periodically and displays new urls on the channel.
-        
-    """
 
     cfg = Cfg()
     seen = Seen()
@@ -116,12 +70,6 @@ class Fetcher(Object):
         self._thrs = []
 
     def display(self, o):
-        """
-            display method
-            
-            return displayable string of the feed.
-            
-        """
         result = ""
         try:
             dl = o.display_list.split(",")
@@ -146,12 +94,6 @@ class Fetcher(Object):
         return result[:-2].rstrip()
 
     def fetch(self, obj):
-        """
-            fetch method
-            
-            fetch data from one feed.
-            
-        """
         k = kernels.get_first()
         counter = 0
         objs = []
@@ -179,12 +121,6 @@ class Fetcher(Object):
         return counter
 
     def run(self):
-        """
-            run method
-            
-            do one run of fetching all the feeds and displaying them.
-        
-        """
         res = []
         thrs = []
         db = Db()
@@ -195,12 +131,6 @@ class Fetcher(Object):
         return res
 
     def start(self, repeat=True):
-        """
-            start method
-            
-            start the fetcher, polls after initial wait.
-            
-        """
         Fetcher.cfg.last()
         Fetcher.seen.last()
         if repeat:
@@ -209,23 +139,9 @@ class Fetcher(Object):
             return repeater
 
     def stop(self):
-        """
-            stop method.
-            
-            save seen urls to disk.
-            
-        """
         Fetcher.seen.save()
 
-# functions
-
 def get_feed(url):
-    """
-        get_feed function
-        
-        fetch a rss feed from url.
-        
-    """
     result = get_url(url)
     if gotparser:
         result = feedparser.parse(result)

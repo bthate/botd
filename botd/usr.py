@@ -2,28 +2,15 @@
 #
 # user management.
 
-""" user management. """
-
 import logging
 
 from botd.dbs import Db
 from botd.obj import Object
 
-# defines
-
 def __dir__():
     return ("User", "Users")
 
-# classes
-
 class User(Object):
-
-    """
-        user class.
-        
-        contains data for a single user.
-        
-    """
 
     def __init__(self):
         super().__init__()
@@ -32,23 +19,10 @@ class User(Object):
 
 class Users(Db):
 
-    """
-        users class.
-        
-        database object to manage users.
-        
-    """
-
     cache = Object()
     userhosts = Object()
 
     def allowed(self, origin, perm):
-        """
-            allowed method.
-            
-            check whether a user ia allowed to give commands.
-
-        """
         perm = perm.upper()
         origin = self.userhosts.get(origin, origin)
         user = self.get_user(origin)
@@ -59,12 +33,6 @@ class Users(Db):
         return False
 
     def delete(self, origin, perm):
-        """
-            delete method.
-            
-            delete a permission.
-            
-        """
         for user in self.get_users(origin):
             try:
                 user.perms.remove(perm)
@@ -74,22 +42,10 @@ class Users(Db):
                 pass
 
     def get_users(self, origin=""):
-        """
-            get_users method.
-            
-            return all users matching the origin.
-            
-        """
         s = {"user": origin}
         return self.all("botd.usr.User", s)
 
     def get_user(self, origin):
-        """
-            get_user method.
-            
-            return last object matching origin.
-            
-        """
         if origin in Users.cache:
             return Users.cache[origin]
         u =  list(self.get_users(origin))
@@ -98,12 +54,6 @@ class Users(Db):
             return u[-1]
  
     def meet(self, origin, perms=None):
-        """
-            meet method.
-            
-            add a user to the database.
-            
-        """
         user = self.get_user(origin)
         if user:
             return user
@@ -114,12 +64,6 @@ class Users(Db):
         return user
 
     def oper(self, origin):
-        """
-           oper method
-           
-           create a temp. users with oper permissions (doesn't save).
-           
-        """
         user = self.get_user(origin)
         if user:
             return user
@@ -130,12 +74,6 @@ class Users(Db):
         return user
 
     def perm(self, origin, permission):
-        """
-            perm method.
-            
-            add permission to a user object.
-            
-        """
         user = self.get_user(origin)
         if not user:
             raise ENOUSER(origin)

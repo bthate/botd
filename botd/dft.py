@@ -2,12 +2,6 @@
 #
 # default values.
 
-""" bot's defaults
-
-    provides a object that contains defaults.
-    
-"""
-
 from botd.obj import Object
 
 default_irc = {
