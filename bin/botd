@@ -23,7 +23,6 @@ opts = [
     ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
-    ('-n', '--nocmds', 'store_true', False, "don't scan for commands", 'nocmds'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
     ('-z', '--shell', 'store_true', False, 'enable shell', 'shell')
@@ -64,7 +63,7 @@ def main():
         daemon()
     k = Kernel(cfg)
     k.cfg.last()
-    #update(k.cfg, cfg, skip=[""])
+    k.cfg.update(cfg, skip=True)
     print(k.cfg)
     k.walk(k.cfg.modules, True)
     k.start()
