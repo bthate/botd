@@ -18,7 +18,7 @@ from botd.typ import get_cls
 # defines
 
 def __dir__():
-    return ("cfg",)
+    return ("cfg", "main") 
 
 # functions
 
@@ -32,17 +32,8 @@ def cfg(event):
     """
     assert(botd.obj.workdir)
     if not event.args:
-        files = ["global", ] + [x.split(".")[-2].lower() for x in os.listdir(os.path.join(botd.obj.workdir, "store")) if x.endswith("Cfg")]
-        if files:
-            event.reply("choose from %s" % "|".join(files))
-            return
-        else:
-            event.reply("no config files available yet.")
-            return
-    target = event.args[0]
-    if target == "global":
-        k = kernels.get_first()
-        event.reply(k.cfg)
+        files = [x.split(".")[-2].lower() for x in os.listdir(os.path.join(botd.obj.workdir, "store")) if x.endswith("Cfg")]
+        event.reply("choose from %s" % "|".join(files))
         return
     cn = "botd.%s.Cfg" % target
     db = Db()
@@ -69,3 +60,7 @@ def cfg(event):
     l.edit(setter)
     l.save()
     event.reply("ok")
+
+def main(event):
+    k = kernels.get_first()
+    event.reply(k.cfg)

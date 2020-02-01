@@ -62,9 +62,8 @@ def main():
     if cfg.daemon and not cfg.shell:
         daemon()
     k = Kernel(cfg)
-    k.cfg.last()
-    k.cfg.update(cfg, skip=True)
-    print(k.cfg)
+    if not cfg.shell:
+        k.cfg.last()
     k.walk(k.cfg.modules, True)
     k.start()
     if cfg.shell:
