@@ -6,10 +6,10 @@ import logging
 import random
 import types
 import unittest
-import botd.tbl
 
 from botd.evt import Event
 from botd.krn import kernels
+from botd.mod import get_modules, get_names
 from botd.obj import Object
 from botd.trc import get_exception
 from botd.typ import get_cls
@@ -20,12 +20,15 @@ k.cfg.prompt = False
 k.cfg.debug = True
 k.users.oper("test@shell")
 
+modules = get_modules()
+names = get_names()
+
 class Test_Fuzzer(unittest.TestCase):
 
     def test_fuzzer1(self):
-        for key in botd.tbl.modules:
-            for n in botd.tbl.names:
-                t = botd.tbl.names[n]
+        for key in modules:
+            for n in names:
+                t = names[n]
                 try:
                     e = get_cls(t)()
                     e.txt = key + " " + random.choice(list(k.modules.values()))
@@ -52,9 +55,9 @@ class Test_Fuzzer(unittest.TestCase):
         nrloops = 1
         exs = []
         for x in range(nrloops):
-            names = list(botd.tbl.names)
-            random.shuffle(names)
-            for name in names:
+            n = list(names)
+            random.shuffle(n)
+            for name in n:
                 mod = k.load_mod(name, cmds=False)
                 for obj in xobj(mod, "_"):
                     for func in xobj(obj, "_", [types.MethodType, types.FunctionType]):

@@ -4,6 +4,7 @@
 
 """ utility functions. """
 
+import inspect
 import json
 import html
 import html.parser
@@ -95,6 +96,7 @@ def consume(elems):
             elems.remove(f)
         except ValueError:
             continue
+
 
 def get_name(o):
     """

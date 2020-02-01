@@ -8,6 +8,7 @@ from botd.evt import Event
 from botd.krn import kernels
 
 k = kernels.get_first()
+k.load_mod("botd.cmd.shw")
 
 class Test_Scheduler(unittest.TestCase):
 

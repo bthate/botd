@@ -8,7 +8,6 @@ import random
 import sys
 import time
 import unittest
-import botd.tbl
 
 from botd.bot import Bot
 from botd.evt import Event
@@ -17,6 +16,7 @@ from botd.obj import Object
 from botd.utl import consume
 from botd.thr import launch
 from botd.usr import Users
+from botd.mod import get_names
 
 class Param(Object):
 
@@ -39,7 +39,7 @@ param = Param()
 param.cfg = ["irc", "rss", "krn"]
 param.log = ["yo!",]
 param.meet = ["test@shell",]
-param.find = ["%s yo" % x for x in botd.tbl.names]
+param.find = ["%s yo" % x for x in get_names()]
 param.rss = ["https://www.reddit.com/r/python/.rss", ""]
 #param.mbox = ["~/evidence/25-1-2013",]
 
