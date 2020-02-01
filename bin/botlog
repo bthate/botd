@@ -42,6 +42,7 @@ def main():
     cfg = parse_cli("botlog", __version__, opts)
     k = Kernel()
     if cfg.args:
+        k.load_mod("botd.cmd.ent")
         k.cmd("log %s" % " ".join(cfg.args))
         return
     nr = 0
