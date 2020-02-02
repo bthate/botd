@@ -11,6 +11,7 @@ import botd
 from botd.csl import Console
 from botd.err import EINIT
 from botd.gnr import update
+from botd.irc import IRC
 from botd.krn import Kernel, __version__
 from botd.log import level, logfiled
 from botd.shl import parse_cli
@@ -19,13 +20,13 @@ from botd.trm import termreset, termsave
 
 opts = [
     ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
+    ('-x', '--exec', 'store_true', False, 'execute', 'exec'),
+    ('-z', '--shell', 'store_true', False, 'enable shell', 'shell'),
+    ('-p', '--noprompt', 'store_true', False, "don't prompt for initial values.", 'noprompt'),
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
-    ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
-    ('-w', '--wait', 'store_true', False, 'wait until ctrl-c', 'wait'),
-    ('-x', '--exec', 'store_true', False, 'execute', 'exec'),
-    ('-z', '--shell', 'store_true', False, 'enable shell', 'shell')
+    ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir')
 ]
 
 def daemon():
@@ -57,28 +58,45 @@ def execute(main):
     finally:
         termreset()
 
-k = Kernel()
-
 def main():
     cfg = parse_cli("botd", __version__, opts)
+    k = Kernel()
+    k.walk("botd.cmd")
+    k.walk(k.cfg.modules, True)
     if cfg.exec:
-        k.walk("botd.cmd")
         k.cmd(" ".join(cfg.args))
         return
-    if cfg.daemon and not cfg.shell:
+    if cfg.daemon:
         daemon()
-    if not cfg.shell:
         k.cfg.last()
-    else:
-        k.cfg.update(cfg)
-    k.walk(k.cfg.modules, True)
-    k.start()
+        k.cfg.modules += ",irc"
+        k.start()
+        k.wait()
+        return
     if cfg.shell:
-        k.walk("botd.cmd")
         c = Console()
         c.start()
-    if cfg.wait or cfg.shell:
+        k.start()
         k.wait()
+        return
+    bot = IRC()
+    if not cfg.noprompt:
+        try:
+            server, channel, nick = cfg.args
+        except ValueError:
+            print("botd <server> <channel> <nick>")
+            return
+        bot.cfg.server = server
+        bot.cfg.channel = channel
+        bot.cfg.nick = nick
+        bot.cfg.save()
+        c = Console()
+        c.start()
+    else:
+        bot.cfg.last()
+    bot.start()
+    k.start()
+    k.wait()
 
 execute(main)
 os._exit(0)
