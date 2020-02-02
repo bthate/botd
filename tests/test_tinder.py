@@ -43,6 +43,12 @@ param.find = ["%s yo" % x for x in get_names()]
 param.rss = ["https://www.reddit.com/r/python/.rss", ""]
 #param.mbox = ["~/evidence/25-1-2013",]
 
+class Event(Event):
+
+    def show(self):
+        if self.verbose:
+            super().show()
+
 class Test_Tinder(unittest.TestCase):
 
     def test_tinder(self):
