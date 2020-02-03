@@ -20,14 +20,13 @@ from botd.trm import termreset, termsave
 
 opts = [
     ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
+    ('-s', '--service', 'store_true', False, "run botd as a service", 'service'),
     ('-x', '--exec', 'store_true', False, 'execute', 'exec'),
     ('-z', '--shell', 'store_true', False, 'enable shell', 'shell'),
-    ('-p', '--prompt', 'store_true', False, "prompt for initial values.", 'prompt'),
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
-    ('-w', '--wait', 'store_true', False, "wait for program to finish", 'wait')
 ]
 
 def daemon():
@@ -59,45 +58,49 @@ def execute(main):
     finally:
         termreset()
 
+
+def config(k, mods=["botd.cmd",], console=True, last=False, start=True, wait=True):
+    if last:
+        k.cfg.last()
+    for m in mods:
+        k.walk(m)
+    k.walk(k.cfg.modules, True)
+    if console:
+        c = Console()
+        c.start()
+    if start:
+        k.start()
+    if wait:
+        k.wait()
+        
 def main():
     cfg = parse_cli("botd", __version__, opts)
     k = Kernel(cfg)
     if cfg.exec:
-        k.walk("botd.cmd")
+        config(k, console=False, start=False, wait=False)
         k.cmd(" ".join(cfg.args))
         return
     elif cfg.daemon:
         daemon()
         k.cfg.modules += ",irc"
-        cfg.wait = True
+        config(k, [], console=False)
+        return
     elif cfg.shell:
-        k.walk("botd.cmd")
-        c = Console()
-        c.start()
-        cfg.wait = True
-    elif k.cfg.prompt:
-        bot = IRC()
-        bot.cfg.last()
-        try:
-            server, channel, nick = cfg.args
-        except ValueError:
-            print("botd <server> <channel> <nick>")
-            return
-        bot.cfg.server = server
-        bot.cfg.channel = channel
-        bot.cfg.nick = nick
+        config(k)
+        return
+    elif cfg.service:
+        config(k, [], console=False, last=True)
+        return    
+    bot = IRC()
+    bot.cfg.last()
+    try:
+        bot.cfg.server, bot.cfg.channel, bot.cfg.nick = cfg.args
         bot.cfg.save()
-        bot.start()
-        cfg.wait = True
-        c = Console()
-        c.start()
-        k.walk("botd.cmd")
-    else:
-        k.cfg.last()
-    k.walk(k.cfg.modules, True)
-    k.start()
-    if cfg.wait:
-        k.wait()
+    except ValueError:
+        print("botd <server> <channel> <nick>")
+        return
+    bot.start()
+    config(k, console=True, last=True)
 
 execute(main)
 os._exit(0)
