@@ -1,0 +1,24 @@
+# BOTD - IRC channel daemon
+#
+#
+
+"""
+ >>> from botd.bot import Bot
+ >>> b = Bot()
+ >>> print(b)
+ {
+     "_outputed": false,
+     "_outqueue": "<queue.Queue object at ...",
+     "_queue": "<queue.Queue object at ...",
+     "_stopped": false,
+     "cbs": {},
+     "cfg": {
+         "channel": "",
+         "nick": "",
+         "port": 0,
+         "server": ""
+     },
+     "channels": []
+ }
+
+"""

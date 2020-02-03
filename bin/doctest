@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+
+""" generate botd documentation. """
+
+import os
+
+for line in os.popen("bin/clean").readlines():
+    print(line.rstrip())
+for line in os.popen("python3 -m doctest -o ELLIPSIS tests/*.txt").readlines():
+    print(line.rstrip())
