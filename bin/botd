@@ -61,19 +61,23 @@ def execute(main):
 def main():
     cfg = parse_cli("botd", __version__, opts)
     k = Kernel()
-    k.walk("botd.cmd")
     k.walk(k.cfg.modules, True)
     if cfg.exec:
+        k.walk("botd.cmd")
+        k.walk(k.cfg.modules, True)
         k.cmd(" ".join(cfg.args))
         return
     if cfg.daemon:
         daemon()
         k.cfg.last()
         k.cfg.modules += ",irc"
+        k.walk(k.cfg.modules, True)
         k.start()
         k.wait()
         return
     if cfg.shell:
+        k.walk("botd.cmd")
+        k.walk(k.cfg.modules, True)
         c = Console()
         c.start()
         k.start()
@@ -92,9 +96,13 @@ def main():
         bot.cfg.save()
         c = Console()
         c.start()
+        k.walk("botd.cmd")
+        k.walk(k.cfg.modules, True)
     else:
         bot.cfg.last()
     bot.start()
+    k.cfg.last()
+    k.walk(k.cfg.modules, True)
     k.start()
     k.wait()
 
