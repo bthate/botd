@@ -66,7 +66,8 @@ def enable_history():
 def get_completer():
     return readline.get_completer()
 
-def make_opts(ns, options, **kwargs):
+def make_opts(ns, options, usage, **kwargs):
+    kwargs["usage"] = usage
     parser = argparse.ArgumentParser(**kwargs)
     for opt in options:
         if not opt:
@@ -78,11 +79,11 @@ def make_opts(ns, options, **kwargs):
     parser.add_argument('args', nargs='*')
     parser.parse_known_args(namespace=ns)
 
-def parse_cli(name, version=None, opts=None, wd="", ld="", **kwargs):
+def parse_cli(name, version=None, opts=None, usage="", wd="", ld="", **kwargs):
     from botd.log import level, logfiled
     ns = Object()
     if opts:
-        make_opts(ns, opts)
+        make_opts(ns, opts, usage)
     cfg = Cfg(ns, kwargs)
     if not cfg.workdir:
         cfg.workdir = wd or hd(".botd") 
