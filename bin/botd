@@ -22,11 +22,12 @@ opts = [
     ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
     ('-x', '--exec', 'store_true', False, 'execute', 'exec'),
     ('-z', '--shell', 'store_true', False, 'enable shell', 'shell'),
-    ('-p', '--noprompt', 'store_true', False, "don't prompt for initial values.", 'noprompt'),
+    ('-p', '--prompt', 'store_true', False, "prompt for initial values.", 'prompt'),
     ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
-    ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir')
+    ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
+    ('-w', '--wait', 'store_true', False, "wait for program to finish", 'wait')
 ]
 
 def daemon():
@@ -60,31 +61,23 @@ def execute(main):
 
 def main():
     cfg = parse_cli("botd", __version__, opts)
-    k = Kernel()
-    k.walk(k.cfg.modules, True)
+    k = Kernel(cfg)
     if cfg.exec:
         k.walk("botd.cmd")
-        k.walk(k.cfg.modules, True)
         k.cmd(" ".join(cfg.args))
         return
-    if cfg.daemon:
+    elif cfg.daemon:
         daemon()
-        k.cfg.last()
         k.cfg.modules += ",irc"
-        k.walk(k.cfg.modules, True)
-        k.start()
-        k.wait()
-        return
-    if cfg.shell:
+        cfg.wait = True
+    elif cfg.shell:
         k.walk("botd.cmd")
-        k.walk(k.cfg.modules, True)
         c = Console()
         c.start()
-        k.start()
-        k.wait()
-        return
-    bot = IRC()
-    if not cfg.noprompt:
+        cfg.wait = True
+    elif k.cfg.prompt:
+        bot = IRC()
+        bot.cfg.last()
         try:
             server, channel, nick = cfg.args
         except ValueError:
@@ -94,17 +87,17 @@ def main():
         bot.cfg.channel = channel
         bot.cfg.nick = nick
         bot.cfg.save()
+        bot.start()
+        cfg.wait = True
         c = Console()
         c.start()
         k.walk("botd.cmd")
-        k.walk(k.cfg.modules, True)
     else:
-        bot.cfg.last()
-    bot.start()
-    k.cfg.last()
+        k.cfg.last()
     k.walk(k.cfg.modules, True)
     k.start()
-    k.wait()
+    if cfg.wait:
+        k.wait()
 
 execute(main)
 os._exit(0)
