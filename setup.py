@@ -6,7 +6,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='botd',
-    version='6',
+    version='7',
     url='https://bitbucket.org/bthate/botd',
     author='Bart Thate',
     author_email='bthate@dds.nl',
