@@ -27,7 +27,7 @@ untar, cd into the directory and run:
 
 ::
 
- > ./bin/botirc localhost \#dunkbots botd
+ > ./bin/botd localhost \#dunkbots botd
 
 to have it connect to irc, join the channel and do nothing, users have to be !meet <nick> (on the console) before they can give commands.
 
@@ -49,7 +49,10 @@ or run a bot locally:
 
 ::
 
- > ./bin/botd
+ > ./bin/botd -s  (starts a shell)
+ > ./bin/botd -x  (runs a command)
+ > ./bin/botd -d  (runs a daemon)
+ > ./bin/botd -z  (runs a service)
 
 if you want to have the daemon started at boot, run:
 
@@ -68,11 +71,11 @@ you can use the botctl program to configure BOTD:
 
 ::
 
- > botctl -d /var/lib/botd cfg krn modules rss,udp
- > botctl -d /var/lib/botd cfg irc server localhost
- > botctl -d /var/lib/botd cfg irc channel #botd
- > botctl -d /var/lib/botd meet ~bart@127.0.0.1
- > botctl -d /var/lib/botd rss https://news.ycombinator.com/rss
+ > botd -x -d /var/lib/botd cfg krn modules rss,udp
+ > botd -x -d /var/lib/botd cfg irc server localhost
+ > botd -x -d /var/lib/botd cfg irc channel #botd
+ > botd -x -d /var/lib/botd meet ~bart@127.0.0.1
+ > botd -x -d /var/lib/botd rss https://news.ycombinator.com/rss
 
 
 U D P
@@ -95,17 +98,12 @@ BOTD contains the following modules:
 
     botd			- bot library.
     botd.bot			- bot base class.
-    botd.cfg			- configuration command.
     botd.clk			- clock functions.
-    botd.cmd			- basic commands
     botd.csl			- console.
     botd.dbs			- database.
     botd.dft			- default values.
-    botd.ent			- log and todo commands.
     botd.err			- errors.
     botd.flt			- list of bots.
-    botd.fnd			- search objects.
-    botd.fnd			- search database.
     botd.gnr			- generic object functions.
     botd.hdl			- handler.
     botd.irc			- IRC bot.
@@ -123,6 +121,13 @@ BOTD contains the following modules:
     botd.udp			- UDP packet to IRC channel relay.
     botd.usr			- user management.
     botd.utl			- utilities.
+    botd.cmd.cfg		- config command.
+    botd.cmd.cmd		- list of commands.
+    botd.cmd.ent		- log and todo commands.
+    botd.cmd.fnd		- find objects.
+    botd.cmd.rss		- manage feeds.
+    botd.cmd.shw		- show runtime data.
+    botd.cmd.usr		- manage users.
  
 
 C O D I N G
