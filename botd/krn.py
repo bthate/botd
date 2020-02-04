@@ -135,6 +135,7 @@ class Kernels(Object):
         except IndexError:
             k = Kernel()
             self.add(k)
+            return k
 
 def dispatch(handler, event):
     if not event.txt:

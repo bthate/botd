@@ -35,6 +35,9 @@ class Bot(Handler):
         for channel in self.channels:
             self.say(channel, txt)
 
+    def connect(self):
+        pass
+
     def input(self):
         while not self._stopped:
             try:
@@ -57,7 +60,7 @@ class Bot(Handler):
         sys.stdout.write(str(txt) + "\n")
         sys.stdout.flush()
 
-    def say(self, channel, txt, mtype):
+    def say(self, channel, txt, mtype="normal"):
         self.raw(txt)
 
     def start(self, input=False, output=False):

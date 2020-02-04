@@ -69,6 +69,8 @@ def main():
         p = "test_*"
     suite = unittest.loader.TestLoader().discover(test_path, pattern=p)
     unittest.TextTestRunner(verbosity=3).run(suite)
+    for line in os.popen("python3 -m doctest -o ELLIPSIS tests/*.txt").readlines():
+        print(line.rstrip())
    
 execute(main)
 print(elapsed(time.time() - starttime))

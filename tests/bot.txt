@@ -3,22 +3,56 @@
 #
 
 """
- >>> from botd.bot import Bot
- >>> b = Bot()
- >>> print(b)
- {
-     "_outputed": false,
-     "_outqueue": "<queue.Queue object at ...",
-     "_queue": "<queue.Queue object at ...",
-     "_stopped": false,
-     "cbs": {},
-     "cfg": {
-         "channel": "",
-         "nick": "",
-         "port": 0,
-         "server": ""
-     },
-     "channels": []
- }
+    >>> from botd.bot import Bot
+    >>> from botd.thr import launch
+    >>> b = Bot()
+    >>> print(b)
+    {
+        "_outputed": false,
+        "_outqueue": "<queue.Queue object at ...",
+        "_queue": "<queue.Queue object at ...",
+        "_stopped": false,
+        "cbs": {},
+        "cfg": {
+            "channel": "",
+            "nick": "",
+            "port": 0,
+            "server": ""
+        },
+        "channels": []
+    }
+
+    >>> b.cfg.server = "localhost"
+    >>> b.cfg.channel = "#botd"
+    >>> b.cfg.nick = "botddd"
+    >>> print(b)
+    {
+        "_outputed": false,
+        "_outqueue": "<queue.Queue object at ...",
+        "_queue": "<queue.Queue object at ...",
+        "_stopped": false,
+        "cbs": {},
+        "cfg": {
+            "channel": "#botd",
+            "nick": "botddd",
+            "port": 0,
+            "server": "localhost"
+        },
+        "channels": []
+    }
+    >>> b.connect()
+    >>> b.start()
+    >>> b.say("#botd", "yo!")
+    yo!
+    >>> b.raw("yo!")
+    yo!
+    >>> b.poll()
+    >>> launch(b.output)
+    <Thr(Bot.output, started daemon ...
+    >>> launch(b.input)
+    <Thr(Bot.input, started daemon ...
+    >>> b.channels.append("#botd")
+    >>> b.announce("yo!")
+    yo!
 
 """
