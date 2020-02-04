@@ -6,7 +6,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='botd',
-    version='7',
+    version='8',
     url='https://bitbucket.org/bthate/botd',
     author='Bart Thate',
     author_email='bthate@dds.nl',
@@ -45,14 +45,14 @@ if you want to develop on the bot clone the source at github.:
  > cd botd
  > sudo python3 setup.py install
 
-or run a bot locally:
+to run a bot:
 
 ::
 
- > ./bin/botd -s  (starts a shell)
- > ./bin/botd -x  (runs a command)
- > ./bin/botd -d  (runs a daemon)
- > ./bin/botd -z  (runs a service)
+ > botd -s  (starts a shell)
+ > botd -x  (runs a command)
+ > botd -d  (runs a daemon)
+ > botd -z  (runs a service)
 
 if you want to have the daemon started at boot, run:
 
@@ -60,22 +60,34 @@ if you want to have the daemon started at boot, run:
 
  > sudo init.d/install
 
-this will install an botd service and starts BOTD on boot.
+this will install a botd service and starts BOTD on boot.
 
 
 C O N F I G U R A T I O N
 
 
-you can use the botctl program to configure BOTD:
 
+to configure the BOTD service, you can use the config script with the following options:
+
+ > sudo init.d/config <modules> <server> <channel> <nick> <owner>
+
+for example:
+
+ > sudo init.d/config irc,udp,rss,botd.cmd.shw irc.freenode.net #botd botd ~bart@shell.dds.nl
+
+you can use the botd -x program option to configure BOTD:
 
 ::
 
- > botd -x -d /var/lib/botd cfg krn modules rss,udp
- > botd -x -d /var/lib/botd cfg irc server localhost
- > botd -x -d /var/lib/botd cfg irc channel #botd
- > botd -x -d /var/lib/botd meet ~bart@127.0.0.1
- > botd -x -d /var/lib/botd rss https://news.ycombinator.com/rss
+ > botd -x cfg krn modules irc,rss
+ > botd -x cfg irc server localhost
+ > botd -x cfg irc channel #botd
+ > botd -x meet ~bart@127.0.0.1
+ > botd -x rss https://news.ycombinator.com/rss
+
+use the -w option if you want to use a different work directory then ~/.botd, for example:
+
+ > botd -w /var/lib/botd cfg irc server irc.freenode.net
 
 
 U D P
