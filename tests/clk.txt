@@ -1,0 +1,4 @@
+"""
+    >>> from botd.clk import Clock
+    >>> c = Clock()
+    >>> c.start()

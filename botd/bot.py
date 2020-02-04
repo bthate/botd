@@ -1,10 +1,11 @@
 # BOTD - IRC channel daemon.
 #
-# bot base class.
+# virtual bot class.
 
 import queue
 import sys
 
+from botd.err import ENOTIMPLEMENTED
 from botd.hdl import Handler
 from botd.krn import kernels
 from botd.obj import Cfg
@@ -15,8 +16,8 @@ def __dir__():
 
 class Cfg(Cfg):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, cfg={}):
+        super().__init__(cfg)
         self.channel = ""
         self.nick = ""
         self.port = 0
@@ -24,11 +25,11 @@ class Cfg(Cfg):
 
 class Bot(Handler):
 
-    def __init__(self):
+    def __init__(self, cfg={}):
         super().__init__()
         self._outputed = False
         self._outqueue = queue.Queue()
-        self.cfg = Cfg()
+        self.cfg = Cfg(cfg)
         self.channels = []
 
     def announce(self, txt):
@@ -36,7 +37,7 @@ class Bot(Handler):
             self.say(channel, txt)
 
     def connect(self):
-        pass
+        raise ENOTIMPLEMENTED
 
     def input(self):
         while not self._stopped:

@@ -1,10 +1,22 @@
 # BOTD - IRC channel daemon
 #
-#
+# 
 
 """
-    >>> from botd.bot import Bot
+    >>> from botd.bot import Bot, Cfg
     >>> from botd.thr import launch
+
+    >>> cfg = Cfg()
+    >>> cfg.server = "localhost"
+    >>> cfg.channel = "#botd"
+    >>> cfg.nick = "botddd"
+    >>> print(cfg)
+    {
+        "channel": "#botd",
+        "nick": "botddd",
+        "port": 0,
+        "server": "localhost"
+    }
     >>> b = Bot()
     >>> print(b)
     {
@@ -21,7 +33,6 @@
         },
         "channels": []
     }
-
     >>> b.cfg.server = "localhost"
     >>> b.cfg.channel = "#botd"
     >>> b.cfg.nick = "botddd"
@@ -40,19 +51,19 @@
         },
         "channels": []
     }
-    >>> b.connect()
-    >>> b.start()
     >>> b.say("#botd", "yo!")
     yo!
     >>> b.raw("yo!")
     yo!
-    >>> b.poll()
-    >>> launch(b.output)
-    <Thr(Bot.output, started daemon ...
-    >>> launch(b.input)
-    <Thr(Bot.input, started daemon ...
     >>> b.channels.append("#botd")
     >>> b.announce("yo!")
     yo!
+
+    >>> b = Bot()
+    >>> b.start()
+    >>> b.connect()
+    Traceback (most recent call last):
+    ...
+    botd.err.ENOTIMPLEMENTED
 
 """
