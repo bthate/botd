@@ -66,7 +66,7 @@ def enable_history():
 def get_completer():
     return readline.get_completer()
 
-def make_opts(ns, options, usage, **kwargs):
+def make_opts(ns, options, usage="", **kwargs):
     kwargs["usage"] = usage
     parser = argparse.ArgumentParser(**kwargs)
     for opt in options:

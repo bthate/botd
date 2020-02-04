@@ -5,6 +5,7 @@
 import inspect
 
 from botd.krn import kernels
+from botd.obj import Object
 
 k = kernels.get_first()
 

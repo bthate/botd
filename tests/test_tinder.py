@@ -24,7 +24,7 @@ class Param(Object):
 
 k = kernels.get_first()
 k.users.oper("test@shell")
-
+k.walk("botd.cmd")
 try:
     index = int(k.cfg.args[1])
 except:
@@ -41,6 +41,7 @@ param.log = ["yo!",]
 param.meet = ["test@shell",]
 param.find = ["%s yo" % x for x in get_names()]
 param.rss = ["https://www.reddit.com/r/python/.rss", ""]
+param.todo = ["yo!",]
 #param.mbox = ["~/evidence/25-1-2013",]
 
 class Event(Event):
