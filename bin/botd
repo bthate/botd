@@ -19,11 +19,11 @@ from botd.trc import get_exception
 from botd.trm import termreset, termsave
 
 opts = [
-    ('-b', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
-    ('-s', '--service', 'store_true', False, "run botd as a service", 'service'),
+    ('-d', '--daemon', 'store_true', False, 'enable daemon mode', 'daemon'),
+    ('-s', '--shell', 'store_true', False, 'enable shell', 'shell'),
     ('-x', '--exec', 'store_true', False, 'execute', 'exec'),
-    ('-z', '--shell', 'store_true', False, 'enable shell', 'shell'),
-    ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-z', '--service', 'store_true', False, "run botd as a service", 'service'),
+    ('-w', '--workdir', 'store', str, "", 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-a', '--logdir', "store", str, "", "directory to find the logfiles.", 'logdir'),
@@ -76,11 +76,10 @@ def config(k, mods=["botd.cmd",], console=True, last=False, start=True, wait=Tru
 def main():
     cfg = parse_cli("botd", __version__, opts, 
       """ botd <server> <channel> <nick>
+        botd -d (daemon) 
+        botd -s (shell)
         botd -x command
-        botd -z (shell)
-        botd -b (daemon) 
-        botd -s (service)
-      """
+        botd -z (service)"""
       )
     k = Kernel(cfg)
     if cfg.exec:
