@@ -1,7 +1,3 @@
-# BOTD - IRC channel daemon.
-#
-# setup.py
-
 R E A D M E
 ###########
 
