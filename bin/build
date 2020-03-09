@@ -1,0 +1,20 @@
+#!/usr/bin/python3 
+
+__version__ = 1
+
+import os, sys
+
+curdir = os.getcwd()
+if len(sys.argv) == 1:
+    txt = "python3 setup.py install --user"
+else:
+    txt = " ".join(sys.argv[1:])
+for fn in os.listdir(curdir):
+    try:
+        os.chdir(os.path.join(curdir, fn))
+        for line in os.popen(txt).readlines():
+            print(line.rstrip())
+    except NotADirectoryError:
+        continue
+
+os._exit(0)

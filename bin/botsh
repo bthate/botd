@@ -1,0 +1,44 @@
+#!/usr/bin/python3 -u
+# BOTLIB - Framework to program bots.
+#
+# bin/botsh (bot shell)
+
+import sys, os ; sys.path.insert(0, os.getcwd())
+
+import argparse
+import atexit
+import bot
+import lo
+import logging
+import logging.handlers
+import os
+import sys
+import termios
+import threading
+import time
+import traceback
+
+from lo.csl import Console
+from lo.shl import execute, parse_cli, termreset
+
+from bot import k, __version__
+
+opts = [
+    ('-m', '--modules', 'store', str, ",bot.shw", 'modules to load.', 'modules'),
+    ('-w', '--workdir', 'store', str, os.path.join(os.path.expanduser("~/.bot")), 'set working directory.', 'workdir'),
+    ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
+    ('-a', '--logfile', 'store', str, os.path.join(os.path.expanduser("~/.bot"), "logs", "botd.log"), 'file to log to.', 'logfile'),
+]
+
+def main():
+    parse_cli("botsh", __version__, opts)
+    k.walk("mods")
+    k.start()
+    c = Console()
+    c.cmds.update(k.cmds)
+    c.start()
+    k.fleet.add(c)
+    c.wait()
+    
+execute(main)
+os._exit(0)

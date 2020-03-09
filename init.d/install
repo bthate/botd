@@ -1,8 +1,0 @@
-[ ! -d "/var/log/botd" ] && mkdir /var/log/botd
-[ ! -d "/var/lib/botd" ] && mkdir /var/lib/botd
-python3 setup.py install
-cp init.d/botd.service /etc/systemd/system
-systemctl enable botd
-systemctl daemon-reload
-service botd start
-systemctl status botd --no-pager

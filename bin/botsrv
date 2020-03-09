@@ -1,7 +1,7 @@
 #!/usr/bin/python3 -u
 # BOTLIB - Framework to program bots.
 #
-# bin/botd (bot daemon)
+# bin/botsrv (bot server)
 
 import os,sys ; sys.path.insert(0, os.getcwd())
 
@@ -13,17 +13,14 @@ from lo.shl import daemon, execute, parse_cli, termreset
 from bot import k, __version__
 
 opts = [
-    ('-d', '--daemon', 'store_true', False, "enable daemon mode.", "daemon"),  
-    ('-m', '--modules', 'store', str, "bot.rss,bot.udp,bot.shw,bot.irc", 'modules to load.', 'modules'),
+    ('-m', '--modules', 'store', str, "bot.rss,bot.shw,bot.irc", 'modules to load.', 'modules'),
     ('-w', '--workdir', 'store', str, "/var/lib/botd", 'set working directory.', 'workdir'),
     ('-l', '--loglevel', 'store', str, "debug", 'set loglevel.', 'level'),
     ('-a', '--logfile', 'store', str, "/var/log/botd/botd.log", 'file to log to.', 'logfile'),
 ]
 
 def main():
-    parse_cli("botd", __version__, opts)
-    if lo.cfg.daemon:
-        daemon()
+    parse_cli("botsrv", __version__, opts)
     k.start()
     k.wait()
     

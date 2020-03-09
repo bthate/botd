@@ -1,72 +1,38 @@
 #!/usr/bin/python3
-# BOTD - IRC channel daemon
 #
 # run unittests.
 
 __version__ = 1
 
-import os, sys ; sys.path.insert(0, os.getcwd())
+import os,sys ; sys.path.insert(0, os.getcwd())
 
-import logging
-import shutil
-import time
-import unittest
-import botd
-
-from botd.err import EINIT
-from botd.obj import Object, starttime
-from botd.krn import Kernel
-from botd.log import level
-from botd.shl import parse_cli
-from botd.tms import elapsed
-from botd.trc import get_exception
-from botd.trm import termsave, termreset
-from botd.typ import get_cls
-from botd.usr import Users
-from botd.utl import cdir
+import os, time, lo, unittest
+from bot import k, starttime
+from lo.shl import execute, parse_cli
+from lo.tms import elapsed
 
 opts = [
-    ('-d', '--datadir', 'store', str, "", 'set working directory.', 'workdir'),
+    ('-w', '--workdir', 'store', str, "", 'set working directory.', 'workdir'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
-    ('-o', '--options', "store", str, "", "options to use.", 'options'),
     ('-l', '--loglevel', 'store', str, "", 'set loglevel.', 'level'),
     ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose')
 ]
 
-def execute(main):
-    termsave()
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("")
-    except EINIT:
-        pass
-    except PermissionError:
-        print("you need root permissions.")
-    except Exception:
-        logging.error(get_exception())
-    finally:
-        termreset()
+resume = {}
 
 def main():
     try:
         shutil.rmtree("testdata")
     except:
         pass
-    cfg = parse_cli("test", __version__, opts)
-    botd.obj.workdir = "testdata"
-    cdir("testdata")
-    k = Kernel(cfg)
-    k.users.oper("test@shell")
-    k.cfg.prompt = False
-    k.cfg.debug = True
+    parse_cli("test", __version__, opts)
+    lo.cfg.debug = True
+    k.walk("bot")
     k.start()
+    lo.workdir = "testdata"
+    lo.cdir("testdata")
     test_path = os.getcwd() + os.sep + "tests"
-    p = ""
-    if k.cfg.args:
-        p = "test_%s*" % k.cfg.args[0]
-    if not p:
-        p = "test_*"
+    p = "test_*"
     suite = unittest.loader.TestLoader().discover(test_path, pattern=p)
     unittest.TextTestRunner(verbosity=3).run(suite)
     for line in os.popen("python3 -m doctest -o ELLIPSIS tests/*.txt").readlines():

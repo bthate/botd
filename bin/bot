@@ -1,0 +1,31 @@
+#!/usr/bin/python3 -u
+# BOTLIB - Framework to program bots.
+#
+# bin/bot (irc bot)
+
+import os,sys ; sys.path.insert(0, os.getcwd())
+
+import lo
+import os
+
+from bot import k, __version__
+from lo.csl import Console
+from lo.shl import execute, parse_cli
+from lo.hdl import Command
+
+opts = [
+    ('-m', '--modules', 'store', str, ",bot.shw", 'modules to load.', 'modules'),
+    ('-w', '--workdir', 'store', str, "data", 'set working directory.', 'workdir'),
+    ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
+    ('-a', '--logfile', 'store', str, "logs/botd.log", 'file to log to.', 'logfile'),
+]
+
+def main():
+    parse_cli("bot", __version__, opts, """bot <server> <channel> <nick>""")
+    lo.cfg.modules += ",bot.shw,bot.irc"
+    if not k.start(True):
+        return
+    k.wait()
+
+execute(main)
+os._exit(0)

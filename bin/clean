@@ -1,5 +1,3 @@
-# BOTD - IRC channel daemon.
-#
 # cleanup all non distro files
 
-rm -fR logs DEADJOE __pycache__ testdata runbotd runbotd.tar.gz init.d/*~  build dist botd.egg-info *~  bin/*~ botd/cmd/*~ botd/cmd/__pycache__ botd/*~ botd/__pycache__ tests/*~ tests/__pycache__ docs/html docs/code
+rm -fR mods/*~ mods/__pycache__  *~ runbotd runbotd.tar.gz logs DEADJOE __pycache__ testdata build dist botd.egg-info *~  bin/*~ 

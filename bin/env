@@ -1,0 +1,8 @@
+#!/bin/bash
+bin/clean
+python3 -mvirtualenv -p python3 --extra-search-dir . env
+python3 -mvirtualenv -p python3 --relocatable env
+source env/bin/activate
+env/bin/python3 env/bin/pip3 install botlib
+tar zcvf env.tar.gz env
+

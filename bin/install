@@ -1,0 +1,24 @@
+#!/usr/bin/bash
+[[ $EUID -ne 0 ]] && echo "you need root permissions"  && exit 1
+[ ! -d "/var/log/botd" ] && mkdir /var/log/botd
+[ ! -d "/var/lib/botd" ] && mkdir /var/lib/botd
+touch /var/log/botd/botd.log
+#useradd -M -r botd -U
+python3 setup.py install
+cat > /etc/systemd/system/botd.service <<-EOM
+[Unit]
+Description=botd
+
+[Service]
+ExecStart=/usr/local/bin/botd
+After=network-online.target
+Wants=network-online.target
+
+[Install]
+WantedBy=multi-user.target
+EOM
+systemctl enable botd
+systemctl daemon-reload
+service botd stop
+service botd start
+systemctl status botd --no-pager

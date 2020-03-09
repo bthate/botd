@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# BOTD - IRC channel daemon.
+# LBOT is a IRC bot that can serve RSS feed in your channel. no copyright. no LICENSE.
 #
-# build botd with dependancies.
+# build lbot with dependancies.
 
 import os; import sys
 sys.path.insert(0, os.getcwd())
@@ -110,7 +110,7 @@ if os.path.exists("dist"):
     runstring = '--always-copy --install-dir=%s --script-dir=%s/bin -a -U -l %s/dist/%s ' % (installdir, installdir, os.getcwd(), target)
     main(runstring.split())
 
-runstring = '--always-copy --install-dir=%s --script-dir=%s/bin -a -U feedparser dnspython pyasn1_modules==0.1.5 pyasn1==0.3.6 sleekxmpp==1.3.1 ' % (installdir, installdir)
+runstring = '--always-copy --install-dir=%s --script-dir=%s/bin -a -U feedparser' % (installdir, installdir)
 main(runstring.split())
 
 try:
@@ -139,12 +139,12 @@ except:
     pass
 
 try:
-    shutil.copytree("extra", installdir + os.sep + "extra")
+    shutil.copytree("mods", installdir + os.sep + "mods")
 except:
     pass
 
 try:
-    shutil.copytree("mods", installdir + os.sep + "mods")
+    shutil.copyfile("bin/install", installdir + os.sep + "bin/install")
 except:
     pass
 

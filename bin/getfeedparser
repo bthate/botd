@@ -1,0 +1,13 @@
+#!/usr/bin/python3
+# BOTLIB - Framework to program bots.
+#
+# bin/getfeedparser (BOTLIB doesn't depend)
+
+import os,sys ; sys.path.insert(0, os.getcwd())
+
+import bot.rss
+
+resp = bot.rss.get_url("https://bitbucket.org/botd/lbot/downloads/feedparser.py")
+f = open("feedparser.py", "w")
+f.write(str(resp.data, "utf-8"))
+f.close()
