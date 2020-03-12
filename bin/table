@@ -1,59 +1,24 @@
 #!/usr/bin/python3 
 
-txt = """# BOTD - IRC channel daemon\n#\n# dispatch tables.\n"""
-
 import os, sys ; sys.path.insert(0, os.getcwd())
 
-import inspect
-import json
+import bot
+import lo.tbl
 import time
-import botd.tbl
 
-from botd.log import level
-from botd.obj import Object
-from botd.typ import get_type
+from lo.hdl import AutoHandler
+from lo.shl import level, parse_cli
 
-level("debug")
+lo.tbl.modules = lo.Object()
 
-botd.tbl.classes = []
-botd.tbl.names = {}
-botd.tbl.modules = {}
+txt = """# BOTLIB - Framework to program bots.
+#
+# lo/tbl.py
+"""
 
-from botd.krn import Kernel
-
-def get_mods(mod):
-    for key, o in inspect.getmembers(mod, inspect.isfunction):
-        if "event" in o.__code__.co_varnames:
-            if o.__code__.co_argcount == 1:
-                yield (key,  o.__module__)
-
-def get_classes(mod):
-    for key, o in inspect.getmembers(mod, inspect.isclass):
-        if issubclass(o, Object):
-            yield (key, "%s.%s" % (mod.__name__, key))
-
-def get_names(mod):
-    for key, o in inspect.getmembers(mod, inspect.isclass):
-        if issubclass(o, Object):
-            yield (key.split(".")[-1].lower(), "%s.%s" % (mod.__name__, key))
-
-k = Kernel()
-k.walk("botd")
-
-classes = Object()
-modules = Object()
-names = Object()
-
-for mod in k.table.values():
-    for k, m in get_mods(mod):
-        modules[k] = m
-    for k, c in get_classes(mod):
-        classes[k] = c
-    for k, v in get_names(mod):
-        names[k] = v
-
+parse_cli("bot")
+b = AutoHandler()
+b.walk("bot")
 print(txt)
-print("classes = %s" % classes)
-print("modules = %s" % modules)
-print("names = %s" % names)
+print("modules = %s" % lo.tbl.modules)
 sys.exit()

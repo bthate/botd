@@ -16,7 +16,7 @@ R E A D M E
 ###########
 
 
-BOTD is a library you can use to program bots. no copyright. no LICENSE.
+BOTD is a IRC channel daemon serving 24/7 in the background.. no copyright. no LICENSE.
 
 
 I N S T A L L
@@ -110,8 +110,8 @@ you can contact me on IRC/freenode/#dunkbots.
     license='Public Domain',
     install_requires=["botlib", "feedparser"],
     zip_safe=True,
-    packages=["botd"],
-    scripts=["bin/botd", "bin/botctl", "bin/botudp"],
+    packages=["botlib"],
+    scripts=["bin/bot", "bin/botd", "bin/botctl", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',
                  'Operating System :: Unix',
