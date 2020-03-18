@@ -1,3 +1,3 @@
 # cleanup all non distro files
 
-rm -fR mods/*~ mods/__pycache__  *~ runbotd runbotd.tar.gz logs DEADJOE __pycache__ testdata build dist botd.egg-info *~  bin/*~ 
+rm -fR mods/*~ mods/__pycache__  *~ runbotd runbotd.tar.gz logs DEADJOE __pycache__ testdata build dist botd.egg-info *~  bin/*~  botd/*~ botd/__pycache__
