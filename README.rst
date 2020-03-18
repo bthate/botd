@@ -103,6 +103,16 @@ to the channel on the irc server:
 
  > tail -f /var/log/botd/botd.log | botudp 
 
+to send a message to the IRC channel, send a udp packet to the bot:
+
+::
+
+ import socket
+
+ def toudp(host, port, txt):
+     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+     sock.sendto(bytes(txt.strip(), "utf-8"), host, port)
+
 
 C O N T A C T
 

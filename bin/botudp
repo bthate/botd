@@ -9,18 +9,12 @@ import select
 import socket
 import sys
 
-udp = {}
-udp["host"] = "localhost"
-udp["port"] = 5500
-udp["password"] = "boh"
-udp["seed"] = "blablablablablaz" # needs to be 16 chars wide
-udp["server"] = udp["host"]
+host = "localhost"
+port = 5500
 
-def out(txt):
-    data = '%s %s' % (udp["password"], txt.strip())
-    #sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+def toudp(host, port, txt):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.sendto(bytes(data, "utf-8"), (udp["host"], udp["port"]))
+    sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
 
 def main():
     if len(sys.argv) > 1:
@@ -42,7 +36,7 @@ def main():
             if not txt:
                 stop = True
                 break
-            out(txt)
+            toudp(host, port, txt)
         if stop:
             break
 
