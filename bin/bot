@@ -9,7 +9,7 @@ import lo
 import os
 
 from lo.csl import Console
-from lo.shl import execute, parse_cli
+from lo.shl import execute, level, parse_cli
 from lo.hdl import Command
 
 from bot import k, __version__
@@ -24,6 +24,7 @@ opts = [
 
 def main():
     parse_cli("bot", __version__, opts, """\n\n1) bot <cmd>\n2) bot -s <server> <channel> <nick>""")
+    level(lo.cfg.level, lo.cfg.logfile)
     if lo.cfg.shell:
         lo.cfg.modules += ",bot.shw,bot.irc"
         if not k.start(True):
