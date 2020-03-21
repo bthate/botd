@@ -1,4 +1,3 @@
-#!/usr/bin/bash
 [[ $EUID -ne 0 ]] && echo "you need root permissions"  && exit 1
 [ ! -d "/var/log/botd" ] && mkdir /var/log/botd
 [ ! -d "/var/lib/botd" ] && mkdir /var/lib/botd

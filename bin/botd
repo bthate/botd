@@ -9,7 +9,7 @@ import lo
 import os
 import sys
 
-from lo.shl import daemon, execute, parse_cli, termreset
+from lo.shl import daemon, execute, level, parse_cli, termreset
 from bot import k, __version__
 
 opts = [
@@ -22,6 +22,7 @@ opts = [
 
 def main():
     parse_cli("botd", __version__, opts)
+    level(lo.cfg.level, lo.cfg.logfile)
     if lo.cfg.daemon:
         daemon()
     k.start()

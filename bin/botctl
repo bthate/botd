@@ -7,7 +7,7 @@ import os,sys ; sys.path.insert(0, os.getcwd())
 
 import lo
 
-from lo.shl import execute, parse_cli
+from lo.shl import execute, level, parse_cli
 from bot import k, __version__
 
 opts = [
@@ -19,6 +19,7 @@ opts = [
 
 def main():
     parse_cli("botctl", __version__, opts, """botctl <cmd>""")
+    level(lo.cfg.level, lo.cfg.logfile)
     k.walk("bot")
     k.cmd(lo.cfg.txt)
     
