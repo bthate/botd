@@ -17,7 +17,6 @@ setup(
     long_description=read(),
     long_description_content_type="text/x-rst",
     license='Public Domain',
-    install_requires=["feedparser"],
     zip_safe=True,
     packages=["botd", "bot", "lo"],
     scripts=["bin/bot", "bin/botd", "bin/botctl", "bin/botinstall", "bin/botirc", "bin/botudp"],
