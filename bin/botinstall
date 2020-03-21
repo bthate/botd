@@ -2,8 +2,6 @@
 [ ! -d "/var/log/botd" ] && mkdir /var/log/botd
 [ ! -d "/var/lib/botd" ] && mkdir /var/lib/botd
 touch /var/log/botd/botd.log
-#useradd -M -r botd -U
-python3 setup.py install
 cat > /etc/systemd/system/botd.service <<-EOM
 [Unit]
 Description=botd
