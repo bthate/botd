@@ -8,13 +8,13 @@ BOTD is a IRC channel daemon serving 24/7 in the background.
 I N S T A L L
 
 
-download the tarball from pypi, https://pypi.org/project/botlib/#files
+download the tarball from pypi, https://pypi.org/project/botd/#files
 
-if you want to have BOTLIB started at boot, you need to have the tarball and run:
+if you want to have BOTD started at boot, run botinstall:
 
 ::
 
- > sudo bin/install
+ > sudo botinstall
 
 this will install an botd service in /etc/systemd/system
 
@@ -23,7 +23,7 @@ you can also download with pip3 and install globally.
 
 ::
 
- > sudo pip3 install botlib --upgrade --force-reinstall
+ > sudo pip3 install botd --upgrade --force-reinstall
 
 
 U S A G E
@@ -34,12 +34,12 @@ local:
 ::
 
  > bot <cmd>
- > bot -s localhost \#dunkbots botje
- > bot cmds
+ > bot -s
+ > botirc localhost \#dunkbots botje
 
 global:
 
- > bin/install
+ > botinstall
  > botctl <cmd>
 
 logfiles can be found in /var/log/botd.
@@ -62,6 +62,12 @@ use the -w option if you want to use a different work directory then /var/lib/bo
 
 R S S
 
+the rss plugin uses the feedparser package, you need to install that
+yourself:
+
+::
+
+ > pip3 install feedparser
 
 make sure you have bot.rss added to your cfg.modules:
 
@@ -70,9 +76,7 @@ make sure you have bot.rss added to your cfg.modules:
  > botctl cfg krn modules bot.rss
 
 
-add an url:
-
-::
+ add an url:
 
  > botctl rss https://news.ycombinator.com/rss
  ok 1
@@ -89,6 +93,7 @@ add an url:
 
 
 U D P
+
 
 make sure you have bot.udp added to your cfg.modules:
 
@@ -112,6 +117,61 @@ to send a message to the IRC channel, send a udp packet to the bot:
  def toudp(host, port, txt):
      sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
      sock.sendto(bytes(txt.strip(), "utf-8"), host, port)
+
+
+C O D I N G
+
+
+if you want to develop on the library clone the source at bitbucket.org:
+
+::
+
+ > git clone https://bitbucket.org/botd/botlib
+
+if you want to add your own modules to the bot, you can put you .py files in a "mods" directory and use the -m option to point to that directory.
+
+BOTLIB contains the following modules:
+
+::
+
+    bot.dft             - default
+    bot.flt             - fleet
+    bot.irc             - irc bot
+    bot.krn             - core handler
+    bot.rss             - rss to channel
+    bot.shw             - show runtime
+    bot.udp             - udp to channel
+    bot.usr             - users
+
+BOTLIB uses the LIBOBJ library which gets included in the tarball.
+
+::
+
+    lo.clk              - clock
+    lo.csl              - console 
+    lo.hdl              - handler
+    lo.shl              - shell
+    lo.thr              - threads
+    lo.tms              - times
+    lo.typ              - types
+
+basic code is a function that gets an event as a argument:
+
+::
+
+ def command(event):
+     << your code here >>
+
+to give feedback to the user use the event.reply(txt) method:
+
+::
+
+ def command(event):
+     event.reply("yooo %s" % event.origin)
+
+
+have fun coding ;]
+
 
 
 C O N T A C T
