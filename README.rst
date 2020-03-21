@@ -18,8 +18,14 @@ if you want to have BOTD started at boot, run botinstall:
 
 this will install an botd service in /etc/systemd/system
 
+if you don't want the botd to start on boot after install run:
 
-you can also download with pip3 and install globally.
+::
+
+ > sudo rm /etc/systemd/system/botd.service
+
+
+you can also download with pip3 and install globally:
 
 ::
 
