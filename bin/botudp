@@ -19,7 +19,7 @@ def toudp(host, port, txt):
 def main():
     if len(sys.argv) > 1:
         txt = " ".join(sys.argv[1:])
-        out(txt)
+        toudp(host, port, txt)
         return
     if not select.select([sys.stdin,],[],[],0.0)[0]:
         return
