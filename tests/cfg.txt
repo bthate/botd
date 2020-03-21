@@ -1,0 +1,17 @@
+# cfg.txt
+
+"""
+    >>> import lo
+    >>> cfg = lo.Default()
+    >>> cfg.server = "localhost"
+    >>> cfg.channel = "#botd"
+    >>> cfg.nick = "botddd"
+    >>> print(cfg)
+    {
+        "channel": "#botd",
+        "nick": "botddd",
+        "server": "localhost"
+    }
+
+"""
+
