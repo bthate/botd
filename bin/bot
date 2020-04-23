@@ -5,31 +5,34 @@
 
 import os,sys ; sys.path.insert(0, os.getcwd())
 
+import bot
 import lo
 import os
 
+from bot.krn import Kernel
 from lo.csl import Console
-from lo.shl import execute, level, parse_cli
-from lo.hdl import Command
-
-from bot import k, __version__
+from lo.shl import daemon, execute, parse_cli
 
 opts = [
-    ('-s', '--shell', 'store_true', False, 'start a shell', 'shell'),
-    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-x', '--exec', 'store_true', False, 'execute a command', 'exec'),
+    ('-m', '--modules', 'store', str, "shw", 'modules to load.', 'modules'),
     ('-w', '--workdir', 'store', str, os.path.join(os.path.expanduser("~/.bot")), 'set working directory.', 'workdir'),
     ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
     ('-a', '--logfile', 'store', str, os.path.join(os.path.expanduser("~/.bot"), "logs", "bot.log"), 'file to log to.', 'logfile'),
 ]
 
 def main():
-    parse_cli("bot", __version__, opts, """\n\n1) bot <cmd>\n2) bot -s bot.irc,bot.udp""")
-    level(lo.cfg.level, lo.cfg.logfile)
-    if lo.cfg.shell:
-        if not k.start(True):
-            return
-        k.wait()
-    k.cmd(lo.cfg.txt)
+    cfg = parse_cli("bot", opts, bot.__version__, """\n\n1) bot -x <cmds>\n2) bot -m <mods> -l <level> -w <dir> -a <file>\n3) e.g. bot -m shw,rss,irc -l debug -w data -a bot.log\n\ndefault directory is ~/.bot""")
+    k = Kernel()
+    k.cfg.packages = "bot"
+    if cfg.exec:
+        k.cmd(cfg.txt)
+        return
+    mods = k.walk(cfg.modules)
+    k.scan(mods)
+    k.init(mods)
+    k.start(True)
+    k.wait()
     
 execute(main)
 os._exit(0)

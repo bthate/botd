@@ -3,25 +3,22 @@
 #
 # bin/botctl (bot control)
 
-import os,sys ; sys.path.insert(0, os.getcwd())
-
 import lo
+import os
+import sys
 
-from lo.shl import execute, level, parse_cli
-from bot import k, __version__
+#sys.path.insert(0, os.getcwd())
 
-opts = [
-    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
-    ('-w', '--workdir', 'store', str, "/var/lib/botd", 'set working directory.', 'workdir'),
-    ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
-    ('-a', '--logfile', 'store', str, "/var/log/botd/botd.log", 'file to log to.', 'logfile'),
-]
+from bot.krn import Kernel
+from lo.shl import execute, level
 
 def main():
-    parse_cli("botctl", __version__, opts, """botctl <cmd>""")
-    level(lo.cfg.level, lo.cfg.logfile)
-    k.walk("bot")
-    k.cmd(lo.cfg.txt)
-    
+    lo.workdir = "/var/lib/botd"
+    k = Kernel()
+    mods = k.walk("bot.shw")
+    k.scan(mods)
+    k.init(mods)
+    k.cmd(" ".join(sys.argv[1:]))
+
 execute(main)
 os._exit(0)

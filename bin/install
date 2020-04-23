@@ -3,21 +3,20 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 [ ! -d "/var/log/botd" ] && mkdir /var/log/botd
 [ ! -d "/var/lib/botd" ] && mkdir /var/lib/botd
+[ ! -d "/var/lib/botd/store" ] && mkdir /var/lib/botd/store
 touch /var/log/botd/botd.log
+cp bin/botsrv /usr/local/bin/botsrv
+cp bin/botctl /usr/local/bin/botctl
+cp bin/bothup /usr/local/bin/bothup
 cat > /etc/systemd/system/botd.service <<-EOM
 [Unit]
 Description=botd
 
 [Service]
-ExecStart=/usr/local/bin/botd
+ExecStart=/usr/local/bin/botsrv
 After=network-online.target
 Wants=network-online.target
 
 [Install]
 WantedBy=multi-user.target
 EOM
-systemctl enable botd
-systemctl daemon-reload
-service botd stop
-service botd start
-systemctl status botd --no-pager

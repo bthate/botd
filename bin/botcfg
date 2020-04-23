@@ -1,0 +1,32 @@
+#!/bin/sh
+if [ "$(id -u)" -ne 0 ]; then
+    echo "you need root permissions" && exit 1
+fi
+
+MODULES=$1
+SERVER=$2
+CHANNEL=$3
+NICK=$4
+
+if [ -z `$1`]; then
+   MODULES="bot.rss,bot.shw,bot.irc"
+fi
+if [ -z "$2"]; then
+   SERVER="localhost"
+fi
+if [ -z "$3"]; then
+    CHANNEL="#botib"
+fi
+if [ -z "$4"]; then
+    NICK="botlib"
+fi
+
+echo "modules: $MODULES"
+echo "server: $SERVER"
+echo "channel: $CHANNEL"
+echo "nick: $NICK"
+botctl cfg krn modules "$MODULES"
+botctl cfg irc server "$SERVER"
+botctl cfg irc channel "$CHANNEL"
+botctl cfg irc nick "$NICK"
+echo "done"

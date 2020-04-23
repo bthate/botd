@@ -5,19 +5,26 @@
 
 import bot
 import lo
+import logging
 import os
 import sys
+import time
+
+sys.path.insert(0, os.getcwd())
 
 from bot.krn import Kernel
-from lo.shl import daemon, execute, level
+from lo.shl import execute, level
 
 def main():
     lo.workdir ="/var/lib/botd/"
     level("debug", "/var/log/botd/botd.log")
-    daemon()
+    logging.warning("BOTLIB %s started at %s" % (bot.__version__, time.ctime(time.time())))
     k = Kernel()
     k.cfg.last()
-    k.walk(k.cfg.modules)
+    mods = k.walk(k.cfg.modules)
+    logging.debug(str(mods))
+    k.scan(mods)
+    k.init(mods)
     k.start()
     k.wait()
     
