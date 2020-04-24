@@ -20,7 +20,7 @@ setup(
     zip_safe=True,
     install_requires=["botlib"],
     packages=["botd"],
-    scripts=["bin/bot", "bin/botd", "bin/botctl", "bin/botsrv", "bin/botudp"],
+    scripts=["bin/bot", "bin/botcfg", "bin/botctl", "bin/botd", "bin/botsrv", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',
                  'Operating System :: Unix',

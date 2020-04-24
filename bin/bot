@@ -7,7 +7,9 @@ import os,sys ; sys.path.insert(0, os.getcwd())
 
 import bot
 import lo
+import logging
 import os
+import time
 
 from bot.krn import Kernel
 from lo.csl import Console
@@ -15,7 +17,7 @@ from lo.shl import daemon, execute, parse_cli
 
 opts = [
     ('-x', '--exec', 'store_true', False, 'execute a command', 'exec'),
-    ('-m', '--modules', 'store', str, "shw", 'modules to load.', 'modules'),
+    ('-m', '--modules', 'store', str, "bot.shw", 'modules to load.', 'modules'),
     ('-w', '--workdir', 'store', str, os.path.join(os.path.expanduser("~/.bot")), 'set working directory.', 'workdir'),
     ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
     ('-a', '--logfile', 'store', str, os.path.join(os.path.expanduser("~/.bot"), "logs", "bot.log"), 'file to log to.', 'logfile'),
@@ -23,8 +25,8 @@ opts = [
 
 def main():
     cfg = parse_cli("bot", opts, bot.__version__, """\n\n1) bot -x <cmds>\n2) bot -m <mods> -l <level> -w <dir> -a <file>\n3) e.g. bot -m shw,rss,irc -l debug -w data -a bot.log\n\ndefault directory is ~/.bot""")
+    logging.warning("BOT %s started at %s" % (bot.__version__, time.ctime(time.time())))
     k = Kernel()
-    k.cfg.packages = "bot"
     if cfg.exec:
         k.cmd(cfg.txt)
         return
