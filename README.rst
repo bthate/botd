@@ -34,19 +34,14 @@ you can also download with pip3 and install globally:
 
 U S A G E
 
-
-local:
-
 ::
 
- > bot <cmd>
- > bot -s
- > botirc localhost \#dunkbots botje
+ > bot <cmd>				executes a command
+ > bot 					starts a shell
+ > botcfg				configure the bot
+ > botd					starts daemon
+ > botsrv				starts a service
 
-global:
-
- > botinstall
- > botctl <cmd>
 
 logfiles can be found in /var/log/botd.
 
