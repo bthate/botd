@@ -2,7 +2,7 @@
 #
 # setup.py
 
-from setuptools import setup, find_namespace_packages
+from setuptools import setup
 
 def read():
     return open("README.rst", "r").read()
@@ -18,7 +18,7 @@ setup(
     long_description_content_type="text/x-rst",
     license='Public Domain',
     zip_safe=True,
-    install_requires=["botlib"],
+    install_requires=["botlib", "feedparser"],
     packages=["botd"],
     data_files = [('/etc/systemd/system', ['botd.service'])],
     scripts=["bin/bot", "bin/botcfg", "bin/botctl", "bin/botd", "bin/botsrv", "bin/botudp"],
