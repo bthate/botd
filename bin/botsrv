@@ -16,6 +16,8 @@ from lo.csl import Console
 from lo.shl import execute, level, parse_cli
 
 def main():
+    lo.cdir("/var/lib/botd/store/")
+    lo.cdir("/var/log/botd/")
     lo.workdir = "/var/lib/botd/"
     level("debug", "/var/log/botd/botd.log")
     logging.warning("BOTLIB %s started at %s" % (bot.__version__, time.ctime(time.time())))
