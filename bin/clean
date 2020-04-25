@@ -1,3 +1,3 @@
 # cleanup all non distro files
 
-rm -fR env env.tar.gz lo/*~ lo/__pycache__ bot/*~ bot/__pycache__ mods/*~ mods/__pycache__  *~ runbotd runbotd.tar.gz logs DEADJOE __pycache__ testdata build dist botd.egg-info *~  bin/*~  botd/*~ botd/__pycache__
+rm -fR docs/html docs/obj docs/*~ tests/*~ tests/__pycache__ env env.tar.gz lo/*~ lo/__pycache__ bot/*~ bot/__pycache__ mods/*~ mods/__pycache__  *~ runbot runbot.tar.gz logs DEADJOE __pycache__ testdata build dist botlib.egg-info *~  bin/*~

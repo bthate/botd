@@ -6,24 +6,27 @@ __version__ = 1
 
 import os,sys ; sys.path.insert(0, os.getcwd())
 
+import bot
 import lo
+import logging
 import os
 import shutil
 import time
 import unittest
 
+from bot.krn import Kernel
 from lo.shl import execute, level, parse_cli 
 from lo.tms import elapsed
 
-from bot import k, starttime
+from bot import starttime
 
 opts = [
     ('-b', '--bork', 'store_true', False, 'bork on exception.', 'bork'),
     ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose'),
-    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-m', '--modules', 'store', str, "bot", 'modules to load.', 'modules'),
+    ('-o', '--options', 'store', str, "", 'options to use.', 'options'),
     ('-w', '--workdir', 'store', str, "testdata", 'set working directory.', 'workdir'),
     ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
-    ('-a', '--logfile', 'store', str, "logs/bot.log", 'file to log to.', 'logfile'),
 ]
 
 
@@ -34,14 +37,14 @@ def main():
         shutil.rmtree("testdata")
     except FileNotFoundError:
         pass
-    parse_cli("test", __version__, opts)
-    level(lo.cfg.level, lo.cfg.logfile)
-    lo.cfg.debug = True
-    lo.cfg.bork = True
-    k.walk("bot")
-    k.start()
-    lo.workdir = "testdata"
     lo.cdir("testdata")
+    parse_cli("test", opts)
+    lo.cfg.debug = True
+    k = Kernel()
+    k.fleet.add(k)
+    mods = k.walk(lo.cfg.modules)
+    k.scan(mods)
+    k.start()
     test_path = os.getcwd() + os.sep + "tests"
     p = "test_*"
     suite = unittest.loader.TestLoader().discover(test_path, pattern=p)

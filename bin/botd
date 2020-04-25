@@ -1,23 +1,28 @@
 #!/usr/bin/python3 -u
 # BOTLIB - Framework to program bots.
 #
-# bin/botd (bot daemon)
+# bin/botd (bot channel daemon)
+
+import os,sys ; sys.path.insert(0, os.getcwd())
 
 import bot
 import lo
+import logging
 import os
-import sys
+import time
 
 from bot.krn import Kernel
-from lo.shl import daemon, execute, level
+from lo.csl import Console
+from lo.shl import daemon, execute, level, parse_cli
 
 def main():
     lo.workdir ="/var/lib/botd/"
     level("debug", "/var/log/botd/botd.log")
+    logging.warning("BOTLIB %s started at %s" % (bot.__version__, time.ctime(time.time())))
     daemon()
     k = Kernel()
     k.cfg.last()
-    k.walk(k.cfg.modules)
+    k.walk("bot")
     k.start()
     k.wait()
     

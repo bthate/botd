@@ -5,9 +5,12 @@ fi
 [ ! -d "/var/lib/botd" ] && mkdir /var/lib/botd
 [ ! -d "/var/lib/botd/store" ] && mkdir /var/lib/botd/store
 touch /var/log/botd/botd.log
+cp bin/bot /usr/local/bin/bot
+cp bin/botd /usr/local/bin/botd
 cp bin/botsrv /usr/local/bin/botsrv
 cp bin/botctl /usr/local/bin/botctl
 cp bin/bothup /usr/local/bin/bothup
+cp bin/botudp /usr/local/bin/botudp
 cat > /etc/systemd/system/botd.service <<-EOM
 [Unit]
 Description=botd
