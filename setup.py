@@ -21,7 +21,7 @@ setup(
     install_requires=["botlib", "feedparser"],
     packages=["botd"],
     data_files = [('/etc/systemd/system', ['botd.service'])],
-    scripts=["bin/bot", "bin/botcfg", "bin/botctl", "bin/botd", "bin/botsrv", "bin/botudp"],
+    scripts=["bin/bot", "bin/botcfg", "bin/botctl", "bin/botd", "bin/bothup", "bin/botsrv", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',
                  'Operating System :: Unix',
