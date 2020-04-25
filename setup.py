@@ -2,7 +2,11 @@
 #
 # setup.py
 
+import importlib
+
 from setuptools import setup
+
+importlib.invalidate_caches()
 
 def read():
     return open("README.rst", "r").read()
