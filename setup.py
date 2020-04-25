@@ -20,6 +20,7 @@ setup(
     zip_safe=True,
     install_requires=["botlib"],
     packages=["botd"],
+    data_files = [('/etc/systemd/system', ['botd.service'])],
     scripts=["bin/bot", "bin/botcfg", "bin/botctl", "bin/botd", "bin/botsrv", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',

@@ -1,0 +1,10 @@
+[Unit]
+Description=botd
+
+[Service]
+ExecStart=/usr/local/bin/botsrv
+After=network-online.target
+Wants=network-online.target
+
+[Install]
+WantedBy=multi-user.target
