@@ -1,0 +1,4 @@
+rm -fR /var/lib/botd/
+rm -fR /var/log/botd
+rm -fR /usr/local/bin/bot*
+rm -fR /usr/local/lib/python3.8/dist-packages/bot*
