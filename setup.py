@@ -13,7 +13,7 @@ def read():
 
 setup(
     name='botd',
-    version='2',
+    version='13',
     url='https://bitbucket.org/botd/botd',
     author='Bart Thate',
     author_email='bthate@dds.nl',
