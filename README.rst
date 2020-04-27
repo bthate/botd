@@ -1,9 +1,12 @@
 R E A D M E
 ###########
 
+if you have problems with rebooting, remove the
+/etc/systemd/system/botd.service file and see if box/node/host boots again.
 
-BOTD is a IRC channel daemon serving 24/7 in the background.
-
+BOTD is a IRC channel daemon serving 24/7 in the background,
+it installs it's own botd.service file and can thus survive reboots.
+BOTD contains no copyright or LICENSE and is placed in the public domain.
 
 I N S T A L L
 
