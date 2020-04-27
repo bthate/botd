@@ -2,7 +2,7 @@
 Description=botd
 
 [Service]
-ExecStart=/usr/local/bin/botsrv
+ExecStart=/usr/local/bin/botd
 After=network-online.target
 Wants=network-online.target
 

@@ -22,8 +22,8 @@ opts = [
 
 def main():
     lo.workdir = os.path.join(os.path.expanduser("~/.bot"))
+    lo.cdir(lo.workdir)
     cfg = parse_cli("bot", opts, bot.__version__, """\n\n$ bot\t\t\tstarts a shell\n$ bot <cmd>\t\texecutes a command\n$ bot -m mod1,mod2\tloads modules""")
-    logging.warning("BOTLIB %s started at %s" % (bot.__version__, time.ctime(time.time())))
     k = Kernel()
     mods = k.walk(cfg.modules)
     k.scan(mods)
