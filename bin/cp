@@ -1,0 +1,5 @@
+cp bin/bot /usr/local/bin/bot
+cp bin/botd /usr/local/bin/botd
+cp bin/botctl /usr/local/bin/botctl
+cp bin/bothup /usr/local/bin/bothup
+cp bin/botudp /usr/local/bin/botudp

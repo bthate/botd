@@ -20,7 +20,6 @@ def main():
     lo.cdir("/var/log/botd/")
     lo.workdir = "/var/lib/botd/"
     level("debug", "/var/log/botd/botd.log")
-    logging.warning("BOTLIB %s started at %s" % (bot.__version__, time.ctime(time.time())))
     k = Kernel()
     k.cfg.last()
     mods = k.walk("bot")

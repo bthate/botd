@@ -21,9 +21,9 @@ opts = [
 ]
 
 def main():
-    lo.workdir = os.path.join(os.path.expanduser("~/.bot"))
+    lo.workdir = os.path.join(os.path.expanduser("~/.botd"))
     lo.cdir(lo.workdir)
-    cfg = parse_cli("bot", opts, bot.__version__, """\n\n$ bot\t\t\tstarts a shell\n$ bot <cmd>\t\texecutes a command\n$ bot -m mod1,mod2\tloads modules""")
+    cfg = parse_cli("botd", opts, bot.__version__, """\n\n$ bot\t\t\tstarts a shell\n$ bot <cmd>\t\texecutes a command\n$ bot -m mod1,mod2\tloads modules""")
     k = Kernel()
     mods = k.walk(cfg.modules)
     k.scan(mods)
