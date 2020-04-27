@@ -3,24 +3,18 @@
 #
 # bin/botd (bot daemon)
 
-import bot
 import lo
-import logging
 import os
-import sys
-import time
-
-sys.path.insert(0, "/var/lib/botd/mods/")
 
 from botd import __version__
 from bot.krn import Kernel
-from lo.csl import Console
-from lo.shl import execute, level, parse_cli
+from lo.shl import execute, level
 
 def main():
     lo.cdir("/var/lib/botd/store/")
     lo.cdir("/var/log/botd/")
     lo.workdir = "/var/lib/botd/"
+    lo.cfg.name = "botd"
     lo.cfg.version = __version__
     level("debug", "/var/log/botd/botd.log")
     k = Kernel()

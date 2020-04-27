@@ -104,11 +104,12 @@ class Loader(lo.Object):
         Loader.table[mn] = self.direct(mn)
         return Loader.table[mn]
 
-    def walk(self, mns, init=False):
+    def walk(self, mns):
         mods = []
         for mn in mns.split(","):
             if not mn:
                 continue
+            loc = None
             try:
                 m = self.load_mod(mn)
             except Exception as ex:
@@ -117,7 +118,6 @@ class Loader(lo.Object):
                 logging.warning(str(ex).lower())
                 continue
             mods.append(m)
-            loc = None
             try:
                 loc = m.__spec__.submodule_search_locations
             except AttributeError:
@@ -139,8 +139,10 @@ class Loader(lo.Object):
                 for x in fns:
                     if x.endswith(".py"):
                         mmn = "%s.%s" % (mn, x[:-3])
-                    else:
+                    elif not x.endswith("~"):
                         mmn = "%s.%s" % (mn, x)
+                    else:
+                        continue
                     module = None
                     try:
                         module = self.load_mod(mmn)
@@ -160,6 +162,7 @@ class Loader(lo.Object):
             self.cmds.update(cmds)
             modules = self.find_modules(mod)
             self.mods.update(modules)
+        return cmds
 
 class Handler(Loader):
  

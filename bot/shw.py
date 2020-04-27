@@ -5,6 +5,8 @@
 """ show runtime stats. """
 
 import bot
+import bot.irc
+import bot.krn
 import lo
 import lo.tms
 import os
@@ -13,46 +15,46 @@ import threading
 import time
 
 def __dir__():
-    return ("cfg", "cmds", "fleet", "mods", "ps", "up", "v")
+    return ("cfg", "cmds", "fleet", "mods", "ps", "set", "up", "v")
 
 from bot.dft import defaults
 
 def cfg(event):
-    assert(lo.workdir)
-    if not event.args:
-        files = [x.split(".")[-2].lower() for x in os.listdir(os.path.join(lo.workdir, "store")) if x.endswith("Cfg")]
-        if files:
-            event.reply("|".join(["main",] + list(set(files))))
-        else:
-            event.reply("no configuration files yet.")
+    owner = None
+    try:
+        server, channel, nick, owner = event.args
+    except ValueError:
+        try:
+            server, channel, nick = event.args
+        except ValueError:
+            if event.args:
+                target = event.args[0]
+                if target == "main":
+                    event.reply(lo.cfg)
+                    return
+                else:
+                    cn = "bot.%s.Cfg" % event.args[0]
+                    db = lo.Db()
+                    l = db.last(cn)
+                    if l:
+                        event.reply(l)
+                        return
+        event.reply("cfg <server> <channel> <nick> [<owner>]")
         return
-    target = event.args[0]
-    if target == "main":
-        event.reply(lo.cfg)
-        return
-    cn = "bot.%s.Cfg" % target
-    db = lo.Db()
-    l = db.last(cn)
-    if not l:     
-        dft = defaults.get(target, None)
-        if dft:
-            c = lo.typ.get_cls(cn)
-            l = c()
-            l.update(dft)
-            event.reply("created %s" % cn)
-        else:
-            event.reply("no %s found." % cn)
-            return
-    if len(event.args) == 1:
-        event.reply(l)
-        return
-    if len(event.args) == 2:
-        event.reply(l.get(event.args[1]))
-        return
-    setter = {event.args[1]: event.args[2]}
-    l.edit(setter)
-    p = l.save()
-    event.reply("ok %s" % p)
+    k = bot.get_kernel()
+    c = bot.irc.Cfg()
+    c.last()
+    c.server = server
+    c.channel = channel
+    c.nick = nick
+    c.save()
+    if owner:
+        cc = bot.krn.Cfg()
+        cc.last()
+        cc.owner = owner
+        cc.save()
+        k.users.meet(owner)
+    event.reply("ok")
 
 def cmds(event):
     k = bot.get_kernel()
@@ -94,6 +96,43 @@ def ps(event):
         res = "%s %s" % (nr, psformat % (lo.tms.elapsed(up), thrname[:60]))
         if res.strip():
             event.reply(res)
+
+def set(event):
+    assert(lo.workdir)
+    if not event.args:
+        files = [x.split(".")[-2].lower() for x in os.listdir(os.path.join(lo.workdir, "store")) if x.endswith("Cfg")]
+        if files:
+            event.reply("|".join(["main",] + list(files)))
+        else:
+            event.reply("no configuration files yet.")
+        return
+    target = event.args[0]
+    if target == "main":
+        event.reply(lo.cfg)
+        return
+    cn = "bot.%s.Cfg" % target
+    db = lo.Db()
+    l = db.last(cn)
+    if not l:     
+        dft = defaults.get(target, None)
+        if dft:
+            c = lo.typ.get_cls(cn)
+            l = c()
+            l.update(dft)
+            event.reply("created %s" % cn)
+        else:
+            event.reply("no %s found." % cn)
+            return
+    if len(event.args) == 1:
+        event.reply(l)
+        return
+    if len(event.args) == 2:
+        event.reply(l.get(event.args[1]))
+        return
+    setter = {event.args[1]: event.args[2]}
+    l.edit(setter)
+    p = l.save()
+    event.reply("ok %s" % p)
 
 def up(event):
     event.reply(lo.tms.elapsed(time.time() - bot.starttime))

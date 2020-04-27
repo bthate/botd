@@ -23,7 +23,7 @@ from lo.thr import launch
 from lo.trc import get_exception
 
 def __dir__():
-    return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'init')
+    return ('Cfg', 'DCC', 'DEvent', 'Event', 'IRC', 'cfgi', 'init')
 
 def init(kernel):
     i = IRC()
@@ -374,14 +374,14 @@ class DCC(Handler):
             s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        info = socket.getaddrinfo(addr, port)
+        ip = socket.inet_ntoa(addr)
         try:
             s.connect((addr, port))
         except ConnectionRefusedError:
-            logging.error("connection to %s:%s refused" % (info[3], port))
+            logging.error("connection to %s:%s refused" % (ip, port))
             return
         k = bot.get_kernel()
-        s.send(bytes('Welcome to BOTLIB %s !!\n' % event.nick, "utf-8"))
+        s.send(bytes('Welcome to %s %s !!\n' % event.nick, k.cfg.name.upper() or "BOTLIB" "utf-8"))
         s.setblocking(1)
         os.set_inheritable(s.fileno(), os.O_RDWR)
         self._sock = s
@@ -392,7 +392,7 @@ class DCC(Handler):
         launch(self.input)
         self._connected.set()
         super().start()
-        logging.warning("%s connected to DCC" % info[3])
+        logging.warning("%s connected to %s" % (event.origin, ip))
 
     def input(self):
         while not self._stopped:
@@ -439,9 +439,9 @@ def NOTICE(handler, event):
 
 def PRIVMSG(handler, event):
     k = bot.get_kernel()
-    if not k.users.allowed(event.origin, "USER"):
-        return
     if event.txt.startswith("DCC CHAT"):
+        if not k.users.allowed(event.origin, "USER"):
+            return
         try:
             dcc = DCC()
             dcc.cmds.update(k.cmds)
@@ -451,6 +451,8 @@ def PRIVMSG(handler, event):
         except ConnectionRefusedError:
             return
     if event.txt and event.txt[0] == handler.cc:
+        if not k.users.allowed(event.origin, "USER"):
+            return
         e = Event()
         e.etype = "command"
         e.channel = event.channel

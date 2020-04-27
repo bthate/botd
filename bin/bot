@@ -3,6 +3,8 @@
 #
 # bin/bot (irc bot)
 
+import os, sys ; sys.path.insert(0, os.getcwd())
+
 import bot
 import lo
 import logging
@@ -11,10 +13,9 @@ import sys
 import time
 
 from botd import __version__
-
 from bot.krn import Kernel
 from lo.csl import Console
-from lo.shl import daemon, execute, parse_cli
+from lo.shl import daemon, enable_history, execute, parse_cli, set_completer
 
 opts = [
     ('-w', '--workdir', 'store', str, "", "directory to work on", 'workdir'),
@@ -34,6 +35,8 @@ def main():
         return
     k.start(True)
     k.init(mods)
+    set_completer(k.cmds)
+    enable_history()
     k.wait()
     
 execute(main)

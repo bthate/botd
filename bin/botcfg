@@ -18,15 +18,16 @@ else
     NICK=$3;
 fi
 if [ -z "$4" ]; then
-else
-   OWNER=$4;
-   botctl cfg krn owner "$OWNER"
-   botctl meet "$OWNER"
-fi
-if [ -z "$5" ]; then
    MODULES="bot.shw";
 else
-   MODULES=$5;
+   MODULES=$4;
+fi
+if [ -z "$5" ]; then
+;
+else
+   OWNER=$5;
+   botctl cfg krn owner "$OWNER"
+   botctl meet "$OWNER"
 fi
 
 botctl cfg irc server "$SERVER"

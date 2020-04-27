@@ -3,16 +3,12 @@
 #
 # bin/botctl (run command on the system bot)
 
-import bot
 import lo
-import logging
 import os
 import sys
-import time
 
 from bot.krn import Kernel
-from lo.csl import Console
-from lo.shl import daemon, execute, parse_cli
+from lo.shl import execute
 
 def main():
     lo.workdir = "/var/lib/botd"
