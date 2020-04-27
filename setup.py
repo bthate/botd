@@ -25,7 +25,7 @@ setup(
     install_requires=["botlib", "feedparser"],
     packages=["botd"],
     data_files = [('/etc/systemd/system', ['botd.service']),
-                  ('/var/lib/botd/mods', ['mods/mbox.py', 'mods/stats.py', "mods.wisom"]),],
+                  ('/var/lib/botd/mods', ['mods/mbox.py', 'mods/stats.py', "mods/wisdom.py"]),],
     scripts=["bin/bot", "bin/botcfg", "bin/botctl", "bin/botd", "bin/bothup", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',

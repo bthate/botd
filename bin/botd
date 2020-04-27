@@ -10,7 +10,6 @@ import os
 import time
 
 from botd import __version__
-
 from bot.krn import Kernel
 from lo.csl import Console
 from lo.shl import execute, level, parse_cli
@@ -23,7 +22,10 @@ def main():
     level("debug", "/var/log/botd/botd.log")
     k = Kernel()
     k.cfg.last()
-    mods = k.walk("bot")
+    mods = k.walk(k.cfg.modules)
+    k.scan(mods)
+    k.init(mods)
+    mods = k.walk("mods")
     k.scan(mods)
     k.init(mods)
     k.start()
