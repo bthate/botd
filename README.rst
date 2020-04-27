@@ -32,9 +32,6 @@ if you don't want the botd to start on boot after install run:
  > sudo rm /etc/systemd/system/botd.service
 
 
-run export PYTHONPATH="." and the bin should run directly
-from the 
-
 
 U S A G E
 
@@ -43,7 +40,6 @@ U S A G E
  > bot <cmd>		- executes a command
  > bot 			- starts a shell
  > botctl		- executes a command on the system botd
- > botcfg		- configure the bot, use botcfg <server> <channel> <nick>
  > botd			- starts daemon
  > bothup		- restarts the botd service
 
@@ -53,12 +49,12 @@ logfiles can be found in /var/log/botd.
 C O N F I G U R A T I O N
 
 
-use botcfg (sudo) to edit on the system installed botd service.
+use "botctl cfg" (sudo) to edit on the system installed botd service.
 IRC configuration uses the cfg command to edit server/channel/nick:
 
 ::
 
- > botcfg localhost #dunkbots botje
+ > botctl cfg localhost #dunkbots botje ~bart@127.0.0.1
 
 
 R S S
