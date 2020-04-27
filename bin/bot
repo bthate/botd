@@ -3,13 +3,13 @@
 #
 # bin/bot (irc bot)
 
-import os,sys ; sys.path.insert(0, os.getcwd())
-
 import bot
 import lo
 import logging
 import os
 import time
+
+from botd import __version__
 
 from bot.krn import Kernel
 from lo.csl import Console
@@ -23,7 +23,7 @@ opts = [
 def main():
     lo.workdir = os.path.join(os.path.expanduser("~/.botd"))
     lo.cdir(lo.workdir)
-    cfg = parse_cli("botd", opts, bot.__version__, """\n\n$ bot\t\t\tstarts a shell\n$ bot <cmd>\t\texecutes a command\n$ bot -m mod1,mod2\tloads modules""")
+    cfg = parse_cli("botd", opts, __version__, """\n\n$ bot\t\t\tstarts a shell\n$ bot <cmd>\t\texecutes a command\n$ bot -m mod1,mod2\tloads modules""")
     k = Kernel()
     mods = k.walk(cfg.modules)
     k.scan(mods)

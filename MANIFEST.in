@@ -1,2 +1,4 @@
 include README.rst
 include botd.service
+recursive-include bot *
+recursive-include lo *

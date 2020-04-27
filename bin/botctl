@@ -1,9 +1,7 @@
 #!/usr/bin/python3 -u
 # BOTLIB - Framework to program bots.
 #
-# bin/bot (irc bot)
-
-import os,sys ; sys.path.insert(0, os.getcwd())
+# bin/botctl (run command on the system bot)
 
 import bot
 import lo
@@ -14,11 +12,6 @@ import time
 from bot.krn import Kernel
 from lo.csl import Console
 from lo.shl import daemon, execute, parse_cli
-
-opts = [
-    ('-m', '--modules', 'store', str, "bot.shw", 'modules to load.', 'modules'),
-    ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
-]
 
 def main():
     lo.workdir = "/var/lib/botd"

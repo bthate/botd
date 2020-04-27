@@ -1,15 +1,15 @@
 #!/usr/bin/python3 -u
 # BOTLIB - Framework to program bots.
 #
-# bin/botsrv (bot service)
-
-#import os,sys ; sys.path.insert(0, os.getcwd())
+# bin/botd (bot daemon)
 
 import bot
 import lo
 import logging
 import os
 import time
+
+from botd import __version__
 
 from bot.krn import Kernel
 from lo.csl import Console
@@ -19,6 +19,7 @@ def main():
     lo.cdir("/var/lib/botd/store/")
     lo.cdir("/var/log/botd/")
     lo.workdir = "/var/lib/botd/"
+    lo.cfg.version = __version__
     level("debug", "/var/log/botd/botd.log")
     k = Kernel()
     k.cfg.last()

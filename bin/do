@@ -22,7 +22,7 @@ import urllib.request
 pipurl = "https://bootstrap.pypa.io/get-pip.py"
 buildouturl = "https://bootstrap.pypa.io/bootstrap-buildout.py"
 
-fname = "runbotd"
+fname = "run"
 installdir = os.path.join(os.getcwd(), fname)
 
 sys.path.insert(0, installdir)
@@ -140,11 +140,6 @@ except:
 
 try:
     shutil.copytree("mods", installdir + os.sep + "mods")
-except:
-    pass
-
-try:
-    shutil.copyfile("bin/install", installdir + os.sep + "bin/install")
 except:
     pass
 
