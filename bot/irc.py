@@ -41,7 +41,6 @@ class Cfg(Cfg):
         self.channel = "#botlib"
         self.ipv6 = False
         self.nick = "botlib"
-        self.owner = "~botlib@127.0.0.1"
         self.port = 6667
         self.realname = "botlib"
         self.server = "localhost"
@@ -435,14 +434,13 @@ def ERROR(handler, event):
     
 def NOTICE(handler, event):
     if event.txt.startswith("VERSION"):
-        txt = "\001VERSION %s %s - %s\001" % ("BOT", "1", "BOTLIB is a library to program bots. no copyright. no LICENSE")
+        txt = "\001VERSION %s %s - %s\001" % ("BOTD", "1", "BOTLIB is a library to program bots. no copyright. no LICENSE")
         handler.command("NOTICE", event.channel, txt)
 
 def PRIVMSG(handler, event):
     k = bot.get_kernel()
-    if k.cfg.users:
-        if not k.users.allowed(event.origin, "USER"):
-            return
+    if not k.users.allowed(event.origin, "USER"):
+        return
     if event.txt.startswith("DCC CHAT"):
         try:
             dcc = DCC()

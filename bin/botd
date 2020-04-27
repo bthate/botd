@@ -7,7 +7,10 @@ import bot
 import lo
 import logging
 import os
+import sys
 import time
+
+sys.path.insert(0, "/var/lib/botd/mods/")
 
 from botd import __version__
 from bot.krn import Kernel
@@ -23,9 +26,6 @@ def main():
     k = Kernel()
     k.cfg.last()
     mods = k.walk(k.cfg.modules)
-    k.scan(mods)
-    k.init(mods)
-    mods = k.walk("mods")
     k.scan(mods)
     k.init(mods)
     k.start()

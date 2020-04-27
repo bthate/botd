@@ -36,7 +36,6 @@ class Kernel(lo.hdl.Handler, lo.thr.Launcher):
         self._prompted.set()
         self._started = False
         self.cfg = Cfg()
-        self.cfg.users = False
         self.db = Db()
         self.fleet = Fleet()
         self.users = Users()
