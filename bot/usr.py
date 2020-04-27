@@ -92,7 +92,7 @@ def meet(event):
         event.reply("meet origin [permissions]")
         return
     origin = bot.usr.Users.userhosts.get(origin, origin)
-    bot.usr.Users().meet(origin, perms)
+    k.users.meet(origin, perms)
     event.reply("added %s" % origin)
 
 def users(event):

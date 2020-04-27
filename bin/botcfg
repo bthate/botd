@@ -18,14 +18,20 @@ else
     NICK=$3;
 fi
 if [ -z "$4" ]; then
-   MODULES="bot";
+   MODULES="bot,mods";
 else
    MODULES=$4;
+fi
+if [ -z "$5" ]; then
+   OWNER="~bart@127.0.0.1";
+else
+   OWNER=$5;
 fi
 
 botctl cfg irc server "$SERVER"
 botctl cfg irc channel "$CHANNEL"
 botctl cfg irc nick "$NICK"
 botctl cfg krn modules "$MODULES"
+botctl cfg krn owner "$OWNER"
 
 echo "done"

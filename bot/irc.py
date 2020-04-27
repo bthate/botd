@@ -375,10 +375,11 @@ class DCC(Handler):
             s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         else:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        info = socket.getaddrinfo(addr, port)
         try:
             s.connect((addr, port))
         except ConnectionRefusedError:
-            logging.error("connection to %s:%s refused" % (addr, port))
+            logging.error("connection to %s:%s refused" % (info[3], port))
             return
         k = bot.get_kernel()
         s.send(bytes('Welcome to BOTLIB %s !!\n' % event.nick, "utf-8"))
@@ -392,7 +393,7 @@ class DCC(Handler):
         launch(self.input)
         self._connected.set()
         super().start()
-        logging.warning("%s connected to DCC" % event.origin)
+        logging.warning("%s connected to DCC" % info[3])
 
     def input(self):
         while not self._stopped:
