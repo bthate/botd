@@ -1,8 +1,0 @@
-#!/bin/bash
-bin/clean
-python3 setup.py sdist
-python3 -mvirtualenv -p python3 env --extra-search-dir dist
-#python3 -mvirtualenv -p python3 --relocatable env
-source env/bin/activate
-env/bin/python3 env/bin/pip3 install botd -f -u
-tar zcvf env.tar.gz env
