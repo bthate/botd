@@ -2,8 +2,7 @@ R E A D M E
 ###########
 
 
-BOTD is a IRC channel daemon serving 24/7 in the background,
-it installs it's own botd.service file and can thus survive reboots.
+BOTD is a IRC channel daemon serving 24/7 in the background, it installs it's own botd.service file and can thus survive reboots.
 BOTD contains no copyright or LICENSE and is placed in the public domain.
 
 
@@ -25,13 +24,13 @@ you can also download with pip3 and install globally:
  > sudo pip3 install botd --upgrade --force-reinstall
 
 
-if you don't want the botd to start on boot after install run:
+if you want the botd to start on boot after install run:
 
 ::
 
- > sudo rm /etc/systemd/system/botd.service
-
-
+ > sudo cp botd.service /etc/systemd/system/botd.service
+ > sudo botctl cfg <server> <channel> <nick> <owner>
+ > sudo bothup
 
 U S A G E
 

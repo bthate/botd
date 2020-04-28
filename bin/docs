@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+
+""" generate obot documentation. """
+
+import importlib
+
+importlib.invalidate_caches()
+
+import sys, os
+
+projectname = "botd"
+source = os.getcwd()
+print("source is %s" % source)
+sys.path.insert(0, source)
+docdir = os.path.join(source, "docs")
+curdir = os.path.abspath(os.getcwd())
+targetdir = os.path.join(curdir, "docs")
+sys.path.insert(0, targetdir)
+os.environ['PYTHONPATH'] = os.path.abspath(source)
+
+for line in os.popen("./bin/clean 2>&1").readlines():
+    pass
+for line in os.popen("mkdir docs 2>&1").readlines():
+    pass
+for line in os.popen("rm -fR docs/html/").readlines():
+    pass
+for line in os.popen("rm -fR docs/obj/").readlines():
+    pass
+for line in os.popen("mkdir docs/html 2>&1").readlines():
+    pass
+for line in os.popen("mkdir docs/obj 2>&1").readlines():
+    pass
+for line in os.popen("sphinx-build -a -E %s %s/html" % (docdir, targetdir)).readlines():
+    pass
+
