@@ -1,0 +1,4 @@
+bot
+===
+
+.. automodule:: bot
