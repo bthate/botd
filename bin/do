@@ -110,8 +110,8 @@ if os.path.exists("dist"):
     runstring = '--always-copy --install-dir=%s --script-dir=%s/bin -a -U -l %s/dist/%s ' % (installdir, installdir, os.getcwd(), target)
     main(runstring.split())
 
-runstring = '--always-copy --install-dir=%s --script-dir=%s/bin -a -U feedparser' % (installdir, installdir)
-main(runstring.split())
+#runstring = '--always-copy --install-dir=%s --script-dir=%s/bin -a -U feedparser' % (installdir, installdir)
+#main(runstring.split())
 
 try:
     shutil.rmtree("%s/pip" % installdir)
@@ -140,11 +140,6 @@ except:
 
 try:
     shutil.copytree("mods", installdir + os.sep + "mods")
-except:
-    pass
-
-try:
-    shutil.copyfile("bin/install", installdir + os.sep + "bin/install")
 except:
     pass
 
