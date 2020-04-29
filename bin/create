@@ -1,0 +1,156 @@
+#!/usr/bin/env python3
+# build botd. no copyright. no LICENSE.
+#
+#
+
+import os; import sys
+sys.path.insert(0, os.getcwd())
+sys.path.insert(0, os.getcwd() + os.sep + "..")
+
+olddir = os.getcwd()
+
+import importlib
+
+importlib.invalidate_caches()
+
+import shutil
+import urllib
+import urllib.parse
+import urllib.request
+
+pipurl = "https://bootstrap.pypa.io/get-pip.py"
+buildouturl = "https://bootstrap.pypa.io/bootstrap-buildout.py"
+
+fname = "run"
+installdir = os.path.join(os.getcwd(), fname)
+
+sys.path.insert(0, installdir)
+
+print("setting PYTHONPATH to %s" % installdir)
+os.environ['PYTHONPATH'] = installdir
+os.environ['PYTHONUSERBASE'] = installdir
+
+def get_url(url):
+    url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
+    req = urllib.request.Request(url)
+    response = urllib.request.urlopen(req)
+    response.data = response.read()
+    return response
+
+try:
+    shutil.rmtree(installdir)
+except:
+    pass
+
+try:
+    os.mkdir(installdir)
+except:
+    pass
+
+if not os.path.exists("%s/get-pip.py" % installdir):
+    print("downloading pip")
+    resp = get_url(pipurl)
+    f = open("%s/get-pip.py" % installdir, "w")
+    f.write(str(resp.data, "utf-8"))
+    f.flush()
+    f.close()
+    for l in os.popen("python3 %s/get-pip.py -t %s" % (installdir, installdir)).readlines():
+        print(l)
+
+try:
+    import setuptools
+    import setuptools.command
+    from setuptools.command.easy_install import main
+except ImportError as ex:
+    print("setuptools is needed" % str(ex))
+    os._exit(0)
+
+def work(path):
+    if "run" in path:
+        return
+    os.chdir(path)
+    cleanpath = os.path.join(path, "bin/clean")
+    if os.path.isdir(cleanpath):
+        for x in os.popen().readlines():
+            print(x)
+    try:
+        shutil.rmtree("build")
+    except:
+        pass
+
+    try:
+        shutil.rmtree("dist")
+    except:
+        pass
+    nname = path.split(os.sep)[-1]
+    try:
+        shutil.rmtree("%s.egg-info" % nname)
+    except:
+        pass
+
+    try:
+        os.mkdir("dist")
+    except:
+        pass
+
+    for line in os.popen("python3 setup.py sdist").readlines():
+        print(line.strip())
+
+    fns = os.listdir("dist")
+    target = fname
+    highest = 0
+
+    for fn in fns:
+        ff = fn.split(".")
+        for f in ff:
+            try:
+                nr = int(f.split("-")[-1])
+                break
+            except:
+                pass
+        if nr > highest:
+            highest = nr
+            target = fn
+
+    os.chdir(olddir)
+    if os.path.exists("%s/dist" % path):
+        runstring = '--always-copy --install-dir=%s --script-dir=%s/bin -a -U -l %s/dist/%s ' % (installdir, installdir, path, target)
+        main(runstring.split())
+
+for path in os.listdir(os.curdir):
+    if os.path.isdir(path):
+        work(path)
+    os.chdir(olddir)
+
+try:
+    shutil.rmtree("%s/pip" % installdir)
+except:
+    pass
+
+try:
+    shutil.rmtree("%s/pip-19.1.1.dist-info" % installdir)
+except:
+    pass
+
+try:
+    shutil.rmtree("%s/wheel" % installdir)
+except:
+    pass
+
+try:
+    shutil.rmtree("%s/wheel-0.33.4.dist-info" % installdir)
+except:
+    pass
+
+try:
+    shutil.rmtree("%s/__pycache__" % installdir)
+except:
+    pass
+
+try:
+    os.remove(installdir + os.sep + "get-pip.py")
+except:
+    pass
+
+for line in os.popen("tar zcvf %s.tar.gz %s" % (fname.lower(), fname)).readlines():
+    print(line.strip())
