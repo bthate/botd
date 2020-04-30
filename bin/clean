@@ -1,3 +1,0 @@
-# cleanup all non distro files
-
-rm -fR docs/html docs/obj docs/*~ tests/*~ tests/__pycache__ env env.tar.gz lo/*~ *~ run run.tar.gz logs DEADJOE __pycache__ testdata build dist botd.egg-info *~  bin/*~
