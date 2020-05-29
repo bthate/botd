@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 
+__version__ = 15
+
 import unittest
 import doctest
 import sys
@@ -10,8 +12,6 @@ curdir = os.getcwd()
 sys.path.insert(0, curdir + os.sep)
 sys.path.insert(0, curdir + os.sep + '..' + os.sep)
 sys.path.insert(0, curdir + os.sep + '..' + os.sep + ".." + os.sep)
-
-from botd import __version__
 
 needs_sphinx='1.1'
 nitpick_ignore=[
