@@ -9,3 +9,6 @@ recommonmark==0.4.0
 sphinx<1.8
 sphinx-rtd-theme<0.5
 readthedocs-sphinx-ext<0.6
+libobj>=10
+botlib>=83
+botd>=10

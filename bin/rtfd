@@ -1,5 +1,5 @@
 #!/bin/bash
-#bin/clean
+bin/clean
 python3 -mvirtualenv -p python3 --extra-search-dir dist --copies env  
 #python3 -mvirtualenv -p python3 --no-cache-dir --no-site-packages env
 source env/bin/activate

@@ -72,7 +72,7 @@ html_show_copyright = False
 html_copy_source = True
 html_use_opensearch = 'http://mybot.rtfd.io/'
 html_file_suffix = '.html'
-rst_prolog = """.. image:: bl2.png
+rst_prolog = """.. image:: botd4.png
     :height: 3cm
     :width: 100%
 

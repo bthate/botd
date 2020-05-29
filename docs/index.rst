@@ -7,7 +7,7 @@ Welcome to BOTD, an IRC channel daemon serving 24/7 in the background, see https
 BOTD
 ####
 
-BOTD  can fetch RSS feeds, lets you program your own commands, can work as a UDP to IRC
+BOTD can fetch RSS feeds, lets you program your own commands, can work as a UDP to IRC
 relay, has user management to limit access to prefered users and can run as a service to let
 it restart after reboots. BOTD is the result of 20 years of programming bots, was there 
 in 2000, is here in 2020, has no copyright, no LICENSE and is placed in the Public Domain. 
@@ -27,21 +27,21 @@ U S A G E
 
  usage: .
 
-  > botd			- starts a shell
-  > botd <cmd>         		- executes a command
-  > botd cmds			- shows list of commands
-  > botd -m <mod1,mod2>		- load modules
-  > botd mods			- shows loadable modules
-  > botd -w <dir>		- use directory as workdir, default is ~/.botd
-  > botd cfg			- show configuration
-  > botd -d			- run as daemon
-  > botd -r			- root mode, use /var/lib/botd
-  > botd -o <op1,op2>		- set options
-  > botd -l <level>		- set loglevel
+  > bot				- starts a shell
+  > bot <cmd>         		- executes a command
+  > bot cmds			- shows list of commands
+  > bot -m <mod1,mod2>		- load modules
+  > bot mods			- shows loadable modules
+  > bot -w <dir>		- use directory as workdir, default is ~/.botd
+  > bot cfg			- show configuration
+  > bot -d			- run as daemon
+  > bot -r			- root mode, use /var/lib/botd
+  > bot -o <op1,op2>		- set options
+  > bot -l <level>		- set loglevel
 
  example:
 
-  > botd -m bot.irc -s localhost -c \#dunkbots -n botd --owner root@shell
+  > bot -m bot.irc -s localhost -c \#dunkbots -n botd --owner root@shell
 
 
 I N S T A L L
@@ -98,7 +98,7 @@ userhost of the owner with the --owner option:
 
 ::
 
- > botd --owner root@shell
+ > bot --owner root@shell
  > ok
 
 The owner of the bot is also the only one who can add other users to the
@@ -106,7 +106,7 @@ bot:
 
 ::
 
- > botd meet ~dunker@jsonbot/daddy
+ > bot meet ~dunker@jsonbot/daddy
  > ok
 
 I R C
@@ -116,13 +116,13 @@ IRC (bot.irc) need the -s <server> | -c <channel> | -n <nick> | --owner <userhos
 
 ::
 
- > botd -m bot.irc -s localhost -c \#dunkbots -n botd --owner ~bart@192.168.2.1 
+ > bot -m bot.irc -s localhost -c \#dunkbots -n botd --owner ~bart@192.168.2.1 
 
 for a list of modules to use see the mods command.
 
 ::
 
- > botd -m bot.shw mods
+ > bot -m bot.shw mods
  bot.ed|bot.irc|bot.dft|bot.krn|bot.usr|bot.shw|bot.udp|bot.ent|bot.rss|bot.flt|bot.fnd
 
 C O M M A N D L I N E
@@ -133,7 +133,7 @@ prompt, it will return with its own prompt:
 
 ::
 
- > botd
+ > bot
  > cmds
  cfg|cmds|fleet|mods|ps|up|v
 
@@ -141,14 +141,14 @@ if you provide bot with an argument it will run the bot command directly:
 
 ::
 
- > botd cmds
+ > bot cmds
  cfg|cmds|ed|fleet|mods|ps|up|v
 
 with the -m option you can provide a comma seperated list of modules to load:
 
 ::
 
- > botd -m bot.rss rss
+ > bot -m bot.rss rss
  https://www.telegraaf.nl/rss
 
 R S S
@@ -166,21 +166,21 @@ to add an url use the rss command with an url:
 
 ::
 
- > botd rss https://news.ycombinator.com/rss
+ > bot rss https://news.ycombinator.com/rss
  ok 1
 
 run the rss command to see what urls are registered:
 
 ::
 
- > botd rss
+ > bot rss
  0 https://news.ycombinator.com/rss
 
 the fetch command can be used to poll the added feeds:
 
 ::
 
- > botd fetch
+ > bot fetch
  fetched 0
 
 U D P
@@ -208,18 +208,6 @@ C O D I N G
 
 .. _source:
 
-BOTD contains the following modules:
-
-.. autosummary::
-    :toctree: 
-    :template: module.rst
-
-    bot			- botlib
-    bot.cfg             - configure
-    bot.ent		- log,todo
-    bot.irc             - irc bot
-    bot.rss             - rss to channel
-    bot.udp             - udp to channel
 
 BOTD uses the LIBOBJ library which also gets included in the package:
 
@@ -242,6 +230,19 @@ BOTD uses the LIBOBJ library which also gets included in the package:
     lo.trc              - trace
     lo.typ              - types
     lo.usr              - users
+
+BOTD also use the BOTLIB package which contains the following modules:
+
+.. autosummary::
+    :toctree: 
+    :template: module.rst
+
+    bot			- botlib
+    bot.cfg             - configure
+    bot.ent		- log,todo
+    bot.irc             - irc bot
+    bot.rss             - rss to channel
+    bot.udp             - udp to channel
 
 C O M M A N D S
 ===============
