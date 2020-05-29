@@ -13,7 +13,7 @@ def read():
 
 setup(
     name='botd',
-    version='14',
+    version='15',
     url='https://bitbucket.org/botlib/botd',
     author='Bart Thate',
     author_email='bthate@dds.nl',
@@ -22,9 +22,9 @@ setup(
     long_description_content_type="text/x-rst",
     license='Public Domain',
     zip_safe=True,
-    install_requires=["botlib", "feedparser"],
-    packages=["botd"],
-    scripts=["bin/bot", "bin/botctl", "bin/botd", "bin/bothup", "bin/botudp"],
+    install_requires=["feedparser"],
+    packages=["lo", "bot", "botd"],
+    scripts=["bin/bot", "bin/botcfg", "bin/botd", "bin/bothup", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',
                  'Operating System :: Unix',

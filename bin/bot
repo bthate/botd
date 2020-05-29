@@ -1,7 +1,26 @@
 #!/usr/bin/python3 -u
-# BOTLIB - Framework to program bots.
+# BOTD - IRC channel daemon serving 24/7 in the background
 #
 # bin/bot (irc bot)
+
+__version__ = 83
+__txt__ = """.
+
+ > bot                	- starts a shell
+ > bot <args>         	- executes a command
+ > bot cmds		- shows list of commands
+ > bot -m <mod1,mod2> 	- load modules
+ > bot mods		- shows loadable modules
+ > bot -w <dir>       	- use directory as workdir, default is ~/.mybot
+ > bot cfg		- show configuration
+ > bot -o <op1,op2>   	- set options
+ > bot -l <level>     	- set loglevel
+
+example:
+
+ > bot -m bot.irc -s localhost -c \#dunkbots -n mybot --owner root@shell
+
+"""
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
@@ -12,29 +31,34 @@ import os
 import sys
 import time
 
-from botd import __version__
-from bot.krn import Kernel
+from lo.krn import Kernel
 from lo.csl import Console
-from lo.shl import daemon, enable_history, execute, parse_cli, set_completer
+from lo.shl import daemon, enable_history, execute, level, parse_cli, set_completer
 
 opts = [
-    ('-w', '--workdir', 'store', str, "", "directory to work on", 'workdir'),
-    ('-m', '--modules', 'store', str, "bot.shw", 'modules to load.', 'modules'),
+    ('-c', '--channel', 'store', str, "", "channel to join", 'channel'),
     ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
+    ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
+    ('-n', '--nick', 'store', str, "", 'nickname to use.', 'nick'),
+    ('-o', '--options', 'store', str, "", "options to use", 'options'),
+    ('-r', '--root', 'store_true', False, 'use root', 'root'),
+    ('-s', '--server', 'store', str, "", "server to connect to", 'server'),
+    ('-w', '--workdir', 'store', str, "", "directory to work on", 'workdir'),
+    ('-x', '--owner', 'store', str, "", "owner's userhost", 'owner')
 ]
 
 def main():
-    cfg = parse_cli("botd", opts, __version__, """\n\n$ bot\t\t\tstarts a shell\n$ bot <cmd>\t\texecutes a command\n$ bot -m mod1,mod2\tloads modules""")
-    lo.workdir = cfg.workdir or os.path.join(os.path.expanduser("~/.botd"))
-    lo.cdir(lo.workdir)
+    parse_cli("botd", opts, __version__, __txt__)
+    if lo.cfg.root:
+        lo.cfg.workdir = lo.workdir = "/var/lib/botd"
+        lo.cfg.logfile = "/var/log/botd/botd.log"
+    level(lo.cfg.level, lo.cfg.logfile)
     k = Kernel()
-    mods = k.walk(cfg.modules)
-    k.scan(mods)
-    if cfg.txt:
-        k.cmd(cfg.txt)
+    if lo.cfg.txt:
+        k.walk(lo.cfg.modules or "lo,bot")
+        k.cmd(lo.cfg.txt)
         return
     k.start(True)
-    k.init(mods)
     set_completer(k.cmds)
     enable_history()
     k.wait()

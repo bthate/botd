@@ -1,28 +1,27 @@
 #!/usr/bin/python3 -u
-# BOTLIB - Framework to program bots.
+# BOTD - IRC channel daemon serving 24/7 in the background
 #
 # bin/botd (bot daemon)
 
-import lo
-import os
+__version__ = 83
 
-from botd import __version__
-from bot.krn import Kernel
+import lo
+import logging
+import os
+import time
+
+from lo.krn import Kernel
 from lo.shl import execute, level
 
 def main():
-    lo.cdir("/var/lib/botd/store/")
-    lo.cdir("/var/log/botd/")
-    lo.workdir = "/var/lib/botd/"
+    lo.cfg.workdir = lo.workdir = "/var/lib/botd"
+    lo.cfg.root = True
     lo.cfg.name = "botd"
-    lo.cfg.version = __version__
-    level("debug", "/var/log/botd/botd.log")
+    level("debug", "/var/log/botd/bot.log")
+    logging.warning("%s %s started on %s" % ("BOTD", __version__, time.ctime(time.time())))
     k = Kernel()
-    k.cfg.last()
-    mods = k.walk(k.cfg.modules)
-    k.scan(mods)
-    k.init(mods)
     k.start()
+    logging.debug(k.cfg)
     k.wait()
     
 execute(main)
