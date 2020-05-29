@@ -1,0 +1,23 @@
+if [ ! -f "/etc/systemd/system/botd.service" ] ; then 
+    echo "writing /etc/systemd/system/botd.service"
+    cat > /etc/systemd/system/botd.service <<-EOM
+[Unit]
+Description=botd
+
+[Service]
+ExecStart=/usr/local/bin/botd
+After=network-online.target
+Wants=network-online.target
+
+[Install]
+WantedBy=multi-user.target
+EOM
+fi
+bot -r ed bot.irc.Cfg server "$1"
+bot -r ed bot.irc.Cfg channel "$2"
+bot -r ed bot.irc.Cfg nick "$3"
+bot -r ed lo.krn.Cfg modules "$4"
+bot -r ed lo.krn.Cfg owner "$5"
+bot -r meet "$5" --owner root@shell
+bothup
+

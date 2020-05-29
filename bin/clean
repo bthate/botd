@@ -1,0 +1,1 @@
+rm -fR run run.tar.gz .data build/ mods/__pycache__ mods/*~ .data .readthedocs.yml~ env docs/*~ docs/_templates/*~ docs/lo* docs/bot* files/*~ docs/_build __pycache__ testdata tests/*~ tests/__pycache__ dist botlib.egg-info bot/*~ bot/__pycache__ lo/*~ lo/__pycache__ bot/*~ bot/__pycache__ *~ bin/*~ files/*~

@@ -1,0 +1,52 @@
+#!/usr/bin/python3
+#
+# run unittests.
+
+__version__ = 1
+
+import os,sys ; sys.path.insert(0, os.getcwd())
+
+import bot
+import lo
+import logging
+import os
+import shutil
+import time
+import unittest
+
+from lo.krn import Kernel
+from lo.shl import execute, level, parse_cli 
+from lo.tms import elapsed
+
+opts = [
+    ('-b', '--bork', 'store_true', False, 'bork on exception.', 'bork'),
+    ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose'),
+    ('-m', '--modules', 'store', str, "bot", 'modules to load.', 'modules'),
+    ('-o', '--options', 'store', str, "", 'options to use.', 'options'),
+    ('-w', '--workdir', 'store', str, ".data", 'set working directory.', 'workdir'),
+    ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
+]
+
+resume = {}
+
+def main():
+    try:
+        shutil.rmtree(".data")
+    except FileNotFoundError:
+        pass
+    lo.cdir(".data")
+    parse_cli("test", opts)
+    lo.cfg.debug = True
+    k = Kernel()
+    k.fleet.add(k)
+    mods = k.walk(lo.cfg.modules)
+    k.scan(mods)
+    k.start(False,False)
+    test_path = os.getcwd() + os.sep + "tests"
+    suite = unittest.loader.TestLoader().discover(test_path, pattern="test*")
+    unittest.TextTestRunner(verbosity=3).run(suite)
+    k.wait()
+   
+execute(main)
+print(elapsed(time.time() - lo.starttime))
+os._exit(0)

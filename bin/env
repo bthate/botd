@@ -1,0 +1,10 @@
+#!/bin/bash
+bin/clean
+python3 setup.py sdist
+ls dist
+python3 -mvirtualenv -p python3 --extra-search-dir dist --copies env  
+#python3 -mvirtualenv -p python3 --no-cache-dir --no-site-packages env
+cp bin/bot env/bin/bot
+source env/bin/activate
+env/bin/python3 env/bin/pip3 install -U -f dist -r requirements.txt
+tar zcvf env.tar.gz env > /dev/null
