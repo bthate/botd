@@ -22,14 +22,27 @@ example:
 
 """
 
-import os, sys ; sys.path.insert(0, os.getcwd())
+import sys, os
 
-import bot
-import lo
+sys.path.insert(0, os.getcwd())
+
+def scan_dir(dname):
+    if not os.path.isdir(dname):
+        return
+    for ename in os.listdir(dname):
+        if ename.endswith(".egg"):
+           sys.path.insert(0, os.path.join(dname, ename))
+
 import logging
 import os
 import sys
 import time
+
+scan_dir("eggs")
+
+import lo
+import bot
+import bot.mods
 
 from lo.krn import Kernel
 from lo.csl import Console
@@ -55,9 +68,11 @@ def main():
     level(lo.cfg.level, lo.cfg.logfile)
     k = Kernel()
     if lo.cfg.txt:
-        k.walk(lo.cfg.modules or "lo,bot")
+        k.walk(lo.cfg.modules or "bot.mods")
         k.cmd(lo.cfg.txt)
         return
+    if not lo.cfg.modules:
+        lo.cfg.modules = "bot.mods.shw"
     k.start(True)
     set_completer(k.cmds)
     enable_history()
