@@ -1,11 +1,9 @@
 .. title:: no copyright, no LICENSE, placed in the public domain
 
-Welcome to BOTD, an IRC channel daemon serving 24/7 in the background, see https://pypi.org/project/botd/ ;]
-
-| 
-
 BOTD
 ####
+
+Welcome to BOTD, an IRC channel daemon serving 24/7 in the background, see https://pypi.org/project/botd/ ;]
 
 BOTD can fetch RSS feeds, lets you program your own commands, can work as a UDP to IRC
 relay, has user management to limit access to prefered users and can run as a service to let
@@ -16,14 +14,17 @@ using and programming BOTD till the point you start programming your own bots yo
 
 Have fun coding ;]
 
-|
-
 U S A G E
 =========
 
 ::
 
- > botd --help
+  >
+  > bothup			- restart service
+  > botudp			- UDP to IRC relay.
+  > botcfg			- configure
+  > botd			- run service
+  > bot --help			- show help
 
  usage: .
 
@@ -42,34 +43,6 @@ U S A G E
  example:
 
   > bot -m bot.irc -s localhost -c \#dunkbots -n botd --owner root@shell
-
-
-I N S T A L L
-=============
-
-you can download with pip3 and install globally:
-
-::
-
- > sudo pip3 install botd 
-
-You can also download the tarball and install from that, see https://pypi.org/project/botd/#files
-
-::
-
- > sudo python3 setup.py install
-
-or install locally from tarball as a user:
-
-::
-
- > sudo python3 setup.py install --user
-
-if you want to develop on the bot clone the source at bitbucket.org:
-
-::
-
- > git clone https://bitbucket.org/botlib/botd
 
 S E R V I C E
 =============
@@ -173,7 +146,7 @@ run the rss command to see what urls are registered:
 
 ::
 
- > bot rss
+ > botctl rss
  0 https://news.ycombinator.com/rss
 
 the fetch command can be used to poll the added feeds:
@@ -208,7 +181,6 @@ C O D I N G
 
 .. _source:
 
-
 BOTD uses the LIBOBJ library which also gets included in the package:
 
 .. autosummary::
@@ -229,7 +201,7 @@ BOTD uses the LIBOBJ library which also gets included in the package:
     lo.typ              - types
     lo.usr              - users
 
-BOTD also use the BOTLIB package which contains the following modules:
+BOTD also use the BOTLIB package which contains the following services:
 
 .. autosummary::
     :toctree: 
@@ -240,6 +212,14 @@ BOTD also use the BOTLIB package which contains the following modules:
     bot.rss             - rss to channel
     bot.udp             - udp to channel
 
+BOTD provides the following modules with commands:
+
+
+.. autosummary::
+    :toctree: 
+    :template: module.rst
+
+
     bot.mods		- modules
     bot.mods.ed		- editor
     bot.mods.cfg	- config
@@ -247,9 +227,6 @@ BOTD also use the BOTLIB package which contains the following modules:
     bot.mods.fnd	- find
     bot.mods.shw	- show
     bot.mods.usr	- user
-
-C O M M A N D S
-===============
 
 basic code is a function that gets an event as a argument:
 
@@ -269,10 +246,33 @@ to give feedback to the user use the event.reply(txt) method:
 You can add you own modules to the botd package and if you want you can
 create your own package with commands in the botd namespace.
 
+I N S T A L L
+=============
 
-have fun coding ;]
+you can download with pip3 and install globally:
 
-| 
+::
+
+ > sudo pip3 install botd 
+
+You can also download the tarball and install from that, see https://pypi.org/project/botd/#files
+
+::
+
+ > sudo python3 setup.py install
+
+or install locally from tarball as a user:
+
+::
+
+ > sudo python3 setup.py install --user
+
+if you want to develop on the bot clone the source at bitbucket.org:
+
+::
+
+ > git clone https://bitbucket.org/botlib/botd
+
 
 C O N T A C T
 =============
