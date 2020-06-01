@@ -70,9 +70,9 @@ html_show_sourcelink = True
 html_show_sphinx = True
 html_show_copyright = False
 html_copy_source = True
-html_use_opensearch = 'http://mybot.rtfd.io/'
+html_use_opensearch = 'http://botd.rtfd.io/'
 html_file_suffix = '.html'
-rst_prolog = """.. image:: botd4.png
+rst_prolog = """.. image:: botd.png
     :height: 3cm
     :width: 100%
 

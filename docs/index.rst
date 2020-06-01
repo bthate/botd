@@ -217,14 +217,12 @@ BOTD uses the LIBOBJ library which also gets included in the package:
 
     lo			- libobj
     lo.clk              - clock
-    lo.cmd		- edit/find
     lo.csl              - console 
     lo.flt              - fleet
     lo.gnr		- generic
     lo.hdl              - handler
     lo.krn              - core handler
     lo.shl              - shell
-    lo.shw              - show runtime
     lo.thr              - threads
     lo.tms              - times
     lo.trc              - trace
@@ -238,11 +236,17 @@ BOTD also use the BOTLIB package which contains the following modules:
     :template: module.rst
 
     bot			- botlib
-    bot.cfg             - configure
-    bot.ent		- log,todo
-    bot.irc             - irc bot
+    bot.irc             - IRC bot
     bot.rss             - rss to channel
     bot.udp             - udp to channel
+
+    bot.mods		- modules
+    bot.mods.ed		- editor
+    bot.mods.cfg	- config
+    bot.mods.ent	- log,todo
+    bot.mods.fnd	- find
+    bot.mods.shw	- show
+    bot.mods.usr	- user
 
 C O M M A N D S
 ===============
