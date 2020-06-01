@@ -6,22 +6,15 @@
 __version__ = 83
 
 import lo
-import logging
 import os
-import time
 
-from lo.krn import Kernel
-from lo.shl import execute, level
+from lo import Kernel, execute, level
 
 def main():
-    lo.cfg.workdir = lo.workdir = "/var/lib/botd"
-    lo.cfg.root = True
-    lo.cfg.name = "botd"
+    lo.workdir = "/var/lib/botd"
     level("debug", "/var/log/botd/bot.log")
-    logging.warning("%s %s started on %s" % ("BOTD", __version__, time.ctime(time.time())))
     k = Kernel()
     k.start()
-    logging.debug(k.cfg)
     k.wait()
     
 execute(main)

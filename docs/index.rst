@@ -19,15 +19,10 @@ U S A G E
 
 ::
 
-  >
-  > bothup			- restart service
-  > botudp			- UDP to IRC relay.
-  > botcfg			- configure
-  > botd			- run service
-  > bot --help			- show help
 
  usage: .
 
+  > bot --help			- show help
   > bot				- starts a shell
   > bot <cmd>         		- executes a command
   > bot cmds			- shows list of commands
@@ -39,6 +34,10 @@ U S A G E
   > bot -r			- root mode, use /var/lib/botd
   > bot -o <op1,op2>		- set options
   > bot -l <level>		- set loglevel
+  > botd			- run service
+  > botcfg			- configure
+  > bothup			- restart service
+  > botudp			- UDP to IRC relay.
 
  example:
 

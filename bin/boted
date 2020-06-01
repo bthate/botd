@@ -16,6 +16,6 @@ def main():
     k = Kernel()
     k.walk("bot.mods.ed")
     k.cmd("ed %s" % " ".join(sys.argv[1:]))
-    
+                 
 execute(main)
 os._exit(0)

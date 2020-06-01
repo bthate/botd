@@ -44,12 +44,14 @@ import lo
 import bot
 import bot.mods
 
+from lo import daemon, execute, level, parse_cli
 from lo.krn import Kernel
 from lo.csl import Console
-from lo.shl import daemon, enable_history, execute, level, parse_cli, set_completer
+from lo.shl import enable_history, set_completer
 
 opts = [
     ('-c', '--channel', 'store', str, "", "channel to join", 'channel'),
+    ('-d', '--daemon', 'store_true', False, 'use root', 'daemon'),
     ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
     ('-m', '--modules', 'store', str, "", 'modules to load.', 'modules'),
     ('-n', '--nick', 'store', str, "", 'nickname to use.', 'nick'),
@@ -61,7 +63,9 @@ opts = [
 ]
 
 def main():
-    parse_cli("botd", opts, __version__, __txt__)
+    cfg = parse_cli("botd", opts, __version__, __txt__)
+    if cfg.daemon:
+        daemon()
     if lo.cfg.root:
         lo.cfg.workdir = lo.workdir = "/var/lib/botd"
         lo.cfg.logfile = "/var/log/botd/botd.log"

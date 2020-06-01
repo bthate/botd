@@ -13,11 +13,11 @@ Wants=network-online.target
 WantedBy=multi-user.target
 EOM
 fi
-bot -r ed bot.irc.Cfg server "$1"
-bot -r ed bot.irc.Cfg channel "$2"
-bot -r ed bot.irc.Cfg nick "$3"
-bot -r ed lo.krn.Cfg modules "$4"
-bot -r ed lo.krn.Cfg owner "$5"
-bot -r meet "$5" --owner root@shell
+boted bot.irc.Cfg server "$1"
+boted bot.irc.Cfg channel "$2"
+boted bot.irc.Cfg nick "$3"
+boted lo.krn.Cfg modules "$4"
+boted lo.krn.Cfg owner "$5"
+botctl meet "$5" --owner root@shell
 bothup
 

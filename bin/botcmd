@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
-import lo
-import os
+import os, sys
+from lo import execute
 
 def main():
-    lo.shl.parse_cli("botcmd", (), 1)
-    for l in os.popen(lo.cfg.txt).readlines():
-        print(l.rstrip())
+    for line in os.popen(" ".join(sys.argv[1:])).readlines():
+        print(line.rstrip())
     
-lo.shl.execute(main)
+execute(main)
 os._exit(0)

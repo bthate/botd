@@ -24,7 +24,7 @@ setup(
     zip_safe=True,
     install_requires=["libobj", "botlib", "feedparser"],
     packages=["botd"],
-    scripts=["bin/bot", "bin/botcfg", "bin/botd", "bin/bothup", "bin/botudp"],
+    scripts=["bin/bot", "bin/botcfg", "bin/botcmd", "bin/boted", "bin/botd", "bin/bothup", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',
                  'Operating System :: Unix',
