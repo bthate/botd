@@ -76,7 +76,7 @@ def main():
         k.cmd(lo.cfg.txt)
         return
     if not lo.cfg.modules:
-        lo.cfg.modules = "bot,bot.mods"
+        lo.cfg.modules = "bot.mods"
     k.start(True)
     set_completer(k.cmds)
     enable_history()
