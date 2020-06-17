@@ -7,31 +7,23 @@
 
 #import os, sys ; sys.path.insert(0, os.getcwd())
 
-from bot.spc import Console, Kernel
+from bot.spc import Console, Kernel, __version__
 from bot.spc import daemon, execute, os, parse_cli, root
-
-from bot.irc import IRC
-from bot.krn import __version__
 
 ## defines
 
 opts = [
     ('-l', '--loglevel', 'store', str, "debug", 'set loglevel.', 'level'),
     ('-o', '--options', 'store', str, "", "options to use", 'options'),
-    ('-w', '--workdir', 'store', str, os.path.expanduser("~/.bot"), "directory to work on", 'workdir'),
+    ('-w', '--workdir', 'store', str, "", "directory to work on", 'workdir'),
 ]
 
 ## main
 
 def main():
-    cfg = parse_cli("bot", opts, version=__version__)
+    cfg = parse_cli("bcmd", opts, str(__version__))
     k = Kernel(cfg)
     k.scan("bot")
-    k.start()
-    c = Console()
-    c.start()
-    i = IRC()
-    i.start() 
-    k.wait()
+    return k.cmd(cfg.txt)
 
 execute(main)

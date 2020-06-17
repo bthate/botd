@@ -1,1 +1,1 @@
-rm -fR docs/bot*.rst run run.tar.gz .data build/ mods/__pycache__ mods/*~ .data .readthedocs.yml~ env docs/*~ docs/_templates/*~ docs/lo* files/*~ docs/_build __pycache__ testdata tests/*~ tests/__pycache__ botd.egg-info bot/*~ bot/__pycache__ lo/*~ lo/__pycache__ bot/*~ bot/__pycache__ *~ bin/*~ files/*~
+rm -fR *~ dist build env botlib.egg-info  bin/*~ bot/__pycache__ bot/*~  tests/*~ tests/__pycache__

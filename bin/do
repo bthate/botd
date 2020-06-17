@@ -72,18 +72,9 @@ try:
 except:
     pass
 
-try:
-    shutil.rmtree("dist")
-except:
-    pass
 
 try:
     shutil.rmtree("%s.egg-info" % fname)
-except:
-    pass
-
-try:
-    os.mkdir("dist")
 except:
     pass
 

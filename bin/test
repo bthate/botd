@@ -4,49 +4,41 @@
 
 __version__ = 1
 
+## imports
+
 import os,sys ; sys.path.insert(0, os.getcwd())
 
-import bot
-import lo
-import logging
-import os
-import shutil
-import time
-import unittest
+import logging, os, shutil, time, unittest
 
-from lo.krn import Kernel
-from lo.shl import execute, level, parse_cli 
-from lo.tms import elapsed
+from bot.spc import k
+from bot.spc import cdir, execute, elapsed, parse_cli, starttime
+
+import bot.rss
+
+## defines
 
 opts = [
-    ('-b', '--bork', 'store_true', False, 'bork on exception.', 'bork'),
-    ('-v', '--verbose', 'store_true', False, 'enable verbose mode.', 'verbose'),
-    ('-m', '--modules', 'store', str, "bot", 'modules to load.', 'modules'),
-    ('-o', '--options', 'store', str, "", 'options to use.', 'options'),
-    ('-w', '--workdir', 'store', str, ".data", 'set working directory.', 'workdir'),
-    ('-l', '--loglevel', 'store', str, "error", 'set loglevel.', 'level'),
+    ('-l', '--loglevel', 'store', str, "debug", 'set loglevel.', 'level'),
+    ('-o', '--options', 'store', str, "", "options to use", 'options'),
+    ('-w', '--workdir', 'store', str, "", "directory to work on", 'workdir'),
 ]
 
-resume = {}
+## main
 
 def main():
-    try:
+    if os.path.exists(".data"):
         shutil.rmtree(".data")
-    except FileNotFoundError:
-        pass
-    lo.cdir(".data")
-    parse_cli("test", opts)
-    lo.cfg.debug = True
-    k = Kernel()
-    k.fleet.add(k)
-    mods = k.walk(lo.cfg.modules)
-    k.scan(mods)
-    k.start(False,False)
+    parse_cli("test", opts, wd=".data")
+    bot.rss.debug = True
+    k.start()
+    k.scan()
     test_path = os.getcwd() + os.sep + "tests"
+    print(k.fleet.bots)
     suite = unittest.loader.TestLoader().discover(test_path, pattern="test*")
     unittest.TextTestRunner(verbosity=3).run(suite)
     k.wait()
    
 execute(main)
-print(elapsed(time.time() - lo.starttime))
+
+print(elapsed(time.time() - starttime))
 os._exit(0)
