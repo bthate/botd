@@ -58,7 +58,7 @@ html_theme = "haiku"
 html_theme_path = []
 html_short_title = ""
 #html_short_title = "BOTD %s" % __version__
-html_favicon = "smile2.png"
+html_favicon = "botlibsmile.png"
 html_static_path = []
 html_extra_path = []
 html_last_updated_fmt = '%Y-%b-%d'
@@ -66,13 +66,13 @@ html_additional_pages = {}
 html_domain_indices = True
 html_use_index = True
 html_split_index = True
-html_show_sourcelink = True
-html_show_sphinx = True
+html_show_sourcelink = False
+html_show_sphinx = False
 html_show_copyright = False
-html_copy_source = True
+html_copy_source = False
 html_use_opensearch = 'http://botd.rtfd.io/'
 html_file_suffix = '.html'
-rst_prolog = """.. image:: botd4.png
+rst_prolog = """.. image:: botlibline.png
     :height: 3cm
     :width: 100%
 
