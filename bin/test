@@ -2,41 +2,26 @@
 #
 # run unittests.
 
-__version__ = 1
-
-## imports
-
-import os,sys ; sys.path.insert(0, os.getcwd())
-
 import logging, os, shutil, time, unittest
 
-from bot.spc import k
-from bot.spc import cdir, execute, elapsed, parse_cli, starttime
+from bot.obj import cdir
+from bot.krn import k, starttime
+from bot.shl import execute, parse_cli
+from bot.tms import elapsed
 
 import bot.rss
-
-## defines
-
-opts = [
-    ('-l', '--loglevel', 'store', str, "debug", 'set loglevel.', 'level'),
-    ('-o', '--options', 'store', str, "", "options to use", 'options'),
-    ('-w', '--workdir', 'store', str, "", "directory to work on", 'workdir'),
-]
-
-## main
 
 def main():
     if os.path.exists(".data"):
         shutil.rmtree(".data")
-    parse_cli("test", opts, wd=".data")
+    cfg = parse_cli("test")
+    bot.obj.workdir = ".data"
     bot.rss.debug = True
     k.start()
-    k.scan()
     test_path = os.getcwd() + os.sep + "tests"
-    print(k.fleet.bots)
     suite = unittest.loader.TestLoader().discover(test_path, pattern="test*")
     unittest.TextTestRunner(verbosity=3).run(suite)
-    k.wait()
+    res = k.wait()
    
 execute(main)
 

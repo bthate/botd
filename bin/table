@@ -1,0 +1,29 @@
+#!/usr/bin/python3 -u
+# BOTLIB - the bot library !
+#
+#
+
+import os, sys ; sys.path.insert(0, os.getcwd())
+
+from bot.obj import Object, tojson
+from bot.itr import find_cls, find_names, find_types, walk
+from bot.krn import k
+from bot.hdl import direct
+from bot.shl import execute
+
+def main():
+    mods = walk("bot")
+    names = Object()
+    cls = Object()
+    for mod in mods.values():
+        nms = find_names(mod)
+        if nms:
+            names.update(nms)
+    print("names = %s" % tojson(names))
+    for mod in mods.values():
+        c = find_cls(mod)
+        if c:
+            cls.update(c)
+    print("classes = %s" % tojson(cls))
+ 
+execute(main)

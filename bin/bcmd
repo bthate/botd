@@ -3,27 +3,87 @@
 #
 #
 
-## imports
+import os
 
-#import os, sys ; sys.path.insert(0, os.getcwd())
+from bot.csl import Console
+from bot.itr import find_shorts
+from bot.shl import daemon, execute, parse_cli, root, setwd
+from bot.krn import k, __version__
 
-from bot.spc import Console, Kernel, __version__
-from bot.spc import daemon, execute, os, parse_cli, root
+txt="""[Unit]
+Description=BOTD - the 24/7 channel daemon
+After=network-online.target
+Wants=network-online.target
 
-## defines
+[Service]
+ExecStart=/usr/local/bin/botd
 
-opts = [
-    ('-l', '--loglevel', 'store', str, "debug", 'set loglevel.', 'level'),
-    ('-o', '--options', 'store', str, "", "options to use", 'options'),
-    ('-w', '--workdir', 'store', str, "", "directory to work on", 'workdir'),
-]
+[Install]
+WantedBy=multi-user.target
+"""
 
-## main
+def ed(event):
+    if not event.args:
+        event.reply(list_files(bot.obj.workdir) or "no files yet")
+        return
+    cn = event.args[0]
+    shorts = find_shorts("bot")
+    if shorts:
+        cn = shorts[0]
+    db = Db()
+    l = db.last(cn)
+    if not l:
+        try:
+            c = get_cls(cn)
+            l = c()
+            event.reply("created %s" % cn)
+        except ENOCLASS:
+            event.reply(list_files(bot.obj.workdir) or "no files yet")
+            return
+    if len(event.args) == 1:
+        event.reply(l)
+        return
+    if len(event.args) == 2:
+        setter = {event.args[1]: ""}
+    else:
+        setter = {event.args[1]: event.args[2]}
+    edit(l, setter)
+    save(l)
+    event.reply("ok")
+
+def hup(event):
+    for x in os.popen("service botd stop").readlines():
+        print(x.rstrip())
+    for x in os.popen("service botd start").readlines():
+        print(x.rstrip())
+    for x in os.popen("systemctl status botd --no-pager").readlines():
+        print(x.rstrip())
+    event.reply("ok")
+    
+def install(event):
+    f = open("/etc/systemd/system/botd.service", "w")
+    f.write(txt)
+    f.close()
+    os.popen("systemctl enable botd")
+    os.popen("systemctl daemon-reload")
+    event.reply("ok")
+
+def remove(event):
+    p = "/etc/systemd/system/botd.service"
+    if os.path.exists(p):
+        for l in os.popen("rm %s" % p).readlines():
+            print(l) 
+    event.reply("ok")
 
 def main():
-    cfg = parse_cli("bcmd", opts, str(__version__))
-    k = Kernel(cfg)
-    k.scan("bot")
-    return k.cmd(cfg.txt)
+    setwd("bot")
+    cfg = parse_cli("bot")
+    if root():
+        k.cmds.register("hup", hup)
+        k.cmds.register("install", install)
+        k.cmds.register("remove", remove)
+    k.cmds.register("ed", ed)
+    if cfg.txt:
+        k.cmd(cfg.txt)
 
 execute(main)

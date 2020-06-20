@@ -3,35 +3,24 @@
 #
 #
 
-## imports
+__version__ = 86
 
-#import os, sys ; sys.path.insert(0, os.getcwd())
-
-from bot.spc import Console, Kernel
-from bot.spc import daemon, execute, os, parse_cli, root
-
+from bot.csl import Console
 from bot.irc import IRC
-from bot.krn import __version__
+from bot.krn import k
+from bot.shl import cfg, execute, parse_cli, setwd
 
-## defines
-
-opts = [
-    ('-l', '--loglevel', 'store', str, "debug", 'set loglevel.', 'level'),
-    ('-o', '--options', 'store', str, "", "options to use", 'options'),
-    ('-w', '--workdir', 'store', str, os.path.expanduser("~/.bot"), "directory to work on", 'workdir'),
-]
-
-## main
+import sys
 
 def main():
-    cfg = parse_cli("bot", opts, version=__version__)
-    k = Kernel(cfg)
-    k.scan("bot")
+    parse_cli("bot")
+    setwd("bot")
     k.start()
+    if "-i" in sys.argv:
+        i = IRC()
+        i.start()
     c = Console()
     c.start()
-    i = IRC()
-    i.start() 
     k.wait()
 
 execute(main)

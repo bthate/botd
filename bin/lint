@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+# BOTLIB - the bot library !
+#
+#
+
+import os, sys
+
+skip = "R0801,C0411,C0116"
+
+if len(sys.argv) > 1:
+    txt = "pylint -d %s %s" % (skip, " ".join(sys.argv[1:]))
+    for line in os.popen(txt).readlines():
+        print(line)
