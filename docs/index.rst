@@ -1,171 +1,123 @@
-.. title:: no copyright, no LICENSE, placed in the public domain
+B O T L I B
+###########
 
-BOTD
-####
+Welcome to BOTLIB, the bot library ! see https://pypi.org/project/botlib/ , it's public domain ;]
 
-Welcome to BOTD, an IRC channel daemon serving 24/7 in the background, see https://pypi.org/project/botd/ ;]
-
-BOTD can fetch RSS feeds, lets you program your own commands, can work as a UDP to IRC
+BOTLIB can fetch RSS feeds, lets you program your own commands, can work as a UDP to IRC
 relay, has user management to limit access to prefered users and can run as a service to let
-it restart after reboots. BOTD is the result of 20 years of programming bots, was there 
+it restart after reboots. BOTLIB is the result of 20 years of programming bots, was there 
 in 2000, is here in 2020, has no copyright, no LICENSE and is placed in the Public Domain. 
-This makes BOTD truely free (pastable) code you can use how you see fit, i hope you enjoy 
-using and programming BOTD till the point you start programming your own bots yourself.
+This makes BOTLIB truely free (pastable) code you can use how you see fit, i hope you enjoy 
+using and programming BOTLIB till the point you start programming your own bots yourself.
 
-Have fun coding ;]
+have fun coding, source is :ref:`here <source>` ;]
+
+I N S T A L L
+=============
+
+you can download with pip3 and install globally:
+
+::
+
+ > sudo pip3 install botlib
+
+You can also download the tarball and install from that, see https://pypi.org/project/botlib/#files
+
+if you want to develop on the bot clone the source at bitbucket.org:
+
+::
+
+ > git clone https://bitbucket.org/bthate/botlib
+
+if you want to run the bot 24/7 you can install BOTLIB as a service for
+the systemd daemon. You can do this by running the following:
+
+::
+
+ > sudo bcmd install
+
+if you don't want the bot to startup at boot, remove the service file:
+
+::
+
+ > sudo bcmd remove
+
+C O N F I G
+===========
+
+to configure the bot use the ed (edit) command, with sudo:
+
+::
+
+ > bcmd cfg <server> <channel> <nick>
+ > bcmd hup
 
 U S A G E
 =========
 
-::
+BOTLIB detects whether it is run as root or as a user. if it's root it
+will use the /var/lib/botd directory and it it's user it will use ~/.bot
 
-
- usage: .
-
-  > bot --help			- show help
-  > bot				- starts a shell
-  > bot <cmd>         		- executes a command
-  > bot cmds			- shows list of commands
-  > bot -m <mod1,mod2>		- load modules
-  > bot mods			- shows loadable modules
-  > bot -w <dir>		- use directory as workdir, default is ~/.botd
-  > bot cfg			- show configuration
-  > bot -d			- run as daemon
-  > bot -r			- root mode, use /var/lib/botd
-  > bot -o <op1,op2>		- set options
-  > bot -l <level>		- set loglevel
-  > botd			- run service
-  > botcfg			- configure
-  > bothup			- restart service
-  > botudp			- UDP to IRC relay.
-
- example:
-
-  > bot -m bot.irc -s localhost -c \#dunkbots -n botd --owner root@shell
-
-S E R V I C E
-=============
-
-if you want to run the bot 24/7 you can install BOTD as a service for
-the systemd daemon. You can do this by running the botcfg program which let's you 
-enter <server> <channel> <nick> <modules> <owner> on the command line:
-
-::
-
- > sudo botcfg localhost \#botd botd bot.irc,bot.rss ~bart@127.0.0.1
-
-botcfg installs a service file in /etc/systemd/system, installs data in /var/lib/botd and runs bothup to restart the service with the new configuration.
-logs are in /var/log/botd/botd.log. If you don't want botd to start at boot, remove the botd.service file:
-
-::
-
- > sudo rm /etc/systemd/system/botd.service 
-
-
-U S E R S
-=========
-
-The bot only allows communication to registered users. You can add the
-userhost of the owner with the --owner option:
-
-::
-
- > bot --owner root@shell
- > ok
-
-The owner of the bot is also the only one who can add other users to the
-bot:
-
-::
-
- > bot meet ~dunker@jsonbot/daddy
- > ok
-
-I R C
-=====
-
-IRC (bot.irc) need the -s <server> | -c <channel> | -n <nick> | --owner <userhost> options:
-
-::
-
- > bot -m bot.irc -s localhost -c \#dunkbots -n botd --owner ~bart@192.168.2.1 
-
-for a list of modules to use see the mods command.
-
-::
-
- > bot -m bot.shw mods
- bot.ed|bot.irc|bot.dft|bot.krn|bot.usr|bot.shw|bot.udp|bot.ent|bot.rss|bot.flt|bot.fnd
-
-C O M M A N D L I N E
-=====================
-
-the basic program is called (?) bot, you can run it by tying bot on the
+BOTLIB has it's own CLI, you can run it by giving the bot command on the
 prompt, it will return with its own prompt:
 
 ::
 
  > bot
  > cmds
- cfg|cmds|fleet|mods|ps|up|v
+ cfg|cmds|ed|find|fleet|meet|ps|udp
+ >
 
-if you provide bot with an argument it will run the bot command directly:
-
-::
-
- > bot cmds
- cfg|cmds|ed|fleet|mods|ps|up|v
-
-with the -m option you can provide a comma seperated list of modules to load:
+you can use bot cmd with arguments to run a command directly:
 
 ::
 
- > bot -m bot.rss rss
- https://www.telegraaf.nl/rss
+ > bcmd cmds
+ cfg|cmds|ed|find|fleet|meet|ps|udp
+
+if you run with sudo, you will get additional command like install,cfg and hup:
+
+::
+
+ > sudo bcmd cmds
+ cfg|cmds|ed|find|fleet|hup|install|meet|ps|remove|udp
+
 
 R S S
 =====
-
-the rss plugin uses the feedparser package, you need to install that yourself:
-
-::
-
- > pip3 install feedparser
-
-starts the rss fetcher with -m bot.rss.
 
 to add an url use the rss command with an url:
 
 ::
 
- > bot rss https://news.ycombinator.com/rss
+ > bcmd rss https://news.ycombinator.com/rss
  ok 1
 
 run the rss command to see what urls are registered:
 
 ::
 
- > botctl rss
+ > bcmd rss
  0 https://news.ycombinator.com/rss
 
 the fetch command can be used to poll the added feeds:
 
 ::
 
- > bot fetch
+ > bcmd fetch
  fetched 0
 
 U D P
 =====
 
-using udp to relay text into a channel, use the botudp program to send text via the bot 
+using udp to relay text into a channel, use the okudp program to send text via the bot 
 to the channel on the irc server:
 
 ::
 
- > tail -f ~/.botd/logs/botd.log | botudp 
+ > tail -f /var/log/syslog | bcmd udp
 
-to send a message to the IRC channel, send a udp packet to the bot:
+to send the tail output to the IRC channel, send a udp packet to the bot:
 
 ::
 
@@ -175,108 +127,46 @@ to send a message to the IRC channel, send a udp packet to the bot:
      sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
      sock.sendto(bytes(txt.strip(), "utf-8"), host, port)
 
-C O D I N G
+S O U R C E
 ===========
 
-.. _source:
+BOTLIB used the oklib package that has the following modules.
 
-BOTD uses the LIBOBJ library which also gets included in the package:
+::
 
-.. autosummary::
-    :toctree: 
-    :template: module.rst
-
-    lo			- libobj
-    lo.clk              - clock
-    lo.csl              - console 
-    lo.flt              - fleet
-    lo.gnr		- generic
-    lo.hdl              - handler
-    lo.krn              - core handler
-    lo.shl              - shell
-    lo.thr              - threads
-    lo.tms              - times
-    lo.trc              - trace
-    lo.typ              - types
-    lo.usr              - users
-
-BOTD also use the BOTLIB package which contains the following services:
-
-.. autosummary::
-    :toctree: 
-    :template: module.rst
-
-    bot			- botlib
-    bot.irc             - IRC bot
-    bot.rss             - rss to channel
+    bot.clk             - clock/repeater
+    bot.cmd             - commands
+    bot.csl             - console
+    bot.fil             - file 
+    bot.hdl             - handler
+    bot.irc             - internet relay chat
+    bot.itr             - introspect
+    bot.krn             - core handler
+    bot.obj             - base classes
+    bot.opr             - opers
+    bot.prs             - parse
+    bot.rss             - rich site syndicate
+    bot.shl             - shell
+    bot.thr             - threads
+    bot.tms             - time
+    bot.trc             - trace
     bot.udp             - udp to channel
 
-BOTD provides the following modules with commands:
 
-
-.. autosummary::
-    :toctree: 
-    :template: module.rst
-
-
-    bot.mods		- modules
-    bot.mods.ed		- editor
-    bot.mods.cfg	- config
-    bot.mods.ent	- log,todo
-    bot.mods.fnd	- find
-    bot.mods.shw	- show
-    bot.mods.usr	- user
-
-basic code is a function that gets an event as a argument:
-
-::
-
- def command(event):
-     << your code here >>
-
-to give feedback to the user use the event.reply(txt) method:
-
-::
-
- def command(event):
-     event.reply("yooo %s" % event.origin)
-
-
-You can add you own modules to the botd package and if you want you can
-create your own package with commands in the botd namespace.
-
-I N S T A L L
-=============
-
-you can download with pip3 and install globally:
-
-::
-
- > sudo pip3 install botd 
-
-You can also download the tarball and install from that, see https://pypi.org/project/botd/#files
-
-::
-
- > sudo python3 setup.py install
-
-or install locally from tarball as a user:
-
-::
-
- > sudo python3 setup.py install --user
-
-if you want to develop on the bot clone the source at bitbucket.org:
-
-::
-
- > git clone https://bitbucket.org/botlib/botd
-
+You can add you own modules to the bot package, its a namespace package.
 
 C O N T A C T
 =============
+
+|
 
 you can contact me on IRC/freenode/#dunkbots or email me at bthate@dds.nl
 
 | Bart Thate (bthate@dds.nl, thatebart@gmail.com)
 | botfather on #dunkbots irc.freenode.net
+
+.. toctree::
+    :hidden:
+    :glob:
+
+    *
