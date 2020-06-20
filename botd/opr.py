@@ -4,9 +4,9 @@
 
 import os, select, socket, threading, time
 
-from .obj import Object, starttime
-from .krn import k
-from .tms import elapsed
+from bot.obj import Object, starttime
+from bot.krn import k
+from bot.tms import elapsed
 
 def meet(event):
     if not event.args:

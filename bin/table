@@ -12,7 +12,7 @@ from bot.hdl import direct
 from bot.shl import execute
 
 def main():
-    mods = walk("bot")
+    mods = walk("botd")
     names = Object()
     cls = Object()
     for mod in mods.values():
