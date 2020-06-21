@@ -7,7 +7,8 @@ import socket
 import sys
 import time
 
-from bot.obj import Cfg, Object, last
+from bot.dbs import last
+from bot.obj import Cfg, Object
 from bot.krn import k
 from bot.thr import launch
 

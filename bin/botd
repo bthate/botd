@@ -15,11 +15,12 @@ def main():
     if not root():
         daemon()        
     cfg = parse_cli("bot")
+    k.start()
+    k.walk("botd")
     i = IRC()
     i.start()
     f = Fetcher()
     f.start()
-    k.start()
     k.wait()
        
 execute(main)

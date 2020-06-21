@@ -14,9 +14,10 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 from urllib.request import Request, urlopen
 
-from bot.obj import Cfg, Db, Default, Object, edit, last, save
 from bot.clk import Repeater
+from bot.dbs import Db, last
 from bot.krn import k
+from bot.obj import Cfg, Default, Object, edit, save
 from bot.thr import launch
 from bot.tms import to_time, day
 

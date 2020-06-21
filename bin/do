@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# GENOCLAIM - https://genoclaim.rtfd.io - OTP-CR-117_19 - otp.informationdesk@icc-cpi.int
+# BOTD - the 24/7 channel daemon.
 #
-# build genoclaim with dependancies.
+#
 
 import os; import sys
 sys.path.insert(0, os.getcwd())

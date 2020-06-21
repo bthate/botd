@@ -9,10 +9,11 @@ import time
 
 import bot.obj
 
+from bot.dbs import Db, last
 from bot.fil import cdir
 from bot.irc import Cfg
 from bot.krn import k, starttime
-from bot.obj import Db, Object, format, get_type, last, save
+from bot.obj import Object, format, get_type, save
 from bot.tms import elapsed, fntime
 
 from botd.version import __version__
