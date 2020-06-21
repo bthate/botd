@@ -2,10 +2,14 @@
 #
 #
 
-import select, socket, sys, time
+import select
+import socket
+import sys
+import time
 
 from bot.obj import Cfg, Object, last
 from bot.krn import k
+from bot.thr import launch
 
 class Cfg(Cfg):
 
@@ -25,7 +29,7 @@ class UDP(Object):
         self._sock.setblocking(1)
         self._starttime = time.time()
         self.cfg = Cfg()
-        
+
     def output(self, txt, addr):
         for bot in k.fleet.bots:
             bot.announce(txt.replace("\00", ""))
@@ -33,7 +37,7 @@ class UDP(Object):
     def server(self):
         try:
             self._sock.bind((self.cfg.host, self.cfg.port))
-        except socket.gaierror as ex:
+        except socket.gaierror:
             return
         while not self.stopped:
             (txt, addr) = self._sock.recvfrom(64000)
@@ -51,7 +55,7 @@ class UDP(Object):
 
     def start(self):
         last(self.cfg)
-        k.launch(self.server)
+        launch(self.server)
 
 def toudp(host, port, txt):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -64,7 +68,7 @@ def udp(event):
         txt = " ".join(sys.argv[2:])
         toudp(cfg.host, cfg.port, txt)
         return
-    if not select.select([sys.stdin,],[],[],0.0)[0]:
+    if not select.select([sys.stdin, ], [], [], 0.0)[0]:
         return
     while 1:
         try:

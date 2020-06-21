@@ -4,27 +4,32 @@
 
 __version__ = 1
 
-import os, time
-
-from bot.fil import cdir, list_files
-from bot.obj import ENOCLASS, Cfg, Db, Object, format, get_cls, get_type, last, load, save
-from bot.krn import k, starttime
-from bot.tbl import names
-from bot.tms import elapsed, fntime
+import os
+import time
 
 import bot.obj
-import bot.tbl
+
+from bot.fil import cdir
+from bot.irc import Cfg
+from bot.krn import k, starttime
+from bot.obj import Db, Object, format, get_type, last, save
+from bot.tms import elapsed, fntime
+
+from botd.version import __version__
 
 class Log(Object):
 
-    pass
+    def __init__(self):
+        super().__init__()
+        self.txt = ""
 
 class Todo(Object):
 
-    pass
+    def __init__(self):
+        super().__init__()
+        self.txt = ""
 
 def cfg(event):
-    from .irc import Cfg
     c = Cfg()
     last(c)
     if not event.args and not event.sets:
@@ -34,25 +39,23 @@ def cfg(event):
         c.update(event.sets)
         save(c)
     event.reply(format(c))
-        
+
 def cmds(event):
-    event.reply("|".join(sorted(names)))
+    event.reply("|".join(sorted(k.cmds)))
 
 def done(event):
     if not event.args:
         event.reply("done <match>")
         return
     selector = {"txt": event.args[0]}
-    got = []
     db = Db()
-    for todo in db.find("bot.cmd.Todo", selector):
-        todo._deleted = True
-        save(todo)
+    for o in db.find("botd.cmd.Todo", selector):
+        o._deleted = True
+        save(o)
         event.reply("ok")
         break
 
 def find(event):
-    import bot.obj
     if event.speed != "fast":
         event.reply("use a faster bot to display (dcc).")
         return
@@ -68,10 +71,10 @@ def find(event):
     target = db.all
     otype = event.args[0]
     try:
-       match = event.args[1]
-       target = db.find_value
-    except:
-       match = None
+        match = event.args[1]
+        target = db.find_value
+    except IndexError:
+        match = None
     try:
         args = event.args[2:]
     except ValueError:
@@ -98,7 +101,7 @@ def fl(event):
 def log(event):
     if not event.rest:
         db = Db()
-        res = db.find("bot.cmd.Log", {"txt": ""})
+        res = db.find("botd.cmd.Log", {"txt": ""})
         nr = 0
         for o in res:
             event.reply("%s %s %s" % (str(nr), o.txt, elapsed(time.time() - fntime(o._path))))
@@ -114,7 +117,7 @@ def log(event):
 def todo(event):
     db = Db()
     if not event.rest:
-        res = db.find("bot.cmd.Todo", {"txt": ""})
+        res = db.find("botd.cmd.Todo", {"txt": ""})
         if not res:
             return
         nr = 0
@@ -131,8 +134,6 @@ def todo(event):
 
 def up(event):
     event.reply(elapsed(time.time() - starttime))
-    
-def v(event):
-    from bot.krn import __version__
-    event.reply("%s %s" % (k.cfg.name.upper() or "BOTLIB", k.cfg.version or __version__))
 
+def v(event):
+    event.reply("%s %s" % (k.cfg.name.upper() or "BOTLIB", k.cfg.version or __version__))

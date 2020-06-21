@@ -3,12 +3,10 @@
 #
 #
 
-__version__ = 86
-
 from bot.csl import Console
 from bot.irc import IRC
 from bot.krn import k
-from bot.shl import cfg, execute, parse_cli, setwd
+from bot.shl import execute, parse_cli, setwd
 
 import sys
 
@@ -16,6 +14,7 @@ def main():
     parse_cli("bot")
     setwd("bot")
     k.start()
+    k.walk("botd")
     if "-i" in sys.argv:
         i = IRC()
         i.start()

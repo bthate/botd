@@ -5,7 +5,7 @@
 
 import os, sys
 
-skip = "R0801,C0411,C0116"
+skip = "R0801,C0411,C0116,C0103,C0114,C0115,C0301,W0613,E0102,R0201,R1710"
 
 if len(sys.argv) > 1:
     txt = "pylint -d %s %s" % (skip, " ".join(sys.argv[1:]))

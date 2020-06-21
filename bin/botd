@@ -5,8 +5,8 @@
 
 from bot.krn import k
 from bot.shl import daemon, execute, parse_cli, root, setwd
-from bot.rss import Fetcher
 from bot.irc import IRC
+from botd.rss import Fetcher
 
 ## main
 

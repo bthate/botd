@@ -2,10 +2,16 @@
 #
 #
 
-import re, time, urllib
+import datetime
+import html.parser
+import os
+import random
+import re
+import time
+import urllib
 
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote_plus, urlencode, urlunparse
+from urllib.parse import quote_plus, urlencode
 from urllib.request import Request, urlopen
 
 from bot.obj import Cfg, Db, Default, Object, edit, last, save
@@ -91,21 +97,21 @@ class Fetcher(Object):
         for o in reversed(list(get_feed(obj.rss))):
             if not o:
                 continue
-            feed = Feed()
-            feed.update(obj)
-            feed.update(o)
-            u = urllib.parse.urlparse(feed.link)
+            f = Feed()
+            f.update(obj)
+            f.update(o)
+            u = urllib.parse.urlparse(f.link)
             if u.path and not u.path == "/":
                 url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
             else:
-                url = feed.link
+                url = f.link
             if url in Fetcher.seen.urls:
                 continue
             Fetcher.seen.urls.append(url)
             counter += 1
-            objs.append(feed)
+            objs.append(f)
             if self.cfg.dosave:
-                save(feed)
+                save(f)
         if objs:
             save(Fetcher.seen)
         for o in objs:
@@ -115,7 +121,7 @@ class Fetcher(Object):
     def run(self):
         thrs = []
         db = Db()
-        for o in db.all("bot.rss.Rss"):
+        for o in db.all("botd.rss.Rss"):
             thrs.append(launch(self.fetch, o))
         return thrs
 
@@ -138,7 +144,7 @@ def get_feed(url):
         return [Object(), Object()]
     try:
         result = get_url(url)
-    except Exception as ex:
+    except (HTTPError, URLError):
         return [Object(), Object()]
     if gotparser:
         res = feedparser.parse(result.data)
@@ -162,6 +168,7 @@ def get_tinyurl(url):
         i = re.search('data-clipboard-text="(.*?)"', line, re.M)
         if i:
             return i.groups()
+    return []
 
 def get_url(url):
     url = urllib.parse.urlunparse(urllib.parse.urlparse(url))
@@ -176,8 +183,6 @@ def strip_html(text):
     return re.sub(clean, '', text)
 
 def unescape(text):
-    import html
-    import html.parser
     txt = re.sub(r"\s+", " ", text)
     return html.parser.HTMLParser().unescape(txt)
 
@@ -192,12 +197,12 @@ def delete(event):
     nr = 0
     got = []
     db = Db()
-    for rss in db.find("bot.rss.Rss", selector):
+    for o in db.find("botd.rss.Rss", selector):
         nr += 1
-        rss._deleted = True
-        got.append(rss)
-    for rss in got:
-        save(rss)
+        o._deleted = True
+        got.append(o)
+    for o in got:
+        save(o)
     event.reply("ok")
 
 def display(event):
@@ -207,7 +212,7 @@ def display(event):
     nr = 0
     setter = {"display_list": event.args[1]}
     db = Db()
-    for o in db.find("bot.rss.Rss", {"rss": event.args[0]}):
+    for o in db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
         edit(o, setter)
         save(o)
@@ -221,26 +226,26 @@ def feed(event):
     nr = 0
     diff = time.time() - to_time(day())
     db = Db()
-    res = list(db.find("bot.rss.Feed", {"link": match}, delta=-diff))
+    res = list(db.find("botd.rss.Feed", {"link": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s - %s" % (nr, o.title, o.summary, o.updated or o.published or "nodate", o.link))
         nr += 1
     if nr:
         return
-    res = list(db.find("bot.rss.Feed", {"title": match}, delta=-diff))
+    res = list(db.find("botd.rss.Feed", {"title": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
         nr += 1
-    res = list(db.find("bot.rss.Feed", {"summary": match}, delta=-diff))
+    res = list(db.find("botd.rss.Feed", {"summary": match}, delta=-diff))
     for o in res:
         if match:
             event.reply("%s %s - %s - %s" % (nr, o.title, o.summary, o.link))
         nr += 1
     if not nr:
         event.reply("no results found")
- 
+
 def fetch(event):
     res = []
     thrs = []
@@ -253,19 +258,19 @@ def fetch(event):
         event.reply("fetched %s" % ",".join([str(x) for x in res]))
         return
     event.reply("no feeds registered.")
-    
+
 def rss(event):
     db = Db()
     if not event.args or "http" not in event.args[0]:
         nr = 0
-        for o in db.find("bot.rss.Rss", {"rss": ""}):
+        for o in db.find("botd.rss.Rss", {"rss": ""}):
             event.reply("%s %s" % (nr, o.rss))
             nr += 1
         if not nr:
             event.reply("rss <url>")
         return
     url = event.args[0]
-    res = list(db.find("bot.rss.Rss", {"rss": url}))
+    res = list(db.find("botd.rss.Rss", {"rss": url}))
     if res:
         event.reply("feed is already known.")
         return

@@ -2,7 +2,8 @@
 #
 #
 
-import os, select, socket, threading, time
+import threading
+import time
 
 from bot.obj import Object, starttime
 from bot.krn import k
@@ -37,4 +38,3 @@ def ps(event):
         res = "%s %s" % (nr, psformat % (elapsed(up), thrname[:60]))
         if res:
             event.reply(res.rstrip())
-
