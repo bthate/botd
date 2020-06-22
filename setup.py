@@ -24,6 +24,7 @@ setup(
     zip_safe=False,
     install_requires=["botlib", "feedparser"],
     packages=["botd"],
+    namespace_packages["botd"],
     scripts=["bin/bcmd", "bin/bot", "bin/botd"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: Public Domain',

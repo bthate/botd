@@ -56,7 +56,7 @@ U S A G E
 =========
 
 BOTD detects whether it is run as root or as a user. if it's root it
-will use the /var/lib/botd directory and it it's user it will use ~/.bot
+will use the /var/lib/botd directory and it it's user it will use ~/.botd
 
 BOTD has it's own CLI, you can run it by giving the bot command on the
 prompt, it will return with its own prompt:

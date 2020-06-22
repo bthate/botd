@@ -1,3 +1,0 @@
-libobj>=10
-botlib>=83
-botd>=10
