@@ -1,16 +1,16 @@
-B O T L I B
-###########
+B O T D
+=======
 
-Welcome to BOTLIB, the bot library ! see https://pypi.org/project/botlib/ , it's public domain ;]
+Welcome to BOTD, the 24/7 channel daemon ! see https://pypi.org/project/botd/ , it's public domain ;]
 
-BOTLIB can fetch RSS feeds, lets you program your own commands, can work as a UDP to IRC
+BOTD can fetch RSS feeds, lets you program your own commands, can work as a UDP to IRC
 relay, has user management to limit access to prefered users and can run as a service to let
-it restart after reboots. BOTLIB is the result of 20 years of programming bots, was there 
+it restart after reboots. BOTD is the result of 20 years of programming bots, was there 
 in 2000, is here in 2020, has no copyright, no LICENSE and is placed in the Public Domain. 
-This makes BOTLIB truely free (pastable) code you can use how you see fit, i hope you enjoy 
-using and programming BOTLIB till the point you start programming your own bots yourself.
+This makes BOTD truely free (pastable) code you can use how you see fit, i hope you enjoy 
+using and programming BOTD till the point you start programming your own bots yourself.
 
-have fun coding, source is :ref:`here <source>` ;]
+have fun coding ;]
 
 I N S T A L L
 =============
@@ -19,17 +19,17 @@ you can download with pip3 and install globally:
 
 ::
 
- > sudo pip3 install botlib
+ > sudo pip3 install botd
 
-You can also download the tarball and install from that, see https://pypi.org/project/botlib/#files
+You can also download the tarball and install from that, see https://pypi.org/project/botd/#files
 
 if you want to develop on the bot clone the source at bitbucket.org:
 
 ::
 
- > git clone https://bitbucket.org/bthate/botlib
+ > git clone https://bitbucket.org/bthate/botd
 
-if you want to run the bot 24/7 you can install BOTLIB as a service for
+if you want to run the bot 24/7 you can install BOTd as a service for
 the systemd daemon. You can do this by running the following:
 
 ::
@@ -45,20 +45,20 @@ if you don't want the bot to startup at boot, remove the service file:
 C O N F I G
 ===========
 
-to configure the bot use the ed (edit) command, with sudo:
+to configure the bot use the cfg (config) command:
 
 ::
 
- > bcmd cfg <server> <channel> <nick>
- > bcmd hup
+ > sudo bcmd cfg server=<server> channel=<channel> nick=<nick>
+ > sudo bcmd hup
 
 U S A G E
 =========
 
-BOTLIB detects whether it is run as root or as a user. if it's root it
+BOTD detects whether it is run as root or as a user. if it's root it
 will use the /var/lib/botd directory and it it's user it will use ~/.bot
 
-BOTLIB has it's own CLI, you can run it by giving the bot command on the
+BOTD has it's own CLI, you can run it by giving the bot command on the
 prompt, it will return with its own prompt:
 
 ::
@@ -68,14 +68,14 @@ prompt, it will return with its own prompt:
  cfg|cmds|ed|find|fleet|meet|ps|udp
  >
 
-you can use bot cmd with arguments to run a command directly:
+you can use bcmd with arguments to run a command directly:
 
 ::
 
  > bcmd cmds
  cfg|cmds|ed|find|fleet|meet|ps|udp
 
-if you run with sudo, you will get additional command like install,cfg and hup:
+if you run with sudo, you will get additional command like ed,install,remove and hup:
 
 ::
 
@@ -107,6 +107,8 @@ the fetch command can be used to poll the added feeds:
  > bcmd fetch
  fetched 0
 
+use sudo to register rss feeds on the system botd.
+
 U D P
 =====
 
@@ -130,12 +132,11 @@ to send the tail output to the IRC channel, send a udp packet to the bot:
 S O U R C E
 ===========
 
-BOTLIB used the oklib package that has the following modules.
+BOTD used the BOTLIB package that has the following modules.
 
 ::
 
     bot.clk             - clock/repeater
-    bot.cmd             - commands
     bot.csl             - console
     bot.fil             - file 
     bot.hdl             - handler
@@ -143,22 +144,27 @@ BOTLIB used the oklib package that has the following modules.
     bot.itr             - introspect
     bot.krn             - core handler
     bot.obj             - base classes
-    bot.opr             - opers
     bot.prs             - parse
-    bot.rss             - rich site syndicate
     bot.shl             - shell
     bot.thr             - threads
     bot.tms             - time
     bot.trc             - trace
-    bot.udp             - udp to channel
 
 
-You can add you own modules to the bot package, its a namespace package.
+BOTD itself provides these modules:
+
+::
+
+    botd.cmd             - commands
+    botd.opr             - opers
+    botd.rss             - rich site syndicate
+    botd.udp             - udp to channel
+
+You can add you own modules to the botd package, its a namespace package.
+
 
 C O N T A C T
 =============
-
-|
 
 you can contact me on IRC/freenode/#dunkbots or email me at bthate@dds.nl
 
