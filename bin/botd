@@ -11,10 +11,10 @@ from botd.rss import Fetcher
 ## main
 
 def main():
-    setwd("bot")
+    setwd("botd")
     if not root():
         daemon()        
-    cfg = parse_cli("bot")
+    cfg = parse_cli("botd")
     k.start()
     k.walk("botd")
     i = IRC()

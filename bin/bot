@@ -11,8 +11,8 @@ from bot.shl import execute, parse_cli, setwd
 import sys
 
 def main():
-    parse_cli("bot")
-    setwd("bot")
+    parse_cli("botd")
+    setwd("botd")
     k.start()
     k.walk("botd")
     if "-i" in sys.argv:

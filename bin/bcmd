@@ -76,8 +76,8 @@ def remove(event):
     event.reply("ok")
 
 def main():
-    setwd("bot")
-    cfg = parse_cli("bot")
+    setwd("botd")
+    cfg = parse_cli("botd")
     if root():
         k.cmds.register("hup", hup)
         k.cmds.register("install", install)
