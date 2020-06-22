@@ -83,6 +83,7 @@ def main():
         k.cmds.register("install", install)
         k.cmds.register("remove", remove)
     k.cmds.register("ed", ed)
+    k.walk("botd")
     if cfg.txt:
         k.cmd(cfg.txt)
 
