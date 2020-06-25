@@ -13,6 +13,8 @@ from bot.obj import format, save
 from bot.shl import daemon, execute, parse_cli, root, setwd
 from bot.krn import k, __version__
 
+import bot.obj
+
 txt="""[Unit]
 Description=BOTD - the 24/7 channel daemon
 After=network-online.target
@@ -20,6 +22,8 @@ Wants=network-online.target
 
 [Service]
 ExecStart=/usr/local/bin/botd
+User=botd
+Group=botd
 Type=simple
 PrivateTmp=yes
 WorkingDirectory=/var/lib/botd
@@ -92,6 +96,7 @@ def install(event):
     os.popen("usermod -d /var/lib/botd -g botd -G systemd-journal -L botd").readline()
     os.popen("id botd").readline()
     os.popen("chown -R botd:botd /var/lib/botd/").readline()
+    os.popen("chown -R botd:botd /usr/local/bin/botd").readline()
     os.popen("systemctl enable botd").readlines()
     os.popen("systemctl daemon-reload").readlines()
     event.reply("ok")
@@ -112,12 +117,15 @@ def main():
     if not c.txt:
         return
     if root():
+        bot.obj.workdir = "/var/lib/botd"
         k.cmds.register("hup", hup)
         k.cmds.register("install", install)
         k.cmds.register("remove", remove)
+    else:
+        bot.obj.workdir = os.path.expanduser("~/.bot")
     k.cmds.register("cfg", cfg)
     k.cmds.register("ed", ed)
     k.walk("botd")
-    k.cmd(c.txt)
+    return k.cmd(c.txt)
 
 execute(main)

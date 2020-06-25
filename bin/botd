@@ -3,6 +3,8 @@
 #
 #
 
+import bot.obj, os
+
 from bot.krn import k
 from bot.shl import daemon, drop, execute, parse_cli, root, setwd
 from bot.irc import IRC
@@ -12,9 +14,12 @@ from botd.rss import Fetcher
 def main():
     cfg = parse_cli()
     if not root():
+        bot.obj.workdir = os.path.expanduser("~/.bot")
         daemon()        
+    else:
+        bot.obj.workdir = "/var/lib/botd"
+        drop()
     k.walk("botd")
-    #drop()
     i = IRC()
     i.start()
     f = Fetcher()

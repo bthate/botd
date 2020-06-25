@@ -22,7 +22,7 @@ setup(
     long_description_content_type="text/x-rst",
     license='Public Domain',
     zip_safe=False,
-    install_requires=["botlib", "feedparser"],
+    install_requires=["feedparser"],
     packages=["botd"],
     namespace_packages=["botd"],
     scripts=["bin/bcmd", "bin/bot", "bin/botd"],
