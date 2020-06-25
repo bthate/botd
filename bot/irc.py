@@ -308,6 +308,7 @@ class IRC(Handler):
             last(self.cfg)
         assert self.cfg.channel
         assert self.cfg.server
+        print(format(self.cfg))
         self.channels.append(self.cfg.channel)
         launch(self.doconnect)
 
