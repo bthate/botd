@@ -3,10 +3,13 @@
 #
 #
 
-import os
+import grp, os, pwd
 
 from bot.csl import Console
+from bot.dbs import last
+from bot.irc import Cfg
 from bot.itr import find_shorts
+from bot.obj import format, save
 from bot.shl import daemon, execute, parse_cli, root, setwd
 from bot.krn import k, __version__
 
@@ -17,10 +20,24 @@ Wants=network-online.target
 
 [Service]
 ExecStart=/usr/local/bin/botd
+User=botd
+Group=botd
+Type=simple
+PrivateTmp=yes
+WorkingDirectory=/var/lib/botd
+CapabilityBoundingSet=CAP_AUDIT_CONTROL
 
 [Install]
 WantedBy=multi-user.target
 """
+
+def cfg(event):
+    c = Cfg()
+    last(c)
+    if event.sets:
+        c.update(event.sets)
+        save(c)
+    event.reply(format(c))
 
 def ed(event):
     if not event.args:
@@ -64,27 +81,45 @@ def install(event):
     f = open("/etc/systemd/system/botd.service", "w")
     f.write(txt)
     f.close()
-    os.popen("systemctl enable botd")
-    os.popen("systemctl daemon-reload")
+    if not os.path.exists("/var/lib/botd"):
+        os.mkdir("/var/lib/botd")
+    try:
+        grp.getgrnam("botd")
+    except KeyError:
+        print(" ".join(os.popen("addgroup botd").readlines()))
+    try:
+        pwd.getpwnam("botd")
+    except KeyError:
+        os.popen("adduser botd")
+    os.popen("usermod -d /var/lib/botd -g botd -G systemd-journal -L botd").readline()
+    os.popen("id botd").readline()
+    os.popen("chown -R botd:botd /var/lib/botd/").readline()
+    os.popen("systemctl enable botd").readlines()
+    os.popen("systemctl daemon-reload").readlines()
     event.reply("ok")
 
 def remove(event):
     p = "/etc/systemd/system/botd.service"
     if os.path.exists(p):
-        for l in os.popen("rm %s" % p).readlines():
-            print(l) 
+        os.popen("rm %s" % p)
+    try:
+        grp.getgrnam("botd")
+        os.popen("deluser --quiet --group botd botd")
+    except KeyError:
+        pass
     event.reply("ok")
 
 def main():
-    setwd("botd")
-    cfg = parse_cli("botd")
+    c = parse_cli()
+    if not c.txt:
+        return
     if root():
         k.cmds.register("hup", hup)
         k.cmds.register("install", install)
         k.cmds.register("remove", remove)
+    k.cmds.register("cfg", cfg)
     k.cmds.register("ed", ed)
     k.walk("botd")
-    if cfg.txt:
-        k.cmd(cfg.txt)
+    k.cmd(c.txt)
 
 execute(main)

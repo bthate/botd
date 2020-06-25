@@ -4,23 +4,21 @@
 #
 
 from bot.krn import k
-from bot.shl import daemon, execute, parse_cli, root, setwd
+from bot.shl import daemon, drop, execute, parse_cli, root, setwd
 from bot.irc import IRC
+
 from botd.rss import Fetcher
 
-## main
-
 def main():
-    setwd("botd")
     if not root():
         daemon()        
-    cfg = parse_cli("botd")
-    k.start()
-    k.walk("botd")
+    #drop()
+    cfg = parse_cli()
     i = IRC()
     i.start()
     f = Fetcher()
     f.start()
+    k.start()
     k.wait()
        
 execute(main)
