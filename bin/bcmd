@@ -92,7 +92,7 @@ def install(event):
     try:
         pwd.getpwnam("botd")
     except KeyError:
-        os.popen("adduser botd")
+        os.popen("useradd botd -g botd")
     os.popen("usermod -d /var/lib/botd -g botd -G systemd-journal -L botd").readline()
     os.popen("id botd").readline()
     os.popen("chown -R botd:botd /var/lib/botd/").readline()
