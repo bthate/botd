@@ -20,8 +20,6 @@ Wants=network-online.target
 
 [Service]
 ExecStart=/usr/local/bin/botd
-User=botd
-Group=botd
 Type=simple
 PrivateTmp=yes
 WorkingDirectory=/var/lib/botd

@@ -10,10 +10,11 @@ from bot.irc import IRC
 from botd.rss import Fetcher
 
 def main():
+    cfg = parse_cli()
     if not root():
         daemon()        
+    k.walk("botd")
     #drop()
-    cfg = parse_cli()
     i = IRC()
     i.start()
     f = Fetcher()
