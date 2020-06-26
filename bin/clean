@@ -1,1 +1,1 @@
-rm -fR bot/*~ bot/__pycache__ run run.tar.gz docs/html .data *~ build env botd.egg-info  bin/*~ botd/__pycache__ botd/*~  tests/*~ tests/__pycache__ docs/*~ docs/botd*.rst html localmedia
+rm -fR bot/*~ bot/__pycache__ run run.tar.gz docs/html .data *~ build env botd.egg-info  bin/*~ botd/__pycache__ botd/*~  tests/*~ tests/__pycache__ docs/*~ docs/bot*.rst html localmedia
