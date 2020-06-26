@@ -30,17 +30,6 @@ class Todo(Object):
         super().__init__()
         self.txt = ""
 
-def cfg(event):
-    c = Cfg()
-    last(c)
-    if not event.args and not event.sets:
-        event.reply(format(c))
-        return
-    if event.sets:
-        c.update(event.sets)
-        save(c)
-    event.reply(format(c))
-
 def cmds(event):
     event.reply("|".join(sorted(k.cmds)))
 

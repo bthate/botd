@@ -7,11 +7,14 @@ import grp, os, pwd
 
 from bot.csl import Console
 from bot.dbs import last
-from bot.irc import Cfg
-from bot.itr import find_shorts
+from bot.irc import Cfg, IRC
+from bot.isp import find_shorts
 from bot.obj import format, save
 from bot.shl import daemon, execute, parse_cli, root, setwd
 from bot.krn import k, __version__
+
+from botd.rss import Fetcher
+from botd.udp import UDP
 
 import bot.obj
 
@@ -22,8 +25,6 @@ Wants=network-online.target
 
 [Service]
 ExecStart=/usr/local/bin/botd
-#User=botd
-#Group=botd
 Type=simple
 PrivateTmp=yes
 WorkingDirectory=/var/lib/botd
@@ -85,63 +86,47 @@ def install(event):
     f.close()
     if not os.path.exists("/var/lib/botd"):
         os.mkdir("/var/lib/botd")
-    try:
-        grp.getgrnam("botd")
-    except KeyError:
-        print(" ".join(os.popen("addgroup botd").readlines()))
-    try:
-        pwd.getpwnam("botd")
-    except KeyError:
-        os.popen("useradd botd -g botd")
-    os.popen("usermod -d /var/lib/botd -g botd -G systemd-journal -L botd").readline()
-    os.popen("id botd").readline()
-    #os.popen("chown -R botd:botd /var/lib/botd/").readline()
-    #os.popen("chown -R botd:botd /usr/local/bin/botd").readline()
-    os.popen("systemctl enable botd").readlines()
-    os.popen("systemctl daemon-reload").readlines()
+    os.popen("systemctl enable botd")
+    os.popen("systemctl daemon-reload")
     event.reply("ok")
 
 def remove(event):
     p = "/etc/systemd/system/botd.service"
     if os.path.exists(p):
         os.popen("rm %s" % p)
-    try:
-        grp.getgrnam("botd")
-        os.popen("deluser --quiet --group botd botd")
-    except KeyError:
-        pass
     event.reply("ok")
 
 def main():
     cfg = parse_cli()
-    if "d" in cfg.opts:
-        daemon()
-    if root():
-        bot.obj.workdir = "/var/lib/botd"
-        k.walk(__name__)
-    else:
-        bot.obj.workdir = os.path.expanduser("~/.botd")
     k.walk("botd")
+    if root():
+        k.cmds.register("hup", hup)
+        k.cmds.register("install", install)
+        k.cmds.register("remove", remove)
+    k.cmds.register("cfg", cfg)
+    k.cmds.register("ed", ed)
     if cfg.txt:
         return k.cmd(cfg.txt)
+    wait = False
+    if "d" in cfg.opts:
+        daemon()
+        wait = True
     k.start()
     if "i" in cfg.opts:
         i = IRC()
         i.start()
+        wait = True
     if "r" in cfg.opts:
         f = Fetcher()
         f.start()
+    if "u" in cfg.opts:
+        u = UDP()
+        u.start()
     if "s" in cfg.opts:
         c = Console()
         c.start()
-        return k.wait()
-    if "u" in cfg.opts:
-        u = Udp()
-        u.start()
-        return k.wait()
-    if "w" in cfg.opts:
-        return k.wait()
-    print("""botd <%s>""" % "|".join(sorted(k.cmds)))
-    return
+        wait = True
+    if wait:
+        k.wait()
 
 execute(main)
