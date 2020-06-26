@@ -22,8 +22,8 @@ Wants=network-online.target
 
 [Service]
 ExecStart=/usr/local/bin/botd
-User=botd
-Group=botd
+#User=botd
+#Group=botd
 Type=simple
 PrivateTmp=yes
 WorkingDirectory=/var/lib/botd
@@ -95,8 +95,8 @@ def install(event):
         os.popen("useradd botd -g botd")
     os.popen("usermod -d /var/lib/botd -g botd -G systemd-journal -L botd").readline()
     os.popen("id botd").readline()
-    os.popen("chown -R botd:botd /var/lib/botd/").readline()
-    os.popen("chown -R botd:botd /usr/local/bin/botd").readline()
+    #os.popen("chown -R botd:botd /var/lib/botd/").readline()
+    #os.popen("chown -R botd:botd /usr/local/bin/botd").readline()
     os.popen("systemctl enable botd").readlines()
     os.popen("systemctl daemon-reload").readlines()
     event.reply("ok")
