@@ -1,30 +1,147 @@
 #!/usr/bin/python3 -u
-# BOTLIB - the bot library !
+# BOTD - the 24/7 channel daemon !
 #
 #
 
-import bot.obj, os
+import grp, os, pwd
 
-from bot.krn import k
-from bot.shl import daemon, drop, execute, parse_cli, root, setwd
-from bot.irc import IRC
+from bot.csl import Console
+from bot.dbs import last
+from bot.irc import Cfg
+from bot.itr import find_shorts
+from bot.obj import format, save
+from bot.shl import daemon, execute, parse_cli, root, setwd
+from bot.krn import k, __version__
 
-from botd.rss import Fetcher
+import bot.obj
+
+txt="""[Unit]
+Description=BOTD - the 24/7 channel daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/botd
+#User=botd
+#Group=botd
+Type=simple
+PrivateTmp=yes
+WorkingDirectory=/var/lib/botd
+CapabilityBoundingSet=CAP_AUDIT_CONTROL
+
+[Install]
+WantedBy=multi-user.target
+"""
+
+def cfg(event):
+    c = Cfg()
+    last(c)
+    if event.sets:
+        c.update(event.sets)
+        save(c)
+    event.reply(format(c))
+
+def ed(event):
+    if not event.args:
+        event.reply(list_files(bot.obj.workdir) or "no files yet")
+        return
+    cn = event.args[0]
+    shorts = find_shorts("bot")
+    if shorts:
+        cn = shorts[0]
+    db = Db()
+    l = db.last(cn)
+    if not l:
+        try:
+            c = get_cls(cn)
+            l = c()
+            event.reply("created %s" % cn)
+        except ENOCLASS:
+            event.reply(list_files(bot.obj.workdir) or "no files yet")
+            return
+    if len(event.args) == 1:
+        event.reply(l)
+        return
+    if len(event.args) == 2:
+        setter = {event.args[1]: ""}
+    else:
+        setter = {event.args[1]: event.args[2]}
+    edit(l, setter)
+    save(l)
+    event.reply("ok")
+
+def hup(event):
+    for x in os.popen("service botd stop").readlines():
+        print(x.rstrip())
+    for x in os.popen("service botd start").readlines():
+        print(x.rstrip())
+    for x in os.popen("systemctl status botd --no-pager").readlines():
+        print(x.rstrip())
+    event.reply("ok")
+    
+def install(event):
+    f = open("/etc/systemd/system/botd.service", "w")
+    f.write(txt)
+    f.close()
+    if not os.path.exists("/var/lib/botd"):
+        os.mkdir("/var/lib/botd")
+    try:
+        grp.getgrnam("botd")
+    except KeyError:
+        print(" ".join(os.popen("addgroup botd").readlines()))
+    try:
+        pwd.getpwnam("botd")
+    except KeyError:
+        os.popen("useradd botd -g botd")
+    os.popen("usermod -d /var/lib/botd -g botd -G systemd-journal -L botd").readline()
+    os.popen("id botd").readline()
+    #os.popen("chown -R botd:botd /var/lib/botd/").readline()
+    #os.popen("chown -R botd:botd /usr/local/bin/botd").readline()
+    os.popen("systemctl enable botd").readlines()
+    os.popen("systemctl daemon-reload").readlines()
+    event.reply("ok")
+
+def remove(event):
+    p = "/etc/systemd/system/botd.service"
+    if os.path.exists(p):
+        os.popen("rm %s" % p)
+    try:
+        grp.getgrnam("botd")
+        os.popen("deluser --quiet --group botd botd")
+    except KeyError:
+        pass
+    event.reply("ok")
 
 def main():
     cfg = parse_cli()
-    if not root():
-        bot.obj.workdir = os.path.expanduser("~/.bot")
-        daemon()        
-    else:
+    if "d" in cfg.opts:
+        daemon()
+    if root():
         bot.obj.workdir = "/var/lib/botd"
-        drop()
+        k.walk(__name__)
+    else:
+        bot.obj.workdir = os.path.expanduser("~/.botd")
     k.walk("botd")
-    i = IRC()
-    i.start()
-    f = Fetcher()
-    f.start()
+    if cfg.txt:
+        return k.cmd(cfg.txt)
     k.start()
-    k.wait()
-       
+    if "i" in cfg.opts:
+        i = IRC()
+        i.start()
+    if "r" in cfg.opts:
+        f = Fetcher()
+        f.start()
+    if "s" in cfg.opts:
+        c = Console()
+        c.start()
+        return k.wait()
+    if "u" in cfg.opts:
+        u = Udp()
+        u.start()
+        return k.wait()
+    if "w" in cfg.opts:
+        return k.wait()
+    print("""botd <%s>""" % "|".join(sorted(k.cmds)))
+    return
+
 execute(main)
