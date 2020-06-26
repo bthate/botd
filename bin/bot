@@ -10,12 +10,13 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 from bot.csl import Console
 from bot.irc import IRC
 from bot.krn import k
-from bot.shl import cfg, execute, parse_cli, setwd
+from bot.shl import execute, parse_cli, setwd
 
 import sys
 
 def main():
     cfg = parse_cli()
+    print(cfg.args)
     k.start()
     k.walk("botd")
     if "-i" in cfg.args:

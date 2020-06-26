@@ -41,16 +41,17 @@ class Parsed(Default):
         self.gets = Default()
         self.sets = Default()
         tokens = [Token(txt) for txt in txt.split()]
-        nr = -1
         for token in tokens:
-            nr += 1
-            if self.gets.update(Getter(token.txt)):
+            g = Getter(token.txt)
+            if g:
+                self.gets.update(g)
                 continue
-            if self.sets.update(Setter(token.txt)):
-                continue            
-            if nr == 0:
-                self.cmd = token.txt
+            s = Setter(token.txt)
+            if s:
+                self.sets.update(s)
+                continue
             self.args.append(token.txt)
         self.txt =  " ".join(self.args)
+        self.cmd = self.args[0]
         self.args = self.args[1:]
         self.rest = " ".join(self.args)

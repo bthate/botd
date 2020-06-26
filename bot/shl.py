@@ -8,7 +8,6 @@ from .obj import Cfg
 from .prs import Parsed
 from .fil import cdir
 
-cfg = Cfg()
 cmds = []
 logfile = ""
 resume = {}
@@ -141,9 +140,12 @@ def level(loglevel, nostream=False):
 def parse_cli():
     setwd()
     if len(sys.argv) <= 1:
-        return cfg
+        return Cfg()
+    p = Parsed()
+    p.parse(" ".join(sys.argv[1:]))
+    cfg = Cfg()
     cfg.name = "bot"
-    cfg.txt = " ".join(sys.argv[1:])
+    cfg.update(p.sets)
     return cfg
 
 def root():

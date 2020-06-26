@@ -23,7 +23,7 @@ setup(
     license='Public Domain',
     zip_safe=False,
     install_requires=["feedparser"],
-    packages=["bot", "botd"],
+    packages=["botd"],
     namespace_packages=["bot", "botd"],
     scripts=["bin/bcmd", "bin/bot", "bin/botd"],
     classifiers=['Development Status :: 3 - Alpha',
