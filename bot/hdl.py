@@ -3,6 +3,7 @@
 #
 
 import importlib
+import importlib.util
 import importlib.resources
 import os
 import queue
