@@ -261,6 +261,7 @@ def fetch(event):
     event.reply("no feeds registered.")
 
 def rss(event):
+    print(event)
     db = Db()
     if not event.args or "http" not in event.args[0]:
         nr = 0
