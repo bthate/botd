@@ -15,7 +15,7 @@ def main():
     c = parse_cli()
     k.walk("botd")
     if c.txt:
-        return k.cmd(c.txt)
+        return k.cmd(c.origtxt)
     if "d" in c.opts:
         daemon()
     elif "s" not in c.opts:
