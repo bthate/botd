@@ -12,6 +12,11 @@ from bot.obj import Cfg, Object
 from bot.krn import k
 from bot.thr import launch
 
+def init(k):
+    u = UDP()
+    u.start()
+    return u
+
 class Cfg(Cfg):
 
     def __init__(self):

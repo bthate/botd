@@ -24,7 +24,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/local/bin/botd -i -r 
+ExecStart=/usr/local/bin/botd mods=irc,rss
 Type=simple
 PrivateTmp=yes
 WorkingDirectory=/var/lib/botd

@@ -14,6 +14,7 @@ from bot.fil import cdir
 from bot.irc import Cfg
 from bot.krn import k, starttime
 from bot.obj import Object, format, get_type, save
+from bot.prs import parse
 from bot.tms import elapsed, fntime
 
 from botd.version import __version__
@@ -29,6 +30,14 @@ class Todo(Object):
     def __init__(self):
         super().__init__()
         self.txt = ""
+
+def cfg(event):
+    c = Cfg()
+    last(c)
+    if event.sets:
+        c.update(event.sets)
+        save(c)
+    event.reply(format(c))
 
 def cmds(event):
     event.reply("|".join(sorted(k.cmds)))
@@ -46,9 +55,6 @@ def done(event):
         break
 
 def find(event):
-    if event.speed != "fast":
-        event.reply("use a faster bot to display (dcc).")
-        return
     if not event.args:
         wd = os.path.join(bot.obj.workdir, "store", "")
         cdir(wd)
@@ -79,9 +85,6 @@ def find(event):
 def fl(event):
     try:
         index = int(event.args[0])
-        if event.speed != "fast":
-            event.reply("use a faster bot to display.")
-            return
         event.reply(str(k.fleet.bots[index]))
         return
     except (TypeError, ValueError, IndexError):

@@ -1,14 +1,8 @@
-# BOTLIB - the bot library !
+# BOTD - the 24/7 channel daemon !
 #
 #
 
-import datetime
-import html.parser
-import os
-import random
-import re
-import time
-import urllib
+import datetime, html.parser, os, random, re, time, urllib
 
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
@@ -29,10 +23,10 @@ except ModuleNotFoundError:
 
 debug = False
 
-def init(kernel):
-    fetcher = Fetcher()
-    fetcher.start()
-    return fetcher
+def init(k):
+    f = Fetcher()
+    f.start()
+    return f
 
 class Cfg(Cfg):
 
@@ -188,11 +182,11 @@ def unescape(text):
     return html.parser.HTMLParser().unescape(txt)
 
 def useragent():
-    return 'Mozilla/5.0 (X11; Linux x86_64) BOTLIB +http://git@bitbucket.org/bthate/botlib)'
+    return 'Mozilla/5.0 (X11; Linux x86_64) BOTD +http://git@bitbucket.org/bthate/botd)'
 
-def delete(event):
+def rm(event):
     if not event.args:
-        event.reply("delete <match>")
+        event.reply("rm <match>")
         return
     selector = {"rss": event.args[0]}
     nr = 0
@@ -261,7 +255,6 @@ def fetch(event):
     event.reply("no feeds registered.")
 
 def rss(event):
-    print(event)
     db = Db()
     if not event.args or "http" not in event.args[0]:
         nr = 0
