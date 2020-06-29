@@ -4,7 +4,9 @@
 
 import threading, sys, time
 
-from bot.obj import Object, starttime
+from bot.dbs import last
+from bot.obj import Object, format, save, starttime
+from bot.irc import Cfg
 from bot.krn import k
 from bot.tms import elapsed
 
