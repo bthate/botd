@@ -6,8 +6,11 @@
 import os
 
 from bot.csl import Console
+from bot.irc import IRC
 from bot.krn import k
 from bot.shl import execute, parse_cli, root, termreset
+
+from botd.rss import Fetcher
 
 txt="""[Unit]
 Description=BOTD - the 24/7 IRC channel daemon
@@ -74,13 +77,20 @@ def main():
         k.cmds.register("remove", remove)
     if c.txt:
         return k.cmd(c.origtxt)
+    if not c.opts:
+        return
     if "d" in c.opts:
         daemon()
-    elif "s" not in c.opts:
-        return
+    if "r" in c.opts:
+        f = Fetcher()
+        f.start()
+    if "s" in c.opts:
+        con = Console()
+        con.start()
+    if "i" in c.opts:
+        i = IRC()
+        i.start()
     k.init(c.mods)
-    con = Console()
-    con.start()
     k.start()
     k.wait()
 
