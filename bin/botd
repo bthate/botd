@@ -1,97 +1,27 @@
 #!/usr/bin/python3 -u
-# BOTD - the 24/7 channel daemon !
+# BOTD - the 24/7 channel daemon 
 #
 #
 
-import os
+import sys, os ; sys.path.insert(0, os.getcwd())
 
-from bot.csl import Console
-from bot.irc import IRC
+from bot.csl import execute
 from bot.krn import k
-from bot.shl import execute, parse_cli, root, termreset
-
-from botd.rss import Fetcher
-
-txt="""[Unit]
-Description=BOTD - the 24/7 IRC channel daemon
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-ExecStart=/usr/local/bin/botd -i -r
-
-[Install]
-WantedBy=multi-user.target
-"""
-
-def daemon():
-    pid = os.fork()
-    if pid != 0:
-        termreset()
-        os._exit(0)
-    os.setsid()
-    pid = os.fork()
-    if pid != 0:
-        os._exit(0)
-    os.umask(0)
-    si = open("/dev/null", 'r')
-    so = open("/dev/null", 'a+')
-    se = open("/dev/null", 'a+')
-    os.dup2(si.fileno(), sys.stdin.fileno())
-    os.dup2(so.fileno(), sys.stdout.fileno())
-    os.dup2(se.fileno(), sys.stderr.fileno())
-
-def hup(event):
-    for x in os.popen("service botd stop").readlines():
-        print(x.rstrip())
-    for x in os.popen("service botd start").readlines():
-        print(x.rstrip())
-    for x in os.popen("systemctl status botd --no-pager").readlines():
-        print(x.rstrip())
-    event.reply("ok")
-    os._exit(0)
-    
-def install(event):
-    f = open("/etc/systemd/system/botd.service", "w")
-    f.write(txt)
-    f.close()
-    os.popen("systemctl enable botd")
-    os.popen("systemctl daemon-reload")
-    event.reply("ok")
-    os._exit(0)
-
-def remove(event):
-    p = "/etc/systemd/system/botd.service"
-    if os.path.exists(p):
-        for l in os.popen("rm %s" % p).readlines():
-            print(l) 
-    event.reply("ok")
-    os._exit(0)
+from bot.prs import parse_cli
 
 def main():
-    c = parse_cli()
-    k.walk("botd")
-    if root():
-        k.cmds.register("hup", hup)
-        k.cmds.register("install", install)
-        k.cmds.register("remove", remove)
+    c = parse_cli("botd")
     if c.txt:
+        k.walk("bot")
+        k.walk("botd")
         return k.cmd(c.origtxt)
-    if not c.opts:
-        return
-    if "d" in c.opts:
-        daemon()
-    if "r" in c.opts:
-        f = Fetcher()
-        f.start()
     if "s" in c.opts:
-        con = Console()
-        con.start()
-    if "i" in c.opts:
-        i = IRC()
-        i.start()
-    k.init(c.mods)
-    k.start()
-    k.wait()
+        c.mods += ",csl,cmd,opr,ent"
+    else:
+        c.mods += ",irc,cmd"
+    if c.mods:
+        k.start()
+        k.init(c.mods)
+        k.wait()
 
 execute(main)

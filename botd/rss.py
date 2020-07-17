@@ -8,11 +8,14 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 from urllib.request import Request, urlopen
 
+from bot.cfg import Cfg
 from bot.clk import Repeater
-from bot.dbs import Db, last
+from bot.dbs import Db
+from bot.dft import Default
 from bot.krn import k
-from bot.obj import Cfg, Default, Object, edit, save
-from bot.thr import launch
+from bot.obj import Object
+from bot.opr import edit
+from bot.tsk import launch
 from bot.tms import to_time, day
 
 try:
@@ -106,9 +109,9 @@ class Fetcher(Object):
             counter += 1
             objs.append(f)
             if self.cfg.dosave:
-                save(f)
+                f.save()
         if objs:
-            save(Fetcher.seen)
+            Fetcher.seen.save()
         for o in objs:
             k.fleet.announce(self.display(o))
         return counter
@@ -121,15 +124,15 @@ class Fetcher(Object):
         return thrs
 
     def start(self, repeat=True):
-        last(Fetcher.cfg)
-        last(Fetcher.seen)
+        Fetcher.cfg.last()
+        Fetcher.seen.last()
         if repeat:
             repeater = Repeater(300.0, self.run)
             repeater.start()
             return repeater
 
     def stop(self):
-        save(Fetcher.seen)
+        Fetcher.seen.save()
 
 def file_time(timestamp):
     return str(datetime.datetime.fromtimestamp(timestamp)).replace(" ", os.sep) + "." + str(random.randint(111111, 999999))
@@ -197,7 +200,7 @@ def rm(event):
         o._deleted = True
         got.append(o)
     for o in got:
-        save(o)
+        o.save()
     event.reply("ok")
 
 def display(event):
@@ -210,7 +213,7 @@ def display(event):
     for o in db.find("botd.rss.Rss", {"rss": event.args[0]}):
         nr += 1
         edit(o, setter)
-        save(o)
+        o.save()
     event.reply("ok")
 
 def feed(event):
@@ -271,5 +274,5 @@ def rss(event):
         return
     o = Rss()
     o.rss = event.args[0]
-    save(o)
+    o.save()
     event.reply("ok")

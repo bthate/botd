@@ -7,10 +7,10 @@ import socket
 import sys
 import time
 
-from bot.dbs import last
-from bot.obj import Cfg, Object
+from bot.cfg import Cfg
+from bot.obj import Object
 from bot.krn import k
-from bot.thr import launch
+from bot.tsk import launch
 
 def init(k):
     u = UDP()
@@ -60,7 +60,7 @@ class UDP(Object):
         self._sock.sendto(bytes("exit", "utf-8"), (self.cfg.host, self.cfg.port))
 
     def start(self):
-        last(self.cfg)
+        self.cfg.last()
         launch(self.server)
 
 def toudp(host, port, txt):
@@ -69,7 +69,7 @@ def toudp(host, port, txt):
 
 def udp(event):
     cfg = Cfg()
-    last(cfg)
+    cfg.last()
     if len(sys.argv) > 2:
         txt = " ".join(sys.argv[2:])
         toudp(cfg.host, cfg.port, txt)
