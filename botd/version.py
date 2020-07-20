@@ -2,7 +2,7 @@
 #
 #
 
-__version__ = 16
+__version__ = 17
 
-def v(event):
+def ver(event):
     event.reply("BOTD %s" % __version__)
