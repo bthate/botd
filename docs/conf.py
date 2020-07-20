@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 
-__version__ = 15
+__version__ = 16
 
 import unittest
 import doctest
@@ -39,7 +39,7 @@ templates_path=['_templates',]
 source_suffix = '.rst'
 source_encoding = 'utf-8-sig'
 master_doc = 'index'
-project = "BOTD"
+project = "B O T D"
 version = '%s' % __version__
 release = '%s' % __version__
 language = ''
@@ -58,7 +58,7 @@ html_theme = "haiku"
 html_theme_path = []
 html_short_title = ""
 #html_short_title = "BOTD %s" % __version__
-html_favicon = "botlibsmile.png"
+html_favicon = "smile3.png"
 html_static_path = []
 html_extra_path = []
 html_last_updated_fmt = '%Y-%b-%d'
@@ -72,7 +72,7 @@ html_show_copyright = False
 html_copy_source = False
 html_use_opensearch = 'http://botd.rtfd.io/'
 html_file_suffix = '.html'
-rst_prolog = """.. image:: botlibline.png
+rst_prolog = """.. image:: botdline.png
     :height: 3cm
     :width: 100%
 

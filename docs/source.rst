@@ -10,30 +10,34 @@ BOTLIB contains the following modules:
     :template: module.rst
 
     bot.clk             - clock/repeater
+    bot.cmd             - commands
     bot.csl             - console
-    bot.fil             - file 
+    bot.dbs             - database
+    bot.err             - errors
+    bot.flt             - list of bots
     bot.hdl             - handler
     bot.irc             - internet relay chat
-    bot.itr             - introspect
+    bot.isp             - introspect
     bot.krn             - core handler
     bot.obj             - base classes
+    bot.opr             - opers
+    bot.mbx             - email
     bot.prs             - parse
-    bot.shl             - shell
-    bot.thr             - threads
+    bot.spc             - specifications
+    bot.tsk             - tasks
     bot.tms             - time
     bot.trc             - trace
+    bot.udp             - udp to channel
+    bot.usr             - users
+    bot.utl             - utilities
 
-
-BOTD itself provides these modules:
+BOTD itself provides 1 module:
 
 .. autosummary::
     :toctree: 
     :template: module.rst
 
 
-    botd.cmd             - commands
-    botd.opr             - opers
     botd.rss             - rich site syndicate
-    botd.udp             - udp to channel
 
 You can add you own modules to the botd package, its a namespace package.
