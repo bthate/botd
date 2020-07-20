@@ -18,7 +18,7 @@ def main():
     if "s" in c.opts:
         c.mods += ",csl,cmd,opr,ent"
     else:
-        c.mods += ",irc,cmd"
+        c.mods += ",irc,udp"
     if c.mods:
         k.start()
         k.init(c.mods)
