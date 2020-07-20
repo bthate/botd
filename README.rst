@@ -1,17 +1,13 @@
-B  O  T  L  I  B 
-################
+B  O  T  D
+##########
 
-| Welcome to BOTLIB, the bot library ! see https://pypi.org/project/botlib/ 
+| Welcome to BOTD, the 24/7 channel daemon ! see https://pypi.org/project/botd/ 
 
-BOTLIB can lets you program your own commands, can work as a UDP to IRC
-relay, has user management to limit access to prefered users and can run
-as a service to let it restart after reboots.
-BOTLIB is the result of 20 years of programming bots, was there 
-in 2000, is here in 2020, has no copyright, no LICENSE and is placed in 
-the Public Domain. 
-This makes BOTLIB truely free (pastable) code you can use how you see fit, 
-I hope you enjoy using and programming BOTLIB till the point you start 
-programming your own bots yourself.
+BOTD can serve as a 24/7 background daaemon in an IRC channel, it can work as a UDP to IRC
+relay, has user management to limit access to prefered users and can run as a service to 
+let it restart after reboots.
+BOT is has no copyright, no LICENSE and is placed in the Public Domain. 
+This makes BOTD truely free (pastable) code you can use how you see fit, 
 
 INSTALL
 =======
@@ -20,49 +16,46 @@ you can download with pip3 and install globally:
 
 ::
 
- $ sudo pip3 install botlib
+ $ sudo pip3 install botd
 
-BOTLIB itself does not install a binary as it is a library. The tarball
-however includes a bot program that can run as a test bot for BOTLIB.
+You can download the tarball from https://pypi.org/project/botd/#files
 
-You can download the tarball from https://pypi.org/project/botlib/#files
-
-if you want to develop on the bot clone the source at bitbucket.org:
+if you want to develop on the botd clone the source at bitbucket.org:
 
 ::
 
- $ git clone https://bitbucket.org/bthate/botlib
+ $ git clone https://bitbucket.org/bthate/botd
 
 USAGE
 =====
 
-BOTLIB has it's own CLI, you can run it by giving the bot command on the
+BOTD has it's own CLI, you can run it by giving the botd command on the
 prompt, it will return with no response:
 
 :: 
 
- $ bot
+ $ botd
  $ 
 
-you can use bot <cmd> to run a command directly:
+you can use botd <cmd> to run a command directly:
 
 ::
 
- $ bot cmds
+ $ botd cmds
  cfg|cmd|dne|edt|fnd|flt|krn|log|add|tsk|tdo|udp|upt|ver
 
 configuration is done with the cfg command:
 
 ::
 
- $ bot cfg
- channel=#botlib nick=botlib port=6667 realname=botlib server=localhost username=botlib
+ $ botd cfg
+ channel=#botlib nick=botd port=6667 realname=botd server=localhost username=botd
 
 you can use setters to edit fields in a configuration:
 
 ::
 
- $ bot cfg server=irc.freenode.net channel=\#dunkbots nick=botje
+ $ botd cfg server=irc.freenode.net channel=\#dunkbots nick=botd
  channel=#dunkbots nick=botje port=6667 realname=botlib server=irc.freenode.net
  username=botlib
 
@@ -71,7 +64,7 @@ running:
 
 ::
 
- $ bot mods=irc,csl,cmd,opr
+ $ botd mods=irc,csl,cmd,opr
  > ps
  0 0s       Console.input
  1 0s       IRC.handler
@@ -84,14 +77,14 @@ to run a pure UDP to IRC relay, run the bot with irc,udp modules loaded
 
 ::
 
- $ bot mods=irc,udp
+ $ botd mods=irc,udp
  >
 
 use the udp command to send text via the bot to the channel on the irc server:
 
 ::
 
- $ tail -f /var/log/syslog | bot udp
+ $ tail -f /var/log/syslog | botd udp
 
 to send a udp packet to the bot:
 
@@ -110,11 +103,11 @@ you can use the mods= setter to set the modules to load:
 
 ::
 
- $ bot mods=csl,cmd,opr
+ $ botd mods=csl,cmd,opr
  > cmd
  cfg|cmd|flt|fnd|krn|tsk|upt|ver
 
-BOTLIB has the following modules:
+BOTD has the following modules:
 
 ::
 
@@ -140,12 +133,12 @@ BOTLIB has the following modules:
     usr             - users
     utl             - utilities
 
-you can add you own modules to the bot package, its a namespace package.
+you can add you own modules to the botd package, its a namespace package.
 
 SERVICE
 =======
 
-if you want to run the bot 24/7 you can install BOTLIB as a service for
+if you want to run the bot 24/7 you can install BOTD as a service for
 the systemd daemon. You can do this by copying the following into
 the /etc/systemd/system/botd.service file:
 
@@ -157,16 +150,15 @@ the /etc/systemd/system/botd.service file:
  Wants=network-online.target
  
  [Service]
- ExecStart=/usr/local/bin/bot mods=irc,udp
+ ExecStart=/usr/local/bin/botd mods=irc,udp
  
  [Install]
  WantedBy=multi-user.target
 
-then copy the bin/bot to /usr/local/bin and add the botd service with:
+then add the botd service with:
 
 ::
 
- $ sudo cp bin/bot /usr/local/bin
  $ sudo systemctl enable botd
  $ sudo systemctl daemon-reload
 
@@ -179,14 +171,14 @@ the botd service.
  $ sudo service botd stop
  $ sudo service botd start
 
-if you don't want the bot to startup at boot, remove the service file:
+if you don't want botd to startup at boot, remove the service file:
 
 ::
 
  $ sudo rm /etc/systemd/system/botd.service
 
-BOTLIB detects whether it is run as root or as a user. if it's root it
-will use the /var/lib/botd/ directory and if it's user it will use ~/.bot
+BOTD detects whether it is run as root or as a user. if it's root it
+will use the /var/lib/botd/ directory and if it's user it will use ~/.botd
 
 CONTACT
 =======
@@ -195,3 +187,4 @@ contact me on IRC/freenode/#dunkbots or email me at bthate@dds.nl
 
 | Bart Thate (bthate@dds.nl, thatebart@gmail.com)
 | botfather on #dunkbots irc.freenode.net
+
