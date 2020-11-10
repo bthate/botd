@@ -1,27 +1,50 @@
-#!/usr/bin/python3 -u
-# BOTD - the 24/7 channel daemon 
-#
-#
+#!/usr/bin/python3
+"library for programming objects"
 
-import sys, os ; sys.path.insert(0, os.getcwd())
+from csl import Console
+from prs import parse_cli
+from trm import execute, os, sys, termreset
 
-from bot.csl import execute
-from bot.krn import k
-from bot.prs import parse_cli
+def daemon():
+    "switch to background"
+    pid = os.fork()
+    if pid != 0:
+        termreset()
+        os._exit(0)
+    os.setsid()
+    os.umask(0)
+    si = open("/dev/null", 'r')
+    so = open("/dev/null", 'a+')
+    se = open("/dev/null", 'a+')
+    os.dup2(si.fileno(), sys.stdin.fileno())
+    os.dup2(so.fileno(), sys.stdout.fileno())
+    os.dup2(se.fileno(), sys.stderr.fileno())
+
+def privileges(name=""):
+    "lower privileges"
+    if os.getuid() != 0:
+        return
+    if not name:
+        name = getpass.getuser()
+    pwnam = pwd.getpwnam(name)
+    os.setgroups([])
+    os.setgid(pwnam.pw_gid)
+    os.setuid(pwnam.pw_uid)
+    old_umask = os.umask(0o22)
 
 def main():
-    c = parse_cli("botd")
-    if c.txt:
-        k.walk("bot")
-        k.walk("botd")
-        return k.cmd(c.origtxt)
-    if "s" in c.opts:
-        c.mods += ",csl,cmd,opr,ent"
-    else:
-        c.mods += ",irc,udp"
-    if c.mods:
-        k.start()
-        k.init(c.mods)
-        k.wait()
-
+    cfg = parse_cli("botd")
+    c = Console()
+    c.scan("irc")
+    c.scan("ver")
+    if cfg.txt:
+        return c.cmd(cfg.txt)
+    if "w" not in cfg.opts:
+        daemon()
+        privileges()
+    c.init(cfg.mods)
+    c.start()
+    c.wait()
+     
 execute(main)
+os._exit(0)

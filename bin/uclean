@@ -1,1 +1,0 @@
-rm -fR /usr/local/lib/python3.8/dist-packages/ok* ~/.local/lib/python3.8/dist-packages/ok* /usr/local/bin/ok* ~/.local/bin/ok*

@@ -1,29 +1,32 @@
 #!/usr/bin/python3
-#
-# run unittests.
 
-import logging, os, shutil, time, unittest
+import os, sys ; sys.path.insert(0, os.path.join(os.getcwd(), "lib"))
+import time, unittest
 
-from bot.obj import cdir
-from bot.krn import k, starttime
-from bot.shl import execute, parse_cli
-from bot.tms import elapsed
+import obj, hdl
 
-import bot.rss
+from trm import execute
+from prs import parse_cli
+
+def open(txt):
+    try:
+        for line in os.popen(txt).readlines():
+            print(line.rstrip())
+    except:
+        pass
 
 def main():
-    if os.path.exists(".data"):
-        shutil.rmtree(".data")
-    cfg = parse_cli("test")
-    bot.obj.workdir = ".data"
-    bot.rss.debug = True
-    k.start()
-    test_path = os.getcwd() + os.sep + "tests"
-    suite = unittest.loader.TestLoader().discover(test_path, pattern="test*")
+    open("rm -fR ~/.test")
+    obj.wd = os.path.expanduser("~/.test")
+    hdl.debug = True
+    cfg = parse_cli()
+    test_path = os.getcwd() + os.sep + "test"
+    if cfg.txt:
+        pat = "test_%s*" % k.cfg.txt
+    else:
+        pat = "test*"
+    suite = unittest.loader.TestLoader().discover(test_path, pattern=pat)
     unittest.TextTestRunner(verbosity=3).run(suite)
-    res = k.wait()
    
 execute(main)
-
-print(elapsed(time.time() - starttime))
 os._exit(0)

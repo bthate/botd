@@ -5,9 +5,8 @@
 
 import os, sys
 
-skip = "R0801,C0411,C0116,C0103,C0114,C0115,C0301,W0613,E0102,R0201,R1710"
+skip = "W0703,W0622,F0010,C0415,E0202,W0603,W0621,R0914,R0912,R0902,R0915,R0913,R0801,C0411,C0116,C0103,C0114,C0115,C0301,W0613,E0102,R0201,R1710,W0212,C0410,E0402,W0201,R0903,W0221,W0612"
+txt = "pylint -d %s --ignore=spc.py bot/*.py" % skip
 
-if len(sys.argv) > 1:
-    txt = "pylint -d %s %s" % (skip, " ".join(sys.argv[1:]))
-    for line in os.popen(txt).readlines():
-        print(line)
+for line in os.popen(txt).readlines():
+    print(line)

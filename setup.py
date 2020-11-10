@@ -1,33 +1,32 @@
-# BOTD - IRC channel daemon.
+# BOTD - 24/7 channel daemon
 #
-# setup.py
-
-import importlib
+#
 
 from setuptools import setup
 
-importlib.invalidate_caches()
+def mods():
+    import os
+    return [x[:-3] for x in os.listdir("mods") if x.endswith(".py")]
 
 def read():
     return open("README.rst", "r").read()
 
 setup(
     name='botd',
-    version='17',
-    url='https://bitbucket.org/botlib/botd',
+    version='18',
+    url='https://github.com/bthate/botd',
     author='Bart Thate',
-    author_email='bthate@dds.nl',
-    description="BOTD - channel daemon serving 24/7 in the background.",
+    author_email='bthate@dds.nl', 
+    description="24/7 channel daemon",
     long_description=read(),
-    long_description_content_type="text/x-rst",
     license='Public Domain',
+    install_requires=["botlib"],
+    packages=["mods"],
+    namespace_packages=["mods"],
     zip_safe=False,
-    install_requires=["botlib", "feedparser"],
-    packages=["botd"],
-    namespace_packages=["botd"],
-    scripts=["bin/botd"],
+    scripts=["bin/bot", "bin/botd"],
     classifiers=['Development Status :: 3 - Alpha',
-                 'License :: Public Domain',
+                 'License :: OSI Approved :: MIT License',
                  'Operating System :: Unix',
                  'Programming Language :: Python',
                  'Topic :: Utilities'
