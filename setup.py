@@ -4,10 +4,6 @@
 
 from setuptools import setup
 
-def mods():
-    import os
-    return [x[:-3] for x in os.listdir("mods") if x.endswith(".py")]
-
 def read():
     return open("README.rst", "r").read()
 
@@ -22,7 +18,7 @@ setup(
     license='Public Domain',
     install_requires=["botlib"],
     zip_safe=False,
-    scripts=["bin/bot", "bin/botctl", "bin/botd", "bin/botwrap", "bin/botudp"],
+    scripts=["bin/bot", "bin/botctl", "bin/botd", "bin/botcmd", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: MIT License',
                  'Operating System :: Unix',
