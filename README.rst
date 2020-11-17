@@ -43,16 +43,16 @@ the /etc/systemd/system/botd.service file:
 ::
 
  [Unit]
- Description=OBOT - 24/7 channel daemon
+ Description=BOTD - 24/7 channel daemon
  After=network-online.target
 
  [Service]
  DynamicUser=True
- StateDirectory=obot
- LogsDirectory=obot
- CacheDirectory=obot
- StandardOutput=append:/var/log/obot/obot.log
- ExecStart=/usr/local/bin/obotd wd=/var/lib/obot mods=irc,rss,udp -w
+ StateDirectory=botd
+ LogsDirectory=botd
+ CacheDirectory=botd
+ StandardOutput=append:/var/log/botd/botd.log
+ ExecStart=/usr/local/bin/botd wd=/var/lib/botd mods=irc,rss,udp -w
  CapabilityBoundingSet=CAP_NET_RAW
 
  [Install]

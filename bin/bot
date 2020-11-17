@@ -11,7 +11,7 @@ def main():
     cfg = parse_cli()
     c = Console()
     c.scan("irc")
-    c.init(cfg.mods)
+    c.init(cfg.sets.mods)
     if cfg.txt:
         return c.cmd(cfg.otxt)
     c.start()
