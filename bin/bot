@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import os, sys ; sys.path.insert(0, "lib")
+
 from csl import Console, os
 from ofn import format
 from prs import parse_cli
