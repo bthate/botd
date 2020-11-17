@@ -1,7 +1,4 @@
 #!/usr/bin/python3
-# BOTLIB - the bot library !
-#
-#
 
 import os
 
@@ -32,7 +29,7 @@ def main():
         print(line.strip())
     #obopen("rm -fR ~/.cache/pip/")
     obopen("python3 -mvirtualenv -p python3 env")
-    obopen("env/bin/pip3 install botlib -f dist --upgrade --force-reinstall")
+    obopen("env/bin/pip3 install botd -f dist --upgrade --force-reinstall")
 
 if __name__ == "__main__":
     main()

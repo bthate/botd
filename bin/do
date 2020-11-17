@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-# BOTLIB - the bot library !
-#
-#
 
 import importlib
 importlib.invalidate_caches()
@@ -83,10 +80,9 @@ def bmain():
     nopen("rm build")
     nopen("rm -fR %s.egg-info" % fname)
     nopen("python3 setup.py sdist")
-    rss = rs + " -f dist botlib feedparser"
+    rss = rs + " -f dist botd"
     print("easy_install %s" % rss)
     main(rss.split())
-    nopen("cp bin/bot %s/bin/bot" % installdir)
     nopen("rm %s/pip" % installdir)
     nopen('rm -fR %s/pip-19.1.1.dist-info' % installdir)
     nopen('rm -fR %s/wheel' % installdir)

@@ -1,5 +1,1 @@
-# BOTLIB - the bot library !
-#
-#
-
-rm -fR *~ botd.egg-info lib/botd.egg-info lib/*~ lib/__pycache__ run run.tar.gz html env env.tar.gz ol/*~ ol/__pycache__ .data build dist MANIFEST botlib.egg-info bot/*~ bot/__pycache__ bin/*~ *~ tests/*~ tests/__pycache__
+rm -fR *~ botd.egg-info lib/botd.egg-info lib/*~ lib/__pycache__ run run.tar.gz html env env.tar.gz .data build dist MANIFEST bin/*~ *~ 
