@@ -16,7 +16,7 @@ setup(
     description="24/7 channel daemon",
     long_description=read(),
     license='Public Domain',
-    install_requires=["botlib"],
+    install_requires=["botlib", "feedparser"],
     zip_safe=False,
     scripts=["bin/bot", "bin/botctl", "bin/botd", "bin/botcmd", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
