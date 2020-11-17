@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+# BOTD - 24/7 channel daemon
+#
+#
+
+import select, socket, sys
+
+host = "localhost"
+port = 5500
+
+def toudp(host, port, txt):
+    "send text over udp to the udp to irc relay server"
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
+
+def main():
+    "send text over udp to the bot"
+    if len(sys.argv) > 1:
+        txt = " ".join(sys.argv[1:])
+        toudp(host, port, txt)
+        return
+    if not select.select([sys.stdin, ], [], [], 0.0)[0]:
+        return
+    while 1:
+        try:
+            (i, o, e) = select.select([sys.stdin,], [], [sys.stderr,])
+        except KeyboardInterrupt:
+            return
+        if e:
+            break
+        stop = False
+        for sock in i:
+            txt = sock.readline()
+            if not txt:
+                stop = True
+                break
+            toudp(host, port, txt)
+        if stop:
+            break
+
+main()

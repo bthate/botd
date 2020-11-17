@@ -1,21 +1,19 @@
 #!/usr/bin/python3
-"library for programming objects"
 
-import os, sys
-sys.path.insert(0, "lib")
-sys.path.insert(0, "bot")
-
-from csl import Console
+from csl import Console, os
+from ofn import format
 from prs import parse_cli
-from trm import execute, os
+from trm import execute
 
 def main():
-    cfg = parse_cli("bot")
+    import obj
+    obj.wd = os.path.expanduser("~/.bot")
+    cfg = parse_cli()
     c = Console()
     c.scan("irc")
-    if cfg.txt:
-       return c.cmd(cfg.txt)
     c.init(cfg.mods)
+    if cfg.txt:
+        return c.cmd(cfg.otxt)
     c.start()
     c.wait()
      

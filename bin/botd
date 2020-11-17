@@ -1,12 +1,11 @@
 #!/usr/bin/python3
-"library for programming objects"
 
-from csl import Console
+from csl import Console, os, sys
+from ofn import format
 from prs import parse_cli
 from trm import execute, os, sys, termreset
 
 def daemon():
-    "switch to background"
     pid = os.fork()
     if pid != 0:
         termreset()
@@ -20,30 +19,18 @@ def daemon():
     os.dup2(so.fileno(), sys.stdout.fileno())
     os.dup2(se.fileno(), sys.stderr.fileno())
 
-def privileges(name=""):
-    "lower privileges"
-    if os.getuid() != 0:
-        return
-    if not name:
-        name = getpass.getuser()
-    pwnam = pwd.getpwnam(name)
-    os.setgroups([])
-    os.setgid(pwnam.pw_gid)
-    os.setuid(pwnam.pw_uid)
-    old_umask = os.umask(0o22)
-
 def main():
-    cfg = parse_cli("botd")
-    c = Console()
-    c.scan("irc")
-    c.scan("ver")
-    if cfg.txt:
-        return c.cmd(cfg.txt)
+    import obj
+    obj.wd = "/var/lib/botd"
+    cfg = parse_cli()
+    print(format(cfg))
     if "w" not in cfg.opts:
+        print("daemon mode")
         daemon()
-        privileges()
-    c.init(cfg.mods)
-    c.start()
+    c = Console()
+    c.scan("cms")
+    c.scan("irc")
+    c.init(cfg.sets.mods)
     c.wait()
      
 execute(main)
