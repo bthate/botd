@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from csl import Console
+from csl import Console, os, sys
 from trm import execute
 
 import obj

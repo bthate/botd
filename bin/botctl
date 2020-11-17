@@ -1,1 +1,1 @@
-systemd-run -q --pipe --property=DynamicUser=yes --property=StateDirectory=obot bin/botwrap $*
+systemd-run -q --pipe --property=DynamicUser=yes --property=StateDirectory=botd botwrap $*
