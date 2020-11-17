@@ -1,1 +1,22 @@
-rm -fR *~ botd.egg-info lib/botd.egg-info lib/*~ lib/__pycache__ run run.tar.gz html env env.tar.gz .data build dist MANIFEST bin/*~ *~ 
+#!/usr/bin/python3
+
+import os
+
+def rsts():
+    return ["docs/%s.rst" % x.split(os.sep)[-1][:-3] for x in os.listdir("lib") 
+                                                if x.endswith(".py")
+                                                and not x == "setup.py"]
+
+def open(txt):
+    txt += " 2>&1"
+    try:
+        for line in os.popen(txt).readlines():
+            pass
+    except:
+        pass
+
+
+open("rm -fR *~ botd.egg-info lib/botd.egg-info lib/*~ lib/__pycache__ run run.tar.gz html env env.tar.gz .data build dist MANIFEST bin/*~ *~ docs/*~")
+
+for r in rsts():
+    open("rm %s" % r)
