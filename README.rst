@@ -153,7 +153,7 @@ adding rss to mods= will load the rss module and start it's poller.
 
 ::
 
- $ ./bin/bot mods=irc,rss
+ $ sudo botd mods=irc,rss
 
 UDP
 ===
@@ -179,63 +179,6 @@ to send a udp packet to botd in python3:
  def toudp(host=localhost, port=5500, txt=""):
      sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
      sock.sendto(bytes(txt.strip(), "utf-8"), host, port)
-
-OBJECT PROGRAMMING
-==================
-
-BOTD uses the BOTLIB library as object library, it provides a "move all methods to functions" like this:
-
-::
-
- obj.method(*args) -> method(obj, *args) 
-
- e.g.
-
- not:
-
- >>> from obj import Object
- >>> o = Object()
- >>> o.set("key", "value")
- >>> o.key
- 'value'
-
- but:
-
- >>> from obj import Object, set
- >>> o = Object()
- >>> set(o, "key", "value")
- >>> o.key
- 'value'
-
-It's a way of programming with objects, object programming. BOTLIB provides a 
-Object class, that has all the basic dict method provided as  functions. This
-gives a clean namespace to the object, so it can be initialised with data read
-from disk. OBJ uses a JSON in file database with a versioned readonly storage.
-It reconstructs objects based on type information in the path.
-
-If you are used to functional programming you'll like it (or not) ;]
-
-MODULES
-=======
-
-BOTLIB provides the following modules:
-
-::
-
-    bus		 - messaging
-    clk		 - clock/repeater
-    cms          - commands
-    csl          - console
-    dbs          - databases
-    hdl          - handler
-    irc          - internet relay chat
-    obj          - objects
-    ofn          - object functions
-    prs          - parser
-    rss		 - rich site syndicate
-    thr          - threads
-    trm          - terminal
-    udp          - udp to irc relay
 
 CONTACT
 =======

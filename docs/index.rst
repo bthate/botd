@@ -24,13 +24,15 @@ installation is through pypi:
 
  > sudo pip3 install botd
 
-if you have previous versions already installed and things fail try to force reinstall:
+if you have previous versions already installed and things fail try to force
+reinstall:
 
 ::
 
  > sudo pip3 install botd --upgrade --force-reinstall
 
-if this also doesn't work you'll need to remove all previous installed versions, so you can do a clean install.
+if this also doesn't work you'll need to remove all previous installed 
+versions, so you can do a clean install.
 
 you can run directly from the tarball, see https://pypi.org/project/botd/#files
 
@@ -66,8 +68,8 @@ then enable the botd service with:
  $ sudo systemctl enable botd
  $ sudo systemctl daemon-reload
 
-to configure the bot use the cfg (config) command (see above). use sudo for the system
-daemon and without sudo if you want to run the bot locally. then restart
+to configure the bot use the cfg (config) command (see above). use sudo for the
+system daemon and without sudo if you want to run the bot locally. then restart
 the botd service.
 
 ::
@@ -85,15 +87,16 @@ USAGE
 =====
 
 BOTD havs it's own CLI, the botctl program. It needs root because the botd
-program uses systemd to get it started after a reboot. You can run it on the shell
-prompt and, as default, it won't do anything.
+program uses systemd to get it started after a reboot. You can run it on the 
+shell prompt and, as default, it won't do anything.
 
 :: 
 
  $ sudo botctl
  $ 
 
-you can use botctl <cmd> to run a command directly, use the cmd command to see a list of commands:
+you can use botctl <cmd> to run a command directly, use the cmd command to see
+a list of commands:
 
 ::
 
@@ -153,7 +156,7 @@ adding rss to mods= will load the rss module and start it's poller.
 
 ::
 
- $ ./bin/bot mods=irc,rss
+ $ sudo botd mods=irc,rss
 
 UDP
 ===
@@ -161,14 +164,16 @@ UDP
 BOTD also has the possibility to serve as a UDP to IRC relay where you
 can send UDP packages to the bot and have txt displayed on the channel.
 
-use the 'botudp' command to send text via the bot to the channel on the irc server:
+use the 'botudp' command to send text via the bot to the channel on the irc 
+server:
 
 ::
 
  $ tail -f /var/log/syslog | botudp
 
-output to the IRC channel can be done with the use python3 code to send a UDP packet 
-to botd, it's unencrypted txt send to the bot and display on the joined channels.
+output to the IRC channel can be done with the use python3 code to send a 
+UDP packet to botd, it's unencrypted txt send to the bot and display on 
+the joined channels.
 
 to send a udp packet to botd in python3:
 
@@ -180,69 +185,10 @@ to send a udp packet to botd in python3:
      sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
      sock.sendto(bytes(txt.strip(), "utf-8"), host, port)
 
-OBJECT PROGRAMMING
-==================
-
-BOTD uses the BOTLIB library as object library, it provides a "move all methods to functions" like this:
-
-::
-
- obj.method(*args) -> method(obj, *args) 
-
- e.g.
-
- not:
-
- >>> from obj import Object
- >>> o = Object()
- >>> o.set("key", "value")
- >>> o.key
- 'value'
-
- but:
-
- >>> from obj import Object, set
- >>> o = Object()
- >>> set(o, "key", "value")
- >>> o.key
- 'value'
-
-It's a way of programming with objects, object programming. BOTLIB provides a 
-Object class, that has all the basic dict method provided as  functions. This
-gives a clean namespace to the object, so it can be initialised with data read
-from disk. OBJ uses a JSON in file database with a versioned readonly storage.
-It reconstructs objects based on type information in the path.
-
-If you are used to functional programming you'll like it (or not) ;]
-
-MODULES
-=======
-
-BOTLIB provides the following modules:
-
-.. autosummary::
-    :toctree: 
-    :template: module.rst
-
-    bus		 - messaging
-    clk		 - clock/repeater
-    cms          - commands
-    csl          - console
-    dbs          - databases
-    hdl          - handler
-    irc          - internet relay chat
-    obj          - objects
-    ofn          - object functions
-    prs          - parser
-    rss		 - rich site syndicate
-    thr          - threads
-    trm          - terminal
-    udp          - udp to irc relay
-
 CONTACT
 =======
 
-"contributed back to society."
+"contributed back to society." - :ref:`source <source>`
 
 you can contact me on IRC/freenode/#dunkbots or email me at bthate@dds.nl
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 
-__version__ = 16
+__version__ = 20
 
 import unittest
 import doctest
@@ -76,7 +76,7 @@ rst_prolog = """.. image:: botdline.png
     :height: 3cm
     :width: 100%
 
-.. title:: no copyright, no LICENSE, placed in the public domain
+.. title:: 24/7 channel daemon
 
 """
 htmlhelp_basename = 'pydoc'
