@@ -3,10 +3,10 @@
 import importlib, inspect, os, queue, sys, threading, time
 import importlib.util
 
-from dbs import list_files
-from obj import Default, Object, Ol, get_type, spl, update
-from prs import parse
-from thr import launch, get_exception
+from .dbs import list_files
+from .obj import Default, Object, Ol, get_type, spl, update
+from .prs import parse
+from .thr import launch, get_exception
 
 debug = False
 md = ""

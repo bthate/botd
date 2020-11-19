@@ -2,8 +2,8 @@
 
 import time
 
-from obj import hook, update, os, get_type
-from ofn import format, search
+from .obj import hook, update, os, get_type
+from .ofn import format, search
 
 def all(otype, selector=None, index=None, timed=None):
     "return all matching objects"

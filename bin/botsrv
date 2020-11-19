@@ -1,0 +1,16 @@
+#!/usr/bin/python3
+
+from hdl import Handler, os
+from trm import execute
+
+def main():
+    import obj
+    obj.wd = "/var/lib/bot"
+    h = Handler()
+    h.start()
+    h.scan("irc")
+    h.init("irc,udp,rss")
+    h.wait()
+     
+execute(main)
+os._exit(0)

@@ -6,13 +6,13 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 from urllib.request import Request, urlopen
 
-from bus import bus
-from clk import Repeater
-from dbs import all, find, last, lastmatch
-from obj import Cfg, Default, O, Object, save, get, update
-from ofn import edit
-from hdl import debug
-from thr import launch
+from .bus import bus
+from .clk import Repeater
+from .dbs import all, find, last, lastmatch
+from .obj import Cfg, Default, O, Object, save, get, update
+from .ofn import edit
+from .hdl import debug
+from .thr import launch
 
 try:
     import feedparser

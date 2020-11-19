@@ -8,10 +8,10 @@ import sys
 import threading
 import time
 
-from dbs import find, list_files
-from obj import Default, Object, cdir, fntime, get, keys, save, update
-from ofn import format
-from prs import elapsed, parse
+from .dbs import find, list_files
+from .obj import Default, Object, cdir, fntime, get, keys, save, update
+from .ofn import format
+from .prs import elapsed, parse
 
 starttime = time.time()
 

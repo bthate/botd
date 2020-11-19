@@ -4,8 +4,8 @@ import os
 import sys
 import time
 
-from obj import Default, Object, cdir, update
-from ofn import format
+from .obj import Default, Object, cdir, update
+from .ofn import format
 
 class Token(Object):
 

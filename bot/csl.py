@@ -2,9 +2,9 @@
 
 import atexit, os, pwd, readline, sys
 
-from hdl import Event, Handler
-from thr import launch
-from trm import termsave, termreset
+from .hdl import Event, Handler
+from .thr import launch
+from .trm import termsave, termreset
 
 def __dir__():
     return ("Console", "setcompleter")

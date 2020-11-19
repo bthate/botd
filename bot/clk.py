@@ -2,8 +2,8 @@
 
 import threading, time
 
-from obj import Object, get_type
-from thr import launch
+from .obj import Object, get_type
+from .thr import launch
 
 class Timer(Object):
 

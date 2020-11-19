@@ -2,15 +2,13 @@
 
 import os, queue, socket, textwrap, time, threading, _thread
 
-from bus import bus
-from dbs import find, last
-from hdl import Event, Handler
-from obj import Cfg, Default, Object, register, save, update
-from ofn import format
-from prs import parse, parse_cli
-from thr import launch
-
-__version__ = 109
+from .bus import bus
+from .dbs import find, last
+from .hdl import Event, Handler
+from .obj import Cfg, Default, Object, register, save, update
+from .ofn import format
+from .prs import parse, parse_cli
+from .thr import launch
 
 saylock = _thread.allocate_lock()
 

@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 
-import os, sys ; sys.path.insert(0, "lib")
+import os, sys ; sys.path.insert(0, os.getcwd())
 
-from hdl import Handler
-from trm import execute
+from bot.hdl import Handler
+from bot.trm import execute
 
-import obj
+import bot.obj
 
 def main():
-    obj.wd = "/var/lib/botd"
+    bot.obj.wd = "/var/lib/botd"
     h = Handler()
     h.scan("irc")
     return h.cmd(" ".join(sys.argv[1:]))

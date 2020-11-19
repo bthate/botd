@@ -1,15 +1,15 @@
 #!/usr/bin/python3
 
-import os, sys ; sys.path.insert(0, "lib")
+import os, sys ; sys.path.insert(0, os.getcwd())
 
-from csl import Console, os
-from ofn import format
-from prs import parse_cli
-from trm import execute
+from bot.csl import Console, os
+from bot.ofn import format
+from bot.prs import parse_cli
+from bot.trm import execute
 
 def main():
-    import obj
-    obj.wd = os.path.expanduser("~/.bot")
+    import bot.obj
+    bot.obj.wd = os.path.expanduser("~/.bot")
     cfg = parse_cli()
     c = Console()
     c.scan("irc")

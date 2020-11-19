@@ -2,7 +2,7 @@
 
 import queue, sys, threading, time, traceback
 
-from obj import Default, Object, get_name, get_type
+from .obj import Default, Object, get_name, get_type
 
 class Thr(threading.Thread):
 

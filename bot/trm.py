@@ -5,7 +5,7 @@ import os
 import sys
 import termios
 
-from thr import get_exception
+from .thr import get_exception
 
 resume = {}
 

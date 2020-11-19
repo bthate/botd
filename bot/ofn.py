@@ -1,6 +1,6 @@
 "object functions (ofn)"
 
-from obj import get, items, get_type
+from .obj import get, items, get_type
 
 def edit(o, setter, skip=False):
     "update an object from a dict"
