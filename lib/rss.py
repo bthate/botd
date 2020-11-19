@@ -174,7 +174,6 @@ def get_feed(url):
             for entry in result["entries"]:
                 yield entry
     else:
-        print("feedparser is missing")
         return [Object(), Object()]
 
 def file_time(timestamp):

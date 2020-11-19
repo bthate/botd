@@ -235,7 +235,6 @@ def load(o, path):
         try:
             v = json.load(ofile, object_hook=hooked)
         except json.decoder.JSONDecodeError as ex:
-            print(path, ex)
             return
         if v:
             update(o, v)

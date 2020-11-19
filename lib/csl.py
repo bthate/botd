@@ -11,19 +11,21 @@ def __dir__():
 
 cmds = []
 
+class Event(Event):
+
+    def direct(self, txt):
+        self.src.direct(txt)
+
 class Console(Handler):
 
     "console class"
-
-    def __init__(self):
-        super().__init__()
 
     def announce(self, txt):
         "silence announcing"
 
     def direct(self, txt):
-        "print txt"
-        super().direct(txt)
+        "print to stdout"
+        print(txt)
 
     def input(self):
         "loop for input"

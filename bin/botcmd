@@ -1,15 +1,17 @@
 #!/usr/bin/python3
 
-from csl import Console, os, sys
+import os, sys ; sys.path.insert(0, "lib")
+
+from hdl import Handler
 from trm import execute
 
 import obj
 
 def main():
     obj.wd = "/var/lib/botd"
-    c = Console()
-    c.scan("irc")
-    return c.cmd(" ".join(sys.argv[1:]))
+    h = Handler()
+    h.scan("irc")
+    return h.cmd(" ".join(sys.argv[1:]))
 
 execute(main)
 os._exit(0)

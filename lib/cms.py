@@ -63,7 +63,6 @@ def thr(event):
             up = int(time.time() - starttime)
         thrname = thr.getName()
         if not thrname:
-            print(thr)
             continue
         if thrname:
             result.append((up, thrname))

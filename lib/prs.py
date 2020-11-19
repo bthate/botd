@@ -148,9 +148,6 @@ def parse_cli():
     cfg.sets.wd = obj.wd = cfg.sets.wd or obj.wd
     assert obj.wd
     hdl.md = os.path.join(obj.wd, "mod")
-    if "b" in cfg.opts:
-        print("OBJ started at %s" % time.ctime(time.time()))
-        print(format(cfg))
     return cfg
 
 def parse(o, txt):

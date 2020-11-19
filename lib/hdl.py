@@ -24,8 +24,7 @@ class Event(Default):
         self.thrs = []
 
     def direct(self, txt):
-        "send txt to console"
-        print(txt)
+        "send txt to console - overload this"
 
     def parse(self):
         "parse an event"
@@ -81,7 +80,10 @@ class Handler(Object):
 
     def cmd(self, txt):
         "do a command"
-        e = Event()
+        class E(Event):
+            def direct(self, txt):
+                print(txt)
+        e = E()
         e.txt = txt
         return self.dispatch(e)
 
@@ -108,7 +110,6 @@ class Handler(Object):
             try:
                 spec = importlib.util.find_spec(mn)
             except ModuleNotFoundError:
-                print("%s not found" % mn)
                 continue
             if spec:
                 mod = self.intro(direct(mn))

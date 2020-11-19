@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 
-from csl import Console, os, sys
-from ofn import format
+import os, sys
+
+from hdl import Handler
 from prs import parse_cli
-from trm import execute, os, sys, termreset
+from trm import execute, termreset
 
 def daemon():
     pid = os.fork()
@@ -22,16 +23,12 @@ def daemon():
 def main():
     import obj
     obj.wd = "/var/lib/botd"
-    cfg = parse_cli()
-    print(format(cfg))
-    if "w" not in cfg.opts:
-        print("daemon mode")
-        daemon()
-    c = Console()
-    c.scan("cms")
-    c.scan("irc")
-    c.init(cfg.sets.mods)
-    c.wait()
+    daemon()
+    h = Handler()
+    h.start()
+    h.scan("irc")
+    h.init("irc,udp,rss")
+    h.wait()
      
 execute(main)
 os._exit(0)

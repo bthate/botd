@@ -383,9 +383,7 @@ class IRC(Handler):
         self._joined.set()
 
     def LOG(self, event):
-        "log to console"
-        if self.verbose:
-            print(event)
+        "log to console - override this"
 
     def NOTICE(self, event):
         "handle noticed"
@@ -405,7 +403,6 @@ class IRC(Handler):
                 launch(dcc.connect, event)
                 return
             except ConnectionError as ex:
-                print(ex)
                 return
         if event.txt and event.txt[0] == self.cc:
             if self.cfg.users and not users.allowed(event.origin, "USER"):
