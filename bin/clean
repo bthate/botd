@@ -16,7 +16,7 @@ def open(txt):
         pass
 
 
-open("rm -fR build *~ botd.egg-info bot/*~ bot/__pycache__ run run.tar.gz html env env.tar.gz .data build dist MANIFEST bin/*~ *~ docs/*~")
+open("rm -fR test/*~ test/__pycache__ build *~ botd.egg-info bot/*~ bot/__pycache__ run run.tar.gz html env env.tar.gz .data build dist MANIFEST bin/*~ *~ docs/*~")
 
 for r in rsts():
     open("rm %s" % r)
