@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-from hdl import Handler, os
-from trm import execute
+from bot.hdl import Handler, os
+from bot.trm import execute
 
 def main():
-    import obj
-    obj.wd = "/var/lib/bot"
+    import bot.obj
+    bot.obj.wd = "/var/lib/bot"
     h = Handler()
     h.start()
     h.scan("irc")

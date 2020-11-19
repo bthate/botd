@@ -1,9 +1,12 @@
 "database (dbs)"
 
 import time
+import bot.obj
 
-from .obj import hook, update, os, get_type
-from .ofn import format, search
+from bot.obj import hook, update, os, get_type
+from bot.ofn import format, search
+
+
 
 def all(otype, selector=None, index=None, timed=None):
     "return all matching objects"
@@ -35,7 +38,7 @@ def every(selector=None, index=None, timed=None):
     if selector is None:
         selector = {}
     import obj
-    for otype in os.listdir(os.path.join(obj.wd, "store")):
+    for otype in os.listdir(os.path.join(bot.obj.wd, "store")):
         for fn in fns(otype, timed):
             o = hook(fn)
             if selector and not search(o, selector):
@@ -82,8 +85,8 @@ def fns(name, timed=None):
     "return filenames"
     if not name:
         return []
-    import obj
-    p = os.path.join(obj.wd, "store", name) + os.sep
+    import bot.obj
+    p = os.path.join(bot.obj.wd, "store", name) + os.sep
     res = []
     d = ""
     for rootdir, dirs, _files in os.walk(p, topdown=False):

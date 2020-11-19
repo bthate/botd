@@ -1,7 +1,4 @@
 #!/usr/bin/python3
-# BOTD - 24/7 channel daemon
-#
-#
 
 import select, socket, sys
 

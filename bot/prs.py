@@ -4,8 +4,8 @@ import os
 import sys
 import time
 
-from .obj import Default, Object, cdir, update
-from .ofn import format
+from bot.obj import Default, Object, cdir, update
+from bot.ofn import format
 
 class Token(Object):
 
@@ -141,13 +141,13 @@ def elapsed(seconds, short=True):
 
 def parse_cli():
     "parse commandline"
-    import hdl
-    import obj
+    import bot.hdl
+    import bot.obj
     cfg = Default()
     parse(cfg, " ".join(sys.argv[1:]))
-    cfg.sets.wd = obj.wd = cfg.sets.wd or obj.wd
-    assert obj.wd
-    hdl.md = os.path.join(obj.wd, "mod")
+    cfg.sets.wd = bot.obj.wd = cfg.sets.wd or bot.obj.wd
+    assert bot.obj.wd
+    bot.hdl.md = os.path.join(bot.obj.wd, "mod")
     return cfg
 
 def parse(o, txt):

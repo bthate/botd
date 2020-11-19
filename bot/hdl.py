@@ -3,10 +3,12 @@
 import importlib, inspect, os, queue, sys, threading, time
 import importlib.util
 
-from .dbs import list_files
-from .obj import Default, Object, Ol, get_type, spl, update
-from .prs import parse
-from .thr import launch, get_exception
+from bot.dbs import list_files
+from bot.obj import Default, Object, Ol, get_type, spl, update
+from bot.prs import parse
+from bot.thr import launch, get_exception
+
+__version__ = 22
 
 debug = False
 md = ""
@@ -99,9 +101,9 @@ class Handler(Object):
 
     def files(self):
         "show files in workdir"
-        import obj
-        assert obj.wd
-        return list_files(obj.wd)
+        import bot.obj
+        assert bot.obj.wd
+        return list_files(bot.obj.wd)
 
     def init(self, mns):
         "call init() of modules"
@@ -130,16 +132,6 @@ class Handler(Object):
                 self.names.append(o.__name__.lower(), t)
         return mod
         
-    def mods(self, pkgname):
-        path = os.path.dirname(direct(pkgname).__file__)
-        res = []
-        for mn in [x[:-3] for x in os.listdir(path)
-                          if x and x.endswith(".py")
-                          and not x.startswith("__")
-                          and not x == "setup.py"]:
-              res.append(direct(mn))
-        return res
-
     def handler(self):
         "handler loop"
         while not self.stopped:
@@ -156,21 +148,15 @@ class Handler(Object):
         "register a callback"
         self.cbs[name] = callback
 
-    def fromdir(self, path):
+    def fromdir(self, path, name="bot"):
         "scan a modules directory"
         if not path:
             return
-        sys.path.insert(0, path)
         for mn in [x[:-3] for x in os.listdir(path)
                           if x and x.endswith(".py")
                           and not x.startswith("__")
                           and not x == "setup.py"]:
-            self.intro(direct(mn))
-
-    def scan(self, modname):
-        "scan a modules directory"
-        path = os.path.dirname(direct(modname).__file__)
-        self.fromdir(path)
+            self.intro(direct("%s.%s" % (name, mn)))
 
     def start(self):
         "start handler"
@@ -197,12 +183,12 @@ def direct(name, pname=''):
     "load a module"
     return importlib.import_module(name, pname)
 
-def mods(mn):
+def mods(mn, name="bot"):
     "return all modules in a package"
     mod = []
     pkg = direct(mn)
     path = os.path.dirname(pkg.__file__ or pkg.__path__[0])
-    for m in [x.split(os.sep)[-1][:-3] for x in os.listdir(path) 
+    for m in ["%s.%s" % (name, x.split(os.sep)[-1][:-3]) for x in os.listdir(path) 
                                   if x.endswith(".py")
                                   and not x == "setup.py"]:
         mod.append(direct(m))

@@ -2,10 +2,10 @@
 
 import select, socket, sys, time
 
-from .bus import bus
-from .dbs import last
-from .obj import Cfg, Object
-from .thr import launch
+from bot.bus import bus
+from bot.dbs import last
+from bot.obj import Cfg, Object
+from bot.thr import launch
 
 def init(hdl):
     "start a udp to irc relay server and return it"

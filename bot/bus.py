@@ -1,6 +1,6 @@
 "announce to listeners"
 
-from .obj import Object
+from bot.obj import Object
 
 class Bus(Object):
 

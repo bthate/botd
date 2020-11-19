@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 
-import os, sys ; sys.path.insert(0, os.path.join(os.getcwd(), "lib"))
+import os, sys ; sys.path.insert(0, os.getcwd())
 import time, unittest
 
-import obj, hdl
+import bot.obj
+import bot.hdl
 
-from trm import execute
-from prs import parse_cli
+from bot.trm import execute
+from bot.prs import parse_cli
 
 def open(txt):
     try:
@@ -17,8 +18,8 @@ def open(txt):
 
 def main():
     open("rm -fR ~/.test")
-    obj.wd = os.path.expanduser("~/.test")
-    hdl.debug = True
+    bot.obj.wd = os.path.expanduser("~/.test")
+    bot.hdl.debug = True
     cfg = parse_cli()
     test_path = os.getcwd() + os.sep + "test"
     if cfg.txt:

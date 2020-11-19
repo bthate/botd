@@ -1,4 +1,4 @@
-"commands (cms)"
+"commands (cmd)"
 
 def __dir__():
     return ("Log", "Todo", "cmd", "dne", "fnd", "log", "todo", "thr", "ver")
@@ -8,10 +8,11 @@ import sys
 import threading
 import time
 
-from .dbs import find, list_files
-from .obj import Default, Object, cdir, fntime, get, keys, save, update
-from .ofn import format
-from .prs import elapsed, parse
+from bot.dbs import find, list_files
+from bot.hdl import mods
+from bot.obj import Default, Object, cdir, fntime, get, keys, save, update
+from bot.ofn import format
+from bot.prs import elapsed, parse
 
 starttime = time.time()
 
@@ -42,7 +43,7 @@ def dne(event):
     if not event.args:
         return
     selector = {"txt": event.args[0]}
-    for fn, o in find("cms.Todo", selector):
+    for fn, o in find("bot.cmd.Todo", selector):
         o._deleted = True
         save(o)
         event.reply("ok")
@@ -108,7 +109,7 @@ def tdo(event):
 
 def ver(event):
     versions = Object()
-    for mod in event.src.mods("cms") + event.src.mods("irc"):
+    for mod in mods("bot"):
         try:
             versions[mod.__name__.upper()] = mod.__version__
         except:

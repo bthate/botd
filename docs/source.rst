@@ -9,17 +9,17 @@ BOTLIB provides the following modules:
     :toctree: 
     :template: module.rst
 
-    bus          - messaging
-    clk          - clock/repeater
-    cms          - commands
-    csl          - console
-    dbs          - databases
-    hdl          - handler
-    irc          - internet relay chat
-    obj          - objects
-    ofn          - object functions
-    prs          - parser
-    rss          - rich site syndicate
-    thr          - threads
-    trm          - terminal
-    udp          - udp to irc relay
+    bot.bus          - messaging
+    bot.clk          - clock/repeater
+    bot.cmd          - commands
+    bot.csl          - console
+    bot.dbs          - databases
+    bot.hdl          - handler
+    bot.irc          - internet relay chat
+    bot.obj          - objects
+    bot.ofn          - object functions
+    bot.prs          - parser
+    bot.rss          - rich site syndicate
+    bot.thr          - threads
+    bot.trm          - terminal
+    bot.udp          - udp to irc relay

@@ -3,21 +3,40 @@
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 from bot.csl import Console, os
+from bot.hdl import Handler
 from bot.ofn import format
 from bot.prs import parse_cli
-from bot.trm import execute
+from bot.trm import execute, termreset
+
+def daemon():
+    pid = os.fork()
+    if pid != 0:
+        termreset()
+        os._exit(0)
+    os.setsid()
+    os.umask(0)
+    si = open("/dev/null", 'r')
+    so = open("/dev/null", 'a+')
+    se = open("/dev/null", 'a+')
+    os.dup2(si.fileno(), sys.stdin.fileno())
+    os.dup2(so.fileno(), sys.stdout.fileno())
+    os.dup2(se.fileno(), sys.stderr.fileno())
 
 def main():
     import bot.obj
-    bot.obj.wd = os.path.expanduser("~/.bot")
+    bot.obj.wd = os.path.expanduser("~/.botd")
     cfg = parse_cli()
-    c = Console()
-    c.scan("irc")
-    c.init(cfg.sets.mods)
+    if "d" in cfg.opts:
+        daemon()
+        h = Handler()
+    else:
+        h = Console()
+    h.walk("bot")
     if cfg.txt:
-        return c.cmd(cfg.otxt)
-    c.start()
-    c.wait()
+        return h.cmd(cfg.otxt)
+    h.init(cfg.sets.mods)
+    h.start()
+    h.wait()
      
 execute(main)
 os._exit(0)
