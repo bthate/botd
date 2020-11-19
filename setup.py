@@ -9,15 +9,14 @@ def read():
 
 setup(
     name='botd',
-    version='21',
+    version='22',
     url='https://github.com/bthate/botd',
     author='Bart Thate',
     author_email='bthate@dds.nl', 
     description="24/7 channel daemon",
     long_description=read(),
     license='Public Domain',
-    packages=["bot"],
-    namespace_packages=["bot"],
+    install_requires=["botlib"],
     zip_safe=False,
     scripts=["bin/bot", "bin/botctl", "bin/botd", "bin/botcmd", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
