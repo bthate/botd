@@ -54,7 +54,7 @@ the /etc/systemd/system/botd.service file:
  StateDirectory=botd
  LogsDirectory=botd
  CacheDirectory=botd
- ExecStart=/usr/local/bin/botd wd=/var/lib/botd mods=irc,rss,udp -w
+ ExecStart=/usr/local/bin/botd
  CapabilityBoundingSet=CAP_NET_RAW
 
  [Install]

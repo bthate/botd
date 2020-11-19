@@ -105,16 +105,16 @@ class Handler(Object):
         assert bot.obj.wd
         return list_files(bot.obj.wd)
 
-    def init(self, mns):
+    def init(self, mns, name="bot"):
         "call init() of modules"
         thrs = []
         for mn in spl(mns):
             try:
-                spec = importlib.util.find_spec(mn)
+                spec = importlib.util.find_spec("%s.%s" % (name, mn))
             except ModuleNotFoundError:
                 continue
             if spec:
-                mod = self.intro(direct(mn))
+                mod = self.intro(direct("%s.%s" % (name, mn)))
                 func = getattr(mod, "init", None)
                 if func:
                     thrs.append(func(self))

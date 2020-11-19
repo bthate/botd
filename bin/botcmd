@@ -10,7 +10,7 @@ import bot.obj
 def main():
     bot.obj.wd = "/var/lib/botd"
     h = Handler()
-    h.scan("irc")
+    h.walk("bot")
     return h.cmd(" ".join(sys.argv[1:]))
 
 execute(main)

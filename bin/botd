@@ -5,11 +5,11 @@ from bot.trm import execute
 
 def main():
     import bot.obj
-    bot.obj.wd = "/var/lib/botd"
+    bot.obj.wd = "/var/lib/botd/"
     h = Handler()
     h.start()
     h.walk("bot")
-    h.init("bot.irc,bot.udp,bot.rss")
+    h.init("irc,udp,rss")
     h.wait()
      
 execute(main)
