@@ -1,7 +1,3 @@
-# BOTD - 24/7 channel daemon
-#
-#
-
 from setuptools import setup
 
 def read():

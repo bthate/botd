@@ -41,7 +41,6 @@ def handle_type(ex):
         print(ex)
 
 def fuzz(mod, *args, **kwargs):
-    
     for name, o in inspect.getmembers(mod, inspect.isclass):
         if "__" in name:
             continue

@@ -37,8 +37,7 @@ class UDP(Object):
 
     def output(self, txt, addr):
         "output message on fleet"
-        for bot in bus:
-            bot.announce(txt.replace("\00", ""))
+        bus.announce(txt.replace("\00", ""))
 
     def server(self):
         "loop for output"

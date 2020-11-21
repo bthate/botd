@@ -425,6 +425,7 @@ class DCC(Handler):
         self._fsock = None
         self.encoding = "utf-8"
         self.origin = ""
+        bus.add(self)
 
     def raw(self, txt):
         "send text on the dcc socket"

@@ -114,4 +114,5 @@ def ver(event):
             versions[mod.__name__.upper()] = mod.__version__
         except:
             pass
-    event.reply(format(versions))
+    if versions:
+        event.reply(format(versions))
