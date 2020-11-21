@@ -23,7 +23,7 @@ def main():
     cfg = parse_cli()
     test_path = os.getcwd() + os.sep + "test"
     if cfg.txt:
-        pat = "test_%s*" % k.cfg.txt
+        pat = "test_%s*" % cfg.txt
     else:
         pat = "test*"
     suite = unittest.loader.TestLoader().discover(test_path, pattern=pat)

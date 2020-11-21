@@ -34,7 +34,7 @@ class Thr(threading.Thread):
         target = None
         if args:
             target = Default(vars(args[0]))
-        self.setName((target and target.txt) or self._name)
+        self.setName((target and target.txt and target.txt.split()[0]) or self._name)
         self._result = func(*args)
 
     def wait(self, timeout=None):

@@ -6,11 +6,15 @@ import inspect
 import types
 import unittest
 import bot.obj
+import bot.cmd
 
 from bot.obj import Object, get
 from bot.hdl import Event, Handler, mods
 from bot.prs import parse_cli
 from bot.thr import get_exception
+
+def cb(event):
+    print("yoo")
 
 cfg = parse_cli()
 debug = "d" in cfg.opts
@@ -27,6 +31,27 @@ values["d"] = {}
 values["hdl"] = Handler()
 values["event"] = Event({"txt": "thr", "error": "test"})
 values["path"] = bot.obj.wd
+values["channel"] = "#bot"
+values["orig"] = repr(values["hdl"])
+values["obj"] = Object()
+values["d"] = {}
+values["value"] = 1
+values["pkgnames"] = "bot"
+values["name"] = "bot"
+values["callback"] = cb
+values["e"] = Event()
+values["mod"] = bot.cmd
+values["mns"] = "irc,udp,rss"
+values["sleep"] = 60.0
+values["func"] = cb
+values["origin"] = "test@shell"
+values["perm"] = "USER"
+values["permission"] = "USER"
+values["text"] = "yoo"
+values["server"] = "localhost"
+values["nick"] = "bot"
+values["rssobj"] = Object()
+values["o"] = Object()
 
 def get_values(vars):
     args = []
@@ -37,12 +62,12 @@ def get_values(vars):
     return args
 
 def handle_type(ex):
-    if debug:
+    if debug and verbose:
         print(ex)
 
 def fuzz(mod, *args, **kwargs):
     for name, o in inspect.getmembers(mod, inspect.isclass):
-        if "__" in name:
+        if "_" in name:
             continue
         try:
             oo = o()
@@ -50,7 +75,7 @@ def fuzz(mod, *args, **kwargs):
             handle_type(ex)
             continue
         for name, meth in inspect.getmembers(oo):
-            if "__" in name or name in exclude:
+            if "_" in name or name in exclude:
                 continue
             try:
                 spec = inspect.getfullargspec(meth)
@@ -58,7 +83,7 @@ def fuzz(mod, *args, **kwargs):
             except TypeError as ex:
                 handle_type(ex)
                 continue
-            if debug:
+            if debug and verbose:
                 print(meth)
             try:
                 res = meth(*args, **kwargs)

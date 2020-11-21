@@ -242,6 +242,8 @@ class IRC(Handler):
                 break
             time.sleep(10.0)
             nr += 1
+        else:
+            self._connected.set()
         self._connected.wait()
         self.logon(server, nick)
 
