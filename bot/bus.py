@@ -1,10 +1,14 @@
+# BOTLIB - bus.py
+#
+# this file is placed in the public domain
+
 "announce to listeners"
 
 from bot.obj import Object
 
 class Bus(Object):
 
-    "bus class"
+    "bus class - registered recipient event handler"
 
     objs = []
 
@@ -26,17 +30,15 @@ class Bus(Object):
             if "announce" in dir(h):
                 h.announce(txt)
 
-    def dispatch(self, event):
-        "dispatch on all listeners"
-        for b in Bus.objs:
-            if repr(b) == event.orig:
-                b.dispatch(event)
-
     def by_orig(self, orig):
         "fetch listener by orig"
         for o in Bus.objs:
             if repr(o) == orig:
                 return o
+
+    def dispatch(self, event):
+        for o in Bus.objs:
+            o.dispatch(event)
 
     def say(self, orig, channel, txt):
         "say something to specific listener"

@@ -1,8 +1,12 @@
+# BOTLIB - thr.py
+#
+# this file is placed in the public domain
+
 "tasks (tsk)"
 
-import queue, sys, threading, time, traceback
+import queue, sys, threading, traceback
 
-from bot.obj import Default, Object, get_name, get_type
+from bot.obj import Default, Object, get_name
 
 class Thr(threading.Thread):
 

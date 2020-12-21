@@ -1,8 +1,12 @@
+# BOTLIB - clk.py
+#
+# this file is placed in the public domain
+
 " clock functions (clk)"
 
 import threading, time
 
-from bot.obj import Object, get_type
+from bot.obj import Object
 from bot.thr import launch
 
 class Timer(Object):

@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+# BOTLIB - botudp
+#
+# this file is placed in the public domain
 
 import select, socket, sys
 

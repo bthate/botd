@@ -1,13 +1,17 @@
+# BOTLIB - irc.py
+#
+# this file is placed in the public domain
+
 "Internet Relay Chat"
 
 import os, queue, socket, textwrap, time, threading, _thread
 
 from bot.bus import bus
 from bot.dbs import find, last
-from bot.hdl import Event, Handler
-from bot.obj import Cfg, Default, Object, register, save, update
+from bot.hdl import Command, Event, Handler
+from bot.obj import Cfg, Object, get, register, save, update
 from bot.ofn import format
-from bot.prs import parse, parse_cli
+from bot.prs import parse
 from bot.thr import launch
 
 saylock = _thread.allocate_lock()
@@ -48,15 +52,15 @@ class Cfg(Cfg):
         self.server = "localhost"
         self.username = "bot"
         self.realname = "bot"
-                 
+
 class Event(Event):
 
     "IRC event"
 
     def show(self):
         for txt in self.result:
-            self.src.say(self.channel, txt)
-    
+            bus.say(self.orig, self.channel, txt)
+
 class TextWrap(textwrap.TextWrapper):
 
     "text wrapper"
@@ -99,14 +103,13 @@ class IRC(Handler):
         self.state.pongcheck = False
         self.threaded = False
         self.verbose = False
-        register(self.cmds, "ERROR", self.ERROR)
-        register(self.cmds, "LOG", self.LOG)
-        register(self.cmds, "NOTICE", self.NOTICE)
-        register(self.cmds, "PRIVMSG", self.PRIVMSG)
-        register(self.cmds, "QUIT", self.QUIT)
-        register(self.cmds, "366", self.JOINED)
-        bus.add(self)
- 
+        self.register("ERROR", self.ERROR)
+        self.register("LOG", self.LOG)
+        self.register("NOTICE", self.NOTICE)
+        self.register("PRIVMSG", self.PRIVMSG)
+        self.register("QUIT", self.QUIT)
+        self.register("366", self.JOINED)
+
     def _connect(self, server):
         "connect (blocking) to irc server"
         oldsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -247,9 +250,9 @@ class IRC(Handler):
         self._connected.wait()
         self.logon(server, nick)
 
-    def handle(self, event):
-        if event.command in self.cmds:
-            self.cmds[event.command](event)
+    def dispatch(self, event):
+        if event.command in self.cbs:
+            self.cbs[event.command](event)
 
     def doconnect(self):
         "start input/output tasks on connect"
@@ -274,7 +277,7 @@ class IRC(Handler):
                 break
             if not e.orig:
                 e.orig = repr(self)
-            self.handle(e)
+            self.put(e)
 
     def joinall(self):
         "join all channels"
@@ -388,7 +391,8 @@ class IRC(Handler):
     def NOTICE(self, event):
         "handle noticed"
         if event.txt.startswith("VERSION"):
-            txt = "\001VERSION %s %s - %s\001" % ("OBJ", obj.__version__, "object programming library")
+            from bot.hdl import __version__
+            txt = "\001VERSION %s %s - %s\001" % ("BOTLIB", __version__, "pure python3 bot library")
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
@@ -407,9 +411,9 @@ class IRC(Handler):
         if event.txt and event.txt[0] == self.cc:
             if self.cfg.users and not users.allowed(event.origin, "USER"):
                 return
+            event.type = "cmd"
             event.txt = event.txt[1:]
-            event.iscmd = True
-            self.put(event)
+            super().dispatch(event)
 
     def QUIT(self, event):
         "handle quit"
@@ -427,7 +431,6 @@ class DCC(Handler):
         self._fsock = None
         self.encoding = "utf-8"
         self.origin = ""
-        bus.add(self)
 
     def raw(self, txt):
         "send text on the dcc socket"
@@ -472,6 +475,7 @@ class DCC(Handler):
         "poll (blocking) for input and create an event for it"
         self._connected.wait()
         e = Event()
+        e.type = "cmd"
         txt = self._fsock.readline()
         txt = txt.rstrip()
         parse(e, txt)

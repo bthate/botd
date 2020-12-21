@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+# BOTLIB - botcmd
+#
+# this file is placed in the public domain
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 

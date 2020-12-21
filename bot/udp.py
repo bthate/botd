@@ -1,3 +1,7 @@
+# BOTLIB - udp.py
+#
+# this file is placed in the public domain
+
 "udp to irc relay"
 
 import select, socket, sys, time

@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+# BOTLIB - botd
+#
+# this file is placed in the public domain
 
 from bot.hdl import Handler, os
 from bot.trm import execute

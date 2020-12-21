@@ -1,6 +1,12 @@
+# BOTLIB - ofn.py
+#
+# this file is placed in the public domain
+
 "object functions (ofn)"
 
-from bot.obj import get, items, get_type
+import datetime, json, os, uuid
+
+from bot.obj import default, get, items, get_type
 
 def edit(o, setter, skip=False):
     "update an object from a dict"
@@ -23,10 +29,12 @@ def edit(o, setter, skip=False):
             o[key] = value
     return count
 
-def format(o, keys=[], skip=[]):
+def format(o, keys=None, skip=None):
     "return 1 line output string"
-    if not keys:
+    if keys is None:
         keys = vars(o).keys()
+    if skip is None:
+        skip = []
     res = []
     txt = ""
     for key in keys:
@@ -48,13 +56,13 @@ def format(o, keys=[], skip=[]):
 
 def mkstamp(o):
     timestamp = str(datetime.datetime.now()).split()
-    return os.path.join(get_type(self), str(uuid.uuid4()), os.sep.join(timestamp))
+    return os.path.join(get_type(o), str(uuid.uuid4()), os.sep.join(timestamp))
 
 def ojson(o, *args, **kwargs):
     "return jsonified string"
     return json.dumps(o, default=default, *args, **kwargs)
 
-def scan(o):
+def scan(o, txt):
     for _k, v in items(o):
         if txt in str(v):
             return True

@@ -1,14 +1,20 @@
+# BOTLIB - hdl.py
+#
+# this file is placed in the public domain
+
 "handler (hdl)"
 
-import importlib, inspect, os, queue, sys, threading, time
+import inspect, os, queue, threading, time
+import importlib
 import importlib.util
 
+from bot.bus import bus
 from bot.dbs import list_files
-from bot.obj import Default, Object, Ol, get_type, spl, update
+from bot.obj import Default, Object, Ol, get, spl, update
 from bot.prs import parse
-from bot.thr import launch, get_exception
+from bot.thr import launch
 
-__version__ = 22
+__version__ = 114
 
 debug = False
 md = ""
@@ -24,9 +30,11 @@ class Event(Default):
         self.done = threading.Event()
         self.result = []
         self.thrs = []
+        self.type = "event"
 
     def direct(self, txt):
         "send txt to console - overload this"
+        bus.say(self.orig, self.channel, txt)
 
     def parse(self):
         "parse an event"
@@ -45,7 +53,7 @@ class Event(Default):
     def ready(self):
         "event is handled"
         self.done.set()
-        
+
     def reply(self, txt):
         "add txt to result"
         self.result.append(txt)
@@ -55,13 +63,24 @@ class Event(Default):
         for txt in self.result:
             self.direct(txt)
         self.ready()
-        
+
     def wait(self):
         "wait for event to be handled"
         self.done.wait()
         for thr in self.thrs:
             thr.join()
 
+class Command(Event):
+
+    def __init__(self, txt):
+        super().__init__()
+        self.type = "cmd"
+        self.txt = txt
+        self.parse()
+
+    def direct(self, txt):
+        print(txt)
+ 
 class Handler(Object):
 
     "basic event handler"
@@ -71,33 +90,32 @@ class Handler(Object):
     def __init__(self):
         super().__init__()
         self.cbs = Object()
+        self.cmds = Object()
         self.names = Ol()
         self.queue = queue.Queue()
         self.stopped = False
-
+        self.register("cmd", cmd)
+        bus.add(self)
+        
     def clone(self, hdl):
         "copy callbacks"
+        update(self.cmds, hdl.cmds)
         update(self.cbs, hdl.cbs)
         update(self.names, hdl.names)
 
     def cmd(self, txt):
-        "do a command"
-        class E(Event):
-            def direct(self, txt):
-                print(txt)
-        e = E()
-        e.txt = txt
-        return self.dispatch(e)
+        global cmd
+        c = Command(txt)
+        c.orig = repr(self)
+        c.origin = "root@shell"
+        self.dispatch(c)
 
     def dispatch(self, event):
         "run callbacks for event"
-        if not event.src:
-            event.src = self
+        event.orig = repr(self)
         event.parse()
-        if event.cmd and event.cmd in self.cbs:
-            self.cbs[event.cmd](event)
-            event.show()
-        event.ready()
+        if event.type and event.type in self.cbs:
+            self.cbs[event.type](event)
 
     def files(self):
         "show files in workdir"
@@ -123,15 +141,17 @@ class Handler(Object):
     def intro(self, mod):
         "introspect a module"
         for key, o in inspect.getmembers(mod, inspect.isfunction):
-            if "event" in o.__code__.co_varnames:
-                if o.__code__.co_argcount == 1:
-                    self.register(key, o) 
+            if o.__code__.co_argcount == 1:
+                if "obj" in o.__code__.co_varnames:
+                    self.register(key, o)
+                elif "event" in o.__code__.co_varnames:
+                    self.cmds[key] = o
         for _key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, Object):
                 t = "%s.%s" % (o.__module__, o.__name__)
                 self.names.append(o.__name__.lower(), t)
         return mod
-        
+
     def handler(self):
         "handler loop"
         while not self.stopped:
@@ -153,9 +173,9 @@ class Handler(Object):
         if not path:
             return
         for mn in [x[:-3] for x in os.listdir(path)
-                          if x and x.endswith(".py")
-                          and not x.startswith("__")
-                          and not x == "setup.py"]:
+                   if x and x.endswith(".py")
+                   and not x.startswith("__")
+                   and not x == "setup.py"]:
             self.intro(direct("%s.%s" % (name, mn)))
 
     def start(self):
@@ -167,17 +187,27 @@ class Handler(Object):
         self.stopped = True
         self.queue.put(None)
 
-    def walk(self, pkgnames):
+    def walk(self, pkgnames, name="bot"):
         "walk over packages and load their modules"
-        for name in spl(pkgnames):
-            mod = direct(name)
-            self.fromdir(mod.__path__[0])
-            
+        for pn in spl(pkgnames):
+            mod = direct(pn)
+            self.fromdir(mod.__path__[0], name)
+
     def wait(self):
         "wait for handler stopped status"
         if not self.stopped:
             while 1:
                 time.sleep(30.0)
+
+def cmd(obj):
+    "callbackx to dispatch to command"  
+    bot = bus.by_orig(obj.orig)
+    if bot and obj.cmd in bot.cmds:
+        f = get(bot.cmds, obj.cmd, None)
+        if f:
+            f(obj)
+            obj.show()
+    obj.ready()
 
 def direct(name, pname=''):
     "load a module"
@@ -188,8 +218,8 @@ def mods(mn, name="bot"):
     mod = []
     pkg = direct(mn)
     path = pkg.__file__ or pkg.__path__[0]
-    for m in ["%s.%s" % (name, x.split(os.sep)[-1][:-3]) for x in os.listdir(path) 
-                                  if x.endswith(".py")
-                                  and not x == "setup.py"]:
+    for m in ["%s.%s" % (name, x.split(os.sep)[-1][:-3]) for x in os.listdir(path)
+              if x.endswith(".py")
+              and not x == "setup.py"]:
         mod.append(direct(m))
     return mod

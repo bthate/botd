@@ -1,10 +1,15 @@
 #!/usr/bin/python3
+# BOTLIB - bot
+#
+# this file is placed in the public domain
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
 import atexit, os, pwd, readline, sys
 
+from bot.bus import bus
 from bot.hdl import Event, Handler
+from bot.obj import get
 from bot.ofn import format
 from bot.prs import parse_cli
 from bot.thr import launch
@@ -23,10 +28,18 @@ class Console(Handler):
 
     def announce(self, txt):
         "silence announcing"
+        self.direct(txt)
 
     def direct(self, txt):
         "print to stdout"
         print(txt)
+
+    def dispatch(self, event):
+        f = get(self.cmds, event.cmd, None)
+        if f:
+            f(event)
+            event.show()
+            event.ready()
 
     def input(self):
         "loop for input"
@@ -35,14 +48,16 @@ class Console(Handler):
                 event = self.poll()
             except EOFError:
                 break
-            self.put(event)
+            self.dispatch(event)
             event.wait()
 
     def poll(self):
         "wait for input"
         e = Event()
+        e.type = "cmd"
         e.orig = repr(self)
         e.otxt = e.txt = input("> ")
+        e.parse()
         return e
 
     def say(self, channel, txt):

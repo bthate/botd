@@ -1,11 +1,14 @@
+# BOTLIB - prs.py
+#
+# this file is placed in the public domain
+
 "parse (prs)"
 
 import os
 import sys
 import time
 
-from bot.obj import Default, Object, cdir, update
-from bot.ofn import format
+from bot.obj import Default, Object, update
 
 class Token(Object):
 

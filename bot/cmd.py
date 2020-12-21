@@ -1,18 +1,22 @@
+# BOTLIB - cmd.py
+#
+# this file is placed in the public domain
+
 "commands (cmd)"
 
-def __dir__():
-    return ("Log", "Todo", "cmd", "dne", "fnd", "log", "todo", "thr", "ver")
-
-import os
-import sys
 import threading
 import time
+import types
 
-from bot.dbs import find, list_files
+from bot.bus import bus
+from bot.dbs import find
 from bot.hdl import mods
-from bot.obj import Default, Object, cdir, fntime, get, keys, save, update
+from bot.obj import Object, fntime, get, keys, save, update
 from bot.ofn import format
-from bot.prs import elapsed, parse
+from bot.prs import elapsed
+
+def __dir__():
+    return ("Log", "Todo", "cmd", "dne", "fnd", "log", "tdo", "thr", "ver")
 
 starttime = time.time()
 
@@ -34,9 +38,11 @@ class Todo(Object):
 
 def cmd(event):
     "list commands (cmd)"
-    c = sorted(keys(event.src.cbs))
-    if c:
-        event.reply(",".join(c))
+    bot = bus.by_orig(event.orig)
+    if bot:
+        c = sorted(keys(bot.cmds))
+        if c:
+            event.reply(",".join(c))
 
 def dne(event):
     "flag as done (dne)"
@@ -78,10 +84,11 @@ def fnd(event):
     if not event.args:
         fls = event.src.files()
         if fls:
-            event.reply(fls)
+            event.reply(" | ".join([x.split(".")[-1].lower() for x in fls]))
         return
     nr = -1
-    for otype in get(event.src.names, event.args[0], [event.args[0]]):
+    bot = bus.by_orig(event.orig)
+    for otype in get(bot.names, event.args[0], [event.args[0]]):
         for fn, o in find(otype, event.prs.gets, event.prs.index, event.prs.timed):
             nr += 1
             txt = "%s %s" % (str(nr), format(o, event.xargs, skip=event.prs.skip))
@@ -112,7 +119,7 @@ def ver(event):
     for mod in mods("bot"):
         try:
             versions[mod.__name__.upper()] = mod.__version__
-        except:
+        except AttributeError:
             pass
     if versions:
         event.reply(format(versions))
