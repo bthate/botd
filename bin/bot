@@ -8,7 +8,7 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 import atexit, os, pwd, readline, sys
 
 from bot.bus import bus
-from bot.hdl import Event, Handler
+from bot.hdl import Command, Handler, cmd
 from bot.obj import get
 from bot.ofn import format
 from bot.prs import parse_cli
@@ -17,48 +17,34 @@ from bot.trm import execute, termsave, termreset
 
 cmds = []
 
-class Event(Event):
-
-    def direct(self, txt):
-        print(txt)
-
 class Console(Handler):
 
     "console class"
+
+    def __init__(self):
+        super().__init__()
+        self.register("cmd", cmd)
 
     def announce(self, txt):
         "silence announcing"
         self.direct(txt)
 
     def direct(self, txt):
-        "print to stdout"
         print(txt)
-
-    def dispatch(self, event):
-        f = get(self.cmds, event.cmd, None)
-        if f:
-            f(event)
-            event.show()
-            event.ready()
 
     def input(self):
         "loop for input"
         while 1:
             try:
-                event = self.poll()
+                e = self.poll()
             except EOFError:
                 break
-            self.dispatch(event)
-            event.wait()
+            self.put(e)
+            e.wait()
 
     def poll(self):
         "wait for input"
-        e = Event()
-        e.type = "cmd"
-        e.orig = repr(self)
-        e.otxt = e.txt = input("> ")
-        e.parse()
-        return e
+        return Command(input("> "))
 
     def say(self, channel, txt):
         "strip channel from output"

@@ -8,7 +8,7 @@ import os, queue, socket, textwrap, time, threading, _thread
 
 from bot.bus import bus
 from bot.dbs import find, last
-from bot.hdl import Command, Event, Handler
+from bot.hdl import Command, Event, Handler, cmd
 from bot.obj import Cfg, Object, get, register, save, update
 from bot.ofn import format
 from bot.prs import parse
@@ -57,10 +57,6 @@ class Event(Event):
 
     "IRC event"
 
-    def show(self):
-        for txt in self.result:
-            bus.say(self.orig, self.channel, txt)
-
 class TextWrap(textwrap.TextWrapper):
 
     "text wrapper"
@@ -103,6 +99,7 @@ class IRC(Handler):
         self.state.pongcheck = False
         self.threaded = False
         self.verbose = False
+        self.register("cmd", cmd)
         self.register("ERROR", self.ERROR)
         self.register("LOG", self.LOG)
         self.register("NOTICE", self.NOTICE)
@@ -251,6 +248,7 @@ class IRC(Handler):
         self.logon(server, nick)
 
     def dispatch(self, event):
+        "invoke callback"
         if event.command in self.cbs:
             self.cbs[event.command](event)
 

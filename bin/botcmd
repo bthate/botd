@@ -10,9 +10,14 @@ from bot.trm import execute
 
 import bot.obj
 
+class Mini(Handler):
+
+    def direct(self, txt):
+        print(txt)
+
 def main():
     bot.obj.wd = "/var/lib/botd"
-    h = Handler()
+    h = Mini()
     h.walk("bot")
     return h.cmd(" ".join(sys.argv[1:]))
 
