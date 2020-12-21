@@ -106,7 +106,9 @@ class Handler(Object):
         "execute command"
         self.register("cmd", cmd)
         c = Command(txt)
+        c.orig = repr(self)
         self.dispatch(c)
+        c.wait()
 
     def dispatch(self, event):
         "run callbacks for event"

@@ -16,7 +16,7 @@ class Mini(Handler):
         print(txt)
 
 def main():
-    bot.obj.wd = "/var/lib/botd"
+    bot.obj.wd = "/var/lib/botd/"
     h = Mini()
     h.walk("bot")
     return h.cmd(" ".join(sys.argv[1:]))

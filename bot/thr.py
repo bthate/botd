@@ -4,7 +4,7 @@
 
 "tasks (tsk)"
 
-import queue, sys, threading, traceback
+import os, queue, sys, threading, traceback
 
 from bot.obj import Default, Object, get_name
 
@@ -61,7 +61,12 @@ def get_exception(txt="", sep=" "):
     for elem in trace:
         if "python3" in elem[0] or "<frozen" in elem[0]:
             continue
-        result.append("%s:%s" % (elem[0], elem[1]))
+        res = []
+        for x in elem[0].split(os.sep)[::-1]:
+            if x in ["bot"]:
+                break
+            res.append(x)
+        result.append("%s:%s" % (os.sep.join(res[::-1]), elem[1]))
     res = "%s %s: %s %s" % (sep.join(result), exctype, excvalue, str(txt))
     del trace
     return res
