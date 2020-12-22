@@ -1,0 +1,49 @@
+#!/usr/bin/python3
+# BOTLIB - inst
+#
+# this file is placed in the public domain
+
+import os
+
+servicetxt="""[Unit]
+Description=BOTD - 24/7 channel daemon
+After=network-online.target
+
+[Service]
+DynamicUser=True
+StateDirectory=botd
+LogsDirectory=botd
+CacheDirectory=botd
+ExecStart=/usr/local/bin/botd
+CapabilityBoundingSet=CAP_NET_RAW
+
+[Install]
+WantedBy=multi-user.target
+"""
+
+def run(txt, skip=["already"]):
+    try:
+        for line in os.popen(txt).readlines():
+             print(line.rstrip())
+    except Exception as ex:
+        for rej in skip:
+           if rej in str(ex):
+               return
+
+def postinstall():
+    writeservice()
+    run("systemctl enable botd")
+    run("systemctl daemon-reload")
+    #run("service botd restart")
+    #run("systemctl status botd")
+
+def writeservice():
+    p = "/etc/systemd/system/botd.service"
+    f = open(p, "w")
+    f.write(servicetxt)
+    f.close()
+
+def read():
+    return open("README.rst", "r").read()
+
+postinstall()

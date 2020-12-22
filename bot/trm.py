@@ -21,8 +21,6 @@ def execute(main):
     termsave()
     try:
         main()
-    except PermissionError as ex:
-        print(ex)
     except KeyboardInterrupt:
         print("")
     except Exception as ex:
