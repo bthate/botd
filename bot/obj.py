@@ -138,8 +138,8 @@ def get_cls(name):
     "return class from full qualified name"
     try:
         modname, clsname = name.rsplit(".", 1)
-    except:
-        raise ENOCLASS(name)
+    except Exception as ex:
+        raise ENOCLASS(name) from ex
     if modname in sys.modules:
         mod = sys.modules[modname]
     else:

@@ -36,7 +36,7 @@ class Event(Default):
     def direct(self, txt):
         "send txt to console - overload this"
         bus.say(self.orig, self.channel, txt)
-            
+
     def parse(self):
         "parse an event"
         self.prs = Default()
@@ -95,7 +95,7 @@ class Handler(Object):
         self.queue = queue.Queue()
         self.stopped = False
         bus.add(self)
-        
+
     def clone(self, hdl):
         "copy callbacks"
         update(self.cmds, hdl.cmds)
@@ -109,6 +109,9 @@ class Handler(Object):
         c.orig = repr(self)
         self.dispatch(c)
         c.wait()
+
+    def direct(self, txt):
+        "outputs text, overload this"
 
     def dispatch(self, event):
         "run callbacks for event"
@@ -204,7 +207,7 @@ class Handler(Object):
                 time.sleep(30.0)
 
 def cmd(handler, obj):
-    "callbackx to dispatch to command"  
+    "callbackx to dispatch to command"
     obj.parse()
     f = get(handler.cmds, obj.cmd, None)
     if f:

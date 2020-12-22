@@ -6,10 +6,9 @@
 
 import os, queue, socket, textwrap, time, threading, _thread
 
-from bot.bus import bus
 from bot.dbs import find, last
-from bot.hdl import Command, Event, Handler, cmd
-from bot.obj import Cfg, Object, get, register, save, update
+from bot.hdl import Event, Handler, cmd
+from bot.obj import Cfg, Object, get,  save, update
 from bot.ofn import format
 from bot.prs import parse
 from bot.thr import launch

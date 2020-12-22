@@ -6,7 +6,6 @@
 
 import threading
 import time
-import types
 
 from bot.bus import bus
 from bot.dbs import find
