@@ -20,6 +20,6 @@ BOTLIB provides the following modules:
     bot.prs          - parser
     bot.rss          - rich site syndicate
     bot.thr          - threads
-    bot.tms	     - future events
+    #bot.tms	     - future events
     bot.trm          - terminal
     bot.udp          - udp to irc relay
