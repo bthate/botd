@@ -182,7 +182,7 @@ to send a udp packet to botd in python3:
 CONTACT
 =======
 
-"hope you enjoy my contribution back to society."
+"contributed back to society."
 
 you can contact me on IRC/freenode/#dunkbots or email me at bthate@dds.nl
 
