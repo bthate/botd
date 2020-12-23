@@ -1,7 +1,6 @@
+# BOTD - 24/7 channel daemon
 # -*- coding: utf-8 -*-
 #
-
-__version__ = 20
 
 import unittest
 import doctest
@@ -12,6 +11,8 @@ curdir = os.getcwd()
 sys.path.insert(0, curdir + os.sep)
 sys.path.insert(0, curdir + os.sep + '..' + os.sep)
 sys.path.insert(0, curdir + os.sep + '..' + os.sep + ".." + os.sep)
+
+from botd.ver import __version__
 
 needs_sphinx='1.1'
 nitpick_ignore=[
@@ -72,8 +73,7 @@ html_show_copyright = False
 html_copy_source = False
 html_use_opensearch = 'http://botd.rtfd.io/'
 html_file_suffix = '.html'
-rst_prolog = """.. image:: botdline.png
-    :height: 3cm
+rst_prolog = """.. image:: botd2line.png
     :width: 100%
 
 .. title:: 24/7 channel daemon

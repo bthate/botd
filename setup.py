@@ -5,7 +5,7 @@ def read():
 
 setup(
     name='botd',
-    version='22',
+    version='23',
     url='https://github.com/bthate/botd',
     author='Bart Thate',
     author_email='bthate@dds.nl', 
@@ -13,8 +13,10 @@ setup(
     long_description=read(),
     license='Public Domain',
     install_requires=["botlib"],
+    packages=["botd"],
+    namespace_packages=["botd"],
     zip_safe=False,
-    scripts=["bin/bot", "bin/botctl", "bin/botd", "bin/botcmd", "bin/botudp"],
+    scripts=["bin/bot", "bin/botcmd", "bin/botctl", "bin/botd", "bin/botinst", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: MIT License',
                  'Operating System :: Unix',

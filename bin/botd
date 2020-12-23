@@ -12,6 +12,7 @@ def main():
     h = Handler()
     h.start()
     h.walk("bot")
+    h.walk("botd", "botd")
     h.init("irc,udp,rss")
     h.wait()
      
