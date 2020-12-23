@@ -7,7 +7,7 @@
 import time
 import bot.obj
 
-from bot.obj import hook, os
+from bot.obj import hook, update, os, get_type
 from bot.ofn import search
 
 def all(otype, selector=None, index=None, timed=None):
@@ -134,7 +134,7 @@ def last(o):
     "return last object"
     path, l = lastfn(str(get_type(o)))
     if  l:
-        o.update(l)
+        update(o, l)
     if path:
         spl = path.split(os.sep)
         stp = os.sep.join(spl[-4:])

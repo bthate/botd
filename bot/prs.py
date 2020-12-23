@@ -8,7 +8,7 @@ import os
 import sys
 import time
 
-from bot.obj import Default, Object
+from bot.obj import Default, Object, update
 
 class Token(Object):
 
@@ -162,24 +162,24 @@ def parse(o, txt):
     o.opts = Default()
     o.sets = Default()
     o.skip = Default()
-    o.timed = Default()
+    o.timed = ()
     o.index = None
     for token in [Token(txt) for txt in txt.split()]:
         s = Skip(token.txt)
         if s:
-            o.skip.update(s)
+            update(o.skip, s)
             token.txt = token.txt[:-1]
         t = Timed(token.txt)
         if t:
-            o.timed.update(t)
+            update(o.timed, t)
             continue
         g = Getter(token.txt)
         if g:
-            o.gets.update(g)
+            update(o.gets, g)
             continue
         s = Setter(token.txt)
         if s:
-            o.sets.update(s)
+            update(o.sets, s)
             continue
         opt = Option(token.txt)
         if opt.opt:

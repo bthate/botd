@@ -28,33 +28,18 @@ class O:
 
     "basic object"
 
-    __slots__ = ("__dict__", "__methods__")
+    __slots__ = ("__dict__",)
 
     def __init__(self, *args, **kwargs):
         super().__init__()
         if args:
             self.__dict__.update(args[0])
-        self.__methods__ = {}
 
     def __call__(self):
         pass
 
     def __delitem__(self, k):
         del self.__dict__[k]
-
-    def __getattr__(self, k, d=None):
-        try:
-            return self[k]
-        except:
-            try:
-                return self.__methods__[k]
-            except KeyError:
-                try:
-                    return self.__dict__[k]
-                except KeyError as ex:
-                    if d == None:
-                        raise AttributeError from x
-                    return d
 
     def __getitem__(self, k, d=None):
         return self.__dict__.get(k, d)
@@ -67,11 +52,6 @@ class O:
 
     def __lt__(self, o):
         return len(self) < len(o)
-
-    def __setattr__(self, k, v):
-        if type(v) in [types.FunctionType, types.MethodType]:
-            self.__methods__[k] = v
-        self.__dict__[k] = v
 
     def __setitem__(self, k, v):
         self.__dict__[k] = v
@@ -87,78 +67,6 @@ class Object(O):
         super().__init__(*args, **kwargs)
         self.__id__ = str(uuid.uuid4())
         self.__type__ = get_type(self)
-
-
-    def get(self, k, d=None):
-        "return o[k]"
-        try:
-            return self.__dict__[k]
-        except KeyError:
-            return d
-
-    def items(self):
-        "return items (k,v) of an object"
-        return self.__dict__.items()
-
-    def keys(self):
-        "return keys of an object"
-        try:
-            return self.keys()
-        except (TypeError, AttributeError):
-            return self.__dict__.keys()
-
-    def load(self, path):
-        "load from disk into an object"
-        assert path
-        if path.count(os.sep) != 3:
-            raise ENOFILENAME(path)
-        spl = path.split(os.sep)
-        stp = os.sep.join(spl[-4:])
-        lpath = os.path.join(wd, "store", stp)
-        typ = spl[0]
-        id = spl[1]
-        with open(lpath, "r") as ofile:
-            try:
-                v = json.load(ofile, object_hook=hooked)
-            except json.decoder.JSONDecodeError as ex:
-                return
-            if v:
-                self.update(v)
-        self.__id__ = id
-        self.__type__ = typ
-        return stp
-
-    def register(self, k, v):
-        "register key/value"
-        self[k] = v
-
-    def save(self, stime=None):
-        "save object to disk"
-        assert wd
-        if stime:
-            stp = os.path.join(self.__type__, self.__id__,
-                               stime + "." + str(random.randint(0, 100000)))
-        else:
-            timestamp = str(datetime.datetime.now()).split()
-            stp = os.path.join(self.__type__, self.__id__, os.sep.join(timestamp))
-        opath = os.path.join(wd, "store", stp)
-        cdir(opath)
-        with open(opath, "w") as ofile:
-            json.dump(self, ofile, default=default)
-        os.chmod(opath, 0o444)
-        return stp
-
-    def set(self, k, v):
-        "set o[k]=v"
-        setattr(self, k, v)
-
-    def update(self, d):
-        "update object with other object"
-        return self.__dict__.update(vars(d))
-
-    def values(self):
-        "return values of an object"
-        return o.__dict__.values()
 
 class Default(Object):
 
@@ -210,18 +118,6 @@ def cdir(path):
         except (IsADirectoryError, NotADirectoryError, FileExistsError):
             pass
 
-def default(o):
-    "return strinfified version of an object"
-    if isinstance(o, Object):
-        return vars(o)
-    if isinstance(o, dict):
-        return o.items()
-    if isinstance(o, list):
-        return iter(o)
-    if isinstance(o, (type(str), type(True), type(False), type(int), type(float))):
-        return o
-    return repr(o)
-
 def fntime(daystr):
     "return time from filename"
     daystr = daystr.replace("_", ":")
@@ -237,33 +133,6 @@ def fntime(daystr):
     except ValueError:
         t = 0
     return t
-
-def get_name(o):
-    "return fully qualified name of an object"
-    t = type(o)
-    if t == types.ModuleType:
-        return o.__name__
-    try:
-        n = "%s.%s" % (o.__self__.__class__.__name__, o.__name__)
-    except AttributeError:
-        try:
-            n = "%s.%s" % (o.__class__.__name__, o.__name__)
-        except AttributeError:
-            try:
-                n = o.__class__.__name__
-            except AttributeError:
-                n = o.__name__
-    return n
-
-def get_type(o):
-    "return type of an object"
-    t = type(o)
-    if t == type:
-        try:
-            return "%s.%s" % (o.__module__, o.__name__)
-        except AttributeError:
-            pass
-    return str(type(o)).split()[-1][1:-2]
 
 def get_cls(name):
     "return class from full qualified name"
@@ -287,14 +156,134 @@ def hook(fn):
     fn = os.sep.join(oname)
     cls = get_cls(cname)
     o = cls()
-    o.load(fn)
+    load(o, fn)
     return o
 
 def hooked(d):
     "construct object from stamp"
     return Object(d)
 
+# object functions
+
+def default(o):
+    "return strinfified version of an object"
+    if isinstance(o, Object):
+        return vars(o)
+    if isinstance(o, dict):
+        return o.items()
+    if isinstance(o, list):
+        return iter(o)
+    if isinstance(o, (type(str), type(True), type(False), type(int), type(float))):
+        return o
+    return repr(o)
+
+def get_name(o):
+    "return fully qualified name of an object"
+    t = type(o)
+    if t == types.ModuleType:
+        return o.__name__
+    try:
+        n = "%s.%s" % (o.__self__.__class__.__name__, o.__name__)
+    except AttributeError:
+        try:
+            n = "%s.%s" % (o.__class__.__name__, o.__name__)
+        except AttributeError:
+            try:
+                n = o.__class__.__name__
+            except AttributeError:
+                n = o.__name__
+    return n
+
+
+
+def get_type(o):
+    "return type of an object"
+    t = type(o)
+    if t == type:
+        try:
+            return "%s.%s" % (o.__module__, o.__name__)
+        except AttributeError:
+            pass
+    return str(type(o)).split()[-1][1:-2]
+
+def get(o, k, d=None):
+    "return o[k]"
+    try:
+        res = o.get(k, d)
+    except (TypeError, AttributeError):
+        res = o.__dict__.get(k, d)
+    return res
+
+def items(o):
+    "return items (k,v) of an object"
+    try:
+        return o.items()
+    except (TypeError, AttributeError):
+        return o.__dict__.items()
+
+def keys(o):
+    "return keys of an object"
+    try:
+        return o.keys()
+    except (TypeError, AttributeError):
+        return o.__dict__.keys()
+
+def load(o, path):
+    "load from disk into an object"
+    assert path
+    if path.count(os.sep) != 3:
+        raise ENOFILENAME(path)
+    spl = path.split(os.sep)
+    stp = os.sep.join(spl[-4:])
+    lpath = os.path.join(wd, "store", stp)
+    typ = spl[0]
+    id = spl[1]
+    with open(lpath, "r") as ofile:
+        try:
+            v = json.load(ofile, object_hook=hooked)
+        except json.decoder.JSONDecodeError as ex:
+            return
+        if v:
+            update(o, v)
+    o.__id__ = id
+    o.__type__ = typ
+    return stp
+
+def register(o, k, v):
+    "register key/value"
+    o[k] = v
+
+def save(o, stime=None):
+    "save object to disk"
+    assert wd
+    if stime:
+        stp = os.path.join(o.__type__, o.__id__,
+                           stime + "." + str(random.randint(0, 100000)))
+    else:
+        timestamp = str(datetime.datetime.now()).split()
+        stp = os.path.join(o.__type__, o.__id__, os.sep.join(timestamp))
+    opath = os.path.join(wd, "store", stp)
+    cdir(opath)
+    with open(opath, "w") as ofile:
+        json.dump(o, ofile, default=default)
+    os.chmod(opath, 0o444)
+    return stp
+
+def set(o, k, v):
+    "set o[k]=v"
+    setattr(o, k, v)
+
 def spl(txt):
     "return comma splitted values"
     return iter([x for x in txt.split(",") if x])
- 
+
+def update(o, d):
+    "update object with other object"
+    return o.__dict__.update(vars(d))
+
+def values(o):
+    "return values of an object"
+    try:
+        return o.values()
+    except (TypeError, AttributeError):
+        return o.__dict__.values()

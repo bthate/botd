@@ -21,6 +21,7 @@ def main():
     bot.obj.wd = os.path.expanduser("~/.test")
     bot.hdl.debug = True
     cfg = parse_cli()
+    print(cfg)
     test_path = os.getcwd() + os.sep + "test"
     if cfg.txt:
         pat = "test_%s*" % cfg.txt
