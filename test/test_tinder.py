@@ -9,7 +9,7 @@ import time
 import unittest
 
 from bot.hdl import Event, Handler
-from bot.obj import Object, get
+from bot.obj import Object
 from bot.prs import parse_cli
 from bot.thr import launch
 
@@ -91,7 +91,7 @@ def tests(b):
         events.extend(do_cmd(cmd))
 
 def do_cmd(cmd):
-    exs = get(param, cmd, [""])
+    exs = param.get(cmd, [""])
     e = list(exs)
     random.shuffle(e)
     events = []

@@ -9,7 +9,6 @@ import atexit, os, pwd, readline, sys
 
 from bot.bus import bus
 from bot.hdl import Command, Handler, cmd
-from bot.obj import get
 from bot.ofn import format
 from bot.prs import parse_cli
 from bot.thr import launch

@@ -6,8 +6,6 @@
 
 import datetime, json, os, uuid
 
-from bot.obj import default, get, items, get_type
-
 def edit(o, setter, skip=False):
     "update an object from a dict"
     try:
@@ -60,7 +58,7 @@ def mkstamp(o):
 
 def ojson(o, *args, **kwargs):
     "return jsonified string"
-    return json.dumps(o, default=default, *args, **kwargs)
+    return json.dumps(o, default=o.default, *args, **kwargs)
 
 def scan(o, txt):
     for _k, v in items(o):

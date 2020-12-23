@@ -10,7 +10,7 @@ import time
 from bot.bus import bus
 from bot.dbs import find
 from bot.hdl import mods
-from bot.obj import Object, fntime, get, keys, save, update
+from bot.obj import Object, fntime
 from bot.ofn import format
 from bot.prs import elapsed
 
@@ -63,7 +63,7 @@ def thr(event):
             continue
         o = Object()
         update(o, thr)
-        if get(o, "sleep", None):
+        if o.get("sleep", None):
             up = o.sleep - int(time.time() - o.state.latest)
         else:
             up = int(time.time() - starttime)
@@ -87,7 +87,7 @@ def fnd(event):
         return
     nr = -1
     bot = bus.by_orig(event.orig)
-    for otype in get(bot.names, event.args[0], [event.args[0]]):
+    for otype in bot.names.get(event.args[0], [event.args[0]]):
         for fn, o in find(otype, event.prs.gets, event.prs.index, event.prs.timed):
             nr += 1
             txt = "%s %s" % (str(nr), format(o, event.xargs, skip=event.prs.skip))

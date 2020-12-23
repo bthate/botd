@@ -13,7 +13,7 @@ from urllib.request import Request, urlopen
 from bot.bus import bus
 from bot.clk import Repeater
 from bot.dbs import all, find, last, lastmatch
-from bot.obj import Cfg, Default, O, Object, save, get, update
+from bot.obj import Cfg, Default, O, Object
 from bot.ofn import edit
 from bot.hdl import debug
 from bot.thr import launch
@@ -98,7 +98,7 @@ class Fetcher(Object):
         for key in dl:
             if not key:
                 continue
-            data = get(o, key, None)
+            data = o.get(key, None)
             if not data:
                 continue
             if key == "link" and self.cfg.tinyurl:
@@ -122,8 +122,8 @@ class Fetcher(Object):
             if not o:
                 continue
             f = Feed()
-            update(f, rssobj)
-            update(f, O(o))
+            f.update(rssobj)
+            f.update(O(o))
             u = urllib.parse.urlparse(f.link)
             if u.path and not u.path == "/":
                 url = "%s://%s/%s" % (u.scheme, u.netloc, u.path)
@@ -135,9 +135,9 @@ class Fetcher(Object):
             counter += 1
             objs.append(f)
             if self.cfg.dosave:
-                save(f)
+                f.save()
         if objs:
-            save(Fetcher.seen)
+            Fetcher.seen.save()
         for o in objs:
             txt = self.display(o)
             bus.announce(txt)
@@ -160,7 +160,7 @@ class Fetcher(Object):
 
     def stop(self):
         "stop the rss poller"
-        save(self.seen)
+        self.seen.save()
 
 fetcher = Fetcher()
 
@@ -264,7 +264,7 @@ def rem(event):
         o._deleted = True
         got.append(o)
     for o in got:
-        save(o)
+        o.save()
     event.reply("ok")
 
 def dpl(event):
@@ -274,7 +274,7 @@ def dpl(event):
     setter = {"display_list": event.args[1]}
     for fn, o in lastmatch("bot.rss.Rss", {"rss": event.args[0]}):
         edit(o, setter)
-        save(o)
+        o.save()
         event.reply("ok")
 
 def ftc(event):
@@ -300,5 +300,5 @@ def rss(event):
         return
     o = Rss()
     o.rss = event.args[0]
-    save(o)
+    o.save()
     event.reply("ok")

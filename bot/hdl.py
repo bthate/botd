@@ -10,7 +10,7 @@ import importlib.util
 
 from bot.bus import bus
 from bot.dbs import list_files
-from bot.obj import Default, Object, Ol, get, spl, update
+from bot.obj import Default, Object, Ol, spl
 from bot.prs import parse
 from bot.thr import launch
 
@@ -209,7 +209,7 @@ class Handler(Object):
 def cmd(handler, obj):
     "callbackx to dispatch to command"
     obj.parse()
-    f = get(handler.cmds, obj.cmd, None)
+    f = handler.cmds.get(obj.cmd, None)
     if f:
         f(obj)
         obj.show(handler)

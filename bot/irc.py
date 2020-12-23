@@ -8,7 +8,7 @@ import os, queue, socket, textwrap, time, threading, _thread
 
 from bot.dbs import find, last
 from bot.hdl import Event, Handler, cmd
-from bot.obj import Cfg, Object, get,  save, update
+from bot.obj import Cfg, Object
 from bot.ofn import format
 from bot.prs import parse
 from bot.thr import launch
@@ -505,7 +505,7 @@ class Users(Object):
     def allowed(self, origin, perm):
         "see if origin has needed permission"
         perm = perm.upper()
-        origin = get(self.userhosts, origin, origin)
+        origin = self.userhosts.get(origin, origin)
         user = self.get_user(origin)
         if user:
             if perm in user.perms:
@@ -517,7 +517,7 @@ class Users(Object):
         for user in self.get_users(origin):
             try:
                 user.perms.remove(perm)
-                save(user)
+                user.save()
                 return True
             except ValueError:
                 pass
@@ -541,7 +541,7 @@ class Users(Object):
         user = User()
         user.user = origin
         user.perms = ["USER", ]
-        save(user)
+        user.save()
         return user
 
     def oper(self, origin):
@@ -552,7 +552,7 @@ class Users(Object):
         user = User()
         user.user = origin
         user.perms = ["OPER", "USER"]
-        save(user)
+        user.save()
         return user
 
     def perm(self, origin, permission):
@@ -562,7 +562,7 @@ class Users(Object):
             raise ENOUSER(origin)
         if permission.upper() not in user.perms:
             user.perms.append(permission.upper())
-            save(user)
+            user.save()
         return user
 
 users = Users()
@@ -573,6 +573,6 @@ def cfg(event):
     last(c)
     if not event.prs.sets:
         return event.reply(format(c, skip=["username", "realname"]))
-    update(c, event.prs.sets)
-    save(c)
+    c.update(event.prs.sets)
+    c.save()
     event.reply("ok")

@@ -8,7 +8,7 @@ import unittest
 import bot.obj
 import bot.cmd
 
-from bot.obj import Object, get
+from bot.obj import Object
 from bot.hdl import Event, Handler, mods
 from bot.prs import parse_cli
 from bot.thr import get_exception
@@ -56,7 +56,7 @@ values["o"] = Object()
 def get_values(vars):
     args = []
     for k in vars:    
-       res = get(values, k, None)
+       res = values.get(k, None)
        if res:
            args.append(res)
     return args

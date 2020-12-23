@@ -4,7 +4,7 @@ import types
 import unittest
 
 from bot.dbs import last
-from bot.obj import O, Object, load, save
+from bot.obj import O, Object
 
 class Test_Object(unittest.TestCase):
 
@@ -47,33 +47,33 @@ class Test_Object(unittest.TestCase):
 
     def test_stamp(self):
         o = Object()
-        save(o)
+        o.save()
         self.assertTrue(o.__type__)
 
     def test_attribute(self):
         o = Object()
         o.bla = "test"
-        p = save(o)
+        p = o.save()
         oo = Object()
-        load(oo, p)
+        oo.load(p)
         self.assertEqual(oo.bla, "test")
 
     def test_changeattr(self):
         o = Object()
         o.bla = "test"
-        p = save(o)
+        p = o.save()
         oo = Object()
-        load(oo, p)
+        oo.load(p)
         oo.bla = "mekker"
-        pp = save(oo)
+        pp = oo.save()
         ooo = Object()
-        load(ooo, pp)
+        ooo.load(pp)
         self.assertEqual(ooo.bla, "mekker")
 
     def test_last(self):
         o = Object()
         o.bla = "test"
-        save(o)
+        o.save()
         oo = Object()
         last(oo)
         self.assertEqual(oo.bla, "test")
@@ -81,11 +81,11 @@ class Test_Object(unittest.TestCase):
     def test_lastest(self):
         o = Object()
         o.bla = "test"
-        save(o)
+        o.save()
         oo = Object()
         last(oo)
         oo.bla = "mekker"
-        save(oo)
+        oo.save()
         ooo = Object()
         last(ooo)
         self.assertEqual(ooo.bla, "mekker")
