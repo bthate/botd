@@ -5,7 +5,7 @@ def read():
 
 setup(
     name='botd',
-    version='23',
+    version='24',
     url='https://github.com/bthate/botd',
     author='Bart Thate',
     author_email='bthate@dds.nl', 
