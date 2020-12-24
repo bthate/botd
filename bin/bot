@@ -97,6 +97,7 @@ def main():
     else:
         h = Console()
     h.walk("bot")
+    h.walk("botd")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     h.init(cfg.sets.mods)
