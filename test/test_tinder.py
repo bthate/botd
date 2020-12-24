@@ -34,12 +34,18 @@ events = []
 ignore = ["mbx", "rss"]
 nrtimes = 1
 
-h = Handler()
+class TestHandler(Handler):
+
+     def direct(self, txt):
+         if verbose:
+             print(txt)
+
+h = TestHandler()
 h.register("cmd", cmd)
 h.walk("bot")
 h.start()
 
-class Event(Event):
+class Command(Command):
 
     def direct(self, txt):
         if verbose:

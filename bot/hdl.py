@@ -27,6 +27,7 @@ class Event(Default):
 
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
+        self.channel = ""
         self.done = threading.Event()
         self.orig = None
         self.result = []
@@ -118,6 +119,8 @@ class Handler(Object):
         "run callbacks for event"
         if event.type and event.type in self.cbs:
             self.cbs[event.type](self, event)
+        else:
+            event.ready()
 
     def files(self):
         "show files in workdir"
