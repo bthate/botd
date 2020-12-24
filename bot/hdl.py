@@ -108,9 +108,8 @@ class Handler(Object):
         self.register("cmd", cmd)
         c = Command(txt)
         c.orig = repr(self)
-        if c.cmd in self.cmds:
-            self.dispatch(c)
-            c.wait()
+        self.dispatch(c)
+        c.wait()
 
     def direct(self, txt):
         "outputs text, overload this"
