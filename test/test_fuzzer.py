@@ -8,7 +8,7 @@ import unittest
 import bot.obj
 import bot.cmd
 
-from bot.obj import Object
+from bot.obj import Object, get
 from bot.hdl import Event, Handler, mods
 from bot.prs import parse_cli
 from bot.thr import get_exception
@@ -52,11 +52,12 @@ values["server"] = "localhost"
 values["nick"] = "bot"
 values["rssobj"] = Object()
 values["o"] = Object()
+values["handler"] = Handler()
 
 def get_values(vars):
     args = []
     for k in vars:    
-       res = values.get(k, None)
+       res = get(values, k, None)
        if res:
            args.append(res)
     return args
@@ -88,7 +89,7 @@ def fuzz(mod, *args, **kwargs):
             try:
                 res = meth(*args, **kwargs)
                 if debug:
-                    print("%s(%s) -> %s" % (name, ",".join(args), res))
+                    print("%s(%s) -> %s" % (name, ",".join([str(x) for x in args]), res))
             except Exception as ex:
                 if debug:
                     print(get_exception())

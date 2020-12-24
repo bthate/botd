@@ -8,8 +8,8 @@ import sys
 import time
 import unittest
 
-from bot.hdl import Event, Handler
-from bot.obj import Object
+from bot.hdl import Command, Event, Handler, cmd
+from bot.obj import Object, get
 from bot.prs import parse_cli
 from bot.thr import launch
 
@@ -34,9 +34,10 @@ events = []
 ignore = ["mbx", "rss"]
 nrtimes = 1
 
-k = Handler()
-k.walk("bot")
-k.start()
+h = Handler()
+h.register("cmd", cmd)
+h.walk("bot")
+h.start()
 
 class Event(Event):
 
@@ -49,16 +50,16 @@ class Test_Tinder(unittest.TestCase):
     def test_thrs(self):
         thrs = []
         for x in range(index or 1):
-            launch(tests, k)
+            launch(tests, h)
         consume(events)
 
     def test_neuman(self):
         for x in range(index or 1):
-            tests(k)
+            tests(h)
 
     def test_sorted(self):
         for x in range(index or 1):
-            sortedtests(k)
+            sortedtests(h)
         
 def consume(elems):
     fixed = []
@@ -72,18 +73,18 @@ def consume(elems):
             elems.remove(f)
         except ValueError:
             continue
-    k.stop()
+    h.stop()
     return res
     
 def sortedtests(b):
-    keys = sorted(k.cbs)
+    keys = sorted(h.cmds)
     for cmd in keys:
         if cmd in ignore:
             continue
         events.extend(do_cmd(cmd))
 
 def tests(b):
-    keys = list(k.cbs)
+    keys = list(h.cmds)
     random.shuffle(keys)
     for cmd in keys:
         if cmd in ignore:
@@ -91,7 +92,7 @@ def tests(b):
         events.extend(do_cmd(cmd))
 
 def do_cmd(cmd):
-    exs = param.get(cmd, [""])
+    exs = get(param, cmd, [""])
     e = list(exs)
     random.shuffle(e)
     events = []
@@ -99,9 +100,8 @@ def do_cmd(cmd):
     for ex in e:
         nr += 1
         txt = cmd + " " + ex 
-        e = Event()
-        e.txt = txt
-        k.put(e)
+        e = Command(txt)
+        h.put(e)
         events.append(e)
     return events
 

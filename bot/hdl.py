@@ -107,8 +107,9 @@ class Handler(Object):
         self.register("cmd", cmd)
         c = Command(txt)
         c.orig = repr(self)
-        self.dispatch(c)
-        c.wait()
+        if c.cmd in self.cmds:
+            self.dispatch(c)
+            c.wait()
 
     def direct(self, txt):
         "outputs text, overload this"
@@ -165,6 +166,7 @@ class Handler(Object):
 
     def handler(self):
         "handler loop"
+        self.running = True
         while not self.stopped:
             e = self.queue.get()
             if not e:
