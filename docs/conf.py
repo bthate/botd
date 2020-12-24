@@ -74,6 +74,7 @@ html_copy_source = False
 html_use_opensearch = 'http://botd.rtfd.io/'
 html_file_suffix = '.html'
 rst_prolog = """.. image:: botd2line.png
+    :height: 2.7cm
     :width: 100%
 
 .. title:: 24/7 channel daemon
