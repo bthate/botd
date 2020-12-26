@@ -5,14 +5,16 @@
 
 from bot.hdl import Handler, os
 from bot.trm import execute
+from bot.utl import privilege
 
 def main():
     import bot.obj
     bot.obj.wd = "/var/lib/botd/"
+    privilege("botd")
     h = Handler()
     h.start()
     h.walk("bot")
-    h.walk("botd", "botd")
+    h.walk("botd")
     h.init("irc,udp,rss")
     h.wait()
      

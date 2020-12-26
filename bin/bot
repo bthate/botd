@@ -3,18 +3,18 @@
 #
 # this file is placed in the public domain
 
-import os, sys ; sys.path.insert(0, os.getcwd())
-
 import atexit, os, pwd, readline, sys
 
-from bot.bus import bus
 from bot.hdl import Command, Handler, cmd
-from bot.ofn import format
 from bot.prs import parse_cli
 from bot.thr import launch
 from bot.trm import execute, termsave, termreset
 
-cmds = []
+# defines
+
+wd = os.path.expanduser("~/.botd")
+
+# classes
 
 class Console(Handler):
 
@@ -54,6 +54,8 @@ class Console(Handler):
         super().start()
         launch(self.input)
 
+# functions
+
 def complete(text, state):
     "complete matches"
     matches = []
@@ -89,20 +91,22 @@ def daemon():
 
 def main():
     import bot.obj
-    bot.obj.wd = os.path.expanduser("~/.botd")
-    cfg = parse_cli()
+    cfg = parse_cli(wd)
     if "d" in cfg.opts:
         daemon()
         h = Handler()
     else:
         h = Console()
-    h.walk("bot")
     h.walk("botd")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     h.init(cfg.sets.mods)
     h.start()
     h.wait()
+
+# runtime
+
+cmds = []
      
 execute(main)
 os._exit(0)

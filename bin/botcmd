@@ -3,22 +3,27 @@
 #
 # this file is placed in the public domain
 
-import os, sys ; sys.path.insert(0, os.getcwd())
+import os, sys
 
-from bot.hdl import Handler
+from bot.hdl import Handler, cmd
 from bot.trm import execute
+from bot.utl import privilege
 
 import bot.obj
 
 class Mini(Handler):
+
+    def __init__(self):
+        super().__init__()
+        self.register("cmd", cmd)
 
     def direct(self, txt):
         print(txt)
 
 def main():
     bot.obj.wd = "/var/lib/botd/"
+    privilege("botd")
     h = Mini()
-    h.walk("bot")
     return h.cmd(" ".join(sys.argv[1:]))
 
 execute(main)
