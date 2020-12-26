@@ -1,0 +1,34 @@
+#!/usr/bin/python3
+# BOTLIB - bottbl
+#
+# this file is placed in the public domain
+
+"bot program"
+
+# imports
+
+import os, sys ; sys.path.insert(0, os.getcwd())
+
+from bot.hdl import Handler
+
+txt = """# BOTLIB - tbl.py
+#
+# this file is placed in the public domain
+
+"tables (tbl)"
+
+from bot.obj import Object, Ol, update
+
+#:
+modnames = Object()
+
+#:
+names = Ol()
+"""
+
+h = Handler()
+h.walk("bot")
+print(txt)
+print("update(modnames, %s)" % h.modnames)
+print("")
+print("update(names, %s)" % h.names)
