@@ -2,47 +2,46 @@
 #
 # this file is placed in the public domain
 
-"Internet Relay Chat"
+"internet relay chat (irc)"
 
-import os, queue, socket, textwrap, time, threading, _thread
+# imports
+
+import os
+import queue
+import socket
+import textwrap
+import time
+import threading
+import _thread
 
 from bot.dbs import find, last
 from bot.hdl import Event, Handler, cmd
-from bot.obj import Cfg, Object, get,  save, update
-from bot.ofn import format
+from bot.obj import Cfg, Object, format, get,  save, update
 from bot.prs import parse
 from bot.thr import launch
+from bot.usr import Users
+from bot.utl import locked
 
-saylock = _thread.allocate_lock()
+# defines
+
+def __dir__():
+    return ("Cfg", "DCC", "Event", "IRC", "init")
 
 def init(hdl):
-    "create a IRC bot and return it"
+    "create a irc bot and return it"
     i = IRC()
     i.clone(hdl)
     return launch(i.start)
 
-def locked(l):
-    "lock descriptor"
-    def lockeddec(func, *args, **kwargs):
-        def lockedfunc(*args, **kwargs):
-            l.acquire()
-            res = None
-            try:
-                res = func(*args, **kwargs)
-            finally:
-                l.release()
-            return res
-        lockeddec.__doc__ = func.__doc__
-        return lockedfunc
-    return lockeddec
+# locks
 
-class ENOUSER(Exception):
+saylock = _thread.allocate_lock()
 
-    "no matching user found"
+# classes
 
 class Cfg(Cfg):
 
-    "IRC configuration object"
+    "configuration object"
 
     def __init__(self):
         super().__init__()
@@ -54,7 +53,7 @@ class Cfg(Cfg):
 
 class Event(Event):
 
-    "IRC event"
+    "irc event"
 
 class TextWrap(textwrap.TextWrapper):
 
@@ -71,7 +70,7 @@ class TextWrap(textwrap.TextWrapper):
 
 class IRC(Handler):
 
-    "IRC bot"
+    "irc bot"
 
     def __init__(self):
         super().__init__()
@@ -86,6 +85,13 @@ class IRC(Handler):
         self.cfg = Cfg()
         self.cmds = Object()
         self.channels = []
+        self.register("cmd", cmd)
+        self.register("ERROR", self.ERROR)
+        self.register("LOG", self.LOG)
+        self.register("NOTICE", self.NOTICE)
+        self.register("PRIVMSG", self.PRIVMSG)
+        self.register("QUIT", self.QUIT)
+        self.register("366", self.JOINED)
         self.speed = "slow"
         self.state = Object()
         self.state.needconnect = False
@@ -98,13 +104,7 @@ class IRC(Handler):
         self.state.pongcheck = False
         self.threaded = False
         self.verbose = False
-        self.register("cmd", cmd)
-        self.register("ERROR", self.ERROR)
-        self.register("LOG", self.LOG)
-        self.register("NOTICE", self.NOTICE)
-        self.register("PRIVMSG", self.PRIVMSG)
-        self.register("QUIT", self.QUIT)
-        self.register("366", self.JOINED)
+        self.users = Users()
 
     def _connect(self, server):
         "connect (blocking) to irc server"
@@ -130,7 +130,7 @@ class IRC(Handler):
         return True
 
     def _parsing(self, txt):
-        "parse incoming text into an event"
+        "into an event"
         rawstr = str(txt)
         rawstr = rawstr.replace("\u0001", "")
         rawstr = rawstr.replace("\001", "")
@@ -189,7 +189,7 @@ class IRC(Handler):
 
     @locked(saylock)
     def _say(self, channel, txt):
-        "say something on a channel"
+        "on a channel"
         wrapper = TextWrap()
         txt = str(txt).replace("\n", "")
         for t in wrapper.wrap(txt):
@@ -201,7 +201,7 @@ class IRC(Handler):
             self.state.last = time.time()
 
     def _some(self):
-        "blocking read on the socket"
+        "blocking read"
         inbytes = self._sock.recv(512)
         txt = str(inbytes, "utf-8")
         if txt == "":
@@ -213,12 +213,12 @@ class IRC(Handler):
         self.state.lastline = splitted[-1]
 
     def announce(self, txt):
-        "annouce text on all channels"
+        "annouce text"
         for channel in self.channels:
             self.say(channel, txt)
 
     def command(self, cmd, *args):
-        "send a command to the irc server"
+        "send a command"
         if not args:
             self.raw(cmd)
             return
@@ -233,7 +233,7 @@ class IRC(Handler):
             return
 
     def connect(self, server, nick):
-        "connect to server and identify with nick"
+        "connect to server"
         nr = 0
         while not self.stopped:
             self.state.nrconnect += 1
@@ -252,7 +252,7 @@ class IRC(Handler):
             self.cbs[event.command](event)
 
     def doconnect(self):
-        "start input/output tasks on connect"
+        "start input/output tasks"
         assert self.cfg.server
         assert self.cfg.nick
         super().start()
@@ -277,7 +277,7 @@ class IRC(Handler):
             self.put(e)
 
     def joinall(self):
-        "join all channels"
+        "all channels"
         for channel in self.channels:
             self.command("JOIN", channel)
 
@@ -300,7 +300,7 @@ class IRC(Handler):
                 self._say(channel, txt)
 
     def poll(self):
-        "block on socket and do basic response"
+        "block on socket"
         self._connected.wait()
         if not self._buffer:
             self._some()
@@ -327,7 +327,7 @@ class IRC(Handler):
         return e
 
     def raw(self, txt):
-        "send text on raw socket"
+        "send on raw socket"
         txt = txt.rstrip()
         if not txt.endswith("\r\n"):
             txt += "\r\n"
@@ -349,7 +349,7 @@ class IRC(Handler):
         self._outqueue.put_nowait((channel, txt))
 
     def start(self, cfg=None):
-        "start the irc bot"
+        "connect to server"
         if cfg is not None:
             self.cfg.update(cfg)
         else:
@@ -362,7 +362,7 @@ class IRC(Handler):
         self._joined.wait()
 
     def stop(self):
-        "stop the irc bot"
+        "flush queues and shutdown sockets"
         super().stop()
         self._outqueue.put((None, None))
         try:
@@ -371,7 +371,7 @@ class IRC(Handler):
             pass
 
     def ERROR(self, event):
-        "error handling"
+        "do stop/start on error"
         self.state.nrerror += 1
         self.state.error = event.error
         self._connected.clear()
@@ -379,23 +379,23 @@ class IRC(Handler):
         self.start()
 
     def JOINED(self, event):
-        "joined all channels"
+        "has joined all channels"
         self._joined.set()
 
     def LOG(self, event):
-        "log to console - override this"
+        "log to console, override this"
 
     def NOTICE(self, event):
-        "handle noticed"
+        "respond with version of the bot"
         if event.txt.startswith("VERSION"):
             from bot.hdl import __version__
             txt = "\001VERSION %s %s - %s\001" % ("BOTLIB", __version__, "pure python3 bot library")
             self.command("NOTICE", event.channel, txt)
 
     def PRIVMSG(self, event):
-        "handle a private message"
+        "forward dcc chat and check for commands"
         if event.txt.startswith("DCC CHAT"):
-            if self.cfg.users and not users.allowed(event.origin, "USER"):
+            if self.cfg.users and not self.users.allowed(event.origin, "USER"):
                 return
             try:
                 dcc = DCC()
@@ -406,20 +406,20 @@ class IRC(Handler):
             except ConnectionError as ex:
                 return
         if event.txt and event.txt[0] == self.cc:
-            if self.cfg.users and not users.allowed(event.origin, "USER"):
+            if self.cfg.users and not self.users.allowed(event.origin, "USER"):
                 return
             event.type = "cmd"
             event.txt = event.txt[1:]
             super().dispatch(event)
 
     def QUIT(self, event):
-        "handle quit"
+        "stop if self"
         if self.cfg.server in event.orig:
             self.stop()
 
 class DCC(Handler):
 
-    "direct client to client"
+    "direct client to client (dcc)"
 
     def __init__(self):
         super().__init__()
@@ -436,10 +436,10 @@ class DCC(Handler):
         self._fsock.flush()
 
     def announce(self, txt):
-        "overload if needed"
+        "annouce to dcc console, overload this"
 
     def connect(self, event):
-        "connect to the offering socket"
+        "connect to offering socket"
         arguments = event.txt.split()
         addr = arguments[3]
         port = arguments[4]
@@ -486,93 +486,3 @@ class DCC(Handler):
     def say(self, channel, txt):
         "skip channel and print on socket"
         self.raw(txt)
-
-class User(Object):
-
-    "IRC user"
-
-    def __init__(self):
-        super().__init__()
-        self.user = ""
-        self.perms = []
-
-class Users(Object):
-
-    "IRC users"
-
-    userhosts = Object()
-
-    def allowed(self, origin, perm):
-        "see if origin has needed permission"
-        perm = perm.upper()
-        origin = get(self.userhosts, origin, origin)
-        user = self.get_user(origin)
-        if user:
-            if perm in user.perms:
-                return True
-        return False
-
-    def delete(self, origin, perm):
-        "remove a permission of the user"
-        for user in self.get_users(origin):
-            try:
-                user.perms.remove(perm)
-                save(user)
-                return True
-            except ValueError:
-                pass
-
-    def get_users(self, origin=""):
-        "get all users, optionaly provding an matching origin"
-        s = {"user": origin}
-        return find("irc.User", s)
-
-    def get_user(self, origin):
-        "get specific user with corresponding origin"
-        u = list(self.get_users(origin))
-        if u:
-            return u[-1][-1]
-
-    def meet(self, origin, perms=None):
-        "add a irc user"
-        user = self.get_user(origin)
-        if user:
-            return user
-        user = User()
-        user.user = origin
-        user.perms = ["USER", ]
-        save(user)
-        return user
-
-    def oper(self, origin):
-        "grant origin oper permission"
-        user = self.get_user(origin)
-        if user:
-            return user
-        user = User()
-        user.user = origin
-        user.perms = ["OPER", "USER"]
-        save(user)
-        return user
-
-    def perm(self, origin, permission):
-        "add permission to origin"
-        user = self.get_user(origin)
-        if not user:
-            raise ENOUSER(origin)
-        if permission.upper() not in user.perms:
-            user.perms.append(permission.upper())
-            save(user)
-        return user
-
-users = Users()
-
-def cfg(event):
-    "configure irc."
-    c = Cfg()
-    last(c)
-    if not event.prs.sets:
-        return event.reply(format(c, skip=["username", "realname"]))
-    update(c, event.prs.sets)
-    save(c)
-    event.reply("ok")

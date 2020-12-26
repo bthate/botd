@@ -4,14 +4,24 @@
 
 "database (dbs)"
 
+# imports
+
+import os
 import time
 import bot.obj
 
-from bot.obj import hook, update, os, get_type
-from bot.ofn import search
+from bot.obj import get_type, hook, update, search
+from bot.utl import fntime
+
+# defines
+
+def __dir__():
+    return ("all", "deleted", "every", "find", "find_event", "last", "last_match", "last_type", "last_fn")
+
+# functions
 
 def all(otype, selector=None, index=None, timed=None):
-    "return all matching objects"
+    "matching objects"
     nr = -1
     if selector is None:
         selector = {}
@@ -27,7 +37,7 @@ def all(otype, selector=None, index=None, timed=None):
         yield fn, o
 
 def deleted(otype):
-    "return all deleted objects"
+    "deleted objects"
     for fn in fns(otype):
         o = hook(fn)
         if "_deleted" not in o or not o._deleted:
@@ -35,7 +45,7 @@ def deleted(otype):
         yield fn, o
 
 def every(selector=None, index=None, timed=None):
-    "return subset from all objects"
+    "subset from all objects"
     nr = -1
     if selector is None:
         selector = {}
@@ -52,7 +62,7 @@ def every(selector=None, index=None, timed=None):
             yield fn, o
 
 def find(otype, selector=None, index=None, timed=None):
-    "find objects"
+    "objects"
     nr = -1
     if selector is None:
         selector = {}
@@ -69,7 +79,7 @@ def find(otype, selector=None, index=None, timed=None):
         yield fn, o
 
 def find_event(e):
-    "find objects based on event"
+    "objects based on event"
     nr = -1
     for fn in fns(e.otype, e.timed):
         o = hook(fn)
@@ -83,7 +93,7 @@ def find_event(e):
         yield fn, o
 
 def fns(name, timed=None):
-    "return filenames"
+    "filenames"
     if not name:
         return []
     p = os.path.join(bot.obj.wd, "store", name) + os.sep
@@ -104,35 +114,9 @@ def fns(name, timed=None):
                     res.append(p)
     return sorted(res, key=fntime)
 
-def fntime(daystr):
-    "return time from filename"
-    daystr = daystr.replace("_", ":")
-    datestr = " ".join(daystr.split(os.sep)[-2:])
-    try:
-        datestr, rest = datestr.rsplit(".", 1)
-    except ValueError:
-        rest = ""
-    try:
-        t = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
-        if rest:
-            t += float("." + rest)
-    except ValueError:
-        t = 0
-    return t
-
-def get_type(o):
-    "return type of an object"
-    t = type(o)
-    if t == type:
-        try:
-            return "%s.%s" % (o.__module__, o.__name__)
-        except AttributeError:
-            pass
-    return str(type(o)).split()[-1][1:-2]
-
 def last(o):
-    "return last object"
-    path, l = lastfn(str(get_type(o)))
+    "last o"
+    path, l = last_fn(str(get_type(o)))
     if  l:
         update(o, l)
     if path:
@@ -140,19 +124,20 @@ def last(o):
         stp = os.sep.join(spl[-4:])
         return stp
 
-def lastmatch(otype, selector=None, index=None, timed=None):
+def last_match(otype, selector=None, index=None, timed=None):
+    "object with matched type"
     for fn, o in find(otype, selector, index, timed):
         yield fn, o
         break
 
-def lasttype(otype):
-    "return last object of type"
+def last_type(otype):
+    "object of a type"
     fnn = fns(otype)
     if fnn:
         return hook(fnn[-1])
 
-def lastfn(otype):
-    "return filename of last object"
+def last_fn(otype):
+    "filename of last object of a type"
     fn = fns(otype)
     if fn:
         fnn = fn[-1]
@@ -160,7 +145,7 @@ def lastfn(otype):
     return (None, None)
 
 def list_files(wd):
-    "list files in directory"
+    "files in directory"
     path = os.path.join(wd, "store")
     if not os.path.exists(path):
         return []

@@ -2,7 +2,9 @@
 #
 # this file is placed in the public domain
 
-"object base class (obj)"
+"object class and methods (obj)"
+
+# imports
 
 import datetime
 import importlib
@@ -14,19 +16,19 @@ import time
 import types
 import uuid
 
-wd = ""
+from bot.utl import cdir, get_cls
+
+# exceptions
 
 class ENOFILENAME(Exception):
 
-    "provided argument is not a filename"
+    "is not a filename"
 
-class ENOCLASS(Exception):
-
-    "class is not available"
+# classes
 
 class O:
 
-    "basic object"
+    "object"
 
     __slots__ = ("__dict__",)
 
@@ -61,6 +63,8 @@ class O:
 
 class Object(O):
 
+    "id/type"
+
     __slots__ = ("__id__", "__type__")
 
     def __init__(self, *args, **kwargs):
@@ -70,7 +74,7 @@ class Object(O):
 
 class Default(Object):
 
-    "uses default values"
+    "default values"
 
     def __getattr__(self, k):
         try:
@@ -80,7 +84,7 @@ class Default(Object):
 
 class Cfg(Default):
 
-    "base config class"
+    "config class"
 
 class Ol(Object):
 
@@ -97,54 +101,11 @@ class Ol(Object):
                 self[key].append(value)
 
     def update(self, d):
-        "update from other object list"
+        "to object list"
         for k, v in d.items():
             self.append(k, v)
 
-# utilities
-
-def cdir(path):
-    "create directory"
-    if os.path.exists(path):
-        return
-    res = ""
-    path2, _fn = os.path.split(path)
-    for p in path2.split(os.sep):
-        res += "%s%s" % (p, os.sep)
-        padje = os.path.abspath(os.path.normpath(res))
-        try:
-            os.mkdir(padje)
-            os.chmod(padje, 0o700)
-        except (IsADirectoryError, NotADirectoryError, FileExistsError):
-            pass
-
-def fntime(daystr):
-    "return time from filename"
-    daystr = daystr.replace("_", ":")
-    datestr = " ".join(daystr.split(os.sep)[-2:])
-    try:
-        datestr, rest = datestr.rsplit(".", 1)
-    except ValueError:
-        rest = ""
-    try:
-        t = time.mktime(time.strptime(datestr, "%Y-%m-%d %H:%M:%S"))
-        if rest:
-            t += float("." + rest)
-    except ValueError:
-        t = 0
-    return t
-
-def get_cls(name):
-    "return class from full qualified name"
-    try:
-        modname, clsname = name.rsplit(".", 1)
-    except Exception as ex:
-        raise ENOCLASS(name) from ex
-    if modname in sys.modules:
-        mod = sys.modules[modname]
-    else:
-        mod = importlib.import_module(modname)
-    return getattr(mod, clsname)
+# functions
 
 def hook(fn):
     "construct object from filename"
@@ -160,13 +121,15 @@ def hook(fn):
     return o
 
 def hooked(d):
-    "construct object from stamp"
+    "construct from stamp"
+    from bot.obj import Object
     return Object(d)
 
-# object functions
+# methods
 
 def default(o):
-    "return strinfified version of an object"
+    "stringified version"
+    from bot.obj import Object
     if isinstance(o, Object):
         return vars(o)
     if isinstance(o, dict):
@@ -177,8 +140,62 @@ def default(o):
         return o
     return repr(o)
 
+def edit(o, setter, skip=False):
+    "update o from a setter dict"
+    try:
+        setter = vars(setter)
+    except (TypeError, ValueError):
+        pass
+    if not setter:
+        setter = {}
+    count = 0
+    for key, value in setter.items():
+        if skip and value == "":
+            continue
+        count += 1
+        if value in ["True", "true"]:
+            o[key] = True
+        elif value in ["False", "false"]:
+            o[key] = False
+        else:
+            o[key] = value
+    return count
+
+def format(o, keys=None, skip=None):
+    "1 line output string"
+    if keys is None:
+        keys = vars(o).keys()
+    if skip is None:
+        skip = []
+    res = []
+    txt = ""
+    for key in keys:
+        if key in skip:
+            continue
+        try:
+            val = o[key]
+        except KeyError:
+            continue
+        if not val:
+            continue
+        val = str(val).strip()
+        res.append((key, val))
+    result = []
+    for k, v in res:
+        result.append("%s=%s%s" % (k, v, " "))
+    txt += " ".join([x.strip() for x in result])
+    return txt.strip()
+
+def get(o, k, d=None):
+    "o[k] if key, otherwise return d"
+    try:
+        res = o.get(k, d)
+    except (TypeError, AttributeError):
+        res = o.__dict__.get(k, d)
+    return res
+
 def get_name(o):
-    "return fully qualified name of an object"
+    "fully qualified name"
     t = type(o)
     if t == types.ModuleType:
         return o.__name__
@@ -194,10 +211,8 @@ def get_name(o):
                 n = o.__name__
     return n
 
-
-
 def get_type(o):
-    "return type of an object"
+    "type"
     t = type(o)
     if t == type:
         try:
@@ -206,30 +221,22 @@ def get_type(o):
             pass
     return str(type(o)).split()[-1][1:-2]
 
-def get(o, k, d=None):
-    "return o[k]"
-    try:
-        res = o.get(k, d)
-    except (TypeError, AttributeError):
-        res = o.__dict__.get(k, d)
-    return res
-
 def items(o):
-    "return items (k,v) of an object"
+    "items (k,v)"
     try:
         return o.items()
     except (TypeError, AttributeError):
         return o.__dict__.items()
 
 def keys(o):
-    "return keys of an object"
+    "keys"
     try:
         return o.keys()
     except (TypeError, AttributeError):
         return o.__dict__.keys()
 
 def load(o, path):
-    "load from disk into an object"
+    "from disk"
     assert path
     if path.count(os.sep) != 3:
         raise ENOFILENAME(path)
@@ -249,12 +256,21 @@ def load(o, path):
     o.__type__ = typ
     return stp
 
+def mkstamp(o):
+    "type/uuid/time stamp"
+    timestamp = str(datetime.datetime.now()).split()
+    return os.path.join(get_type(o), str(uuid.uuid4()), os.sep.join(timestamp))
+
+def ojson(o, *args, **kwargs):
+    "jsonified string"
+    return json.dumps(o, default=default, *args, **kwargs)
+
 def register(o, k, v):
-    "register key/value"
+    "key/value"
     o[k] = v
 
 def save(o, stime=None):
-    "save object to disk"
+    "to disk"
     assert wd
     if stime:
         stp = os.path.join(o.__type__, o.__id__,
@@ -269,21 +285,53 @@ def save(o, stime=None):
     os.chmod(opath, 0o444)
     return stp
 
+def scan(o, txt):
+    "values for txt"
+    for _k, v in items(o):
+        if txt in str(v):
+            return True
+    return False
+
 def set(o, k, v):
-    "set o[k]=v"
+    "o[k]=v"
     setattr(o, k, v)
 
-def spl(txt):
-    "return comma splitted values"
-    return iter([x for x in txt.split(",") if x])
+def search(o, s):
+    "key,value to match dict"
+    ok = False
+    for k, v in items(s):
+        vv = get(o, k)
+        if v not in str(vv):
+            ok = False
+            break
+        ok = True
+    return ok
 
 def update(o, d):
-    "update object with other object"
-    return o.__dict__.update(vars(d))
+    "other object"
+    try:
+        return o.__dict__.update(vars(d))
+    except TypeError:
+        return o.__dict__.update(d)
 
 def values(o):
-    "return values of an object"
+    "values"
     try:
         return o.values()
     except (TypeError, AttributeError):
         return o.__dict__.values()
+
+def xdir(o, skip=None):
+    "dir(o) with keys skipped"
+    res = []
+    for k in dir(o):
+        if skip is not None and skip in k:
+            continue
+        res.append(k)
+    return res
+
+# runtime
+
+#: working directory
+wd = ""
+ 

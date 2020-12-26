@@ -4,11 +4,44 @@
 
 "parse (prs)"
 
+# imports
+
 import os
 import sys
 import time
+import bot.obj
 
 from bot.obj import Default, Object, update
+from bot.utl import day
+
+# defines
+
+def __dir__():
+    return ("elapsed", "parse", "parse_cli", "parse_time", "parse_ymd")
+
+year_formats = [
+    "%b %H:%M",
+    "%b %H:%M:%S",
+    "%a %H:%M %Y",
+    "%a %H:%M",
+    "%a %H:%M:%S",
+    "%Y-%m-%d",
+    "%d-%m-%Y",
+    "%d-%m",
+    "%m-%d",
+    "%Y-%m-%d %H:%M:%S",
+    "%d-%m-%Y %H:%M:%S",
+    "%d-%m %H:%M:%S",
+    "%m-%d %H:%M:%S",
+    "%Y-%m-%d %H:%M",
+    "%d-%m-%Y %H:%M",
+    "%d-%m %H:%M",
+    "%m-%d %H:%M",
+    "%H:%M:%S",
+    "%H:%M"
+]
+
+# classes
 
 class Token(Object):
 
@@ -31,7 +64,7 @@ class Option(Default):
 
 class Getter(Object):
 
-    "token that contains =="
+    "contains =="
 
     def __init__(self, txt):
         super().__init__()
@@ -44,7 +77,7 @@ class Getter(Object):
 
 class Setter(Object):
 
-    "token that contains ="
+    "contains ="
 
     def __init__(self, txt):
         super().__init__()
@@ -57,7 +90,7 @@ class Setter(Object):
 
 class Skip(Object):
 
-    "token that endswith -"
+    "endswith -"
 
     def __init__(self, txt):
         super().__init__()
@@ -75,7 +108,7 @@ class Skip(Object):
 
 class Timed(Object):
 
-    "token that is a time"
+    "is a time"
 
     def __init__(self, txt):
         super().__init__()
@@ -98,8 +131,10 @@ class Timed(Object):
         if vv:
             self["to"] = time.time() - vv
 
+# functions
+
 def elapsed(seconds, short=True):
-    "return elapsed time"
+    "elapsed time"
     txt = ""
     nsec = float(seconds)
     year = 365*24*60*60
@@ -142,19 +177,8 @@ def elapsed(seconds, short=True):
     txt = txt.strip()
     return txt
 
-def parse_cli():
-    "parse commandline"
-    import bot.hdl
-    import bot.obj
-    cfg = Default()
-    parse(cfg, " ".join(sys.argv[1:]))
-    cfg.sets.wd = bot.obj.wd = cfg.sets.wd or bot.obj.wd
-    assert bot.obj.wd
-    bot.hdl.md = os.path.join(bot.obj.wd, "mod")
-    return cfg
-
 def parse(o, txt):
-    "parse an object"
+    "txt to object"
     args = []
     o.txt = txt
     o.otxt = txt
@@ -203,8 +227,37 @@ def parse(o, txt):
     o.rest = " ".join(args[1:])
     return o
 
-def parse_time(daystr):
-    "elapsed time from string"
+def parse_cli(wd=None):
+    "commandline"
+    import bot.hdl
+    import bot.obj
+    cfg = Default()
+    parse(cfg, " ".join(sys.argv[1:]))
+    cfg.sets.wd = bot.obj.wd = cfg.sets.wd or bot.obj.wd or wd
+    assert bot.obj.wd
+    bot.hdl.md = os.path.join(bot.obj.wd, "mod")
+    return cfg
+
+def parse_time(daystring):
+    "time"
+    line = ""
+    daystr = str(daystring)
+    for word in daystr.split():
+        if "-" in word:
+            line += word + " "
+        elif ":" in word:
+            line += word
+    if "-" not in line:
+        line = day() + " " + line
+    for f in year_formats:
+        try:
+            t = time.mktime(time.strptime(line, f))
+            return t
+        except ValueError:
+            pass
+
+def parse_ymd(daystr):
+    "ymdms time"
     if not any([c.isdigit() for c in daystr]):
         return 0
     valstr = ""

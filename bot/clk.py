@@ -2,16 +2,26 @@
 #
 # this file is placed in the public domain
 
-" clock functions (clk)"
+"clock functions (clk)"
 
-import threading, time
+# imports
+
+import threading
+import time
 
 from bot.obj import Object
 from bot.thr import launch
 
+# defines
+
+def __dir__():
+    return ("Repeater", "Timer")
+
+# classes
+
 class Timer(Object):
 
-    "timer class"
+    "timer"
 
     def __init__(self, sleep, func, *args, **kwargs):
         super().__init__()
@@ -24,12 +34,12 @@ class Timer(Object):
         self.timer = None
 
     def run(self, *args, **kwargs):
-        "run the timer"
+        "run"
         self.state.latest = time.time()
         launch(self.func, *self.args, **self.kwargs)
 
     def start(self):
-        "start clock for timer"
+        "clock"
         if not self.name:
             self.name = self.func.__func__.__qualname__
         timer = threading.Timer(self.sleep, self.run, self.args, self.kwargs)
@@ -45,7 +55,7 @@ class Timer(Object):
         return timer
 
     def stop(self):
-        "stop timer"
+        "stop"
         if self.timer:
             self.timer.cancel()
 
@@ -54,7 +64,7 @@ class Repeater(Timer):
     "repeater class"
 
     def run(self, *args, **kwargs):
-        "run a repeater"
+        "run repeater"
         thr = launch(self.start, **kwargs)
         super().run(*args, **kwargs)
         return thr

@@ -2,8 +2,10 @@
 #
 #
 
+import bot.hdl
+
 __version__ = 24
 
 def ver(event):
-    event.reply("BOTD #%s - 24/7 channel daemon" % __version__)
+    event.reply("BOTD #%s | BOTLIB %s" % (__version__, bot.hdl.__version__))
     

@@ -4,20 +4,69 @@
 
 "handler (hdl)"
 
-import inspect, os, queue, threading, time
+# imports
+
+import inspect
 import importlib
 import importlib.util
+import os
+import queue
+import threading
+import time
 
-from bot.bus import bus
 from bot.dbs import list_files
-from bot.obj import Default, Object, Ol, get, spl, update
+from bot.obj import Default, Object, Ol, get, update
 from bot.prs import parse
 from bot.thr import launch
+from bot.utl import direct, spl
 
-__version__ = 114
+# defines
 
-debug = False
-md = ""
+__version__ = 116
+
+def __dir__():
+    return ("Bus", "Command", "Event", "Handler", "cmd")
+
+# classes
+
+class Bus(Object):
+
+    "registered recipient event handler"
+
+    objs = []
+
+    def __call__(self, *args, **kwargs):
+        return Bus.objs
+
+    def __iter__(self):
+        return iter(Bus.objs)
+
+    @staticmethod
+    def add(obj):
+        "listener"
+        Bus.objs.append(obj)
+
+    @staticmethod
+    def announce(txt, skip=None):
+        "all listeners"
+        for h in Bus.objs:
+            if skip is not None and isinstance(h, skip):
+                continue
+            if "announce" in dir(h):
+                h.announce(txt)
+
+    @staticmethod
+    def by_orig(orig):
+        "listener"
+        for o in Bus.objs:
+            if repr(o) == orig:
+                return o
+    @staticmethod
+    def say(orig, channel, txt):
+        "say to specific listener"
+        for o in Bus.objs:
+            if repr(o) == orig:
+                o.say(channel, str(txt))
 
 class Event(Default):
 
@@ -36,7 +85,7 @@ class Event(Default):
 
     def direct(self, txt):
         "send txt to console - overload this"
-        bus.say(self.orig, self.channel, txt)
+        Bus().say(self.orig, self.channel, txt)
 
     def parse(self):
         "parse an event"
@@ -60,21 +109,20 @@ class Event(Default):
         "add txt to result"
         self.result.append(txt)
 
-    def show(self, target=None):
+    def show(self):
         "display result"
         for txt in self.result:
-            if target:
-                target.say(self.channel, txt)
-                continue
             self.direct(txt)
 
     def wait(self):
-        "wait for event to be handled"
+        "wait"
         self.done.wait()
         for thr in self.thrs:
             thr.join()
 
 class Command(Event):
+
+    "based on txt"
 
     def __init__(self, txt, **kwargs):
         super().__init__([], **kwargs)
@@ -84,28 +132,30 @@ class Command(Event):
 
 class Handler(Object):
 
-    "basic event handler"
+    "event handler"
 
     threaded = False
 
     def __init__(self):
         super().__init__()
+        self.bus = Bus()
         self.cbs = Object()
         self.cmds = Object()
+        self.modnames = Object()
         self.names = Ol()
         self.queue = queue.Queue()
         self.stopped = False
-        bus.add(self)
+        self.bus.add(self)
 
     def clone(self, hdl):
         "copy callbacks"
         update(self.cmds, hdl.cmds)
         update(self.cbs, hdl.cbs)
+        update(self.modnames, hdl.modnames)
         update(self.names, hdl.names)
 
     def cmd(self, txt):
         "execute command"
-        self.register("cmd", cmd)
         c = Command(txt)
         c.orig = repr(self)
         self.dispatch(c)
@@ -120,12 +170,6 @@ class Handler(Object):
             self.cbs[event.type](self, event)
         else:
             event.ready()
-
-    def files(self):
-        "show files in workdir"
-        import bot.obj
-        assert bot.obj.wd
-        return list_files(bot.obj.wd)
 
     def fromdir(self, path, name="bot"):
         "scan a modules directory"
@@ -160,11 +204,16 @@ class Handler(Object):
                     self.register(key, o)
                 elif "event" in o.__code__.co_varnames:
                     self.cmds[key] = o
+                    self.modnames[key] = o.__module__
         for _key, o in inspect.getmembers(mod, inspect.isclass):
             if issubclass(o, Object):
                 t = "%s.%s" % (o.__module__, o.__name__)
                 self.names.append(o.__name__.lower(), t)
         return mod
+
+    def load(self, mn):
+        "load from modulename"
+        self.intro(direct(mn))
 
     def handler(self):
         "handler loop"
@@ -212,26 +261,26 @@ class Handler(Object):
             while 1:
                 time.sleep(30.0)
 
+# functions
+
 def cmd(handler, obj):
-    "callbackx to dispatch to command"
+    "dispatch to command"
+    import bot.tbl
     obj.parse()
     f = get(handler.cmds, obj.cmd, None)
+    if not f:
+        mn = get(bot.tbl.modnames, obj.cmd, None)
+        if mn:
+            handler.load(mn)
+            f = get(handler.cmds, obj.cmd, None)
+    res = None
     if f:
-        f(obj)
-        obj.show(handler)
+        res = f(obj)
+        obj.show()
     obj.ready()
+    return res
 
-def direct(name, pname=''):
-    "load a module"
-    return importlib.import_module(name, pname)
+# runtime
 
-def mods(mn, name="bot"):
-    "return all modules in a package"
-    mod = []
-    pkg = direct(mn)
-    path = pkg.__file__ or pkg.__path__[0]
-    for m in ["%s.%s" % (name, x.split(os.sep)[-1][:-3]) for x in os.listdir(path)
-              if x.endswith(".py")
-              and not x == "setup.py"]:
-        mod.append(direct(m))
-    return mod
+debug = False
+md = ""

@@ -2,23 +2,26 @@
 #
 # this file is placed in the public domain
 
-"udp to irc relay"
+"udp to irc relay (udp)"
 
-import select, socket, sys, time
+import select
+import socket
+import sys
+import time
 
-from bot.bus import bus
 from bot.dbs import last
+from bot.hdl import Bus
 from bot.obj import Cfg, Object
 from bot.thr import launch
 
 def init(hdl):
-    "start a udp to irc relay server and return it"
+    "udp to irc relay"
     u = UDP()
     return launch(u.start)
 
 class Cfg(Cfg):
 
-    "udp configuration"
+    "configuration"
 
     def __init__(self):
         super().__init__()
@@ -27,7 +30,7 @@ class Cfg(Cfg):
 
 class UDP(Object):
 
-    "udp to irc relay server"
+    "udp to irc relay"
 
     def __init__(self):
         super().__init__()
@@ -40,11 +43,11 @@ class UDP(Object):
         self.cfg = Cfg()
 
     def output(self, txt, addr):
-        "output message on fleet"
-        bus.announce(txt.replace("\00", ""))
+        "message on bus"
+        Bus.announce(txt.replace("\00", ""))
 
     def server(self):
-        "loop for output"
+        "loop"
         try:
             self._sock.bind((self.cfg.host, self.cfg.port))
         except (socket.gaierror, OSError):
@@ -59,44 +62,17 @@ class UDP(Object):
             self.output(data, addr)
 
     def exit(self):
-        "stop udp to irc relay server"
+        "udp to irc relay"
         self.stopped = True
         self._sock.settimeout(0.01)
         self._sock.sendto(bytes("exit", "utf-8"), (self.cfg.host, self.cfg.port))
 
     def start(self):
-        "start udp to irc relay server"
+        "udp to irc relay"
         last(self.cfg)
         launch(self.server)
 
 def toudp(host, port, txt):
-    "send text over udp to the udp to irc relay server"
+    "send text to udp to irc relay"
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(bytes(txt.strip(), "utf-8"), (host, port))
-
-def udp(event):
-    "send text over udp to the bot"
-    cfg = Cfg()
-    last(cfg)
-    if len(sys.argv) > 2:
-        txt = " ".join(sys.argv[2:])
-        toudp(cfg.host, cfg.port, txt)
-        return
-    if not select.select([sys.stdin, ], [], [], 0.0)[0]:
-        return
-    while 1:
-        try:
-            (i, o, e) = select.select([sys.stdin,], [], [sys.stderr,])
-        except KeyboardInterrupt:
-            return
-        if e:
-            break
-        stop = False
-        for sock in i:
-            txt = sock.readline()
-            if not txt:
-                stop = True
-                break
-            toudp(cfg.host, cfg.port, txt)
-        if stop:
-            break
