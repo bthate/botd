@@ -4,7 +4,7 @@
 
 import bot.hdl
 
-__version__ = 24
+__version__ = 25
 
 def ver(event):
     event.reply("BOTD #%s | BOTLIB %s" % (__version__, bot.hdl.__version__))
