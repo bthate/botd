@@ -1,10 +1,21 @@
 #!/usr/bin/python3
+# BOTD - 24/7 channel dameon
+#
+# this file is placed in the public domain
+
+"build botd environment"
+
+# imports
 
 import os
 
+# defines
+
 old =  os.getcwd()
 
-def obopen(txt):
+# functions
+
+def open(txt):
     try:
         for line in os.popen(txt).readlines():
             print(line.rstrip())
@@ -12,7 +23,7 @@ def obopen(txt):
         pass
 
 def main():
-    obopen("bin/clean")
+    open("bin/clean")
     try:
         shutil.rmtree("build")
     except:
@@ -27,10 +38,14 @@ def main():
         pass
     for line in os.popen("python3 setup.py sdist").readlines():
         print(line.strip())
-    #obopen("rm -fR ~/.cache/pip/")
-    obopen("python3 -mvirtualenv -p python3 env")
-    obopen("env/bin/pip3 install botd -f dist --upgrade --force-reinstall")
+    open("rm -fR ~/.cache/pip/")
+    open("cp ../botlib/dist/* egg")
+    open("cp ../botd/dist/* egg")
+    open("python3 -mvirtualenv -p python3 env")
+    open("env/bin/pip3 install botd -f egg --upgrade --force-reinstall")
+
+# runtime
 
 if __name__ == "__main__":
     main()
-    obopen("tar zcf env.tar.gz env")
+    open("tar zcf env.tar.gz env")
