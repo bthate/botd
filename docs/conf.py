@@ -1,6 +1,12 @@
 # BOTD - 24/7 channel daemon
 # -*- coding: utf-8 -*-
 #
+# this file is placed in the public domain
+
+"sphinx configuration"
+
+# imports
+
 
 import unittest
 import doctest
@@ -12,7 +18,9 @@ sys.path.insert(0, curdir + os.sep)
 sys.path.insert(0, curdir + os.sep + '..' + os.sep)
 sys.path.insert(0, curdir + os.sep + '..' + os.sep + ".." + os.sep)
 
-from bot.ver import __version__
+# defines
+
+__version__ = 26
 
 needs_sphinx='1.1'
 nitpick_ignore=[
@@ -40,7 +48,7 @@ templates_path=['_templates',]
 source_suffix = '.rst'
 source_encoding = 'utf-8-sig'
 master_doc = 'index'
-project = "B O T D"
+project = "BOTD"
 version = '%s' % __version__
 release = '%s' % __version__
 language = ''

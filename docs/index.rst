@@ -13,7 +13,7 @@ objects based on type information in the path and uses a "dump OOP and use
 OP" programming library where the methods are factored out into functions
 that use the object as the first argument.
 
-BOTD is placed in the Public Domain and has no COPYRIGHT and no LICENSE.
+BOTD is placed in the Public Domain and has no COPYRIGHT and no LICENSE (:ref:`source <source>`)
 
 INSTALL
 =======
@@ -204,30 +204,6 @@ it's a way of programming with objects, replacing OOP. Not object-oriented
 programming, but object programming. If you are used to functional programming
 you'll like it (or not) ;]
 
-MODULES
-=======
-
-BOTD provides the following modules:
-
-.. autosummary::
-    :toctree: 
-    :template: module.rst
-
-    bot.clk          - clock/repeater
-    bot.cmd          - commands
-    bot.dbs          - databases
-    bot.hdl          - handler
-    bot.irc          - internet relay chat
-    bot.obj          - objects
-    bot.prs          - parser
-    bot.rss          - rich site syndicate
-    bot.tbl          - tables
-    bot.thr          - threads
-    bot.trm          - terminal
-    bot.udp          - udp to irc relay
-    bot.usr          - users
-    bot.utl          - utilities
-
 DEBUG
 =====
 
@@ -249,8 +225,6 @@ CONTACT
 =======
 
 "contributed back to society"
-
-you can contact me on IRC/freenode/#dunkbots or email me at bthate@dds.nl
 
 | Bart Thate (bthate@dds.nl, thatebart@gmail.com)
 | botfather on #dunkbots irc.freenode.net

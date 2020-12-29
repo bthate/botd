@@ -206,14 +206,14 @@ def parse(o, txt):
             update(o.sets, s)
             continue
         opt = Option(token.txt)
-        if opt.opt:
-            try:
-                o.index = int(opt.opt)
-                continue
-            except ValueError:
-                pass
+        if opt:
             o.opts[opt.opt] = True
             continue
+        try:
+            o.index = int(token.txt)
+            continue
+        except ValueError:
+            pass
         args.append(token.txt)
     if not args:
         o.args = []

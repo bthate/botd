@@ -12,7 +12,7 @@ import bot.obj
 import bot.tbl
 
 from bot.dbs import find, last, last_match, list_files
-from bot.obj import Object, edit, format, get, keys, save, update
+from bot.obj import Object, edit, format, get, get_name, keys, save, update
 from bot.hdl import Bus, __version__
 from bot.irc import Cfg
 from bot.prs import elapsed
@@ -22,7 +22,7 @@ from bot.utl import fntime, mods
 # defines
 
 def __dir__():
-    return ("Log", "Todo", "cmd", "cfg", "dpl", "dne", "fnd", "ftc", "log", "rem", "rss", "tdo", "thr", "ver")
+    return ("Log", "Todo", "cmd", "cfg", "dpl", "dne", "flt", "fnd", "ftc", "log", "rem", "rss", "tdo", "thr", "ver")
 
 starttime = time.time()
 
@@ -64,6 +64,7 @@ def cfg(event):
     save(c)
     event.reply("ok")
 
+
 def dne(event):
     "flag as done (dne)"
     if not event.args:
@@ -85,18 +86,15 @@ def dpl(event):
         save(o)
         event.reply("ok")
 
-def ftc(event):
-    "run a fetch (ftc)"
-    res = []
-    thrs = []
-    fetcher = Fetcher()
-    fetcher.start(False)
-    thrs = fetcher.run()
-    for thr in thrs:
-        res.append(thr.join() or 0)
-    if res:
-        event.reply("fetched %s" % ",".join([str(x) for x in res]))
+
+def flt(event):
+    "list of bots"
+    try:
+        event.reply(str(Bus.objs[event.prs.index-1]))
         return
+    except IndexError:
+        pass
+    event.reply(",".join([get_name(o) for o in Bus.objs]))
 
 def fnd(event):
     "find objects (fnd)"
@@ -113,6 +111,19 @@ def fnd(event):
             if "t" in event.prs.opts:
                 txt = txt + " %s" % (elapsed(time.time() - fntime(fn)))
             event.reply(txt)
+            
+def ftc(event):
+    "run a fetch (ftc)"
+    res = []
+    thrs = []
+    fetcher = Fetcher()
+    fetcher.start(False)
+    thrs = fetcher.run()
+    for thr in thrs:
+        res.append(thr.join() or 0)
+    if res:
+        event.reply("fetched %s" % ",".join([str(x) for x in res]))
+        return
 
 def log(event):
     "log some text (log)"

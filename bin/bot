@@ -1,18 +1,23 @@
 #!/usr/bin/python3
-# BOTLIB - bot
+# BOTD - 24/7 channel daemon
 #
 # this file is placed in the public domain
 
-import atexit, os, pwd, readline, sys
+import atexit
+import os
+import readline
+import sys
+import bot.all
 
 from bot.hdl import Command, Handler, cmd
 from bot.prs import parse_cli
 from bot.thr import launch
-from bot.trm import execute, termsave, termreset
+from bot.trm import execute
+from bot.utl import privilege
 
 # defines
 
-wd = os.path.expanduser("~/.botd")
+wd = os.path.expanduser("/var/lib/botd")
 
 # classes
 
@@ -90,13 +95,13 @@ def daemon():
     os.dup2(se.fileno(), sys.stderr.fileno())
 
 def main():
-    import bot.obj
     cfg = parse_cli(wd)
     if "d" in cfg.opts:
         daemon()
         h = Handler()
     else:
         h = Console()
+    privilege("botd")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     h.init(cfg.sets.mods)

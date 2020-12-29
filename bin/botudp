@@ -1,12 +1,20 @@
 #!/usr/bin/python3
-# BOTLIB - botudp
+# BOTD - 24/7 channel daemon
 #
 # this file is placed in the public domain
 
+"send text via udp to irc gateway"
+
+# imports
+
 import select, socket, sys
+
+# defines
 
 host = "localhost"
 port = 5500
+
+# functions
 
 def toudp(host, port, txt):
     "send text over udp to the udp to irc relay server"
@@ -37,5 +45,7 @@ def main():
             toudp(host, port, txt)
         if stop:
             break
+
+# runtime
 
 main()
