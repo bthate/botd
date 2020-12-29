@@ -15,7 +15,7 @@ setup(
     packages=["bot"],
     namespace_packages=["bot"],
     zip_safe=False,
-    scripts=["bin/bot", "bin/botcmd", "bin/botctl", "bin/botd", "bin/botinst", "bin/botudp"],
+    scripts=["bin/bot", "bin/botcmd", "bin/botctl", "bin/botd", "bin/botudp"],
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: MIT License',
                  'Operating System :: Unix',
