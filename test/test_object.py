@@ -1,10 +1,18 @@
+# BOTD - 24/7 channel daemon (test_object.py)
+#
+# this file is placed in the public domain
+
 "test object functions"
+
+# imports
 
 import types
 import unittest
 
 from bot.dbs import last
 from bot.obj import O, Object, load, save
+
+# classes
 
 class Test_Object(unittest.TestCase):
 

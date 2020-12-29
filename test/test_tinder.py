@@ -1,4 +1,10 @@
+# BOTD - 24/7 channel daemon (test_tinder.py)
+#
+# this file is placed in the public domain
+
 "run all commands"
+
+# imports
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
@@ -12,6 +18,8 @@ from bot.hdl import Command, Event, Handler, cmd
 from bot.obj import Object, get
 from bot.prs import parse_cli
 from bot.thr import launch
+
+# defines
 
 cfg = parse_cli()
 verbose = "v" in cfg.opts
@@ -34,16 +42,14 @@ events = []
 ignore = ["mbx", "rss"]
 nrtimes = 1
 
+# classes
+
 class TestHandler(Handler):
 
      def direct(self, txt):
          if verbose:
              print(txt)
 
-h = TestHandler()
-h.register("cmd", cmd)
-h.walk("bot")
-h.start()
 
 class Command(Command):
 
@@ -66,6 +72,8 @@ class Test_Tinder(unittest.TestCase):
     def test_sorted(self):
         for x in range(index or 1):
             sortedtests(h)
+
+# functions
         
 def consume(elems):
     fixed = []
@@ -110,6 +118,13 @@ def do_cmd(cmd):
         h.put(e)
         events.append(e)
     return events
+
+# runtime
+
+h = TestHandler()
+h.register("cmd", cmd)
+h.walk("bot")
+h.start()
 
 for e in do_cmd("mbx"):
     e.wait()

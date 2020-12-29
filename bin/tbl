@@ -1,17 +1,5 @@
 #!/usr/bin/python3
-# BOTLIB - bottbl
-#
-# this file is placed in the public domain
-
-"bot program"
-
-# imports
-
-import os, sys ; sys.path.insert(0, os.getcwd())
-
-from bot.hdl import Handler
-
-txt = """# BOTLIB - tbl.py
+"""# BOTD - 24/7 channel daemon (tbl.py)
 #
 # this file is placed in the public domain
 
@@ -26,9 +14,15 @@ modnames = Object()
 names = Ol()
 """
 
+# imports
+
+import os, sys ; sys.path.insert(0, os.getcwd())
+
+from bot.hdl import Handler
+
 h = Handler()
 h.walk("bot")
-print(txt)
+print(__doc__)
 print("update(modnames, %s)" % h.modnames)
 print("")
 print("update(names, %s)" % h.names)

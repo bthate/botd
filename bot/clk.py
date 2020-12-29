@@ -1,4 +1,4 @@
-# BOTLIB - clk.py
+# BOTD - 24/7 channel daemon (clk.py)
 #
 # this file is placed in the public domain
 

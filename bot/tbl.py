@@ -1,4 +1,4 @@
-# BOTLIB - tbl.py
+# BOTD - 24/7 channel daemon (tbl.py)
 #
 # this file is placed in the public domain
 

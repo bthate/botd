@@ -1,4 +1,4 @@
-# BOTLIB - obj.py
+# BOTD - 24/7 channel daemon (obj.py)
 #
 # this file is placed in the public domain
 

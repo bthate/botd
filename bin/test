@@ -1,4 +1,11 @@
 #!/usr/bin/python3
+# BOTD - 24/7 channel daemon
+#
+# this file is placed in the public domain
+
+"botd unittests"
+
+# imports
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 import time, unittest
@@ -8,6 +15,8 @@ import bot.hdl
 
 from bot.trm import execute
 from bot.prs import parse_cli
+
+# functions
 
 def open(txt):
     try:
@@ -29,6 +38,8 @@ def main():
         pat = "test*"
     suite = unittest.loader.TestLoader().discover(test_path, pattern=pat)
     unittest.TextTestRunner(verbosity=3).run(suite)
-   
+
+# runtime
+
 execute(main)
 os._exit(0)

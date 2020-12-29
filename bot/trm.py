@@ -1,3 +1,7 @@
+# BOTD - 24/7 channel daemon (trm.py)
+#
+# this file is placed in the public domain
+
 # BOTLIB - trm.py
 #
 # this file is placed in the public domain

@@ -1,4 +1,10 @@
+# BOTD - 24/7 channel daemon (test_fuzzer.py)
+#
+# this file is placed in the public domain
+
 "call all methods"
+
+# imports
 
 import os, sys ; sys.path.insert(0, os.getcwd())
 
@@ -12,6 +18,8 @@ from bot.obj import Object, get
 from bot.hdl import Event, Handler, mods
 from bot.prs import parse_cli
 from bot.thr import get_exception
+
+# defines
 
 def cb(event):
     print("yoo")
@@ -54,6 +62,20 @@ values["rssobj"] = Object()
 values["o"] = Object()
 values["handler"] = Handler()
 
+# unittest
+        
+class Test_Fuzzer(unittest.TestCase):
+
+    def test_fuzz(self):
+        global exc
+        m = mods("bot")
+        for x in range(cfg.index or 1):
+            for mod in m:
+                fuzz(mod)
+        exc = []
+
+# functions
+
 def get_values(vars):
     args = []
     for k in vars:    
@@ -93,13 +115,3 @@ def fuzz(mod, *args, **kwargs):
             except Exception as ex:
                 if debug:
                     print(get_exception())
-        
-class Test_Fuzzer(unittest.TestCase):
-
-    def test_fuzz(self):
-        global exc
-        m = mods("bot")
-        for x in range(cfg.index or 1):
-            for mod in m:
-                fuzz(mod)
-        exc = []

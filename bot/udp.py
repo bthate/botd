@@ -1,4 +1,4 @@
-# BOTLIB - udp.py
+# BOTD - 24/7 channel daemon (udp.py)
 #
 # this file is placed in the public domain
 

@@ -1,7 +1,7 @@
 #!/bin/bash
-# BOTLIB - the bot library !
+# BOTD - 24/7 channel daemon
 #
-#
+# this file is placed in the public domain
 
 bin/env
 env/bin/python3 env/bin/pip3 install -r docs/requirements.txt --upgrade --force-reinstall

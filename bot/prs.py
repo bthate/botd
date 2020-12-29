@@ -1,4 +1,4 @@
-# BOTLIB - prs.py
+# BOTD - 24/7 channel daemon (prs.py)
 #
 # this file is placed in the public domain
 

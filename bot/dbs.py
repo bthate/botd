@@ -1,4 +1,4 @@
-# BOTLIB - dbs.py
+# BOTD - 24/7 channel daemon (dbs.py)
 #
 # this file is placed in the public domain
 

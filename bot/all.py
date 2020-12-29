@@ -1,4 +1,4 @@
-# BOTD - 24/7 channel daemon
+# BOTD - 24/7 channel daemon (all.py)
 #
 # this file is placed in the public domain
 

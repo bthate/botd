@@ -1,4 +1,4 @@
-# BOTLIB - rss.py
+# BOTD - 24/7 channel daemon (rss.py)
 #
 # this file is placed in the public domain
 

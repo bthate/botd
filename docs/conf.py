@@ -1,4 +1,4 @@
-# BOTD - 24/7 channel daemon
+# BOTD - 24/7 channel daemon (conf.py)
 # -*- coding: utf-8 -*-
 #
 # this file is placed in the public domain

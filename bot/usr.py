@@ -1,4 +1,4 @@
-# BOTLIB - usr.py
+# BOTD - 24/7 channel daemon (usr.py)
 #
 # this file is placed in the public domain
 

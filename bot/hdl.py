@@ -1,4 +1,4 @@
-# BOTLIB - hdl.py
+# BOTD - 24/7 channel daemon (hdl.py)
 #
 # this file is placed in the public domain
 
