@@ -2,4 +2,4 @@
 #
 # this file is placed in the public domain
 
-rm -fR botd/__pycache__ docs/bot*.rst test/*~ test/__pycache__ build *~ botd.egg-info bot/*~ bot/__pycache__ run run.tar.gz html env env.tar.gz .data build dist MANIFEST bin/*~ *~ docs/*~
+rm -fR docs/bot*.rst test/*~ test/__pycache__ build *~ botd.egg-info bot/*~ bot/__pycache__ run run.tar.gz html env env.tar.gz .data build dist MANIFEST bin/*~ *~ docs/*~

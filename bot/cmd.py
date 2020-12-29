@@ -86,13 +86,12 @@ def dpl(event):
         save(o)
         event.reply("ok")
 
-
 def flt(event):
     "list of bots"
     try:
         event.reply(str(Bus.objs[event.prs.index-1]))
         return
-    except IndexError:
+    except (TypeError, IndexError):
         pass
     event.reply(",".join([get_name(o) for o in Bus.objs]))
 

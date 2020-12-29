@@ -15,9 +15,9 @@ import bot.obj
 import bot.cmd
 
 from bot.obj import Object, get
-from bot.hdl import Event, Handler, mods
+from bot.hdl import Event, Handler
 from bot.prs import parse_cli
-from bot.thr import get_exception
+from bot.utl import get_exception, mods
 
 # defines
 
