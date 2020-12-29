@@ -83,7 +83,7 @@ if you don't want botd to startup at boot, remove the service file:
 USAGE
 =====
 
-BOTD havs it's own CLI, the botctl program. It needs root because the botd
+BOTD has it's own CLI, the botctl program. It needs root because the botd
 program uses systemd to get it started after a reboot. You can run it on the shell
 prompt and, as default, it won't do anything.
 

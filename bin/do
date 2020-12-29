@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+# BOTD - 24/7 channel dameon
+#
+# this file is placed in the public domain
+
+"build botd distro"
+
+# imports
 
 import importlib
 importlib.invalidate_caches()
@@ -12,14 +19,18 @@ import urllib.request
 
 from setuptools.command.easy_install import main
 
+# defines
+
 pipurl = "https://bootstrap.pypa.io/get-pip.py"
 buildouturl = "https://bootstrap.pypa.io/bootstrap-buildout.py"
 fname = "run"
 installdir = os.path.join(os.getcwd(), fname)
-rs = '--always-copy --install-dir=%s --script-dir=%s/bin -a -U' % (installdir, installdir)
+rs = '--always-copy --install-dir=%s --script-dir=%s/bin -a' % (installdir, installdir)
 sys.path.insert(0, installdir)
 os.environ['PYTHONPATH'] = installdir
 os.environ['PYTHONUSERBASE'] = installdir
+
+# functions
 
 def bopen(txt):
     print(txt)
@@ -80,7 +91,7 @@ def bmain():
     nopen("rm build")
     nopen("rm -fR %s.egg-info" % fname)
     nopen("python3 setup.py sdist")
-    rss = rs + " -f dist botd"
+    rss = rs + " -f egg botlib botd"
     print("easy_install %s" % rss)
     main(rss.split())
     nopen("rm %s/pip" % installdir)
@@ -90,5 +101,7 @@ def bmain():
     nopen("rm -fR %s/__pycache__" % installdir)
     nopen("rm %s/get-pip.py" % installdir)
     nopen("tar zcvf %s.tar.gz %s" % (fname.lower(), fname))
+
+# runtime
 
 bmain()
