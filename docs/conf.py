@@ -12,7 +12,7 @@ sys.path.insert(0, curdir + os.sep)
 sys.path.insert(0, curdir + os.sep + '..' + os.sep)
 sys.path.insert(0, curdir + os.sep + '..' + os.sep + ".." + os.sep)
 
-from botd.ver import __version__
+from bot.ver import __version__
 
 needs_sphinx='1.1'
 nitpick_ignore=[

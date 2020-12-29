@@ -12,7 +12,7 @@ a JSON in file database with a versioned readonly storage. It reconstructs
 objects based on type information in the path and uses a "dump OOP and use
 OP" programming library where the methods are factored out into functions
 that use the object as the first argument. BOTD is placed in the Public
-Domain and has no COPYRIGHT or LICENSE.
+Domain, no COPYRIGHT, no LICENSE.
 
 INSTALL
 =======
@@ -23,15 +23,7 @@ installation is through pypi:
 
  > sudo pip3 install botd
 
-if you have previous versions already installed and things fail try to force reinstall:
-
-::
-
- > sudo pip3 install botd --upgrade --force-reinstall
-
-if this also doesn't work you'll need to remove all installed previous  versions, so you can do a clean install.
-
-you can run directly from the tarball, see https://pypi.org/project/botd/#files
+you can also run directly from the tarball, see https://pypi.org/project/botd/#files
 
 SERVICE
 =======
@@ -79,9 +71,8 @@ if you don't want botd to startup at boot, remove the service file:
 
  $ sudo rm /etc/systemd/system/botd.service
 
-
-USAGE
-=====
+BOTCTL
+======
 
 BOTD has it's own CLI, the botctl program. It needs root because the botd
 program uses systemd to get it started after a reboot. You can run it on the shell
@@ -114,14 +105,14 @@ you can use setters to edit fields in a configuration:
 
 ::
 
- $ .sudo botctl cfg server=irc.freenode.net channel=\#dunkbots nick=botd
- channel=#dunkbots nick=botd port=6667 server=irc.freenode.net
+ $ sudo botctl cfg server=irc.freenode.net channel=\#dunkbots nick=botd
+ ok
 
-to have the irc bot started use the mods=irc option at start:
+then restart the botd service:
 
 ::
 
- $ sudo botd mods=irc
+ $ sudo service botd restart
 
 RSS
 ===
@@ -152,13 +143,19 @@ adding rss to mods= will load the rss module and start it's poller.
 
 ::
 
- $ sudo botd mods=irc,rss
+ $ sudo bot mods=irc,rss
 
 UDP
 ===
 
 BOTD also has the possibility to serve as a UDP to IRC relay where you
 can send UDP packages to the bot and have txt displayed on the channel.
+
+adding the udp to mods= load the udp to irc gateway
+
+::
+
+ $ sudo bot mods=irc,udp
 
 use the 'botudp' command to send text via the bot to the channel on the irc server:
 
@@ -179,12 +176,82 @@ to send a udp packet to botd in python3:
      sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
      sock.sendto(bytes(txt.strip(), "utf-8"), host, port)
 
+
+PROGRAMMING
+===========
+
+BOTD provides a "move all methods to functions" like this:
+
+::
+
+ obj.method(*args) -> method(obj, *args) 
+
+ e.g.
+
+ not:
+
+ >>> from bot.obj import Object
+ >>> o = Object()
+ >>> o.set("key", "value")
+ >>> o.key
+ 'value'
+
+ but:
+
+ >>> from bot.obj import Object, set
+ >>> o = Object()
+ >>> set(o, "key", "value")
+ >>> o.key
+ 'value'
+
+it's a way of programming with objects, replacing OOP. Not object-oriented 
+programming, but object programming. If you are used to functional programming
+you'll like it (or not) ;]
+
+MODULES
+=======
+
+BOTD provides the following modules:
+
+::
+
+    bot.clk          - clock/repeater
+    bot.cmd          - commands
+    bot.dbs          - databases
+    bot.hdl          - handler
+    bot.irc          - internet relay chat
+    bot.obj          - objects
+    bot.prs          - parser
+    bot.rss          - rich site syndicate
+    bot.tbl          - tables
+    bot.thr          - threads
+    bot.trm          - terminal
+    bot.udp          - udp to irc relay
+    bot.usr          - users
+    bot.utl          - utilities
+
+DEBUG
+=====
+
+if you have previous versions already installed and things fail try to force reinstall:
+
+::
+
+ > sudo pip3 install botd --upgrade --force-reinstall
+
+if this also doesn't work you'll need to remove all installed previous
+versions:
+
+::
+
+ > sudo rm /usr/local/lib/python3.8/dist-packages/botd*
+ > sudo rm /usr/local/lib/python3.8/dist-packages/botlib*
+
+
 CONTACT
 =======
 
-"contributed back to society."
-
-you can contact me on IRC/freenode/#dunkbots or email me at bthate@dds.nl
+"contributed back to society"
 
 | Bart Thate (bthate@dds.nl, thatebart@gmail.com)
-| botfather on #dunkbots irc.freenode.net
+| botfather on #dunkbots at irc.freenode.net

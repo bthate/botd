@@ -24,16 +24,6 @@ installation is through pypi:
 
  > sudo pip3 install botd
 
-if you have previous versions already installed and things fail try to force
-reinstall:
-
-::
-
- > sudo pip3 install botd --upgrade --force-reinstall
-
-if this also doesn't work you'll need to remove all previous installed 
-versions, so you can do a clean install.
-
 you can run directly from the tarball, see https://pypi.org/project/botd/#files
 
 SERVICE
@@ -82,12 +72,12 @@ if you don't want botd to startup at boot, remove the service file:
 
  $ sudo rm /etc/systemd/system/botd.service
 
-USAGE
+ADMIN
 =====
 
-BOTD havs it's own CLI, the botctl program. It needs root because the botd
-program uses systemd to get it started after a reboot. You can run it on the 
-shell prompt and, as default, it won't do anything.
+BOTD has it's own CLI, the botctl program. It needs root to lower privileges
+to botd user and run a systemd command to run botcmd, the real bot exec. You
+can run it on the shell prompt and, as default, it won't do anything.
 
 :: 
 
@@ -101,7 +91,6 @@ a list of commands:
 
  $ sudo botctl cmd
  cfg,cmd,dne,dpl,fnd,ftc,log,mbx,rem,rss,tdo,tsk,udp,upt,ver
-
 
 IRC
 ===
@@ -124,7 +113,7 @@ to have the irc bot started use the mods=irc option at start:
 
 ::
 
- $ sudo botd mods=irc
+ $ sudo bot mods=irc
 
 RSS
 ===
@@ -184,10 +173,82 @@ to send a udp packet to botd in python3:
      sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
      sock.sendto(bytes(txt.strip(), "utf-8"), host, port)
 
+PROGRAMMING
+===========
+
+BOTD provides a "move all methods to functions" like this:
+
+::
+
+ obj.method(*args) -> method(obj, *args) 
+
+ e.g.
+
+ not:
+
+ >>> from bot.obj import Object
+ >>> o = Object()
+ >>> o.set("key", "value")
+ >>> o.key
+ 'value'
+
+ but:
+
+ >>> from bot.obj import Object, set
+ >>> o = Object()
+ >>> set(o, "key", "value")
+ >>> o.key
+ 'value'
+
+it's a way of programming with objects, replacing OOP. Not object-oriented 
+programming, but object programming. If you are used to functional programming
+you'll like it (or not) ;]
+
+MODULES
+=======
+
+BOTD provides the following modules:
+
+.. autosummary::
+    :toctree: 
+    :template: module.rst
+
+    bot.clk          - clock/repeater
+    bot.cmd          - commands
+    bot.dbs          - databases
+    bot.hdl          - handler
+    bot.irc          - internet relay chat
+    bot.obj          - objects
+    bot.prs          - parser
+    bot.rss          - rich site syndicate
+    bot.tbl          - tables
+    bot.thr          - threads
+    bot.trm          - terminal
+    bot.udp          - udp to irc relay
+    bot.usr          - users
+    bot.utl          - utilities
+
+DEBUG
+=====
+
+if you have previous versions already installed and things fail try to force reinstall:
+
+::
+
+ > sudo pip3 install botd --upgrade --force-reinstall
+
+if this also doesn't work you'll need to remove all installed previous
+versions:
+
+::
+
+ > sudo rm /usr/local/lib/python3.8/dist-packages/botd*
+ > sudo rm /usr/local/lib/python3.8/dist-packages/botlib*
+
 CONTACT
 =======
 
-"contributed back to society." - :ref:`source <source>`
+"contributed back to society"
 
 you can contact me on IRC/freenode/#dunkbots or email me at bthate@dds.nl
 

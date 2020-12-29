@@ -97,7 +97,6 @@ def main():
         h = Handler()
     else:
         h = Console()
-    h.walk("botd")
     if cfg.txt:
         return h.cmd(cfg.otxt)
     h.init(cfg.sets.mods)

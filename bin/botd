@@ -13,8 +13,6 @@ def main():
     privilege("botd")
     h = Handler()
     h.start()
-    h.walk("bot")
-    h.walk("botd")
     h.init("irc,udp,rss")
     h.wait()
      
