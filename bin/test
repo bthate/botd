@@ -8,13 +8,21 @@
 # imports
 
 import os, sys ; sys.path.insert(0, os.getcwd())
-import time, unittest
 
+import time
+import unittest
+
+import bot.all
 import bot.obj
 import bot.hdl
 
 from bot.trm import execute
 from bot.prs import parse_cli
+
+# defines
+
+test_path = os.getcwd() + os.sep + "test"
+wd = os.path.expanduser("~/.test")
 
 # functions
 
@@ -27,11 +35,8 @@ def open(txt):
 
 def main():
     open("rm -fR ~/.test")
-    bot.obj.wd = os.path.expanduser("~/.test")
     bot.hdl.debug = True
-    cfg = parse_cli()
-    print(cfg)
-    test_path = os.getcwd() + os.sep + "test"
+    cfg = parse_cli(wd)
     if cfg.txt:
         pat = "test_%s*" % cfg.txt
     else:

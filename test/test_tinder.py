@@ -50,7 +50,6 @@ class TestHandler(Handler):
          if verbose:
              print(txt)
 
-
 class Command(Command):
 
     def direct(self, txt):

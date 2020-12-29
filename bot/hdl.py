@@ -11,6 +11,7 @@ import importlib
 import importlib.util
 import os
 import queue
+import sys
 import threading
 import time
 
@@ -190,7 +191,8 @@ class Handler(Object):
             except ModuleNotFoundError:
                 continue
             if spec:
-                mod = self.intro(direct("%s.%s" % (name, mn)))
+                mod = self.load("%s.%s" % (name, mn))
+                self.intro(mod)
                 func = getattr(mod, "init", None)
                 if func:
                     thrs.append(func(self))
@@ -213,7 +215,8 @@ class Handler(Object):
 
     def load(self, mn):
         "load from modulename"
-        self.intro(direct(mn))
+        mod = sys.modules[mn]
+        self.intro(mod)
 
     def handler(self):
         "handler loop"
@@ -252,7 +255,7 @@ class Handler(Object):
         if not name:
             name = list(spl(pkgnames))[0]
         for pn in spl(pkgnames):
-            mod = direct(pn)
+            mod = sys.modules[pn]
             self.fromdir(mod.__path__[0], name)
 
     def wait(self):
@@ -268,11 +271,6 @@ def cmd(handler, obj):
     import bot.tbl
     obj.parse()
     f = get(handler.cmds, obj.cmd, None)
-    if not f:
-        mn = get(bot.tbl.modnames, obj.cmd, None)
-        if mn:
-            handler.load(mn)
-            f = get(handler.cmds, obj.cmd, None)
     res = None
     if f:
         res = f(obj)

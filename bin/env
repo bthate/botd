@@ -39,10 +39,8 @@ def main():
     for line in os.popen("python3 setup.py sdist").readlines():
         print(line.strip())
     #open("rm -fR ~/.cache/pip/")
-    open("cp ../botlib/dist/* egg")
-    open("cp ../botd/dist/* egg")
     open("python3 -mvirtualenv -p python3 env")
-    open("env/bin/pip3 install botd -f egg --upgrade --force-reinstall")
+    open("env/bin/pip3 install botd -f dist --force-reinstall")
 
 # runtime
 

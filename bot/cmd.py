@@ -89,7 +89,7 @@ def dpl(event):
 def flt(event):
     "list of bots"
     try:
-        event.reply(str(Bus.objs[event.prs.index-1]))
+        event.reply(str(Bus.objs[event.prs.index]))
         return
     except (TypeError, IndexError):
         pass
@@ -196,4 +196,4 @@ def thr(event):
 
 def ver(event):
     "show version (ver)"
-    event.reply("BOTLIB %s" % __version__)
+    event.reply("BOTD %s - 24/7 channel daemon" % __version__)

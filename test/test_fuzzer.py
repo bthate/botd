@@ -11,6 +11,7 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 import inspect
 import types
 import unittest
+import bot.all
 import bot.obj
 import bot.cmd
 
