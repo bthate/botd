@@ -11,9 +11,6 @@ import os, sys ; sys.path.insert(0, os.getcwd())
 
 import time
 import unittest
-
-import bot.all
-import bot.obj
 import bot.hdl
 
 from bot.trm import execute

@@ -215,8 +215,12 @@ class Handler(Object):
 
     def load(self, mn):
         "load from modulename"
-        mod = sys.modules[mn]
+        if mn in sys.modules:
+            mod = sys.modules[mn]
+        else:
+            mod = direct(mn)
         self.intro(mod)
+        return mod
 
     def handler(self):
         "handler loop"
@@ -255,7 +259,7 @@ class Handler(Object):
         if not name:
             name = list(spl(pkgnames))[0]
         for pn in spl(pkgnames):
-            mod = sys.modules[pn]
+            mod = self.load(pn)
             self.fromdir(mod.__path__[0], name)
 
     def wait(self):

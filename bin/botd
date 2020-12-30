@@ -5,7 +5,7 @@
 
 "run a service for systemd"
 
-# import s
+# imports
 
 from bot.hdl import Handler, os
 from bot.trm import execute
