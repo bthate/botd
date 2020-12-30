@@ -18,6 +18,8 @@ from bot.trm import execute, termreset
 
 # defines
 
+__version__ = 26
+
 wd = os.path.expanduser("~/.botd")
 
 # classes
@@ -95,6 +97,10 @@ def daemon():
     os.dup2(so.fileno(), sys.stdout.fileno())
     os.dup2(se.fileno(), sys.stderr.fileno())
 
+def ver(event):
+    "show version (ver)"
+    event.reply("BOTD %s - 24/7 channel daemon" % __version__)
+
 def main():
     cfg = parse_cli(wd)
     if "s" in cfg.opts:
@@ -105,6 +111,7 @@ def main():
     else:
         h = Console()
     h.load("bot.cmd")
+    h.cmds["ver"] = ver
     if cfg.txt:
         return h.cmd(cfg.otxt)
     h.init(cfg.sets.mods)

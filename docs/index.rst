@@ -106,8 +106,8 @@ you can use setters to edit fields in a configuration:
 
 ::
 
- $ .sudo botctl cfg server=irc.freenode.net channel=\#dunkbots nick=botd
- channel=#dunkbots nick=botd port=6667 server=irc.freenode.net
+ $ sudo botctl cfg server=irc.freenode.net channel=\#dunkbots nick=botd
+ ok
 
 to have the irc bot started use the mods=irc option at start:
 

@@ -11,8 +11,9 @@ disk and search them and scan emails for correspondence analysis. BOTD uses
 a JSON in file database with a versioned readonly storage. It reconstructs
 objects based on type information in the path and uses a "dump OOP and use
 OP" programming library where the methods are factored out into functions
-that use the object as the first argument. BOTD is placed in the Public
-Domain, no COPYRIGHT, no LICENSE.
+that use the object as the first argument.
+
+BOTD is placed in the Public Domain, no COPYRIGHT, no LICENSE.
 
 INSTALL
 =======
