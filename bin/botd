@@ -18,6 +18,7 @@ def main():
     bot.obj.wd = "/var/lib/botd/"
     privilege("botd")
     h = Handler()
+    h.load("bot.cmd")
     h.start()
     h.init("irc,udp,rss")
     h.wait()

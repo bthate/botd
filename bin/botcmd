@@ -33,6 +33,7 @@ def main():
     bot.obj.wd = "/var/lib/botd/"
     privilege("botd")
     h = Mini()
+    h.load("bot.cmd")
     return h.cmd(" ".join(sys.argv[1:]))
 
 # runtime
