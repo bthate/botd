@@ -16,4 +16,3 @@ import bot.trm
 import bot.udp
 import bot.usr
 import bot.utl
-import bot.ver
